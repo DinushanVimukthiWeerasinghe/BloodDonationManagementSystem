@@ -1,0 +1,6 @@
+/vendor/
+/public/upload/
+/.env
+/.phpunit*
+/.idea
+
