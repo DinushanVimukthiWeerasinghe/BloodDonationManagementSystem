@@ -1,0 +1,283 @@
+/*Position Relative*/
+.relative{
+    position: relative;
+}
+/*Position Absolute*/
+.absolute{
+    position: absolute;
+}
+/*Position Fixed*/
+.fixed{
+    position: fixed;
+}
+/*Position Sticky*/
+.sticky{
+    position: sticky;
+}
+/*Position Static*/
+.static{
+    position: static;
+}
+/*Position Initial*/
+.initial{
+    position: initial;
+}
+/*Position Inherit*/
+.inherit{
+    position: inherit;
+}
+.top-0{
+    top: 0;
+}
+.top-1{
+    top: 1vh;
+}
+.top-2{
+    top: 2vh;
+}
+.top-3{
+    top: 3vh;
+}
+.top-4{
+    top: 4vh;
+}
+.top-5{
+    top: 5vh;
+}
+.top-6{
+    top: 6vh;
+}
+.top-7{
+    top: 7vh;
+}
+.top-8{
+    top: 8vh;
+}
+.top-9{
+    top: 9vh;
+}
+.top-10{
+    top: 10vh;
+}
+.top-11{
+    top: 11vh;
+}
+.top-12{
+    top: 12vh;
+}
+.top-13{
+    top: 13vh;
+}
+.top-14{
+    top: 14vh;
+}
+.top-15{
+    top: 15vh;
+}
+.top-16{
+    top: 16vh;
+}
+.top-17{
+    top: 17vh;
+}
+.top-18{
+    top: 18vh;
+}
+.top-19{
+    top: 19vh;
+}
+.top-20{
+    top: 20vh;
+}
+.right-0{
+    right: 0;
+}
+.right-1{
+    right: 1vw;
+}
+.right-2{
+    right: 2vw;
+}
+.right-3{
+    right: 3vw;
+}
+.right-4{
+    right: 4vw;
+}
+.right-5{
+    right: 5vw;
+}
+.right-6{
+    right: 6vw;
+}
+.right-7{
+    right: 7vw;
+}
+.right-8{
+    right: 8vw;
+}
+.right-9{
+    right: 9vw;
+}
+.right-10{
+    right: 10vw;
+}
+.right-11{
+    right: 11vw;
+}
+.right-12{
+    right: 12vw;
+}
+.right-13{
+    right: 13vw;
+}
+.right-14{
+    right: 14vw;
+}
+.right-15{
+    right: 15vw;
+}
+.right-16{
+    right: 16vw;
+}
+.right-17{
+    right: 17vw;
+}
+.right-18{
+    right: 18vw;
+}
+.right-19{
+    right: 19vw;
+}
+.right-20{
+    right: 20vw;
+}
+.bottom-0{
+    bottom: 0;
+}
+.bottom-1{
+    bottom: 1vh;
+}
+.bottom-2{
+    bottom: 2vh;
+}
+.bottom-3{
+    bottom: 3vh;
+}
+.bottom-4{
+    bottom: 4vh;
+}
+.bottom-5{
+    bottom: 5vh;
+}
+.bottom-6{
+    bottom: 6vh;
+}
+.bottom-7{
+    bottom: 7vh;
+}
+.bottom-8{
+    bottom: 8vh;
+}
+.bottom-9{
+    bottom: 9vh;
+}
+.bottom-10{
+    bottom: 10vh;
+}
+.bottom-11{
+    bottom: 11vh;
+}
+.bottom-12{
+    bottom: 12vh;
+}
+.bottom-13{
+    bottom: 13vh;
+}
+.bottom-14{
+    bottom: 14vh;
+}
+.bottom-15{
+    bottom: 15vh;
+}
+.bottom-16{
+    bottom: 16vh;
+}
+.bottom-17{
+    bottom: 17vh;
+}
+.bottom-18{
+    bottom: 18vh;
+}
+.bottom-19{
+    bottom: 19vh;
+}
+.bottom-20{
+    bottom: 20vh;
+}
+.left-0{
+    left: 0;
+}
+.left-1{
+    left: 1vw;
+}
+.left-2{
+    left: 2vw;
+}
+.left-3{
+    left: 3vw;
+}
+.left-4{
+    left: 4vw;
+}
+.left-5{
+    left: 5vw;
+}
+.left-6{
+    left: 6vw;
+}
+
+.left-7{
+    left: 7vw;
+}
+.left-8{
+    left: 8vw;
+}
+.left-9{
+    left: 9vw;
+}
+.left-10{
+    left: 10vw;
+}
+.left-11{
+    left: 11vw;
+}
+.left-12{
+    left: 12vw;
+}
+.left-13{
+    left: 13vw;
+}
+.left-14{
+    left: 14vw;
+}
+.left-15{
+    left: 15vw;
+}
+.left-16{
+    left: 16vw;
+}
+.left-17{
+    left: 17vw;
+}
+.left-18{
+    left: 18vw;
+}
+.left-19{
+    left: 19vw;
+}
+.left-20{
+    left: 20vw;
+}
+
+

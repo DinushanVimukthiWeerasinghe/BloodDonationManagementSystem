@@ -1,0 +1,261 @@
+
+/*Text Alignment*/
+.text-left {
+    text-align: left;
+}
+.text-center {
+    text-align: center;
+}
+.text-right {
+    text-align: right;
+}
+.text-justify {
+    text-align: justify;
+}
+/*Text Decoration*/
+.text-underline {
+    text-decoration: underline;
+}
+.text-overline {
+    text-decoration: overline;
+}
+.text-line-through {
+    text-decoration: line-through;
+}
+.text-none {
+    text-decoration: none;
+}
+/*Text Transform*/
+.text-uppercase {
+    text-transform: uppercase;
+}
+.text-lowercase {
+    text-transform: lowercase;
+}
+.text-capitalize {
+    text-transform: capitalize;
+}
+/*Text Color*/
+.text-primary {
+    color: var(--primary);
+}
+.text-secondary {
+    color: var(--secondary);
+}
+.text-success {
+    color: var(--success);
+}
+.text-danger {
+    color: var(--danger);
+}
+.text-warning {
+    color: var(--warning);
+}
+.text-info {
+    color: var(--info);
+}
+.text-light {
+    color: var(--light);
+}
+.text-dark {
+    color: var(--dark);
+}
+.text-white {
+    color: var(--white);
+}
+.text-black {
+    color: var(--black);
+}
+/*Text Background Color*/
+.bg-primary {
+    background: var(--primary);
+}
+.bg-secondary {
+    background: var(--secondary);
+}
+.bg-success {
+    background: var(--success);
+}
+.bg-danger {
+    background: var(--danger);
+}
+.bg-warning {
+    background: var(--warning);
+}
+.bg-info {
+    background: var(--info);
+}
+.bg-light {
+    background: var(--light);
+}
+.bg-dark {
+    background: var(--dark);
+}
+.bg-white {
+    background: var(--white);
+}
+.bg-black {
+    background: var(--black);
+}
+/*Text Font Size*/
+.text-xxs {
+    font-size: 0.5rem;
+}
+.text-xs {
+    font-size: 0.75rem;
+}
+.text-sm {
+    font-size: 0.875rem;
+}
+.text-md {
+    font-size: 1rem;
+}
+.text-lg {
+    font-size: 1.125rem;
+}
+.text-xl {
+    font-size: 1.25rem;
+}
+.text-2xl {
+    font-size: 1.5rem;
+}
+.text-3xl {
+    font-size: 1.875rem;
+}
+.text-4xl {
+    font-size: 2.25rem;
+}
+.text-5xl {
+    font-size: 3rem;
+}
+.text-6xl {
+    font-size: 4rem;
+}
+/*Text Font Weight*/
+.font-thin {
+    font-weight: 100;
+}
+.font-extralight {
+    font-weight: 200;
+}
+.font-light {
+    font-weight: 300;
+}
+.font-normal {
+    font-weight: 400;
+}
+.font-medium {
+    font-weight: 500;
+}
+.font-semibold {
+    font-weight: 600;
+}
+.font-bold {
+    font-weight: 700;
+}
+.font-extrabold {
+    font-weight: 800;
+}
+.font-black {
+    font-weight: 900;
+}
+/*Text Font Style*/
+.font-italic {
+    font-style: italic;
+}
+.font-roman {
+    font-style: normal;
+}
+/*Text Font Family*/
+.font-sans {
+    font-family: 'Nunito Sans', sans-serif;
+}
+.font-serif {
+    font-family: 'Nunito Serif', serif;
+}
+.font-mono {
+    font-family: 'Nunito Mono', monospace;
+}
+/*Text Font Variant*/
+.font-small-caps {
+    font-variant: small-caps;
+}
+.font-all-small-caps {
+    font-variant: all-small-caps;
+}
+.font-petite-caps {
+    font-variant: petite-caps;
+}
+.font-unicase {
+    font-variant: unicase;
+}
+.font-titling-caps {
+    font-variant: titling-caps;
+}
+/*Text Font Stretch*/
+.font-normal {
+    font-stretch: normal;
+}
+.font-ultra-condensed {
+    font-stretch: ultra-condensed;
+}
+.font-extra-condensed {
+    font-stretch: extra-condensed;
+}
+.font-condensed {
+    font-stretch: condensed;
+}
+.font-semi-condensed {
+    font-stretch: semi-condensed;
+}
+.font-semi-expanded {
+    font-stretch: semi-expanded;
+}
+.font-expanded {
+    font-stretch: expanded;
+}
+.font-extra-expanded {
+    font-stretch: extra-expanded;
+}
+.font-ultra-expanded {
+    font-stretch: ultra-expanded;
+}
+/*Text Line Height*/
+.leading-none {
+    line-height: 1;
+}
+.leading-tight {
+    line-height: 1.25;
+}
+.leading-snug {
+    line-height: 1.375;
+}
+.leading-normal {
+    line-height: 1.5;
+}
+.leading-relaxed {
+    line-height: 1.625;
+}
+.leading-loose {
+    line-height: 2;
+}
+/*Text Letter Spacing*/
+.tracking-tight {
+    letter-spacing: -0.05em;
+}
+.tracking-normal {
+    letter-spacing: 0;
+}
+.tracking-wide {
+    letter-spacing: 0.05em;
+}
+/*Text Word Spacing*/
+.widest {
+    word-spacing: 0.25em;
+}
+.wider {
+    word-spacing: 0.125em;
+}
+.wide {
+    word-spacing: 0.0625em;
+}

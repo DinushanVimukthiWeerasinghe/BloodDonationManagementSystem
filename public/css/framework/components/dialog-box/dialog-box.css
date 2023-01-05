@@ -1,0 +1,39 @@
+.hidden{
+    display: none!important;
+}
+.dialog-box-outer{
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    top: 0;
+    left: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+    background: rgba(0,0,0,0.7);
+    /*pointer-events: none;*/
+}
+.dialog-box-outer .dialog-box{
+    max-width: 60%;
+    min-width: 40%;
+    background: #ffffff;
+    padding: 1rem;
+    border-radius: 20px;
+}
+.dialog-box-outer .dialog-box .dialog-box-title{
+    text-align: center;
+    width: 100%;
+    padding: 0.5rem;
+    font-size: var(--lg);
+}
+.dialog-box-outer .dialog-box .dialog-box-content{
+    padding: 1rem;
+    text-align: center;
+}
+.dialog-box-outer .dialog-box .dialog-box-action{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+}

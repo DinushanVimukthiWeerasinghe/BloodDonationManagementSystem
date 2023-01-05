@@ -1,0 +1,27 @@
+{
+    "name": "cs46/blood-donation-management-system",
+    "description": "A Web Application for handling the Blood Donation procedure.",
+    "type": "project",
+    "authors": [
+        {
+            "name": "Weerasinghe M.A.D.V.",
+            "email": "2020cs202@stu.ucsc.cmb.ac.lk"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "App\\": "app",
+            "Config\\": "config",
+            "Core\\": "core",
+            "TEST\\": "test"
+        }
+    },
+    "require": {
+        "vlucas/phpdotenv": "^5.5",
+        "ext-pdo": "*",
+        "ext-json": "*",
+        "ext-gd": "*",
+        "phpmailer/phpmailer": "^6.5",
+        "phpunit/phpunit": "^9"
+    }
+}

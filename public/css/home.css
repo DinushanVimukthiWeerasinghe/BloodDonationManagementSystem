@@ -1,0 +1,443 @@
+*{
+    padding: 0;
+    margin:0;
+    text-decoration: none;
+}
+
+@font-face {
+    font-family: 'Popins';
+    src: url('/public/fonts/Poppins/Poppins-Light.ttf');
+}
+
+body{
+    padding: 0;
+    margin:0;
+    background: #7f0505;
+    display: flex;
+    justify-content: normal !important;
+    align-items: normal;
+    color: white;
+    overflow: auto !important;
+    scroll-behavior: smooth;
+    background: url("/public/images/homebgmb.png");
+    object-fit: cover;
+    background-size:cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.dark-bg{
+    position: absolute;
+    min-height: 710vh;
+    max-height: 800vh;
+    max-width: 100vw;
+    min-width: 100vw;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: -1;
+}
+
+::-webkit-scrollbar {
+    width: 0px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: #620000;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+.intro{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;align-items: center;
+}
+
+.d-flex-row{
+    display: flex;
+    flex-direction: row !important;
+    justify-content: center;
+    align-items: center;
+}
+
+.sub-panel{
+    min-height: 80vh;
+    min-width: 90vw;
+    max-width: 90vw;
+    display: flex;
+    flex-direction: column;
+    background: rgba(255, 255, 255, 0.6);
+    color: black;
+    justify-content: center;
+    align-items: center;
+    margin: 10vh 3rem 3rem;
+    padding: 2rem;
+    border-radius: 50px;
+}
+
+#caption{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.serv-list{
+    display: flex;
+    flex-direction: row;
+    gap: 2rem;
+}
+.serv-list .service{
+    padding: 2rem;
+    background: rgba(0,0, 0, 0.3);
+    color: white;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+}
+
+.cu-form{
+    margin-left: 5vw;
+}
+
+.cu-form form .content{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.cu-form form .content input, .cu-form form .content textarea{
+    text-align: center;
+    width: 100%;
+    padding: 1rem;
+    margin: 1rem;
+    border: none;
+    outline: none;
+    border-radius: 10px;
+    font-size: 1.5rem;
+}
+
+.cu-form form .content textarea{
+    height: 10rem;
+    display: flex;
+    align-items: center;
+    align-content: center;
+}
+
+.cu-form button[type="submit"]{
+    background: #620000;
+    color: white;
+    font-size: 1.5rem;
+    font-weight: bold;
+    border: none;
+    outline: none;
+    padding: 1rem;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+#home{
+    /*position: fixed;*/
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.desc-image img{
+    border-radius: 40px;
+
+}
+
+.panel{
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    border-radius: 50px;
+}
+
+#welcome-panel{
+    margin-top: 3vh;
+    max-width: 100vw;
+}
+
+#welcome{
+    font-size: larger;
+}
+
+#welcome-panel #caption{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.tagline, .main-tagline{
+    font-size: 3.0rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    font-family: 'Popins', serif;
+}
+.main-tagline{
+    font-size: 3.5rem;
+}
+
+.desc{
+    font-family: 'Roboto', sans-serif;
+    font-size: 1.5rem;
+    /*font-weight: bold;*/
+    padding: 2rem;
+    text-align: center;
+}
+
+.text-bold{
+    font-weight: bold;
+}
+
+#welcome-panel #caption #description{
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+
+}
+
+#description-2{
+    font-size: 1rem;
+    font-weight: 500;
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+#donate-btn{
+    background: #7f0505;
+    color: white;
+    padding: 1rem;
+    border-radius: 10px;
+    font-size: 1.5rem;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+}
+
+#intro-panel{
+    position: relative;
+}
+#about-panel{
+    position: relative;
+}
+
+/*Cards*/
+
+.nav-card{
+    display: flex;
+    flex-direction: row;
+}
+
+.card{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: rgba(155, 8, 8, 0.7);
+    color: white;
+    font-size: 2rem;
+    padding: 3rem;
+    margin: 1rem;
+    max-width: 20vw;
+    max-height: 13vw;
+    text-align: center;
+    border-radius: 40px;
+    font-weight: bold;
+}
+
+.btn-container{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+}
+
+.chart-panel{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.chart-panel canvas{
+    max-width: 40vw;
+    max-height: 40vh;
+}
+
+.chart{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+#intro{
+    flex-direction: column;
+    gap: 1rem;
+}
+
+@media only screen and (max-width: 500px) {
+
+    .panel{
+        max-height: 100vh;
+        max-width: 100vw;
+    }
+    .intro{
+        flex-direction: column;
+    }
+
+    .tagline, .main-tagline{
+        font-size: 2rem;
+    }
+    #welcome-panel #caption #description, .desc{
+        font-size: 1rem;
+    }
+
+    .image-welcome img, .desc-image img{
+        max-width: 150px;
+    }
+
+    .sub-panel{
+        margin: 10vh 2rem 2rem;
+    }
+
+    .card{
+        font-size: 0.9rem;
+    }
+
+    .serv-list .service{
+        padding: 0.5rem;
+        display: flex;
+        justify-content: center;
+        text-align: center;
+        gap: 1rem;
+    }
+
+    .serv-list .service .srv-img img{
+        width: 80px;
+    }
+    .cu-form button[type="submit"]{
+        font-size: 1rem;
+        padding: 0.5rem;
+    }
+
+    .cu-form form .content input, .cu-form form .content textarea{
+        font-size: 1rem;
+        padding: 0.7rem;
+        margin: 0.5rem;
+    }
+
+    .chart-panel{
+        display: flex;
+        flex-direction: column;
+    }
+
+    .chart-panel canvas{
+        max-width: 60vw;
+        max-height: 60vh;
+    }
+
+    #myCharts{
+        display: none !important;
+    }
+
+
+
+}
+
+@media only screen and (max-width: 320px) {
+
+    #donate-btn{
+        padding: 0.5rem;
+        font-size: 1rem;
+    }
+
+    .panel{
+        max-height: 100vh;
+        max-width: 100vw;
+    }
+    .intro{
+        flex-direction: column;
+    }
+
+    .srv-desc{
+        font-size: 0.8rem;
+    }
+
+    .desc{
+        padding: 0.8rem;
+    }
+
+    .tagline, .main-tagline{
+        font-size: 1.5rem;
+        margin-bottom: 0.5rem;
+    }
+    #welcome-panel #caption #description, .desc{
+        font-size: 0.8rem;
+    }
+
+    .image-welcome img, .desc-image img{
+        max-width: 100px;
+    }
+
+    .sub-panel{
+        margin: 10vh 1rem 1.5rem;
+        min-height: 70vh;
+    }
+
+
+    .card{
+        font-size: 0.6rem;
+        margin: 0.4rem;
+        padding: 2rem;
+        border-radius: 25px;
+    }
+
+    .serv-list{
+        gap: 1rem;
+    }
+
+    .serv-list .service{
+        padding: 0.3rem;
+        display: flex;
+        justify-content: center;
+        text-align: center;
+        gap: 0.5rem;
+    }
+
+    .serv-list .service .srv-img img{
+        width: 60px;
+    }
+
+    .chart-panel canvas{
+        max-width: 80vw;
+        max-height: 80vh;
+    }
+
+}

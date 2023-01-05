@@ -1,0 +1,298 @@
+*{
+    margin: 0px;
+    background-color: #E5E5E5;
+}
+.leftContainer{
+    position: absolute;
+    width: 877px;
+    height: 400px;
+    left: -1px;
+    top: 0px;
+
+    background: rgba(226, 83, 69, 1);
+    border-radius: 0px 0px 198px 0px;
+}
+.leftImage{
+    position: absolute;
+    width: 166px;
+    height: 166px;
+    left: 55px;
+    top: 45px;
+    cursor: pointer;
+} 
+.lefttopic{
+    position: absolute;
+    width: 253px;
+    height: 116px;
+    left: 296px;
+    top: 40px;
+    
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 48px;
+    line-height: 58px;
+    text-align: center;
+    
+    background-color: rgba(226, 83, 69, 1);
+    color: #000000;
+}
+.left1ConImage{
+    position: absolute;
+    width: 130px;
+    height: 130px;
+    left: 77px;
+    top: 240px;
+    cursor: pointer;
+    
+    background: #FFFFFF;
+}
+.left1Con{
+    position: absolute;
+    width: 187px;
+    height: 123px;
+    left: 235px;
+    top: 240px;
+   
+    background-color: rgba(226, 83, 69, 1);
+}
+.left2ConImage{
+    position: absolute;
+    width: 130px;
+    height: 130px;
+    left: 467px;
+    top: 240px;
+    cursor: pointer;
+    
+    background: #FFFFFF;
+}
+.left2Con{
+    position: absolute;
+    width: 187px;
+    height: 100px;
+    left: 625px;
+    top: 240px;
+    background-color: rgba(226, 83, 69, 1);
+}
+.navbar{
+    position: absolute;
+    width: 658px;
+    height: 116px;
+    left: 876px;
+    top: 0px;
+    
+    background: white;
+}
+.bell{
+    position: absolute;
+    width: 97px;
+    height: 98px;
+    left: 230px;
+    top: 8px;
+    cursor: pointer;
+}
+.profile{
+    position: absolute;
+    width: 116px;
+    height: 116px;
+    left: 350px;
+    top: 0px;
+    cursor: pointer;
+}
+.logout{
+    position: absolute;
+    width: 155px;
+    height: 43px;
+    left: 500px;
+    top: 37px;
+    text-decoration: none;
+    
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 36px;
+    line-height: 44px;
+    
+    background-color: white;
+    color: #000000;   
+}
+.logout:hover{
+    text-decoration: underline;
+}
+.rightCorner{
+    position: absolute;
+    width: 454px;
+    height: 380px;
+    left: 1080px;
+    top: 120px;
+    
+    background: #D9D9D9;
+    border-radius: 34px;
+}   
+.rc1{
+    position: absolute;
+    width: 410px;
+    height: 130px;
+    left: 10px;
+    top: 30px;
+    background: #D9D9D9;
+}
+.rc1img{
+    position: absolute;
+    width: 80px;
+    height: 80px;
+    left: 10px;
+    top: 20px;
+    
+    background: #FFFFFF;
+}
+.rc1Con{
+    box-sizing: border-box;
+    
+    position: absolute;
+    width: 300px;
+    height: 130px;
+    left: 100px;
+    top: 20px;
+    
+    background: #D9D9D9;
+    border: 2px solid #000000;
+}
+.rc2 {
+    position: absolute;
+    width: 410px;
+    height: 130px;
+    left: 10px;
+    top: 200px;
+    background: #D9D9D9;
+}
+
+.rc2img {
+    position: absolute;
+    width: 80px;
+    height: 80px;
+    left: 10px;
+    top: 20px;
+
+    background: #FFFFFF;
+}
+
+.rc2Con {
+    box-sizing: border-box;
+
+    position: absolute;
+    width: 300px;
+    height: 130px;
+    left: 100px;
+    top: 20px;
+
+    background: #D9D9D9;
+    border: 2px solid #000000;
+}
+.bottom1{
+    position: absolute;
+    width: 360px;
+    height: 180px;
+    left: 35px;
+    top: 510px;
+
+    background: #D9D9D9;
+    cursor: pointer;
+}
+.img1{
+    position: absolute;
+    width: 127px;
+    height: 142px;
+    left: 30px;
+    top: 30px;
+    cursor: pointer;
+
+}
+.img1Con{
+    position: absolute;
+    width: 178px;
+    height: 88px;
+    left: 180px;
+    top: 50px;
+
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 36px;
+    line-height: 44px;
+    text-align: center;
+    background-color:  #D9D9D9;
+    color: #000000;
+
+}
+.bottom2{
+    position: absolute;
+    width: 360px;
+    height: 180px;
+    left: 410px;
+    top: 510px;
+
+    background: #D9D9D9;
+    cursor: pointer;
+}
+.img2{
+    position: absolute;
+    width: 127px;
+    height: 142px;
+    left: 30px;
+    top: 30px;
+
+
+}
+.img2Con{
+    position: absolute;
+    width: 178px;
+    height: 80px;
+    left: 180px;
+    top: 50px;
+
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 36px;
+    line-height: 44px;
+    text-align: center;
+    background-color:  #D9D9D9;
+    color: #000000;
+
+}
+.bottom3{
+    position: absolute;
+    width: 360px;
+    height: 180px;
+    left: 800px;
+    top: 510px;
+
+    background: #D9D9D9;
+    cursor: pointer;
+}
+.img3{
+    position: absolute;
+    width: 127px;
+    height: 142px;
+    left: 30px;
+    top: 30px;
+
+
+}
+.img3Con{
+    position: absolute;
+    width: 178px;
+    height: 88px;
+    left: 180px;
+    top: 50px;
+
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 36px;
+    line-height: 44px;
+    text-align: center;
+    background-color:  #D9D9D9;
+    color: #000000;
+}
