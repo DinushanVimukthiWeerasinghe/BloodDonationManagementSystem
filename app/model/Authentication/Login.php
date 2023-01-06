@@ -148,7 +148,7 @@ class Login extends dbModel
 
     public static function tableName(): string
     {
-        return 'User';
+        return 'Users';
     }
 
     public static function PrimaryKey(): string

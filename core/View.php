@@ -45,18 +45,4 @@ class View
         return ob_get_clean();
     }
 
-//    protected function RenderCSS($css): bool|string
-//    {
-//        ob_start();
-//        include_once Application::$ROOT_DIR ."/public/styles/".$css.".css";
-//        return ob_get_clean();
-//    }
-//
-//    protected function RenderJS($js): bool|string
-//    {
-//        ob_start();
-//        include_once Application::$ROOT_DIR ."/public/scripts/".$js.".js";
-//        return ob_get_clean();
-//    }
-
 }

@@ -7,6 +7,13 @@ use App\model\database\dbModel;
 
 class Manager extends Person
 {
+
+    protected string $Manager_ID='';
+
+    public function getID()
+    {
+        return $this->Manager_ID;
+    }
     public function getRole(): string
     {
         return 'Manager';
@@ -63,12 +70,12 @@ class Manager extends Person
 
     public static function tableName(): string
     {
-        return 'blood_bank_manager';
+        return 'Managers';
     }
 
     public static function PrimaryKey(): string
     {
-        return 'ID';
+        return 'Manager_ID';
     }
 
     public function attributes(): array

@@ -95,7 +95,7 @@ class MedicalOfficer extends Person
 
     public static function tableName(): string
     {
-        return 'Medical_Officer';
+        return 'MedicalOfficers';
     }
 
     public static function PrimaryKey(): string

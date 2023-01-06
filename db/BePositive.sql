@@ -24,6 +24,7 @@ CREATE TABLE IF NOT EXISTS Admins (
     UserName VARCHAR(100) NOT NULL,
     Email VARCHAR(100) NOT NULL,
     Phone VARCHAR(100) NOT NULL,
+    Profile_Image VARCHAR(100) NOT NULL DEFAULT '/upload/adminDefault.png',
     FOREIGN KEY (Admin_ID) REFERENCES Users(UID)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -48,6 +49,9 @@ CREATE TABLE IF NOT EXISTS BloodBanks (
     Type INT NOT NULL DEFAULT 2
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+# Insert Main Blood Bank
+INSERT INTO BloodBanks (BloodBank_ID, BankName, Address1, Address2, City, Telephone_No, No_Of_Doctors, No_Of_Nurses, No_Of_Beds, No_Of_Storages, Type) VALUES ('BloodBank_01', 'Main Blood Bank','No 01, Main Street','Colombo 01','Colombo','0111234567',0,0,0,0,1);
+
 # Create Medical Officer Table
 DROP TABLE IF EXISTS MedicalOfficers;
 CREATE TABLE IF NOT EXISTS MedicalOfficers (
@@ -62,6 +66,7 @@ CREATE TABLE IF NOT EXISTS MedicalOfficers (
     Status INT NOT NULL DEFAULT 0,
     Joined_At TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     BloodBank_ID VARCHAR(20) NOT NULL,
+    Profile_Image VARCHAR(100) NOT NULL DEFAULT '/upload/medicalOfficerDefault.png',
     FOREIGN KEY (BloodBank_ID) REFERENCES BloodBanks(BloodBank_ID),
     FOREIGN KEY (Officer_ID) REFERENCES Users(UID)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -86,6 +91,7 @@ CREATE TABLE IF NOT EXISTS Donors (
     Verification_Remarks VARCHAR(100) NULL,
     Created_At TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     Updated_At TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    Profile_Image VARCHAR(100) NOT NULL DEFAULT '/upload/donorDefault.png',
     FOREIGN KEY (Donor_ID) REFERENCES Users(UID),
     FOREIGN KEY (Nearest_Bank) REFERENCES BloodBanks(BloodBank_ID),
     FOREIGN KEY (Verified_By) REFERENCES MedicalOfficers(Officer_ID)
@@ -100,7 +106,8 @@ CREATE TABLE IF NOT EXISTS Hospitals (
     Address2 VARCHAR(100) NOT NULL,
     City VARCHAR(100) NOT NULL,
     Telephone_No VARCHAR(100) UNIQUE ,
-    Type INT NOT NULL DEFAULT 1
+    Type INT NOT NULL DEFAULT 1,
+    Profile_Image VARCHAR(100) NOT NULL DEFAULT '/upload/hospitalDefault.png'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 # Create Manager Table
@@ -117,9 +124,14 @@ CREATE TABLE IF NOT EXISTS Managers (
     Status INT NOT NULL DEFAULT 0,
     Joined_At TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     BloodBank_ID VARCHAR(20) NOT NULL,
+    Profile_Image VARCHAR(100) NOT NULL DEFAULT '/upload/managerDefault.png',
     FOREIGN KEY (BloodBank_ID) REFERENCES BloodBanks(BloodBank_ID),
     FOREIGN KEY (Manager_ID) REFERENCES Users(UID)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+# Create Manager User
+# INSERT INTO Users (UID, Password, Role) VALUES ('Manager_01', '$2y$10$hoKw.CNW2iwq0SI8yULXGenv2SkajhdIXtzyoVz9MVMyTsRpJKKzi', 'Manager');
+INSERT INTO Managers (Manager_ID, First_Name, Last_Name, Address1, Address2, City, Mobile_No, Email, BloodBank_ID) VALUES ('Manager_01', 'Manager','Manager','Address1','Address2','Colombo','0771234567','stdinushan@gmail.com','BloodBank_01');
 
 # Create Table for Accepted Requests
 DROP TABLE IF EXISTS Accepted_Requests;
@@ -149,6 +161,7 @@ CREATE TABLE IF NOT EXISTS Organizations (
     Address2 VARCHAR(100) NOT NULL ,
     City VARCHAR(100) NOT NULL,
     Status VARCHAR(50) NOT NULL,
+    Profile_Image VARCHAR(100) NOT NULL DEFAULT '/upload/organizationDefault.png',
     Created_At TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     Updated_At TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (Organization_ID) REFERENCES Users(UID)
@@ -165,6 +178,7 @@ CREATE TABLE IF NOT EXISTS Sponsors (
     Status VARCHAR(50) NOT NULL,
     Created_At TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     Updated_At TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    Profile_Image VARCHAR(100) NOT NULL DEFAULT '/upload/sponsorDefault.png',
     FOREIGN KEY (Sponsor_ID) REFERENCES Users(UID)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 

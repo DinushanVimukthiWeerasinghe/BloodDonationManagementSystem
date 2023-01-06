@@ -87,6 +87,20 @@ FlashMessage::RenderFlashMessages();
                 <img src="/public/loading2.svg" alt="" width="200px">
             </div>
             <?php
+            if (empty($data)){
+                ?>
+                <div class="card detail-card">
+                    <div class="card-image">
+                        <img src="/public/images/icons/manager/manageMedicalOfficer/doctor.png" alt="">
+                    </div>
+                    <div class="card-body">
+                        <div class="card-title">
+                            No Medical Officers
+                        </div>
+                    </div>
+                </div>
+                    <?php
+            }
             foreach ($data as $value) {
                 $id=$value->getID();
                 $image=$value->getProfileImage();

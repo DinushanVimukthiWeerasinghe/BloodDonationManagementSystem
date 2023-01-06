@@ -54,7 +54,7 @@ class managerController extends Controller
     public function dashboard(): string
     {
         /* @var Manager $manager*/
-        $manager = Manager::findOne(['ID' => Application::$app->getUser()->getID()]);
+        $manager = Manager::findOne(['Manager_ID' => Application::$app->getUser()->getID()]);
         $params=[
             'firstName'=>$manager->getFirstName(),
             'lastName'=>$manager->getLastName()

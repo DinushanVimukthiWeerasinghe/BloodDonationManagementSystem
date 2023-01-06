@@ -1,5 +1,6 @@
 <?php
 namespace Core;
+use App\model\Authentication\LoggingHistory;
 use App\model\Authentication\Login;
 use App\model\Email\BaseEmail;
 use App\model\users\Manager;
@@ -84,6 +85,7 @@ class Application
     {
         self::$app=$this;
         $this->view = new View();
+        $this->db = new Database($config['db']);
         $this->forbiddenRoute = new forbiddenRoute();
 
         self::$ROOT_DIR = $path;
@@ -91,7 +93,6 @@ class Application
         $this->response = new Response();
         $this->session = new Session();
         $this->router = new Router($this->request, $this->response);
-        $this->db = new Database($config['db']);
         $this->email = new BaseEmail($config['email']);
 //        $this->db->applyMigrations();
 
@@ -99,7 +100,7 @@ class Application
         {
             $UserClass=$_SESSION['user']->getSessionData()['UserClass'];
             $UserID=$_SESSION['user']->getSessionData()['UID'];
-            $this->user = $UserClass::findOne(['ID'=>$UserID]);
+            $this->user = $UserClass::findOne([$UserClass::PrimaryKey()=>$UserID]);
         }
         else
         {
@@ -113,18 +114,29 @@ class Application
         $ID=$user->getID();
         if ($Role === 'Manager')
         {
-            $this->user = Manager::findOne(['ID' => $ID]);
+            $this->user = Manager::findOne(['Manager_ID' => $ID]);
         }else if ($Role === 'MedicalOfficer')
         {
-            $this->user = MedicalOfficer::findOne(['ID' => $ID]);
+            $this->user = MedicalOfficer::findOne(['Officer_ID' => $ID]);
         }
 
         $primaryKey=$user->primaryKey();
 
         $primaryValue=$user->getID();
+//        Create Login Sessions
+
         //TODO Update the minutes to 30
         $this->session->set('user',['UID'=>$primaryValue,'UserClass'=>get_class($this->user)],60);
         $this->session->setFlash('success','Welcome Back '.$user->getEmail());
+        $login = new LoggingHistory();
+        $login->setSessionID($this->session->get('user')->getSessionID());
+        $login->setUserID($primaryValue);
+        $login->setSessionEnd(date('Y-m-d H:i:s'));
+        $login->setSessionStart(date('Y-m-d H:i:s'));
+        if (!$login->save(['Session_End']))
+        {
+            return false;
+        }
         return true;
     }
 
@@ -140,6 +152,8 @@ class Application
 
     public function logout(): void
     {
+        $sessionID=$this->session->get('user')->getSessionID();
+        LoggingHistory::updateOne(['Session_ID'=>$sessionID],['Session_End'=>date('Y-m-d H:i:s'),'Session_End_Type'=>LoggingHistory::Logout]);
         $this->user=null;
         $this->session->remove('user');
     }

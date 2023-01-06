@@ -6,7 +6,6 @@ use App\model\database\dbModel;
 
 abstract class Person extends dbModel
 {
-    protected string $ID='';
     protected string $First_Name='';
     protected string $Last_Name='';
     protected string $Address1='';
@@ -65,18 +64,7 @@ abstract class Person extends dbModel
         return $this->Address1.' '.$this->Address2.' '.$this->City;
     }
 
-    public function setID(string $ID): void
-    {
-        $this->ID = $ID;
-    }
 
-    /**
-     * @return string
-     */
-    public function getID(): string
-    {
-        return $this->ID;
-    }
 
     /**
      * @return string

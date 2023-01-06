@@ -1,5 +1,7 @@
 <?php
 namespace Core;
+use App\model\Authentication\LoggingHistory;
+
 class Session
 {
     protected const FLASH_KEY='flash_messages';
@@ -17,6 +19,8 @@ class Session
         {
             if($value->IsSessionExpired())
             {
+                $sessionID=$this->sessionObject[$key]->getSessionID();
+                LoggingHistory::updateOne(['Session_ID'=>$sessionID],['Session_End'=>date('Y-m-d H:i:s'),'Session_End_Type'=>LoggingHistory::Timeout]);
                 unset($this->sessionObject[$key]);
                 unset($_SESSION[self::SESSION_OBJECT][$key]);
                 unset($_SESSION[$key]);

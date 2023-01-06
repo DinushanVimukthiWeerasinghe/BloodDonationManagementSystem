@@ -173,13 +173,20 @@ abstract class dbModel extends Model
         }
     }
 
-    public function save()
+    public function save(array $Exclude=[])
     {
-
         $tableName = static::tableName();
         $attributes=$this->attributes();
         $PK=$this->getPrimaryKey(static::tableName())[0];
         $params=array_map(fn($attr)=>":$attr",$attributes);
+
+        foreach ($Exclude as $key => $value) {
+            $index=array_search(":$value",$params);
+            print_r(":$value");
+            print_r($index);
+            unset($attributes[$index]);
+            unset($params[$index]);
+        }
         $statement=self::prepare("INSERT INTO $tableName (".implode(',',$attributes).") VALUES (".implode(',',$params).")");
 //        $attributes['username']="username";
         foreach ($attributes as $attribute)
@@ -231,7 +238,7 @@ abstract class dbModel extends Model
         return $statement->fetchObject(static::class);
 
     }
-    protected static function updateOne(array $where, array $value)
+    public static function updateOne(array $where, array $value)
     {
         $tableName= static::tableName();
         $attributes=array_keys($where);

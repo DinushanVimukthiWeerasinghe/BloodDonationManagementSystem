@@ -20,7 +20,7 @@ class SessionObject
         $this->sessionName = $sessionName;
         $this->sessionTimeOut = $sessionTimeOut;
         $this->sessionStatus = session_status();
-        $this->sessionID = session_id();
+        $this->sessionID = uniqid('SSI_');
         $this->createdTime = time();
         $this->lastAccessedTime = time();
         $this->sessionData = $data;
