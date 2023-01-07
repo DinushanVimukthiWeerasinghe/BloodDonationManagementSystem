@@ -2,7 +2,7 @@
 
 namespace App\model\BloodBankBranch;
 
-class BloodBankBranch extends \App\model\database\dbModel
+class BloodBank extends \App\model\database\dbModel
 {
 
     protected string $Branch_ID='';

@@ -2,7 +2,7 @@
 
 namespace App\model\users;
 
-use App\model\BloodBankBranch\BloodBankBranch;
+use App\model\BloodBankBranch\BloodBank;
 use App\model\database\dbModel;
 
 class Manager extends Person
@@ -37,10 +37,10 @@ class Manager extends Person
         $this->Branch_ID = $Branch_ID;
     }
 
-    public function GetBranch():BloodBankBranch
+    public function GetBranch():BloodBank
     {
         $branchID=$this->getBranchID();
-        return BloodBankBranch::findOne(['Branch_ID'=>$branchID]);
+        return BloodBank::findOne(['Branch_ID'=>$branchID]);
     }
 
 

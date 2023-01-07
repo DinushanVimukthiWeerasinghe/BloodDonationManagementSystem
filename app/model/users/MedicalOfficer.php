@@ -2,7 +2,7 @@
 
 namespace App\model\users;
 
-use App\model\BloodBankBranch\BloodBankBranch;
+use App\model\BloodBankBranch\BloodBank;
 use App\model\database\dbModel;
 use PhpParser\Node\Expr\Array_;
 
@@ -16,7 +16,7 @@ class MedicalOfficer extends Person
 
     public function getBranchLocation()
     {
-        return BloodBankBranch::findOne(['Branch_ID'=>$this->Branch_ID])->getLocation().' Branch';
+        return BloodBank::findOne(['Branch_ID'=>$this->Branch_ID])->getLocation().' Branch';
     }
 
     public function getRole(): string

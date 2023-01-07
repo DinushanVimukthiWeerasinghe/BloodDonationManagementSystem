@@ -154,8 +154,8 @@ CREATE TABLE IF NOT EXISTS BloodGroups
 
 
 # Create Table for Accepted Requests
-# DROP TABLE IF EXISTS Accepted_Requests;
-CREATE TABLE IF NOT EXISTS Accepted_Requests
+# DROP TABLE IF EXISTS Attendance_Accepted_Requests;
+CREATE TABLE IF NOT EXISTS Attendance_Accepted_Requests
 (
     Request_ID  VARCHAR(20) NOT NULL PRIMARY KEY,
     Donor_ID    VARCHAR(20) NOT NULL,
