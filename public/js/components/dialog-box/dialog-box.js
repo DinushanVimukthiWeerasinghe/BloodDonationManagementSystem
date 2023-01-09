@@ -72,20 +72,20 @@ const CloseDialogBox= (id='') => {
     }
 }
 
-OpenDialogBox({
-    id: "dialog-box",
-    title: "Dialog Box",
-    content: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Praesentium, reprehenderit. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Praesentium, reprehenderit.",
-    successBtn: "Close",
-    cancelBtn: "Cancel",
-    successBtnAction: function() {
-        console.log('OK button clicked right now')
-        CloseDialogBox();
-    },
-    cancelBtnAction: function() {
-        console.log('Cancel button clicked right now');
-    }
-})
+// OpenDialogBox({
+//     id: "dialog-box",
+//     title: "Dialog Box",
+//     content: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Praesentium, reprehenderit. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Praesentium, reprehenderit.",
+//     successBtn: "Close",
+//     cancelBtn: "Cancel",
+//     successBtnAction: function() {
+//         console.log('OK button clicked right now')
+//         CloseDialogBox();
+//     },
+//     cancelBtnAction: function() {
+//         console.log('Cancel button clicked right now');
+//     }
+// })
 
 // export default RenderDialogBox;
 

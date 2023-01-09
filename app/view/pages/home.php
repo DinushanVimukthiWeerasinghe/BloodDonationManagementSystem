@@ -12,7 +12,6 @@ $navbar= new Navbar([
     'Contact'=>'#contact-us-panel',
     'Register'=>'/user/register'
 ],'#','/public/images/icons/user.png','');
-echo AuthNavbar::getNavbarCSS();
 echo $navbar;
 echo AuthNavbar::getNavbarJS();
 ?>

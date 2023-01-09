@@ -69,17 +69,18 @@ FlashMessage::RenderFlashMessages();
                     <img src="/public/images/icons/search.png" alt="">
                 </div>
             </div>
-            <div class="filter-card">
-                <div class="card-navigation">
-                    <a class="disabled" href="?page=1"><img class="nav-btn" src="/public/images/icons/previous.png"
-                                                            alt=""></a>
-                    <div class="page-numbers">
-                        <a href='?page=1' class='disabled'>
-                            <div class='page-number active'>1</div>
-                        </a>
-                    </div>
-                    <a class="disabled" href="?page=1"><img class="nav-btn" src="/public/images/icons/next.png" alt=""></a>
+
+        </div>
+        <div class="filter-card">
+            <div class="card-navigation">
+                <a class="disabled" href="?page=1"><img class="nav-btn" src="/public/images/icons/previous.png"
+                                                        alt=""></a>
+                <div class="page-numbers">
+                    <a href='?page=1' class='disabled'>
+                        <div class='page-number active'>1</div>
+                    </a>
                 </div>
+                <a class="disabled" href="?page=1"><img class="nav-btn" src="/public/images/icons/next.png" alt=""></a>
             </div>
         </div>
         <div id="card-pane" class="card-pane">

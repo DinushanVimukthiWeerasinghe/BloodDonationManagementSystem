@@ -115,6 +115,16 @@ $app->router->post('/manager/upload', [managerController::class, 'upload']);
 $app->router->get('/manager/mngMedicalOfficer/view', [managerController::class, 'ViewMedicalOfficer']);
 $app->router->post('/manager/mngMedicalOfficer/view', [managerController::class, 'ViewMedicalOfficer']);
 
+//Manage Donors
+
+//Find Donor
+$app->router->get('/manager/mngDonors/find', [managerController::class, 'FindDonor']);
+//$app->router->post('/manager/mngDonors/find', [managerController::class, 'FindDonor']);
+
+//Manage Requests
+$app->router->get('/manager/mngRequests/emergency', [managerController::class, 'ManageEmergencyRequests']);
+//$app->router->post('/manager/mngRequests/emergency', [managerController::class, 'FindRequests']);
+
 
 
 //print_r($_SESSION);

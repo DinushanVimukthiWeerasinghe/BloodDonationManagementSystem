@@ -8,15 +8,27 @@ use PhpParser\Node\Expr\Array_;
 
 class MedicalOfficer extends Person
 {
-    protected string $Branch_ID='Bra_17';
+    protected string $BloodBank_ID='';
     protected string $Joined_Date='';
     protected string $Position='';
     protected string $Registration_Number='';
     protected string $Registration_Date='';
 
+    protected string $Officer_ID = '';
+
+    public function getID()
+    {
+        return $this->Officer_ID;
+    }
+
+    public function setID(string $Id)
+    {
+        $this->Officer_ID=$Id;
+    }
+
     public function getBranchLocation()
     {
-        return BloodBank::findOne(['Branch_ID'=>$this->Branch_ID])->getLocation().' Branch';
+        return BloodBank::findOne(['BloodBank_ID'=>$this->BloodBank_ID])->getLocation().' Branch';
     }
 
     public function getRole(): string
@@ -68,7 +80,7 @@ class MedicalOfficer extends Person
     public function rules(): array
     {
         return [
-            'ID'=>[self::RULE_REQUIRED,self::RULE_UNIQUE],
+            'Officer_ID'=>[self::RULE_REQUIRED,self::RULE_UNIQUE],
             'First_Name'=>[self::RULE_REQUIRED],
             'Last_Name'=>[self::RULE_REQUIRED],
             'NIC'=>[self::RULE_REQUIRED,self::RULE_UNIQUE,self::RULE_MIN=>10,self::RULE_MAX=>12],

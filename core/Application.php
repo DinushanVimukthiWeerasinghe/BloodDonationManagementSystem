@@ -3,6 +3,7 @@ namespace Core;
 use App\model\Authentication\LoggingHistory;
 use App\model\Authentication\Login;
 use App\model\Email\BaseEmail;
+use App\model\users\Admin;
 use App\model\users\Manager;
 use App\model\users\MedicalOfficer;
 use App\model\users\Person;
@@ -17,7 +18,7 @@ class Application
     public Request $request;
     public Response $response;
 
-    private ?Person $user;
+    private Person | Admin|null $user;
     public static Application $app;
     public Controller $controller;
     public Database $db;
@@ -61,7 +62,7 @@ class Application
     /**
      * @return User|null
      */
-    public function getUser(): Person | null
+    public function getUser(): Person | null | Admin
     {
 //        print_r($this->user);
         return $this->user;
@@ -118,6 +119,9 @@ class Application
         }else if ($Role === 'MedicalOfficer')
         {
             $this->user = MedicalOfficer::findOne(['Officer_ID' => $ID]);
+        }else if ($Role === 'Admin')
+        {
+            $this->user = Admin::findOne(['Admin_ID' => $ID]);
         }
 
         $primaryKey=$user->primaryKey();

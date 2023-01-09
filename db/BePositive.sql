@@ -1,4 +1,4 @@
-# DROP database IF EXISTS bepositive;
+DROP database IF EXISTS bepositive;
 CREATE DATABASE IF NOT EXISTS `bepositive` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
 use bepositive;
 # DROP TABLE IF EXISTS Users;
@@ -19,8 +19,7 @@ CREATE TABLE IF NOT EXISTS Admins(
     Admin_ID      VARCHAR(20) PRIMARY KEY,
     UserName      VARCHAR(100) NOT NULL,
     Email         VARCHAR(100) NOT NULL,
-    Phone         VARCHAR(100) NOT NULL,
-    Profile_Image VARCHAR(100) NOT NULL DEFAULT '/upload/profile/adminDefault.png',
+    Profile_Image VARCHAR(100) NOT NULL DEFAULT '/public/upload/profile/adminDefault.png',
     FOREIGN KEY (Admin_ID) REFERENCES Users (UID)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -52,13 +51,13 @@ CREATE TABLE IF NOT EXISTS MedicalOfficers (
      Last_Name     VARCHAR(100) NOT NULL,
      Address1      VARCHAR(100) NOT NULL,
      Address2      VARCHAR(100) NOT NULL,
-     Mobile_No     VARCHAR(12)  NOT NULL,
+     Contact_No     VARCHAR(12)  NOT NULL,
      City          VARCHAR(100) NOT NULL,
      Email         VARCHAR(100) UNIQUE,
      Status        INT          NOT NULL DEFAULT 0,
      Joined_At     TIMESTAMP             DEFAULT CURRENT_TIMESTAMP,
      BloodBank_ID  VARCHAR(20)  NOT NULL,
-     Profile_Image VARCHAR(100) NOT NULL DEFAULT '/upload/profile/medicalOfficerDefault.png',
+     Profile_Image VARCHAR(100) NOT NULL DEFAULT '/public/upload/profile/medicalOfficerDefault.png',
      FOREIGN KEY (BloodBank_ID) REFERENCES BloodBanks (BloodBank_ID),
      FOREIGN KEY (Officer_ID) REFERENCES Users (UID)
 ) ENGINE = InnoDB
@@ -101,7 +100,7 @@ CREATE TABLE IF NOT EXISTS Donors
     BloodPacket_ID        VARCHAR(20)  NULL,
     Created_At            TIMESTAMP             DEFAULT CURRENT_TIMESTAMP,
     Updated_At            TIMESTAMP             DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    Profile_Image         VARCHAR(100) NOT NULL DEFAULT '/upload/profile/donorDefault.png',
+    Profile_Image         VARCHAR(100) NOT NULL DEFAULT '/public/upload/profile/donorDefault.png',
     FOREIGN KEY (Donor_ID) REFERENCES Users (UID),
     FOREIGN KEY (Nearest_Bank) REFERENCES BloodBanks (BloodBank_ID),
     FOREIGN KEY (Verified_By) REFERENCES MedicalOfficers (Officer_ID),
@@ -118,9 +117,9 @@ CREATE TABLE IF NOT EXISTS Hospitals
     Address2      VARCHAR(100) NOT NULL,
     Email         VARCHAR(100) UNIQUE,
     City          VARCHAR(100) NOT NULL,
-    Telephone_No  VARCHAR(100) UNIQUE,
+    Contact_No  VARCHAR(100) UNIQUE,
     Type          INT          NOT NULL DEFAULT 1,
-    Profile_Image VARCHAR(100) NOT NULL DEFAULT '/upload/profile/hospitalDefault.png'
+    Profile_Image VARCHAR(100) NOT NULL DEFAULT '/public/upload/profile/hospitalDefault.png'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 # Create Manager Table
@@ -132,12 +131,12 @@ CREATE TABLE IF NOT EXISTS Managers (
         Address1      VARCHAR(100) NOT NULL,
         Address2      VARCHAR(100) NOT NULL,
         City          VARCHAR(100) NOT NULL,
-        Mobile_No     VARCHAR(12)  NOT NULL,
+        Contact_No     VARCHAR(12)  NOT NULL,
         Email         VARCHAR(100) UNIQUE,
         Status        INT          NOT NULL DEFAULT 0,
         Joined_At     TIMESTAMP             DEFAULT CURRENT_TIMESTAMP,
         BloodBank_ID  VARCHAR(20)  NOT NULL,
-        Profile_Image VARCHAR(100) NOT NULL DEFAULT '/upload/profile/managerDefault.png',
+        Profile_Image VARCHAR(100) NOT NULL DEFAULT '/public/upload/profile/managerDefault.png',
         FOREIGN KEY (BloodBank_ID) REFERENCES BloodBanks (BloodBank_ID),
         FOREIGN KEY (Manager_ID) REFERENCES Users (UID)
 ) ENGINE = InnoDB
@@ -187,7 +186,7 @@ CREATE TABLE IF NOT EXISTS Organizations
     Contact_No         VARCHAR(100) NOT NULL,
     City               VARCHAR(100) NOT NULL,
     Status             VARCHAR(50)  NOT NULL,
-    Profile_Image      VARCHAR(100) NOT NULL DEFAULT '/upload/organizationDefault.png',
+    Profile_Image      VARCHAR(100) NOT NULL DEFAULT '/public/upload/organizationDefault.png',
     Created_At         TIMESTAMP             DEFAULT CURRENT_TIMESTAMP,
     Updated_At         TIMESTAMP             DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (Organization_ID) REFERENCES Users (UID)
@@ -200,7 +199,7 @@ CREATE TABLE IF NOT EXISTS Organization_Members
 (
     Organization_ID VARCHAR(20)  NOT NULL,
     Name            VARCHAR(100) NOT NULL,
-    Contact_No      VARCHAR(100) NOT NULL,
+    Contact_No      VARCHAR(100) UNIQUE ,
     NIC             VARCHAR(100) UNIQUE,
     Position        VARCHAR(100) NOT NULL,
     PRIMARY KEY (Organization_ID, NIC),
@@ -219,9 +218,10 @@ CREATE TABLE IF NOT EXISTS Sponsors
     Address2      VARCHAR(100) NOT NULL,
     City          VARCHAR(100) NOT NULL,
     Status        VARCHAR(50)  NOT NULL,
+    Contact_No    VARCHAR(100) UNIQUE ,
     Created_At    TIMESTAMP             DEFAULT CURRENT_TIMESTAMP,
     Updated_At    TIMESTAMP             DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    Profile_Image VARCHAR(100) NOT NULL DEFAULT '/upload/sponsorDefault.png',
+    Profile_Image VARCHAR(100) NOT NULL DEFAULT '/public/upload/sponsorDefault.png',
     FOREIGN KEY (Sponsor_ID) REFERENCES Users (UID)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -408,6 +408,9 @@ CREATE TABLE IF NOT EXISTS  Manager_Notifications
     Valid_Until           TIMESTAMP DEFAULT NULL,
     FOREIGN KEY (Target_ID) REFERENCES Managers(Manager_ID)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+# Create Title Table
+
+
 
 # Create Donor Notification Table
 # DROP TABLE IF EXISTS Donor_Notifications;
@@ -501,10 +504,9 @@ CREATE TABLE IF NOT EXISTS Logging_History
 INSERT INTO Users (UID, Email, Password, Status, Role)
 VALUES ('Mng_01', 'manager@test.com', '$2y$10$yjcyB1lr8V/nVciydOYedu0Rnedd9JHZ3d6PqPMqM4yNJoPmltlZS', 0, 'Manager');
 INSERT INTO Users (UID, Email, Password, Status, Role)
-VALUES ('Adm_01', 'admin@admin.com', '$2y$10$yjcyB1lr8V/nVciydOYedu0Rnedd9JHZ3d6PqPMqM4yNJoPmltlZS', 0, 'Admin');
+VALUES ('Adm_01', 'admin@test.com', '$2y$10$yjcyB1lr8V/nVciydOYedu0Rnedd9JHZ3d6PqPMqM4yNJoPmltlZS', 0, 'Admin');
 INSERT INTO Users (UID, Email, Password, Status, Role)
-VALUES ('Mof_01', 'mofficer@test.com', '$2y$10$yjcyB1lr8V/nVciydOYedu0Rnedd9JHZ3d6PqPMqM4yNJoPmltlZS', 0,
-        'MedicalOfficer');
+VALUES ('Mof_01', 'mofficer@test.com', '$2y$10$yjcyB1lr8V/nVciydOYedu0Rnedd9JHZ3d6PqPMqM4yNJoPmltlZS', 0,'MedicalOfficer');
 INSERT INTO Users (UID, Email, Password, Status, Role)
 VALUES ('Dnr_01', 'donor@test.com', '$2y$10$yjcyB1lr8V/nVciydOYedu0Rnedd9JHZ3d6PqPMqM4yNJoPmltlZS', 0, 'Donor');
 INSERT INTO Users (UID, Email, Password, Status, Role)
@@ -519,13 +521,13 @@ INSERT INTO BloodBanks (BloodBank_ID, BankName, Address1, Address2, City, Teleph
                         No_Of_Beds, No_Of_Storages, Type)
 VALUES ('BB_01', 'Main Blood Bank', 'No 01, Main Street', 'Colombo 01', 'Colombo', '0111234567', 0, 0, 0, 0, 1);
 # Make Default Admin for Testing
-INSERT INTO Admins (Admin_ID, UserName, Email, Phone)
-VALUES ('Adm_01', 'Admin', 'admin@admin.com', '0771234567');
+INSERT INTO Admins (Admin_ID, UserName, Email)
+VALUES ('Adm_01', 'Admin', 'admin@test.com');
 # Make Default Manager for Testing
-INSERT INTO Managers (Manager_ID, First_Name, Last_Name, Address1, Address2, City, Mobile_No, Email, BloodBank_ID)
+INSERT INTO Managers (Manager_ID, First_Name, Last_Name, Address1, Address2, City, Contact_No, Email, BloodBank_ID)
 VALUES ('Mng_01', 'Manager', 'Manager', 'Address1', 'Address2', 'Colombo', '0771234567', 'manager@test.com', 'BB_01');
 # Make Default Medical Officer for Testing
-INSERT INTO MedicalOfficers (Officer_ID, First_Name, Last_Name, Address1, Address2, City, Mobile_No, Email,
+INSERT INTO MedicalOfficers (Officer_ID, First_Name, Last_Name, Address1, Address2, City, Contact_No, Email,
                              BloodBank_ID)
 VALUES ('Mof_01', 'Medical', 'Officer', 'Address1', 'Address2', 'Colombo', '0771234567', 'mofficer@test.com', 'BB_01');
 # Make Default Donor for Testing
@@ -542,7 +544,7 @@ VALUES ('Org_01', 'Organization', 'organization@test.com', '0777123123', 'Addres
 INSERT INTO Sponsors (SPONSOR_ID, NAME, Email, ADDRESS1, ADDRESS2, CITY, STATUS)
 VALUES ('Spn_01', 'Sponsor', 'sponsor@test.com', 'Address1', 'Address2', 'Colombo', 0);
 # Make Default Hospital for Testing
-INSERT INTO Hospitals (Hospital_ID, Hospital_Name, Email, Address1, Address2, City, Telephone_No)
+INSERT INTO Hospitals (Hospital_ID, Hospital_Name, Email, Address1, Address2, City, Contact_No)
 VALUES ('Hos_01', 'Hospital', 'hospital@test.com', 'Address1', 'Address2', 'Colombo', '0111234567');
 
 
@@ -550,9 +552,9 @@ VALUES ('Hos_01', 'Hospital', 'hospital@test.com', 'Address1', 'Address2', 'Colo
 INSERT INTO Organization_Members(Organization_ID, Name, Contact_No, NIC, Position)
 VALUES ('Org_01', 'Member', '0771234567', '123456789V', 'Secretary');
 INSERT INTO Organization_Members(Organization_ID, Name, Contact_No, NIC, Position)
-VALUES ('Org_01', 'Member2', '0771234567', '234567891V', 'President');
+VALUES ('Org_01', 'Member2', '0772345671', '234567891V', 'President');
 INSERT INTO Organization_Members(Organization_ID, Name, Contact_No, NIC, Position)
-VALUES ('Org_01', 'Member3', '0771234567', '345678912V', 'Treasurer');
+VALUES ('Org_01', 'Member3', '0773456712', '345678912V', 'Treasurer');
 
 # Make Default Blood Group for Testing
 INSERT INTO BloodGroups (BloodGroup_ID, BloodGroup_Name)

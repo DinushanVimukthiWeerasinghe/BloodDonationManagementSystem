@@ -92,12 +92,6 @@ class AuthNavbar
             HTML;
     }
 
-    public static function getNavbarCSS(): string
-    {
-        return <<<HTML
-            <link rel="stylesheet" href="/public/css/components/navbar/navbar.css">
-        HTML;
-    }
 
     public static function getNavbarJS(): string{
         return <<<HTML

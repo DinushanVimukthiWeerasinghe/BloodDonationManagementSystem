@@ -287,8 +287,8 @@ nav a {
         width: 20px;
     }
 
-    .title{
-        font-size: 1.0em;
+    nav .title{
+        font-size: 1.0rem;
     }
 
     .logo span{

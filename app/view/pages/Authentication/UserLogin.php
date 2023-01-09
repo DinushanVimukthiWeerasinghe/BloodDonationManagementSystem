@@ -7,7 +7,6 @@ use App\view\components\ResponsiveComponent\NavbarComponent\Navbar;
 
 $navbar= new Navbar([
 ],'#','/public/images/icons/user.png','');
-echo AuthNavbar::getNavbarCSS();
 echo $navbar;
 echo AuthNavbar::getNavbarJS();
 ?>

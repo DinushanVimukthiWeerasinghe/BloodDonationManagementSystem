@@ -23,7 +23,7 @@ class NavigationCard
     public function __toString(): string
     {
         return <<<HTML
-            <div class="card" onclick="Redirect('$this->NavigationURL')">
+            <div class="card nav-card bg-white text-dark" onclick="Redirect('$this->NavigationURL')">
                     <div class="card-header">
                         <div class="card-header-img">
                             <img src="$this->ImageURL" alt="Donor" width="100px">

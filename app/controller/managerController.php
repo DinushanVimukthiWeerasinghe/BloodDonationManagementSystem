@@ -225,4 +225,17 @@ class managerController extends Controller
 
         return $this->render('Manager/SearchMedicalOfficer',$params);
     }
+
+    public function FindDonor(Request $request,Response $response)
+    {
+        $NIC=$request->getBody()['nic'];
+        //Get the Donor Information
+//        $this->layout="none";
+        return $this->render('Manager/ManageDonor/findDonor');
+    }
+
+    public function ManageEmergencyRequests()
+    {
+        print_r('s');
+    }
 }

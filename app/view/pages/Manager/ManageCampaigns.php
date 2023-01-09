@@ -6,5 +6,55 @@ $navbar= new AuthNavbar('Manage Campaigns','/manager','/public/images/icons/user
 echo $navbar;
 $background=new BackGroundImage();
 echo $background;
-echo \App\view\components\ResponsiveComponent\ButtonComponent\DashBoardButton::getDashBoardButtonCSS();
-echo \App\view\components\ResponsiveComponent\ButtonComponent\DashBoardButton::BackToDashBoard('/manager/dashboard');
+?>
+<div class="class-pane bg-black-0-3 p-1 border-radius-6 flex-wrap min-w-40 max-w-55 w-85 d-flex justify-content-center ">
+    <div class="card nav-card">
+        <div class="card-header">
+            <img src="/public/images/icons/QuestionedUser.png" alt="">
+            <div class="header-title">Approve Campaign</div>
+        </div>
+    </div>
+    <div class="card nav-card" onclick="fun()">
+        <div class="card-header">
+            <img src="/public/images/icons/SearchUser.png" alt="">
+            <div class="header-title">View Ongoing Campaign</div>
+        </div>
+    </div>
+    <div class="card nav-card">
+        <div class="card-header nav">
+            <img src="/public/images/icons/UnavailableUser.png" alt="">
+            <div class="header-title">View Previous Campaigns</div>
+        </div>
+    </div>
+    <div class="card nav-card">
+        <div class="card-header">
+            <img src="/public/images/icons/ReportUser.png" alt="">
+            <div class="header-title">Campaign Sponsorship</div>
+        </div>
+    </div>
+    <div class="card nav-card">
+        <div class="card-header">
+            <img src="/public/images/icons/InformUser.png" alt="">
+            <div class="header-title">Inform Donor</div>
+        </div>
+    </div>
+    <div class="card nav-card">
+        <div class="card-header">
+            <img src="/public/images/icons/VerifiedUser.png" alt="">
+            <div class="header-title">Verify Donor</div>
+        </div>
+    </div>
+</div>
+<style>
+    .class-pane{
+        margin-top: 10%;
+    }
+    @media only screen and (max-width: 500px) {
+        .class-pane{
+            max-width: 100%;
+            width: 98%;
+            padding: 0.2rem;
+        }
+
+    }
+</style>

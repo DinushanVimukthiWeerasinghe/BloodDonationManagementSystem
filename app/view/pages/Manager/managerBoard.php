@@ -14,7 +14,7 @@ echo $navbar;
 use App\view\components\WebComponent\Card\Card;
 
 echo Card::ImportJS();
-echo Card::ImportCSS();
+//echo Card::ImportCSS();
 
 /* @var Manager $user */
 

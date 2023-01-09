@@ -87,7 +87,7 @@
     </div>
     <div class="top-bar-links">
         <div class="top-bar-link">
-            <button class="btn btn-primary mr-1">Logout</button>
+            <button onclick="window.location.href='/logout'" class="btn btn-primary mr-1">Logout</button>
         </div>
     </div>
 </div>

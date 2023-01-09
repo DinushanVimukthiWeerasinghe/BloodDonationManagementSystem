@@ -74,7 +74,7 @@ class Router
         if(!$callback){
             $this->response->setStatusCode(404);
             echo "Error 404";
-            throw new Exception();
+//            throw new Exception();
         }
 //        if (is_string($callback)) {
 //            Application::$app->view->renderView($callback);

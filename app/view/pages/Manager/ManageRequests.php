@@ -7,9 +7,26 @@ $navbar= new AuthNavbar('Manage Requests','/manager','/public/images/icons/user.
 echo $navbar;
 $background=new BackGroundImage();
 echo $background;
-echo DashBoardButton::getDashBoardButtonCSS();
-echo DashBoardButton::BackToDashBoard('/manager/dashboard');
 ?>
 
-
+<div class="class-pane d-flex ">
+    <div class="card nav-card">
+        <div class="card-header">
+            <img src="/public/images/icons/search.png" style="filter: invert(100%)" alt="">
+            <div class="header-title">Emergency Request</div>
+        </div>
+    </div>
+    <div class="card nav-card">
+        <div class="card-header nav">
+            <img src="/public/images/icons/camera.png" style="filter: invert(100%)" alt="">
+            <div class="header-title">Blood Request</div>
+        </div>
+    </div>
+    <div class="card nav-card">
+        <div class="card-header">
+            <img src="/public/images/icons/search.png" style="filter: invert(100%)" alt="">
+            <div class="header-title">Disable Donor</div>
+        </div>
+    </div>
+</div>
 

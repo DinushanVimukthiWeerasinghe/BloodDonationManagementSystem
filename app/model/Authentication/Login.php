@@ -121,9 +121,9 @@ class Login extends dbModel
 
     public function login(): bool
     {
-        //    Hashing Algorithm PASSWORD_BCRYPT
-        $user= Login::findOne(['email' => $this->Email]);
 
+        //    Hashing Algorithm PASSWORD_BCRYPT
+        $user= Login::findOne(['Email' => $this->Email]);
         if(!$user)
         {
             $this->addError('email','Invalid User Credential!');
