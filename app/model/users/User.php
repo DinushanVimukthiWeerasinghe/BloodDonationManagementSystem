@@ -7,6 +7,13 @@ use Core\Application;
 
 class User extends dbModel
 {
+    public const ADMIN='Admin';
+    public const DONOR='Donor';
+    public const ORGANIZATION='Organization';
+    public const SPONSOR='Sponsor';
+    public const MEDICAL_OFFICER='MedicalOfficer';
+    public const MANAGER='Manager';
+    public const HOSPITAL='Hospital';
     protected string $UID='';
 
     /**

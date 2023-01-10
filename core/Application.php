@@ -4,9 +4,13 @@ use App\model\Authentication\LoggingHistory;
 use App\model\Authentication\Login;
 use App\model\Email\BaseEmail;
 use App\model\users\Admin;
+use App\model\users\Donor;
+use App\model\users\Hospital;
 use App\model\users\Manager;
 use App\model\users\MedicalOfficer;
+use App\model\users\Organization;
 use App\model\users\Person;
+use App\model\users\Sponsor;
 use App\model\users\User;
 use Exception;
 
@@ -100,6 +104,7 @@ class Application
         if(isset($_SESSION['user']))
         {
             $UserClass=$_SESSION['user']->getSessionData()['UserClass'];
+
             $UserID=$_SESSION['user']->getSessionData()['UID'];
             $this->user = $UserClass::findOne([$UserClass::PrimaryKey()=>$UserID]);
         }
@@ -113,15 +118,29 @@ class Application
     {
         $Role=$user->getRole();
         $ID=$user->getID();
-        if ($Role === 'Manager')
+        if ($Role === User::MANAGER)
         {
             $this->user = Manager::findOne(['Manager_ID' => $ID]);
-        }else if ($Role === 'MedicalOfficer')
+        }else if ($Role === User::MEDICAL_OFFICER)
         {
             $this->user = MedicalOfficer::findOne(['Officer_ID' => $ID]);
-        }else if ($Role === 'Admin')
+        }else if ($Role === User::ADMIN)
         {
             $this->user = Admin::findOne(['Admin_ID' => $ID]);
+        }else if ($Role === User::DONOR)
+        {
+            $this->user = Donor::findOne(['Donor_ID' => $ID]);
+        }else if ($Role === User::HOSPITAL)
+        {
+            $this->user = Hospital::findOne(['Hospital_ID' => $ID]);
+        }else if ($Role === User::ORGANIZATION) {
+            $this->user = Organization::findOne(['Organization_ID' => $ID]);
+        }else if ($Role === User::SPONSOR){
+            $this->user = Sponsor::findOne(['Sponsor_ID' => $ID]);
+        }
+        else
+        {
+            return false;
         }
 
         $primaryKey=$user->primaryKey();

@@ -112,7 +112,7 @@ class MedicalOfficer extends Person
 
     public static function PrimaryKey(): string
     {
-        return 'ID';
+        return 'Officer_ID';
     }
 
     public function attributes(): array
