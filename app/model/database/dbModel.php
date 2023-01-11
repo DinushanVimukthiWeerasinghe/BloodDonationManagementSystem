@@ -173,14 +173,15 @@ abstract class dbModel extends Model
         }
     }
 
-    public function save(array $Exclude=[])
+    public function save()
     {
+
         $tableName = static::tableName();
         $attributes=$this->attributes();
         $PK=$this->getPrimaryKey(static::tableName())[0];
         $params=array_map(fn($attr)=>":$attr",$attributes);
 
-        foreach ($Exclude as $key => $value) {
+        foreach ($attributes as $key => $value) {
             $index=array_search(":$value",$params);
             print_r(":$value");
             print_r($index);
@@ -308,6 +309,5 @@ abstract class dbModel extends Model
         }
         return $columns;
     }
-
 
 }

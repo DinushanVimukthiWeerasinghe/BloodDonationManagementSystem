@@ -235,7 +235,7 @@ CREATE TABLE IF NOT EXISTS Sponsorship_Packages (
     Created_By VARCHAR(20) NOT NULL,
     Updated_By VARCHAR(20) NULL,
     Created_At TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    Updated_At TIMESTAMP DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+    Updated_At TIMESTAMP NULL,
     FOREIGN KEY (Created_By) REFERENCES Managers(Manager_ID),
     FOREIGN KEY (Updated_By) REFERENCES Managers(Manager_ID)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -266,8 +266,8 @@ CREATE TABLE IF NOT EXISTS Campaign (
     Nearest_BloodBank VARCHAR(20) NOT NULL,
     Verified INT NOT NULL DEFAULT 0,
     Verified_By VARCHAR(20) NULL,
-    Verified_At TIMESTAMP DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
-    Assigned_Team VARCHAR(20) DEFAULT NULL,
+    Verified_At TIMESTAMP NULL,
+    Assigned_Team VARCHAR(20) NULL,
     Remarks VARCHAR(100) NULL,
     Created_At TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     Updated_At TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -405,7 +405,7 @@ CREATE TABLE IF NOT EXISTS  Manager_Notifications
     Notification_Title    VARCHAR(100) NOT NULL,
     Notification_Message  VARCHAR(100) NOT NULL,
     Notification_Date     TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    Valid_Until           TIMESTAMP DEFAULT NULL,
+    Valid_Until           TIMESTAMP NULL,
     FOREIGN KEY (Target_ID) REFERENCES Managers(Manager_ID)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 # Create Title Table
@@ -423,7 +423,7 @@ CREATE TABLE IF NOT EXISTS  Donor_Notifications
     Notification_Title    VARCHAR(100) NOT NULL,
     Notification_Message  VARCHAR(100) NOT NULL,
     Notification_Date     TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    Valid_Until           TIMESTAMP DEFAULT NULL,
+    Valid_Until           TIMESTAMP NULL,
     FOREIGN KEY (Target_ID) REFERENCES Donors(Donor_ID)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -438,7 +438,7 @@ CREATE TABLE IF NOT EXISTS  Medical_Officer_Notifications
     Notification_Title    VARCHAR(100) NOT NULL,
     Notification_Message  VARCHAR(100) NOT NULL,
     Notification_Date     TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    Valid_Until           TIMESTAMP DEFAULT NULL,
+    Valid_Until           TIMESTAMP NULL,
     FOREIGN KEY (Target_ID) REFERENCES MedicalOfficers(Officer_ID)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -453,7 +453,7 @@ CREATE TABLE IF NOT EXISTS  Organization_Notifications
     Notification_Title    VARCHAR(100) NOT NULL,
     Notification_Message  VARCHAR(100) NOT NULL,
     Notification_Date     TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    Valid_Until           TIMESTAMP DEFAULT NULL,
+    Valid_Until           TIMESTAMP NULL,
     FOREIGN KEY (Target_ID) REFERENCES Organizations(Organization_ID)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -468,7 +468,7 @@ CREATE TABLE IF NOT EXISTS  Sponsor_Notifications
     Notification_Title    VARCHAR(100) NOT NULL,
     Notification_Message  VARCHAR(100) NOT NULL,
     Notification_Date     TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    Valid_Until           TIMESTAMP DEFAULT NULL,
+    Valid_Until           TIMESTAMP NULL,
     FOREIGN KEY (Target_ID) REFERENCES Sponsors(Sponsor_ID)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -483,7 +483,7 @@ CREATE TABLE IF NOT EXISTS  Admin_Notifications
     Notification_Title    VARCHAR(100) NOT NULL,
     Notification_Message  VARCHAR(100) NOT NULL,
     Notification_Date     TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    Valid_Until           TIMESTAMP DEFAULT NULL,
+    Valid_Until           TIMESTAMP NULL,
     FOREIGN KEY (Target_ID) REFERENCES Admins(Admin_ID)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 

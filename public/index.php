@@ -4,6 +4,7 @@ use App\controller\adminController;
 use App\controller\authController;
 use App\controller\donorController;
 use App\controller\fileController;
+use App\controller\organizationController;
 use App\controller\managerController;
 use App\controller\siteController;
 use Core\Application;
@@ -68,6 +69,11 @@ $app->router->get('/admin/dashboard/manageTransactions', [adminController::class
 $app->router->post('/upload', [fileController::class, 'upload']);
 
 
+$app->router->get('/organization/register', [organizationController::class, 'register']);
+$app->router->post('/organization/register', [organizationController::class, 'register']);
+$app->router->get('/organization/create', [organizationController::class, 'create']);
+$app->router->get('/organization/history', [organizationController::class, 'history']);
+$app->router->get('/organization/home', [organizationController::class, 'home']);
 
 
 // Manager Register

@@ -245,14 +245,6 @@ class User extends dbModel
         return $this->Role === 'Sponsor';
     }
 
-    /**
-     * @return string
-     */
-    public function getPassword(): string
-    {
-        return $this->Password;
-    }
-
 
     /**
      * @return string
@@ -335,7 +327,7 @@ class User extends dbModel
 
     public static function tableName(): string
     {
-        return 'User';
+        return 'users';
     }
 
     public static function PrimaryKey(): string
@@ -364,5 +356,11 @@ class User extends dbModel
             'Role'=>'Role'
         ];
     }
-
+    public function save()
+    {
+        return parent::save();
+    }
+    public function register(){
+        $this -> save();
+    }
 }
