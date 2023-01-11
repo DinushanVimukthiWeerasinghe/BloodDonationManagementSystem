@@ -10,38 +10,38 @@ echo $background;
 <div class="class-pane bg-black-0-3 p-1 border-radius-6 flex-wrap min-w-40 max-w-55 w-85 d-flex justify-content-center ">
     <div class="card nav-card">
         <div class="card-header">
-            <img src="/public/images/icons/QuestionedUser.png" alt="">
+            <img src="/public/images/icons/manager/manageCampaigns/approveCampaign.png" alt="">
             <div class="header-title">Approve Campaign</div>
         </div>
     </div>
     <div class="card nav-card" onclick="fun()">
         <div class="card-header">
-            <img src="/public/images/icons/SearchUser.png" alt="">
+            <img src="/public/images/icons/manager/manageCampaigns/approveCampaign.png" alt="">
             <div class="header-title">View Ongoing Campaign</div>
         </div>
     </div>
     <div class="card nav-card">
         <div class="card-header nav">
-            <img src="/public/images/icons/UnavailableUser.png" alt="">
-            <div class="header-title">View Previous Campaigns</div>
+            <img src="/public/images/icons/manager/manageCampaigns/groupDoctor.png" alt="">
+            <div class="header-title">Assign Medical Team</div>
         </div>
     </div>
     <div class="card nav-card">
         <div class="card-header">
-            <img src="/public/images/icons/ReportUser.png" alt="">
+            <img src="/public/images/icons/manager/manageCampaigns/sposorCampaign.png" alt="">
             <div class="header-title">Campaign Sponsorship</div>
         </div>
     </div>
     <div class="card nav-card">
         <div class="card-header">
-            <img src="/public/images/icons/InformUser.png" alt="">
+            <img src="/public/images/icons/manager/manageCampaigns/approveCampaign.png" alt="">
             <div class="header-title">Inform Donor</div>
         </div>
     </div>
     <div class="card nav-card">
         <div class="card-header">
-            <img src="/public/images/icons/VerifiedUser.png" alt="">
-            <div class="header-title">Verify Donor</div>
+            <img src="/public/images/icons/manager/manageCampaigns/previousCampaign.png" alt="">
+            <div class="header-title">View Previous Campaigns</div>
         </div>
     </div>
 </div>

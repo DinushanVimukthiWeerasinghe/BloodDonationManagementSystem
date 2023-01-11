@@ -6,6 +6,7 @@ use App\model\database\dbModel;
 
 abstract class Person extends dbModel
 {
+    abstract public function getRole(): string;
     protected string $First_Name='';
     protected string $Last_Name='';
     protected string $Address1='';

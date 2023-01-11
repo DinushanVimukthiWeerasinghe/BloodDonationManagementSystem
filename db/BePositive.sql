@@ -54,6 +54,8 @@ CREATE TABLE IF NOT EXISTS MedicalOfficers (
      Contact_No     VARCHAR(12)  NOT NULL,
      City          VARCHAR(100) NOT NULL,
      Email         VARCHAR(100) UNIQUE,
+     NIC VARCHAR(12) UNIQUE,
+     Position VARCHAR(20) DEFAULT 'Nurse',
      Status        INT          NOT NULL DEFAULT 0,
      Joined_At     TIMESTAMP             DEFAULT CURRENT_TIMESTAMP,
      BloodBank_ID  VARCHAR(20)  NOT NULL,
@@ -212,7 +214,7 @@ CREATE TABLE IF NOT EXISTS Organization_Members
 CREATE TABLE IF NOT EXISTS Sponsors
 (
     Sponsor_ID    VARCHAR(20)  NOT NULL PRIMARY KEY,
-    Name          VARCHAR(100) NOT NULL,
+    Sponsor_Name          VARCHAR(100) NOT NULL,
     Email         VARCHAR(100) UNIQUE,
     Address1      VARCHAR(100) NOT NULL,
     Address2      VARCHAR(100) NOT NULL,
@@ -235,7 +237,7 @@ CREATE TABLE IF NOT EXISTS Sponsorship_Packages (
     Created_By VARCHAR(20) NOT NULL,
     Updated_By VARCHAR(20) NULL,
     Created_At TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    Updated_At TIMESTAMP NULL,
+    Updated_At TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (Created_By) REFERENCES Managers(Manager_ID),
     FOREIGN KEY (Updated_By) REFERENCES Managers(Manager_ID)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -266,7 +268,7 @@ CREATE TABLE IF NOT EXISTS Campaign (
     Nearest_BloodBank VARCHAR(20) NOT NULL,
     Verified INT NOT NULL DEFAULT 0,
     Verified_By VARCHAR(20) NULL,
-    Verified_At TIMESTAMP NULL,
+    Verified_At TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
     Assigned_Team VARCHAR(20) NULL,
     Remarks VARCHAR(100) NULL,
     Created_At TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -471,6 +473,7 @@ CREATE TABLE IF NOT EXISTS  Sponsor_Notifications
     Valid_Until           TIMESTAMP NULL,
     FOREIGN KEY (Target_ID) REFERENCES Sponsors(Sponsor_ID)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 # Create Admin Notification Table
 # DROP TABLE IF EXISTS Admin_Notifications;
@@ -528,20 +531,18 @@ INSERT INTO Managers (Manager_ID, First_Name, Last_Name, Address1, Address2, Cit
 VALUES ('Mng_01', 'Manager', 'Manager', 'Address1', 'Address2', 'Colombo', '0771234567', 'manager@test.com', 'BB_01');
 # Make Default Medical Officer for Testing
 INSERT INTO MedicalOfficers (Officer_ID, First_Name, Last_Name, Address1, Address2, City, Contact_No, Email,
-                             BloodBank_ID)
-VALUES ('Mof_01', 'Medical', 'Officer', 'Address1', 'Address2', 'Colombo', '0771234567', 'mofficer@test.com', 'BB_01');
+                             BloodBank_ID,NIC,Position)
+VALUES ('Mof_01', 'Medical', 'Officer', 'Address1', 'Address2', 'Colombo', '0771234567', 'mofficer@test.com', 'BB_01','123456789104','Doctor');
 # Make Default Donor for Testing
 INSERT INTO Donors (DONOR_ID, FIRST_NAME, LAST_NAME, ADDRESS1, ADDRESS2, CITY, NEAREST_BANK, CONTACT_NO, EMAIL, STATUS,
-                    DONATION_AVAILABILITY, VERIFIED, VERIFIED_AT, VERIFIED_BY, VERIFICATION_REMARKS, CREATED_AT,
-                    UPDATED_AT)
-VALUES ('Dnr_01', 'Donor', 'Donor', 'Address1', 'Address2', 'Colombo', 'BB_01', '0771234567', 'donor@test.com', 0, 0, 0,
-        NULL, NULL, NULL, NULL, NULL);
+                    DONATION_AVAILABILITY, VERIFIED)
+VALUES ('Dnr_01', 'Donor', 'Donor', 'Address1', 'Address2', 'Colombo', 'BB_01', '0771234567', 'donor@test.com', 0, 0, 0);
 # Make Default Organization for Testing
 INSERT INTO Organizations (Organization_ID, Organization_Name, Organization_Email, Contact_No, Address1, Address2, City,
                            Status)
 VALUES ('Org_01', 'Organization', 'organization@test.com', '0777123123', 'Address1', 'Address2', 'Colombo', 0);
 # Make Default Sponsor for Testing
-INSERT INTO Sponsors (SPONSOR_ID, NAME, Email, ADDRESS1, ADDRESS2, CITY, STATUS)
+INSERT INTO Sponsors (SPONSOR_ID, Sponsor_Name, Email, ADDRESS1, ADDRESS2, CITY, STATUS)
 VALUES ('Spn_01', 'Sponsor', 'sponsor@test.com', 'Address1', 'Address2', 'Colombo', 0);
 # Make Default Hospital for Testing
 INSERT INTO Hospitals (Hospital_ID, Hospital_Name, Email, Address1, Address2, City, Contact_No)
