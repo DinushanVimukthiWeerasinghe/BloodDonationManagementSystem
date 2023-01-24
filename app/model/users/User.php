@@ -23,6 +23,11 @@ class User extends dbModel
     {
         $this->ID = $Uid;
     }
+
+    public function getID(): string
+    {
+        return $this->UID;
+    }
     protected string $Email='';
     protected string $Password='';
     protected string $Role='';
@@ -162,6 +167,11 @@ class User extends dbModel
         $this->Address2 = $Address2;
     }
 
+    public function getLastActive()
+    {
+        return 'Last Active';
+    }
+
     /**
      * @return string
      */
@@ -296,27 +306,27 @@ class User extends dbModel
         foreach ($users as $key=>$user)
         {
             if ($user->getRole()=='Manager'){
-                $data=Manager::findOne(['ID'=>$user->getUid()]);
+                $data=Manager::findOne(['Manager_ID'=>$user->getUid()]);
                 if ($data){
                     $users[$key]=$data;
                 }
             }else if ($user->getRole()=='MedicalOfficer'){
-                $data=MedicalOfficer::findOne(['ID'=>$user->getUid()]);
+                $data=MedicalOfficer::findOne(['Officer_ID'=>$user->getUid()]);
                 if ($data){
                     $users[$key]=$data;
                 }
             }else if ($user->getRole()=='Donor'){
-                $data=Donor::findOne(['ID'=>$user->getUid()]);
+                $data=Donor::findOne(['Donor_ID'=>$user->getUid()]);
                 if ($data){
                     $users[$key]=$data;
                 }
             }else if ($user->getRole()=='Organization'){
-                $data=Organization::findOne(['ID'=>$user->getUid()]);
+                $data=Organization::findOne(['Organization_ID'=>$user->getUid()]);
                 if ($data){
                     $users[$key]=$data;
                 }
             }else if ($user->getRole()=='Sponsor'){
-                $data=Sponsor::findOne(['ID'=>$user->getUid()]);
+                $data=Sponsor::findOne(['Sponsor_ID'=>$user->getUid()]);
                 if ($data){
                     $users[$key]=$data;
                 }
@@ -342,12 +352,12 @@ class User extends dbModel
 
     public static function tableName(): string
     {
-        return 'User';
+        return 'Users';
     }
 
     public static function PrimaryKey(): string
     {
-        return 'Uid';
+        return 'UID';
     }
 
     public function attributes(): array

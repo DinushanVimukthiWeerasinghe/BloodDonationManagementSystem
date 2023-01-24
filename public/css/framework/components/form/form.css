@@ -26,4 +26,13 @@ input[type="text"]{
     -moz-box-sizing: border-box;
     box-sizing: border-box;
 }
+input[type="checkbox"]{
+    transform: scale(3);
+    margin: 0 2rem ;
+}
+
+input[type="checkbox"]:checked{
+    accent-color: var(--primary);
+}
+
 

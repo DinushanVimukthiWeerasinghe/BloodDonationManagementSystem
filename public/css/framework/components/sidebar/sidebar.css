@@ -13,7 +13,7 @@
     flex-direction: column;
     justify-content: space-between;
     border: none;
-    border-right: 1px solid var(--white);
+    border-right: 3px solid var(--primary);
 }
 .side-bar-compress{
     width: 5vw;

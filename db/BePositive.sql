@@ -166,14 +166,16 @@ CREATE TABLE IF NOT EXISTS Attendance_Accepted_Requests
   DEFAULT CHARSET = utf8;
 
 
-# DROP TABLE IF EXISTS Blood_Requests;
+DROP TABLE IF EXISTS Blood_Requests;
 CREATE TABLE IF NOT EXISTS Blood_Requests (
     Request_ID VARCHAR(20) NOT NULL  PRIMARY KEY,
     Requested_By VARCHAR(20) NOT NULL,
     BloodGroup VARCHAR(3) NOT NULL,
     Requested_At TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    Status VARCHAR(50) NOT NULL,
-    FOREIGN KEY (Requested_By) REFERENCES Hospitals(Hospital_ID)
+    Type INT NOT NULL DEFAULT 1,
+    Status INT NOT NULL DEFAULT 1,
+    FOREIGN KEY (Requested_By) REFERENCES Hospitals(Hospital_ID),
+    FOREIGN KEY (BloodGroup) REFERENCES BloodGroups(BloodGroup_ID)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 # Create Table for Organizations
@@ -289,6 +291,14 @@ CREATE TABLE IF NOT EXISTS Campaigns_Sponsors (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 # DROP TABLE IF EXISTS Campaign_Request;
+CREATE TABLE IF NOT EXISTS Campaign_Request (
+    Campaign_ID VARCHAR(20) NOT NULL,
+    Organization_ID VARCHAR(20) NOT NULL,
+    BloodBank_ID VARCHAR(20),
+    FOREIGN KEY (Campaign_ID) REFERENCES Campaign(Campaign_ID),
+    FOREIGN KEY (Organization_ID) REFERENCES Organizations(Organization_ID)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 CREATE TABLE IF NOT EXISTS Approved_Campaigns (
     Campaign_ID VARCHAR(20) NOT NULL,
     Bank_ID VARCHAR(20) NOT NULL,
@@ -522,7 +532,10 @@ VALUES ('Hos_01', 'hospital@test.com', '$2y$10$yjcyB1lr8V/nVciydOYedu0Rnedd9JHZ3
 # Make Default Blood Bank for Testing
 INSERT INTO BloodBanks (BloodBank_ID, BankName, Address1, Address2, City, Telephone_No, No_Of_Doctors, No_Of_Nurses,
                         No_Of_Beds, No_Of_Storages, Type)
-VALUES ('BB_01', 'Main Blood Bank', 'No 01, Main Street', 'Colombo 01', 'Colombo', '0111234567', 0, 0, 0, 0, 1);
+VALUES ('BB_01', 'Main Blood Bank', 'No 01, Main Street', 'Colombo 01', 'Colombo', '0111234567', 0, 0, 0, 0, 1);;
+INSERT INTO BloodBanks (BloodBank_ID, BankName, Address1, Address2, City, Telephone_No, No_Of_Doctors, No_Of_Nurses,
+                        No_Of_Beds, No_Of_Storages, Type)
+VALUES ('BB_02', 'Negombo Blood Bank', 'No 02, Main Street', 'Colombo 02', 'Negombo', '0111234577', 0, 0, 0, 0, 1);
 # Make Default Admin for Testing
 INSERT INTO Admins (Admin_ID, UserName, Email)
 VALUES ('Adm_01', 'Admin', 'admin@test.com');
@@ -574,8 +587,3 @@ INSERT INTO BloodGroups (BloodGroup_ID, BloodGroup_Name)
 VALUES ('O+', 'O+');
 INSERT INTO BloodGroups (BloodGroup_ID, BloodGroup_Name)
 VALUES ('O-', 'O-');
-
-
-
-
-

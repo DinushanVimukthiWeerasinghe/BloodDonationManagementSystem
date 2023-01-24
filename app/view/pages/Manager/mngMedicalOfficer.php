@@ -39,26 +39,14 @@ FlashMessage::RenderFlashMessages();
     <div class="card-image">
         <img src="/public/images/icons/manager/manageMedicalOfficer/doctor.png" alt="">
     </div>
-    <span class="tooltipText">Add Medical Officer</span>
 </div>
 <div class="add-card-mb">
     <div class="card-image">
         <img src="/public/images/icons/add-mo.png" alt="">
     </div>
 </div>
-<div id="detail-pane" class="detail-pane">
-    <div class="add-card tooltip" onclick="Redirect('/manager/mngMedicalOfficer/add')">
-        <div class="card-image">
-            <img src="/public/images/icons/manager/manageMedicalOfficer/doctor.png" alt="">
-        </div>
-        <span class="tooltipText">Add Medical Officer</span>
-    </div>
-    <div class="add-card-mb">
-        <div class="card-image">
-            <img src="/public/images/icons/add-mo.png" alt="">
-        </div>
-    </div>
-    <div id="detail-pane" class="detail-pane">
+<div id="detail-pane" class="min-w-80 max-w-90 min-h-80 d-flex justify-content-center flex-column align-items-center">
+    <div id="detail-pane" class="min-w-80 max-w-90 mt-10 min-h-80 d-flex justify-content-center flex-column align-items-center">
 
         <div id="filter-pane" class="filter-pane">
             <div class="search-input">
@@ -110,7 +98,7 @@ FlashMessage::RenderFlashMessages();
                 $NIC=$value->getNIC();
                 $branch=$value->getBranchLocation();
                 ?>
-            <div class="card none detail-card" id="MO7646" onclick="RedirectID('MO7646')">
+            <div class="detail-card" id="MO7646" onclick="RedirectID('<?= $id?>')">
                 <div class="card-image">
                     <img src='<?= $image?>' alt="">
                 </div>

@@ -80,4 +80,9 @@ class Organization extends Person
     {
         return 'Organization';
     }
+
+    public function setID(string $ID): void
+    {
+        $this->Organization_ID=$ID;
+    }
 }

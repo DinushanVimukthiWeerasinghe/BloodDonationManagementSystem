@@ -12,7 +12,6 @@ use App\view\components\ResponsiveComponent\Title\primaryTitle;
 
 $background=new \App\view\components\ResponsiveComponent\ImageComponent\BackGroundImage();
 $navbar= new AuthNavbar('View Medical Officer','#','/public/images/icons/user.png');
-echo AuthNavbar::getNavbarCSS();
 echo $navbar;
 echo $background;
 ?>

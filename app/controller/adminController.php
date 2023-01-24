@@ -3,6 +3,7 @@
 namespace App\controller;
 
 use App\model\Authentication\AuthenticationCode;
+use App\model\BloodBankBranch\BloodBank;
 use App\model\users\Admin;
 use App\model\users\Manager;
 use App\model\users\User;
@@ -47,6 +48,7 @@ class adminController extends \Core\Controller
         $this->layout=$layout;
         return $this->render('Admin/adminBoard');
     }
+
     public function manageUsers(Request $request, Response $response): string
     {
         $users=User::getUserInfo();
@@ -74,6 +76,15 @@ class adminController extends \Core\Controller
     {
         $this->layout='none';
         return $this->render('Admin/manageAlerts');
+    }
+
+    public function manageBanks()
+    {
+        $this->layout='none';
+        $BloodBanks=BloodBank::RetrieveAll();
+        return $this->render('Admin/manageBank',[
+            'BloodBanks'=>$BloodBanks
+        ]);
     }
 
 }

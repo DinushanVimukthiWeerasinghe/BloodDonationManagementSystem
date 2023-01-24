@@ -2,61 +2,12 @@
 .none{
     display: none !important;
 }
-.tooltip {
-    position: relative;
-    display: inline-block;
-    border-bottom: 1px dotted black;
-}
-
-.tooltip .tooltipText {
-    margin-top: 12vh;
-    right: 0;
-    visibility: hidden;
-    width: 120px;
-    background:rgba(0,0,0,0.5);
-    color: #fff;
-    text-align: center;
-    border-radius: 6px;
-    padding: 5px 0;
-    /* Position the tooltip */
-    position: absolute;
-    z-index: 1;
-}
-
-.tooltip:hover .tooltipText {
-    visibility: visible;
-}
-.disabled{
-    pointer-events: none;
-}
-
-a{
-    display: flex;
-}
-
-.flex{
-    display: flex !important;
-}
 
 
-.pane-loader{
-    min-height: 70vh;
-    min-width: 90vw;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
 
-.card-pane .card-loader{
-    width: 93vw;
-    border-radius: 20px;
-    height: 72vh;
-    position: fixed;
-    background: rgba(255, 255, 255, 0.7);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
+
+
+
 
 .detail-card:hover{
     cursor: pointer;
@@ -74,38 +25,9 @@ a{
     align-items: center;
 }
 
-.card-pane{
-    min-height: 75vh;
-    width: 100%;
-    min-width: 95vw;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    align-items: flex-start;
-    background: rgba(0,0,0,0.3);
-    margin: 1rem;
-    margin-top: 0;
-    padding: 1rem 0;
-    border-radius: 50px;
-    overflow-y: auto;
-}
 
-.filter-pane{
-    display: flex;
-    align-items: center;
-    align-content: center;
-    justify-content: center;
-    width: 80%;
-    min-height: 80px;
-    background: rgba(0,0,0,0.3);
-    border-radius: 50px;
-    color: #fff;
-    padding: 10px;
-}
-.card-description{
-    font-size: 1rem;
-    font-weight: 400;
-}
+
+
 .add-card-mb{
     display: none;
     position: absolute;

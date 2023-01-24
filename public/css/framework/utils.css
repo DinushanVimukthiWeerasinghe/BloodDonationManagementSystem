@@ -3,13 +3,18 @@
 @import "util/margin.css";
 @import "util/padding.css";
 @import "util/typography.css";
-@import "util/colors/base.css";
+
 @import "util/border/border.css";
+@import "util/width.css";
+@import "util/FontFamily.css";
+@import "util/cursor.css";
 
 /*Titles*/
 @import "components/title/title.css";
 
 /*Components*/
+/*FlexBox*/
+@import "components/flexbox/flex-box.css";
 /*Sidebar*/
 @import "components/sidebar/sidebar.css";
 /*Top-bar*/
@@ -28,6 +33,14 @@
 @import "components/dialog-box/dialog-box.css";
 /*Import Forms*/
 @import "components/form/form.css";
+/*Import Accordion*/
+@import "components/accordion/accordion.css";
+/*Import List*/
+@import "components/list/list.css";
+
+
+@import "util/colors/base.css";
+
 
 /*Fonts*/
 @import url('/public/fonts/Poppins/Poppins-Black.ttf');
@@ -37,24 +50,7 @@
     padding: 0;
     text-decoration: none;
 }
-.d-flex{
-    display: flex;
-}
-.flex-wrap{
-    flex-wrap: wrap;
-}
-.flex-column{
-    flex-direction: column;
-}
-.justify-content-center{
-    justify-content: center;
-}
-.align-center{
-    align-items: center;
-}
-.align-self-center{
-    align-self: center;
-}
+
 .w-100{
     width: 100%;
 }

@@ -1,12 +1,14 @@
 <?php
 
 use App\controller\adminController;
+use App\controller\apiController;
 use App\controller\authController;
 use App\controller\donorController;
 use App\controller\fileController;
 use App\controller\managerController;
 use App\controller\siteController;
 use Core\Application;
+
 
 require_once __DIR__ . '/../vendor/autoload.php';
 $dotenv = Dotenv\Dotenv::createImmutable(dirname(__DIR__));
@@ -59,12 +61,14 @@ $app->router->post('/admin/login', [adminController::class, 'login']);
 $app->router->get('/admin/register', [adminController::class, 'register']);
 $app->router->post('/admin/register', [adminController::class, 'register']);
 $app->router->get('/admin/dashboard', [adminController::class, 'adminBoard']);
+$app->router->get('/admin/dashboard/adminBoard', [adminController::class, 'adminBoard']);
 $app->router->post('/admin/dashboard', [adminController::class, 'adminBoard']);
 $app->router->get('/admin/dashboard/manageUsers', [adminController::class, 'manageUsers']);
 $app->router->get('/admin/dashboard/manageDonors', [adminController::class, 'manageDonors']);
 $app->router->get('/admin/dashboard/manageAlerts', [adminController::class, 'manageAlerts']);
 $app->router->get('/admin/dashboard/manageSetting', [adminController::class, 'manageSetting']);
 $app->router->get('/admin/dashboard/manageTransactions', [adminController::class, 'manageTransactions']);
+$app->router->get('/admin/dashboard/manageBanks', [adminController::class, 'manageBanks']);
 $app->router->post('/upload', [fileController::class, 'upload']);
 
 
@@ -89,6 +93,7 @@ $app->router->get('/manager/mngMedicalOfficer/search', [managerController::class
 
 $app->router->get('/manager/mngRequests', [managerController::class, 'ManageRequests']);
 $app->router->post('/manager/mngRequests', [managerController::class, 'ManageRequests']);
+$app->router->get('/manager/mngRequests/er', [managerController::class, 'ManageEmergencyRequests']);
 
 $app->router->get('/manager/mngCampaign/view', [managerController::class, 'ViewCampaign']);
 $app->router->post('/manager/mngCampaign/view', [managerController::class, 'ViewCampaign']);
@@ -124,6 +129,9 @@ $app->router->get('/manager/mngDonors/find', [managerController::class, 'FindDon
 //Manage Requests
 $app->router->get('/manager/mngRequests/emergency', [managerController::class, 'ManageEmergencyRequests']);
 //$app->router->post('/manager/mngRequests/emergency', [managerController::class, 'FindRequests']);
+
+
+$app->router->get('/api/bbank/getall', [apiController::class, 'getBloodBanks']);
 
 
 

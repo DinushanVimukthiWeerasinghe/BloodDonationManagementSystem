@@ -2,15 +2,17 @@
 <?php
 use App\model\users\Manager;
 use App\model\users\MedicalOfficer;
+use App\model\users\Person;
 
 /** @var Array $users */
-/** @var MedicalOfficer | Manager $user */
+/** @var Person $user */
 
 //print_r($users);
 ?>
 
 <div class="d-flex justify-content-center align-center flex-column">
 <!--    <div class="title">Donor</div>-->
+
     <table class="w-50">
         <thead>
         <tr>

@@ -16,14 +16,14 @@ class MedicalOfficer extends Person
 
     protected string $Officer_ID = '';
 
-    public function getID()
+    public function getID():string
     {
         return $this->Officer_ID;
     }
 
-    public function setID(string $Id)
+    public function setID(string $ID):void
     {
-        $this->Officer_ID=$Id;
+        $this->Officer_ID=$ID;
     }
 
     public function getBranchLocation()
@@ -33,7 +33,7 @@ class MedicalOfficer extends Person
 
     public function getRole(): string
     {
-        return 'MedicalOfficer';
+        return Person::MEDICAL_OFFICER;
     }
 
 

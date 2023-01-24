@@ -13,7 +13,6 @@ use App\view\components\ResponsiveComponent\NavbarComponent\AuthNavbar;
 
 $background = new BackGroundImage();
 $navbar = new AuthNavbar('Add Medical Officer', '#', '/public/images/icons/user.png');
-echo AuthNavbar::getNavbarCSS();
 echo $navbar;
 echo $background;
 ?>

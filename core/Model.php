@@ -35,6 +35,7 @@ abstract class Model
 
 
 
+
     public function getLabel($attribute)
     {
         return $this->labels()[$attribute] ?? $attribute;

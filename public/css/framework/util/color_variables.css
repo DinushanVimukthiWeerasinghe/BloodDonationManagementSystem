@@ -12,9 +12,21 @@
     --dark: #343a40;
     --body-bg: rgb(222, 222, 222);
     --border-color: #e9ecef;
+    --accent-color:#b90209;
     /*--side-bar-bg: #5d0018;*/
     --side-bar-bg: #ffffff;
     --top-bar-bg: #ffffff;
+    /*Accordion*/
+    --accordion-bg: #ffffff;
+    --accordion-bg-hover: --primary;
+    --accordion-item-active: #720000;
+    --accordion-item-hover: #720000;
+    --accordion-item-hover-color: #ffffff;
+    --accordion-item-active-border: #720000;
+    --accordion-item-active-color: #ffffff;
+    --accordion-item-body-active-color: #c3c0c0;
+
+
     --dark-red: #740206;
     /*--top-bar-bg: #5d0018;*/
     --red-1: #f8d7da;

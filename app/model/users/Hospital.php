@@ -8,6 +8,22 @@ class Hospital extends Person
 {
     protected string $Hospital_ID='';
     protected string $Hospital_Name='';
+
+    /**
+     * @return string
+     */
+    public function getHospitalName(): string
+    {
+        return $this->Hospital_Name;
+    }
+
+    /**
+     * @param string $Hospital_Name
+     */
+    public function setHospitalName(string $Hospital_Name): void
+    {
+        $this->Hospital_Name = $Hospital_Name;
+    }
     protected string $Type ='';
 
     public function getID(): string
@@ -79,5 +95,10 @@ class Hospital extends Person
             'Type',
             'Profile_Image'
         ];
+    }
+
+    public function setID(string $ID): void
+    {
+        $this->Hospital_ID=$ID;
     }
 }

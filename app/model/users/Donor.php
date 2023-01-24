@@ -75,4 +75,9 @@ class Donor extends Person
     {
         return ['Donor_ID','Nearest_Bank','Donation_Availability','Verified','Verified_At','Verified_By','Verification_Remarks','BloodPacket_ID','Created_At','Updated_At'];
     }
+
+    public function setID(string $ID): void
+    {
+        $this->Donor_ID = $ID;
+    }
 }

@@ -80,4 +80,9 @@ class Sponsor extends Person
     {
         return 'Sponsors';
     }
+
+    public function setID(string $ID): void
+    {
+        $this->Sponsor_ID=$ID;
+    }
 }

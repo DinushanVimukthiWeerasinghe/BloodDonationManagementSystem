@@ -3,6 +3,7 @@
 namespace App\controller;
 
 use App\model\Authentication\Login;
+use App\model\Requests\BloodRequest;
 use App\model\users\Manager;
 use App\model\users\MedicalOfficer;
 use App\model\users\User;
@@ -140,7 +141,7 @@ class managerController extends Controller
     public function ViewMedicalOfficer(Request $request, Response $response)
     {
         if ($request->isGet()){
-            $medicalOfficer=MedicalOfficer::findOne(['ID'=>$request->getBody()['id']]);
+            $medicalOfficer=MedicalOfficer::findOne(['Officer_ID'=>$request->getBody()['id']]);
             if (Application::$app->session->get('ID')){
                 Application::$app->session->remove('ID');
             }
@@ -181,7 +182,9 @@ class managerController extends Controller
 
     public function ManageRequests(): string
     {
-        return $this->render('Manager/ManageRequests');}
+        $requests=BloodRequest::RetrieveAll();
+        return $this->render('Manager/ManageRequests',['data'=>$requests]);
+    }
 
     public function ManageDonors(): string
     {
@@ -208,6 +211,7 @@ class managerController extends Controller
         $page = $request->getBody()['page'] ?? 1;
         $initial = ($page - 1) * $limit;
         $id=Application::$app->getUser()->getID();
+
         $total_rows = MedicalOfficer::getCount(true,['NIC'=>$search]);
         $total_pages = ceil ($total_rows / $limit);
         $medicalOfficers=MedicalOfficer::Search(['NIC'=>$search,'First_Name'=>$search,'Position'=>$search,''],[$initial,$limit]);
@@ -236,6 +240,7 @@ class managerController extends Controller
 
     public function ManageEmergencyRequests()
     {
-        print_r('s');
+//        $EmergencyRequests=EmergencyRequest::RetrieveAll();
+        return $this->render('Manager/ManageRequest/EmergencyRequest');
     }
 }
