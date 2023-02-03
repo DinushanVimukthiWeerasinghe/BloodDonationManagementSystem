@@ -4,7 +4,7 @@ use App\controller\adminController;
 use App\controller\authController;
 use App\controller\donorController;
 use App\controller\fileController;
-use App\controller\organizationController;
+use App\controller\OrganizationController;
 use App\controller\managerController;
 use App\controller\siteController;
 use Core\Application;
@@ -69,11 +69,27 @@ $app->router->get('/admin/dashboard/manageTransactions', [adminController::class
 $app->router->post('/upload', [fileController::class, 'upload']);
 
 
-$app->router->get('/organization/register', [organizationController::class, 'register']);
-$app->router->post('/organization/register', [organizationController::class, 'register']);
-$app->router->get('/organization/create', [organizationController::class, 'create']);
-$app->router->get('/organization/history', [organizationController::class, 'history']);
-$app->router->get('/organization/home', [organizationController::class, 'home']);
+$app->router->get('/organization/register', [OrganizationController::class, 'register']);
+$app->router->post('/organization/register', [OrganizationController::class, 'register']);
+$app->router->get('/organization/dashboard', [OrganizationController::class, 'dashboard']);
+$app->router->get('/organization/create', [OrganizationController::class, 'create']);
+$app->router->get('/organization/history', [OrganizationController::class, 'history']);
+$app->router->get('/organization/home', [OrganizationController::class, 'home']);
+$app->router->get('/organization/inform', [OrganizationController::class, 'inform']);
+$app->router->post('/organization/inform', [OrganizationController::class, 'inform']);
+$app->router->get('/organization/manage', [OrganizationController::class, 'manage']);
+$app->router->get('/organization/create', [OrganizationController::class, 'create']);
+$app->router->post('/organization/create', [OrganizationController::class, 'create']);
+$app->router->get('/organization/near', [OrganizationController::class, 'near']);
+$app->router->get('/organization/report', [OrganizationController::class, 'report']);
+$app->router->get('/organization/history', [OrganizationController::class, 'history']);
+$app->router->get('/organization/guideline', [OrganizationController::class, 'guideline']);
+$app->router->get('/organization/request', [OrganizationController::class, 'request']);
+$app->router->post('/organization/request', [OrganizationController::class, 'request']);
+$app->router->get('/organization/campDetails', [OrganizationController::class, 'campDetails']);
+$app->router->get('/organization/received', [OrganizationController::class, 'received']);
+$app->router->get('/organization/accepted', [OrganizationController::class, 'accepted']);
+$app->router->get('/organization/profile', [OrganizationController::class, 'profile']);
 
 
 // Manager Register

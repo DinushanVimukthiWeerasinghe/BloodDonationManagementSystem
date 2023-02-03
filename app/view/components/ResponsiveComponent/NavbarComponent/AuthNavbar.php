@@ -47,24 +47,24 @@ class AuthNavbar
         if ($action==='notification')
         {
             $link[0]=[
-                'link'=>'/manager/dashboard',
+                'link'=>'/organization/dashboard',
                 'icon'=>'/public/images/icons/navbar/home.png',
                 'title'=>'Notification'
             ];
         }else if (($action==='dashboard')){
             $link[0]=[
-                'link'=>'/manager/notification',
+                'link'=>'/organization/notification',
                 'icon'=>'/public/images/icons/navbar/bell.png',
                 'title'=>'Notification'
             ];
         }else{
             $link[0]=[
-                'link'=>'/manager/dashboard',
+                'link'=>'/organization/dashboard',
                 'icon'=>'/public/images/icons/navbar/home.png',
                 'title'=>'Dashboard'
             ];
             $link[1]=[
-                'link'=>'/manager/notification',
+                'link'=>'/organization/notification',
                 'icon'=>'/public/images/icons/navbar/bell.png',
                 'title'=>'Notification'
             ];

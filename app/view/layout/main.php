@@ -11,4 +11,5 @@
 <body>
     {{content}}
 </body>
+<script src="/public/js/components/navbar/navbar.js"></script>
 </html>

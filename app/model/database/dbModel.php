@@ -75,7 +75,6 @@ abstract class dbModel extends Model
             return $statement->rowCount();
         }
 
-
     }
 
     public static function Search(array $array,array $limit=[]): bool|array
@@ -172,19 +171,42 @@ abstract class dbModel extends Model
             return $number;
         }
     }
-
     public function save()
     {
-
         $tableName = static::tableName();
         $attributes=$this->attributes();
         $PK=$this->getPrimaryKey(static::tableName())[0];
         $params=array_map(fn($attr)=>":$attr",$attributes);
 
-        foreach ($attributes as $key => $value) {
+        $statement=self::prepare("INSERT INTO $tableName (".implode(',',$attributes).") VALUES (".implode(',',$params).")");
+
+        foreach ($attributes as $attribute)
+        {
+            $statement->bindValue(":$attribute",$this->{$attribute});
+        }
+
+        if (!$statement->execute()) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public function saver($exclude = [])
+    {
+
+        $tableName = static::tableName();
+        $attributes=$this->attributes();
+        $PK=$this->getPrimaryKey(static::tableName())[0];
+
+
+        $params=array_map(fn($attr)=>":$attr",$attributes);
+//        print_r($attributes);
+
+        foreach ($exclude as $key => $value) {
             $index=array_search(":$value",$params);
-            print_r(":$value");
-            print_r($index);
+//            print_r(":$value");
+//            print_r($index);
             unset($attributes[$index]);
             unset($params[$index]);
         }

@@ -135,7 +135,7 @@ class Login extends dbModel
             $this->addError('password','Incorrect Password!');
             return false;
         }
-
+        $_SESSION['Email'] = $this->Email;
         Application::$app->login($user);
         Application::$app->session->setFlash('success','Login Successful!');
         return true;

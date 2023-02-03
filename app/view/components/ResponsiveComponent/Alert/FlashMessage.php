@@ -69,10 +69,10 @@ class FlashMessage
                         break;
                 }
             }
-            $js=self::DestroyAlert();
+           $js=self::DestroyAlert();
             unset($_SESSION['flash_messages']);
             $output.= "<script>{$js}</script>";
-            echo $output;
+              echo $output;
         }
     }
 

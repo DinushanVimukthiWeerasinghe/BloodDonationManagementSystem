@@ -363,11 +363,19 @@ class User extends dbModel
             'Role'=>'Role'
         ];
     }
-    public function save()
+//    public function save()
+//    {
+//        return parent::save();
+//    }
+//    public function register(){
+//        $this -> save();
+//    }
+
+//    public function setID(string $string)
+//    {
+//    }
+    public function setID(int $id)
     {
-        return parent::save();
-    }
-    public function register(){
-        $this -> save();
+        $this->UID = $id;
     }
 }
