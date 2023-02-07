@@ -1,13 +1,17 @@
 <?php
 
 use App\controller\adminController;
+use App\controller\apiController;
 use App\controller\authController;
+use App\controller\blogController;
 use App\controller\donorController;
 use App\controller\fileController;
 use App\controller\OrganizationController;
 use App\controller\managerController;
+use App\controller\medicalOfficerController;
 use App\controller\siteController;
 use Core\Application;
+
 
 require_once __DIR__ . '/../vendor/autoload.php';
 $dotenv = Dotenv\Dotenv::createImmutable(dirname(__DIR__));
@@ -46,13 +50,19 @@ $app->router->get('/about', [siteController::class, 'about']);
 $app->router->get('/loader', [siteController::class, 'Loader']);
 $app->router->get('/contact', [siteController::class, 'contact']);
 $app->router->post('/contact', [siteController::class, 'contact']);
-$app->router->get('/user/register', [siteController::class, 'userRegister']);
-$app->router->post('/user/register', [siteController::class, 'userRegister']);
+$app->router->get('/register', [authController::class, 'userRegister']);
+$app->router->post('/register', [authController::class, 'userRegister']);
 
 //Logout
 $app->router->get('/logout', [authController::class, 'logout']);
 $app->router->get('/login', [authController::class, 'UserLogin']);
 $app->router->post('/login', [authController::class, 'UserLogin']);
+$app->router->get('/otp', [authController::class, 'OTP']);
+$app->router->get('/otp/validate', [authController::class, 'OTPValidation']);
+$app->router->get('/otp/resend', [authController::class, 'ResendOTP']);
+$app->router->post('/otp/validate', [authController::class, 'OTPValidation']);
+$app->router->get('/resetPassword', [authController::class, 'ResetPassword']);
+$app->router->post('/resetPassword', [authController::class, 'ResetPassword']);
 
 
 $app->router->get('/admin/login', [adminController::class, 'login']);
@@ -60,14 +70,27 @@ $app->router->post('/admin/login', [adminController::class, 'login']);
 $app->router->get('/admin/register', [adminController::class, 'register']);
 $app->router->post('/admin/register', [adminController::class, 'register']);
 $app->router->get('/admin/dashboard', [adminController::class, 'adminBoard']);
+$app->router->get('/admin/dashboard/adminBoard', [adminController::class, 'adminBoard']);
 $app->router->post('/admin/dashboard', [adminController::class, 'adminBoard']);
 $app->router->get('/admin/dashboard/manageUsers', [adminController::class, 'manageUsers']);
 $app->router->get('/admin/dashboard/manageDonors', [adminController::class, 'manageDonors']);
 $app->router->get('/admin/dashboard/manageAlerts', [adminController::class, 'manageAlerts']);
 $app->router->get('/admin/dashboard/manageSetting', [adminController::class, 'manageSetting']);
 $app->router->get('/admin/dashboard/manageTransactions', [adminController::class, 'manageTransactions']);
+$app->router->get('/admin/dashboard/manageBanks', [adminController::class, 'manageBanks']);
+
+$app->router->post('/user/resetPassword', [adminController::class, 'ResetPassword']);
+$app->router->post('/user/removeUser', [adminController::class, 'RemoveUser']);
+$app->router->post('/user/reActivateUser', [adminController::class, 'ReactivateUser']);
+$app->router->post('/user/deactivateUser', [adminController::class, 'DeactivateUser']);
+$app->router->post('/user/activateUser', [adminController::class, 'ActivateUser']);
+$app->router->post('/user/searchUser', [adminController::class, 'SearchUser']);
+//TODO Delete this
+$app->router->get('/user/searchUser', [adminController::class, 'SearchUser']);
+
 $app->router->post('/upload', [fileController::class, 'upload']);
 
+$app->router->get('/test',[siteController::class,'test']);
 
 $app->router->get('/organization/register', [OrganizationController::class, 'register']);
 $app->router->post('/organization/register', [OrganizationController::class, 'register']);
@@ -111,6 +134,7 @@ $app->router->get('/manager/mngMedicalOfficer/search', [managerController::class
 
 $app->router->get('/manager/mngRequests', [managerController::class, 'ManageRequests']);
 $app->router->post('/manager/mngRequests', [managerController::class, 'ManageRequests']);
+$app->router->get('/manager/mngRequests/er', [managerController::class, 'ManageEmergencyRequests']);
 
 $app->router->get('/manager/mngCampaign/view', [managerController::class, 'ViewCampaign']);
 $app->router->post('/manager/mngCampaign/view', [managerController::class, 'ViewCampaign']);
@@ -141,12 +165,32 @@ $app->router->post('/manager/mngMedicalOfficer/view', [managerController::class,
 
 //Find Donor
 $app->router->get('/manager/mngDonors/find', [managerController::class, 'FindDonor']);
+$app->router->post('/manager/mngDonors/find', [managerController::class, 'FindDonor']);
+$app->router->post('/manager/mngDonors/isExist', [managerController::class, 'IsDonorExist']);
+$app->router->get('/manager/mngDonors/reportedDonor', [managerController::class, 'ReportedDonor']);
+$app->router->get('/manager/mngDonors/informDonor', [managerController::class, 'InformDonor']);
+$app->router->post('/manager/mngDonors/informDonor', [managerController::class, 'InformDonor']);
 //$app->router->post('/manager/mngDonors/find', [managerController::class, 'FindDonor']);
+
+
+//Medical Officer
+$app->router->get('/medicalofficer/dashboard', [medicalOfficerController::class, 'Dashboard']);
 
 //Manage Requests
 $app->router->get('/manager/mngRequests/emergency', [managerController::class, 'ManageEmergencyRequests']);
+$app->router->get('/medicalofficer/assignedCampaign', [medicalOfficerController::class, 'CampaignAssignment']);
+$app->router->get('/medicalofficer/verifyDonor', [medicalOfficerController::class, 'VerifyDonor']);
+$app->router->post('/medicalofficer/get-donor', [medicalOfficerController::class, 'FindDonor']);
 //$app->router->post('/manager/mngRequests/emergency', [managerController::class, 'FindRequests']);
 
+
+$app->router->get('/api/bbank/getall', [apiController::class, 'getBloodBanks']);
+
+
+//Blogs
+$app->router->post('/blog/add', [blogController::class, 'AddBlog']);
+$app->router->post('/blog/delete', [blogController::class, 'DeleteBlog']);
+$app->router->post('/blog/update', [blogController::class, 'UpdateBlog']);
 
 
 //print_r($_SESSION);

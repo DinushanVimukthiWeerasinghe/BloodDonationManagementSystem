@@ -159,6 +159,13 @@
     border-color: var(--danger);
     background-blend-mode: lighten;
 }
+.btn-disabled{
+    color: var(--white);
+    background-color: var(--disabled);
+    border-color: var(--disabled);
+}
+
+
 .btn-danger:focus, .btn-danger.focus {
     color: var(--white);
     background-color: var(--danger);
@@ -167,8 +174,8 @@
 }
 .btn-danger.disabled, .btn-danger:disabled {
     color: var(--white);
-    background-color: var(--danger);
-    border-color: var(--danger);
+    background-color: var(--disabled);
+    border-color: var(--white);
 }
 .btn-danger:not(:disabled):not(.disabled):active, .btn-danger:not(:disabled):not(.disabled).active, .show > .btn-danger.dropdown-toggle {
     color: var(--white);
@@ -242,7 +249,7 @@
     color: var(--primary);
     background-color: transparent;
     background-image: none;
-    border-color: var(--primary);
+    border-color: var(--primary) !important
 }
 .btn-outline-primary:hover {
     color: var(--white);

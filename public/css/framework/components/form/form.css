@@ -6,11 +6,9 @@ form{
 input[type="text"], input[type="password"], input[type="email"], input[type="url"], input[type="tel"], input[type="number"], input[type="search"], input[type="date"], input[type="month"], input[type="week"], input[type="time"], input[type="datetime"], input[type="datetime-local"], input[type="color"], input[type="range"], input[type="file"], textarea, select{
     margin: 0;
     padding: 0;
-    border: 0;
     outline: 0;
     font-size: 100%;
     vertical-align: baseline;
-    background: transparent;
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
@@ -20,10 +18,108 @@ input[type="text"]{
     width: 100%;
     height: 40px;
     padding: 0 10px;
+    border: 1px solid var(--primary);
+    border-radius: 3px;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+input[type="checkbox"] {
+    transform: scale(3);
+    margin: 0 2rem;
+}
+
+input[type="checkbox"]:checked {
+    accent-color: var(--primary);
+}
+input[type="file"]{
+    width: 100%;
+    height: 40px;
+    padding: 4px 5px 4px 10px;
     border: 1px solid #ccc;
     border-radius: 3px;
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box;
+}
+::file-selector-button{
+    height: 30px;
+    padding: 0 10px;
+
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+
+
+.border-on-focus:focus {
+    border: 1px solid var(--primary);
+}
+
+.form-group{
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    gap: 1rem;
+}
+
+.form-control, .form-date ,.form-select{
+    /*display: block;*/
+    width: 100%;
+    height: 40px;
+    padding: 0 10px;
+    font-size: 1rem;
+    border: 1px solid #020000;
+    border-radius: 5px;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    text-align: center;
+}
+
+.form-select{
+    display: block;
+    width: 100%;
+    height: 40px;
+    padding: 0 10px;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    text-align: center;
+}
+.form-buttons{
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    justify-content: center;
+}
+
+textarea{
+    width: 100%;
+    height: 100px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+
+label{
+    display: block;
+    /*margin-bottom: 0.5rem;*/
+    font-size: 1rem;
+    font-weight: 600;
+    color: #333;
 }
 

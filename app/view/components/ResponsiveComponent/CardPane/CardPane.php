@@ -132,24 +132,36 @@ class CardPane
 
     }
 
-    public static function GetJS($url): string
+    public static function GetLoaderJS(): string
     {
-        return <<<HTML
-        <script>
-            const Search=document.getElementById('search');
-            const SearchBtn=document.getElementById('search-btn');
-            const CardPane=document.getElementById('card-pane');
-            const DetailPane=document.getElementById('detail-pane');
-            const PaneLoader=document.getElementsByClassName('pane-loader')[0];
-            window.addEventListener('load',()=>{
+        return <<<JS
+        const PaneLoader=document.getElementsByClassName('pane-loader')[0];
+        window.addEventListener('load',()=>{
                 setTimeout(()=>{
                    const Cards=document.getElementsByClassName('card');
+                   console.log(Cards);
                 for (let i=0;i<Cards.length;i++){
                     Cards[i].classList.remove('none');
                 }
                 PaneLoader.classList.add('none');
                 },500);
             });
+JS;
+
+    }
+
+    public static function GetJS($url): string
+    {
+        $loaderJS=static::GetLoaderJS();
+        return <<<HTML
+        <script>
+            const Search=document.getElementById('search');
+            const SearchBtn=document.getElementById('search-btn');
+            const CardPane=document.getElementById('card-pane');
+            const DetailPane=document.getElementById('detail-pane');
+            $loaderJS
+           
+          
             function SearchFunction(){
                 const Search=document.getElementById('search');
                 const text= Search.value;
@@ -163,6 +175,7 @@ class CardPane
                         const CardPane=document.getElementById('card-pane');
                         const PageNumbers=document.getElementsByClassName('page-numbers')[0];
                         if (this.readyState === 4 && this.status === 200) {
+                            console.log(this.responseText);
                         
                             // CardPane.innerHTML=this.responseText;
         

@@ -47,3 +47,9 @@
 .border-radius-15 {
     border-radius: 3.75rem;
 }
+.border-radius-50{
+    border-radius: 50%;
+}
+.border-radius-10p{
+    border-radius: 5% !important;
+}

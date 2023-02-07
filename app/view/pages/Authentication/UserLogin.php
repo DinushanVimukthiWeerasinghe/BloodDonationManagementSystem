@@ -2,21 +2,22 @@
 <div class="dark-bg"></div>
 <?php
 
+use App\model\Authentication\Login;
+use App\view\components\ResponsiveComponent\Alert\FlashMessage;
 use App\view\components\ResponsiveComponent\NavbarComponent\AuthNavbar;
 use App\view\components\ResponsiveComponent\NavbarComponent\Navbar;
 
 $navbar= new Navbar([
 ],'#','/public/images/icons/user.png','');
 echo $navbar;
-echo AuthNavbar::getNavbarJS();
+//echo AuthNavbar::getNavbarJS();
+FlashMessage::RenderFlashMessages();
 ?>
     <?php
 
     /**
      * @var Login $model
      */
-
-    use App\model\Authentication\Login;
 
     ?>
 
@@ -31,8 +32,10 @@ echo AuthNavbar::getNavbarJS();
                 <div class="form-title"><span class="lock-ico"> </span> Sign In</div>
             </div>
             <form autocomplete="off" action="/login" method="post">
-                <div class="error"><span><?php echo $model->hasError('Email')?$model->getFirstError('Email'):($model->hasError('Password')?$model->getFirstError('Password'):'')?></span></div>
-                <label for="email"></label><input autocomplete="off" class="input" id="email" name="Email" placeholder="Username | Email" type="text"/>
+                <div class="error"><span><?php echo $model->hasError('Email')?$model->getFirstError('Email'):($model->hasError('Password')?$model->getFirstError('Password'):'')?></span>
+                </div>
+                <label for="email"></label><input autocomplete="off" class="input bg-white p-1" id="email" name="Email"
+                                                  placeholder="Username | Email" type="text"/>
                 <label for="password"></label>
                 <span class="pass">
                     <input id="password" name="Password" placeholder="Password" type="password"/>

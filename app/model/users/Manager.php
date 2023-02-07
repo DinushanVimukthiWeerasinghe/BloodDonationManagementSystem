@@ -10,7 +10,7 @@ class Manager extends Person
 
     protected string $Manager_ID='';
 
-    public function getID()
+    public function getID():string
     {
         return $this->Manager_ID;
     }
@@ -115,5 +115,10 @@ class Manager extends Person
             'ImageURL'=>'Image URL',
             'Contact_No'=>'Contact No',
         ];
+    }
+
+    public function setID(string $ID): void
+    {
+        $this->Manager_ID = $ID;
     }
 }

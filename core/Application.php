@@ -2,6 +2,7 @@
 namespace Core;
 use App\model\Authentication\LoggingHistory;
 use App\model\Authentication\Login;
+use App\model\Authentication\OTPCode;
 use App\model\Email\BaseEmail;
 use App\model\users\Admin;
 use App\model\users\Donor;
@@ -117,10 +118,12 @@ class Application
     public function login(Login $user): bool
     {
         $Role=$user->getRole();
-        $ID=$user->getID();
+        $ID = $user->getID();
+        $AuthCode = new OTPCode();
         if ($Role === User::MANAGER)
         {
             $this->user = Manager::findOne(['Manager_ID' => $ID]);
+
         }else if ($Role === User::MEDICAL_OFFICER)
         {
             $this->user = MedicalOfficer::findOne(['Officer_ID' => $ID]);
@@ -133,24 +136,25 @@ class Application
         }else if ($Role === User::HOSPITAL)
         {
             $this->user = Hospital::findOne(['Hospital_ID' => $ID]);
-        }else if ($Role === User::ORGANIZATION) {
+        } else if ($Role === User::ORGANIZATION) {
             $this->user = Organization::findOne(['Organization_ID' => $ID]);
-        }else if ($Role === User::SPONSOR){
+        } else if ($Role === User::SPONSOR) {
             $this->user = Sponsor::findOne(['Sponsor_ID' => $ID]);
+        } else {
+            return false;
         }
-        else
-        {
+        if ($this->user === null) {
             return false;
         }
 
-        $primaryKey=$user->primaryKey();
+        $primaryKey = $user->primaryKey();
 
-        $primaryValue=$user->getID();
+        $primaryValue = $user->getID();
 //        Create Login Sessions
 
         //TODO Update the minutes to 30
-        $this->session->set('user',['UID'=>$primaryValue,'UserClass'=>get_class($this->user)],60);
-        $this->session->setFlash('success','Welcome Back '.$user->getEmail());
+        $this->session->set('user', ['UID' => $primaryValue, 'UserClass' => get_class($this->user)], 60);
+        $this->session->setFlash('success', 'Welcome Back ' . $user->getEmail());
         $login = new LoggingHistory();
         $login->setSessionID($this->session->get('user')->getSessionID());
         $login->setUserID($primaryValue);

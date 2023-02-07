@@ -11,9 +11,5 @@ class BaseEmail extends Email
         parent::__construct($config);
     }
 
-    public function send(mixed $to, string $from, string $subject, string $body): bool
-    {
-        return parent::send($to, $from, $subject, $body);
-    }
 
 }

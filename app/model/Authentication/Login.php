@@ -3,15 +3,18 @@
 namespace App\model\Authentication;
 
 use App\model\database\dbModel;
-use App\model\users\Person;
 use App\model\users\User;
 use Core\Application;
-use Core\Model;
 
 class Login extends dbModel
 {
 
-    protected string $UID='';
+    public const Account_Temporary_Disabled = 1;
+    public const Account_Permanently_Disabled = 2;
+
+    protected string $UID = '';
+    protected int $Security_Level = 0;
+
     /**
      * @return string
      */
@@ -27,10 +30,13 @@ class Login extends dbModel
     {
         $this->UID = $ID;
     }
-    protected string $Email='';
-    protected string $Password='';
+
+    protected string $Email = '';
+    protected string $OTP = '';
+    protected string $Password = '';
     protected string $Role='';
-    protected int $Status=1;
+    protected int $Status = 1;
+    protected int $Account_Status = 0;
 
     /**
      * @return string
@@ -39,6 +45,23 @@ class Login extends dbModel
     {
         return $this->Email;
     }
+
+    /**
+     * @return string
+     */
+    public function getOTP(): string
+    {
+        return $this->OTP;
+    }
+
+    /**
+     * @param string $OTP
+     */
+    public function setOTP(string $OTP): void
+    {
+        $this->OTP = $OTP;
+    }
+
 
     /**
      * @param string $Email
@@ -96,12 +119,37 @@ class Login extends dbModel
         $this->Status = $Status;
     }
 
+    /**
+     * @return int
+     */
+    public function getSecurityLevel(): int
+    {
+        return $this->Security_Level;
+    }
+
+    /**
+     * @param int $Security_Level
+     */
+    public function setSecurityLevel(int $Security_Level): void
+    {
+        $this->Security_Level = $Security_Level;
+    }
+
+    public function IsAccountTemporaryBanned(): bool
+    {
+        return User::findOne(['Email'=>$this->getEmail()])->getAccountStatus() === Login::Account_Temporary_Disabled;
+    }
+
+    public function IsAccountPermanentlyBanned(): bool
+    {
+        return User::findOne(['Email'=>$this->getEmail()])->getAccountStatus() === Login::Account_Permanently_Disabled;
+    }
 
     public function rules(): array
     {
         return [
             'Email' => [
-                self::RULE_REQUIRED,self::RULE_EMAIL
+                self::RULE_REQUIRED, self::RULE_EMAIL
             ],
             'Password' => [
                 self::RULE_REQUIRED
@@ -113,31 +161,109 @@ class Login extends dbModel
     public function labels():array
     {
         return[
-            'ID'=>'ID',
+            'UID'=>'User ID',
             'email' => 'Email',
             'password' => 'Password'
         ];
+    }
+
+    public function ValidateOTP()
+    {
+        $user = Login::findOne(['Email' => $this->Email]);
+        if (!$user) {
+            $this->addError('email', 'Invalid User Credential!');
+            return false;
+        }
+
+        if (!password_verify($this->Password, $user->getPassword())) {
+            $this->addError('password', 'Incorrect Password!');
+            return false;
+        }
+        if ($this->IsAccountTemporaryBanned()) {
+            $this->addError('email', 'Your Account is temporarily disabled!');
+            return false;
+        }
+        if ($this->IsAccountPermanentlyBanned()) {
+            $this->addError('email', 'Your Account is permanently disabled!');
+            return false;
+        }
+
+        /* @var OTPCode $OTP */
+        $OTP = OTPCode::findOne(['UserID' => $user->getID()], false);
+        if ($OTP) {
+            if ($OTP->IsExpired()) {
+                $OTP->setUserID($user->getID());
+                $OTP->setType(1);
+                $OTP->GenerateCode('stdinushan@gmail.com');
+                $OTP->sendCode();
+                $OTP->update($user->getID(), ['Verified_At']);
+            }
+        }
+//        if($OTP) {
+//            if ($OTP->IsExpired() || $OTP->IsExceedAttempts(5)) {
+//                $OTP = new OTPCode();
+//                $OTP->setUserID($user->getID());
+//                $OTP->setType(1);
+//                $OTP->GenerateCode('stdinushan@gmail.com');
+//                $OTP->sendCode();
+//                $OTP->update($user->getID(),['Verified_At']);
+//            }
+//        }
+//        else {
+//            $OTP = new OTPCode();
+//            $OTP->setUserID($user->getID());
+//            $OTP->setType(1);
+//            $OTP->GenerateCode('stdinushan@gmail.com');
+//            $OTP->sendCode();
+//            $OTP->save();
+//        }
+        if (!$OTP) {
+            $OTP = new OTPCode();
+            $OTP->setUserID($user->getID());
+            $OTP->setType(1);
+            $OTP->GenerateCode('stdinushan@gmail.com');
+            $OTP->sendCode();
+            $OTP->save();
+        } else {
+            if ($OTP->IsExpired()) {
+                $OTP->setUserID($user->getID());
+                $OTP->setType(1);
+                $OTP->GenerateCode('stdinushan@gmail.com');
+                $OTP->sendCode();
+                $OTP->update($user->getID(), ['Verified_At']);
+            }
+        }
+        $user->setOTP($OTP->getCode());
+        Application::$app->session->set('OTP', $OTP, 5);
+        Application::$app->session->set('User', $user, 5);
+        return $user;
     }
 
     public function login(): bool
     {
 
         //    Hashing Algorithm PASSWORD_BCRYPT
-        $user= Login::findOne(['Email' => $this->Email]);
-        if(!$user)
-        {
-            $this->addError('email','Invalid User Credential!');
-            return false;
-        }
+//        $user= Login::findOne(['Email' => $this->Email]);
+//        if(!$user)
+//        {
+//            $this->addError('email','Invalid User Credential!');
+//            return false;
+//        }
+//
+//        if(!password_verify($this->Password,$user->getPassword()))
+//        {
+//            $this->addError('password','Incorrect Password!');
+//            return false;
+//        }
+//        $OTP= new OTPCode();
+//        $OTP->setUserID($user->getID());
+//        $OTP->setType(1);
+//        $OTP->GenerateCode('stdinushan@gmail.com');
+//        $OTP->sendCode();
 
-        if(!password_verify($this->Password,$user->getPassword()))
-        {
-            $this->addError('password','Incorrect Password!');
-            return false;
-        }
-        $_SESSION['Email'] = $this->Email;
-        Application::$app->login($user);
-        Application::$app->session->setFlash('success','Login Successful!');
+//        Application::$app->login($user);
+
+        Application::$app->session->setFlash('success', 'Login Successful!');
         return true;
     }
 
@@ -153,11 +279,24 @@ class Login extends dbModel
 
     public static function PrimaryKey(): string
     {
-        return 'ID';
+        return 'UID';
     }
 
     public function attributes(): array
     {
-        return ['ID','Email','Password','Role','Status'];
+        return ['UID', 'Email', 'Password', 'Role', 'Status', 'Security_Level'];
+    }
+
+    public function SecurityCheck(): bool
+    {
+        if ($this->IsAccountTemporaryBanned()) {
+            $this->addError('account', 'Your Account is temporarily disabled!');
+            return false;
+        }
+        if ($this->IsAccountPermanentlyBanned()) {
+            $this->addError('account', 'Your Account is permanently disabled!');
+            return false;
+        }
+        return true;
     }
 }

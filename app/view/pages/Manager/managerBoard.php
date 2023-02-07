@@ -8,7 +8,7 @@ use App\view\components\ResponsiveComponent\CardGroup\CardGroup;
 use App\view\components\ResponsiveComponent\ImageComponent\BackGroundImage;
 use App\view\components\ResponsiveComponent\NavbarComponent\AuthNavbar;
 
-$navbar = new AuthNavbar('Manager Board', '/manager', '/public/images/icons/user.png', true,$firstName . ' ' . $lastName,false );
+$navbar = new AuthNavbar('Manager Board', '/manager', '/public/images/icons/user.png', true,false );
 echo $navbar;
 
 use App\view\components\WebComponent\Card\Card;

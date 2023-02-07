@@ -1,91 +1,91 @@
 <?php
 
 namespace App\model\users;
-use App\model\BloodBankBranch\BloodBank;
-use App\model\database\dbModel;
 
-class organization extends Person
+class Organization extends Person
 {
-
     protected string $Organization_ID='';
     protected string $Organization_Name='';
-    protected string $Email='';
-    protected string $Contact_No='';
-    protected string $City='';
-    protected string $Created_At='';
-    protected string $Password='';
-    protected string $Profile_Image='';
-    protected string $Updated_At = '';
+    protected string $Organization_Email='';
+    protected string $Type ='';
 
-    public function getName():string
-    {
-        return $this->Organization_Name;
-    }
-    public function getID()
+    public function getID(): string
     {
         return $this->Organization_ID;
-    }
-
-    public function setID(string $Id)
-    {
-        $this->UID=$Id;
-    }
-
-    public function getRole(): string
-    {
-        return 'Organization';
     }
 
     /**
      * @return string
      */
-//    public function getPosition(): string
-//    {
-//        return $this->Position;
-//    }
-
-    /**
-     * @param string $Position
-     */
-//    public function setPosition(string $Position): void
-//    {
-//        $this->Position = $Position;
-//    }
-
-    /**
-     * @param string $Branch_ID
-     */
-//    public function setBranchID(string $Branch_ID): void
-//    {
-//        $this->Branch_ID = $Branch_ID;
-//    }
-
-    /**
-     * @param string $Joined_Date
-     */
-    public function setJoinedDate(string $Joined_Date): void
+    public function getOrganizationName(): string
     {
-        $this->Created_At = $Joined_Date;
+        return $this->Organization_Name;
+    }
+
+    /**
+     * @param string $Organization_Name
+     */
+    public function setOrganizationName(string $Organization_Name): void
+    {
+        $this->Organization_Name = $Organization_Name;
+    }
+
+    /**
+     * @return string
+     */
+    public function getType(): string
+    {
+        return $this->Type;
+    }
+
+    /**
+     * @param string $Type
+     */
+    public function setType(string $Type): void
+    {
+        $this->Type = $Type;
+    }
+
+    public function getEmail():string
+    {
+        return $this->Organization_Email;
     }
 
 
 
+    public function labels(): array
+    {
+        return [
+            'Organization_ID'=>'Organization ID',
+            'Organization_Name'=>'Organization Name',
+            'Address1'=>'Address 1',
+            'Address2'=>'Address 2',
+            'Email'=>'Email',
+            'City'=>'City',
+            'Contact_No'=>'Contact No',
+            'Type'=>'Type',
+            'Profile_Image'=>'Profile Image'
+        ];
+    }
+
     public function rules(): array
     {
         return [
-            'Organization_ID'=>[self::RULE_REQUIRED,self::RULE_UNIQUE],
+            'Organization_ID'=>[self::RULE_UNIQUE,self::RULE_REQUIRED],
             'Organization_Name'=>[self::RULE_REQUIRED],
-            'Organization_Email'=>[self::RULE_REQUIRED,self::RULE_UNIQUE,self::RULE_EMAIL],
             'Address1'=>[self::RULE_REQUIRED],
             'Address2'=>[self::RULE_REQUIRED],
+            'Email'=>[self::RULE_REQUIRED],
             'City'=>[self::RULE_REQUIRED],
-           'Contact_No'=>[self::RULE_REQUIRED,self::RULE_MOBILE_NO],
+            'Contact_No'=>[self::RULE_REQUIRED],
+            'Type'=>[self::RULE_REQUIRED],
+            'Profile_Image'=>[self::RULE_REQUIRED]
         ];
     }
 
     public static function getTableShort(): string
     {
-        return 'mo';
+        return 'org';
     }
 
     public static function tableName(): string
@@ -103,45 +103,23 @@ class organization extends Person
         return [
             'Organization_ID',
             'Organization_Name',
-            'Created_At',
-            'Updated_At',
-            'Status',
-            'Email',
             'Address1',
             'Address2',
+            'Email',
             'City',
-            'Profile_Image',
             'Contact_No',
+            'Type',
+            'Profile_Image'
         ];
     }
 
-    public function GetAttributesValue($attributes)
+    public function getRole(): string
     {
-        return $this->{$attributes};
+        return 'Organization';
     }
 
-    public function labels(): array
+    public function setID(string $ID): void
     {
-        return [
-            'Organization_ID'=>'UID',
-            'Organization_Name'=>'Organization_Name',
-            'Joined_Date'=>'Joined Date',
-            'Status'=>'Status',
-            'Organization_Email'=>'Email',
-            'Address1'=>'Address1',
-            'Address2'=>'Address2',
-            'City'=>'City',
-            'ImageURL'=>'Image URL',
-            'Contact_No'=>'Contact No',
-
-        ];
-    }
-    public function getProfileImage(): string
-    {
-        return $this->Profile_Image; // TODO: Change the autogenerated stub
-    }
-    public function setProfileImage(string $Profile_Image): void
-    {
-         $this->Profile_Image = $Profile_Image; // TODO: Change the autogenerated stub
+        $this->Organization_ID=$ID;
     }
 }

@@ -1,17 +1,3 @@
-<<?php
-/* @var string $firstName*/
-/* @var string $lastName*/
-
-use App\view\components\ResponsiveComponent\NavbarComponent\AuthNavbar;
-use App\view\components\ResponsiveComponent\NavbarComponent\Navbar;
-
-$navbar= new Navbar([
-    'Home'=>'/home',
-    'About'=>'/about',
-    'Contact'=>'/contact',
-    'Register'=>'/register'
-],'#','/public/images/icons/user.png','');
-?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -23,17 +9,6 @@ $navbar= new Navbar([
     <link rel="stylesheet" href="/public/css/framework/utils.css">
 </head>
 <body>
-
-<?php
-echo AuthNavbar::getNavbarCSS();
-
-echo $navbar
-?>
     {{content}}
 </body>
-<?php
-echo AuthNavbar::getNavbarJS();
-?>
-<!--<script src="/public/scripts/navbar/navbar.js"></script>-->
-
 </html>

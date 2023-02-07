@@ -8,6 +8,10 @@
     <link rel="stylesheet" href="/public/css/custom/admin/index.css">
     <link rel="stylesheet" href="/public/css/card.css">
     <link rel="stylesheet" href="/public/css/framework/utils.css">
+    <script src="https://kit.fontawesome.com/185eb0391e.js" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">></script>
+
+
     <title>Admin</title>
 </head>
 <body>
@@ -30,8 +34,6 @@
 <!--    </div>-->
 <script>
     function run(){
-        console.log("Hi")
-        closeDialog();
     }
 </script>
 <div class="side-bar">
@@ -50,6 +52,12 @@
                 <a >
                     <img src="/public/images/icons/admin/dashboard/donation.png" width="40rem" alt="">
                     <span class="nav-link-text">Donors</span>
+                </a>
+            </div>
+            <div onclick="RenderPage('manageBanks')" class="side-bar-link" id="manageBanks">
+                <a >
+                    <img src="/public/images/icons/admin/dashboard/blood-bank.png" width="40rem" alt="">
+                    <span class="nav-link-text">Blood Bank</span>
                 </a>
             </div>
             <div onclick="RenderPage('manageUsers')" class="side-bar-link" id="manageUsers">
@@ -107,12 +115,18 @@
     }
     let timeoutId=0;
     function KeepLive(param){
-        let path='/admin/dashboard/';
+        if (param.trim() === ''){
+            param = '?layout=none';
+        }
+        else {
+            param ='/'+param
+        }
+        let path='/admin/dashboard';
         timeoutId =setInterval(function(){
             let xhr = new XMLHttpRequest()
             xhr.onreadystatechange = function(){
                 if(xhr.readyState === 4 && xhr.status === 200){
-                    console.log(xhr.responseText);
+                    console.log(xhr.responseText)
                     document.querySelector('.content').innerHTML=this.responseText;
                 }
             }
@@ -127,6 +141,7 @@
             console.log("Cleared");
             clearInterval(timeoutId)
         }
+        // KeepLive(param);
         let xhttp=new XMLHttpRequest();
         xhttp.onreadystatechange=function ()
         {
@@ -136,7 +151,6 @@
                 {
                     param='adminBoard';
                 }
-                KeepLive(param);
                 const links=document.getElementsByClassName('side-bar-links')[0].children;
                 for (let i=0;i<links.length;i++)
                 {
@@ -149,6 +163,7 @@
         Url='/admin/dashboard/'+param;
         if (param.trim()===''){
             Url='/admin/dashboard?layout=none';
+            window.location.reload();
         }
 
         xhttp.open('GET',Url,true);
@@ -157,4 +172,8 @@
 </script>
 </body>
 <script src="/public/js/components/dialog-box/dialog-box.js"></script>
+<script src="/public/js/components/toasts/toast.js"></script>
+<script src="/public/js/admin/manageBanks.js"></script>
+<script src="/public/js/admin/manageUsers.js"></script>
+<script src="/public/js/admin/manageSetting.js"></script>
 </html>

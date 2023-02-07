@@ -1,0 +1,25 @@
+.cursor:hover{
+    cursor: pointer;
+}
+
+.pointer-events-none{
+    pointer-events: none;
+}
+
+
+.text-cursor{
+    cursor: text;
+}
+
+/*Scrollbar*/
+::-webkit-scrollbar {
+    width: 10px;
+}
+::-webkit-input-placeholder {
+    text-align: center;
+}
+:-moz-placeholder {
+    text-align: center;
+}
+
+

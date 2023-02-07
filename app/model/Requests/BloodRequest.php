@@ -3,36 +3,194 @@
 namespace App\model\Requests;
 
 //TODO : Create Blood Request Model
-class BloodRequest extends \App\model\database\dbModel
+use App\model\database\dbModel;
+use App\model\users\Hospital;
+
+class BloodRequest extends dbModel
 {
+    public const NORMAL_REQUEST = 1;
+    public const CRITICAL_REQUEST = 2;
+    public const REQUEST_STATUS_PENDING = 1;
+    public const REQUEST_STATUS_FULFILLED = 2;
+    protected string $Request_ID;
+    protected string $BloodGroup;
+    protected string $Requested_By;
+    protected string $Requested_At;
+    protected int $Status=1;
+    protected int $Type=1;
+
+    /**
+     * @return int
+     */
+    public function getType(): string
+    {
+        return match ($this->Type) {
+            self::NORMAL_REQUEST => 'Normal Request',
+            self::CRITICAL_REQUEST => 'Emergency Request',
+        };
+    }
+
+    /**
+     * @param int $Type
+     */
+    public function setType(int $Type): void
+    {
+        $this->Type = $Type;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRequestID(): string
+    {
+        return $this->Request_ID;
+    }
+
+    public function getBloodTypeImage()
+    {
+        switch ($this->BloodGroup) {
+            case 'A+':
+                return '/public/images/icons/BloodType/A+.png';
+            case 'A-':
+                return '/public/images/icons/BloodType/A-.png';
+            case 'B+':
+                return '/public/images/icons/BloodType/B+.png';
+            case 'B-':
+                return '/public/images/icons/BloodType/B-.png';
+            case 'AB+':
+                return '/public/images/icons/BloodType/AB+.png';
+            case 'AB-':
+                return '/public/images/icons/BloodType/AB-.png';
+            case 'O+':
+                return '/public/images/icons/BloodType/O+.png';
+            case 'O-':
+                return '/public/images/icons/BloodType/O-.png';
+        }
+    }
+
+    /**
+     * @param string $Request_ID
+     */
+    public function setRequestID(string $Request_ID): void
+    {
+        $this->Request_ID = $Request_ID;
+    }
+
+    /**
+     * @return string
+     */
+    public function getBloodGroup(): string
+    {
+        return $this->BloodGroup;
+    }
+
+    /**
+     * @param string $BloodGroup
+     */
+    public function setBloodGroup(string $BloodGroup): void
+    {
+        $this->BloodGroup = $BloodGroup;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRequestedBy(): string
+    {
+        $Hospital = Hospital::findOne(['Hospital_ID' => $this->Requested_By]);
+        return $Hospital->getHospitalName();
+    }
+
+    /**
+     * @param string $RequestedBy
+     */
+    public function setRequestedBy(string $RequestedBy): void
+    {
+        $this->RequestedBy = $RequestedBy;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRequestedAt(): string
+    {
+        return $this->Requested_At;
+    }
+
+    /**
+     * @param string $Requested_At
+     */
+    public function setRequestedAt(string $Requested_At): void
+    {
+        $this->Requested_At = $Requested_At;
+    }
+
+    /**
+     * @return string
+     */
+    public function getStatus(): string
+    {
+        return $this->Status;
+    }
+
+    /**
+     * @param string $Status
+     */
+    public function setStatus(string $Status): void
+    {
+        $this->Status = $Status;
+    }
+
+
+
 
     public function labels(): array
     {
-        // TODO: Implement labels() method.
+        return [
+            'Request_ID' => 'Request ID',
+            'BloodGroup' => 'Blood Group',
+            'RequestedBy' => 'Requested By',
+            'Requested_At' => 'Requested At',
+            'Status' => 'Status'
+        ];
     }
 
     public function rules(): array
     {
-        // TODO: Implement rules() method.
+        return [
+            'Request_ID' => [self::RULE_REQUIRED],
+            'BloodGroup' => [self::RULE_REQUIRED],
+            'RequestedBy' => [self::RULE_REQUIRED],
+            'Requested_At' => [self::RULE_REQUIRED],
+            'Status' => [self::RULE_REQUIRED],
+            'Type' => [self::RULE_REQUIRED]
+        ];
     }
 
     public static function getTableShort(): string
     {
-        // TODO: Implement getTableShort() method.
+        return 'br';
     }
 
     public static function tableName(): string
     {
-        // TODO: Implement tableName() method.
+        return 'Blood_Requests';
     }
 
     public static function PrimaryKey(): string
     {
-        // TODO: Implement PrimaryKey() method.
+        return 'Request_ID';
     }
 
     public function attributes(): array
     {
-        // TODO: Implement attributes() method.
+        return [
+            'Request_ID',
+            'BloodGroup',
+            'RequestedBy',
+            'Requested_At',
+            'Status',
+            'Type'
+        ];
     }
 }

@@ -2,8 +2,6 @@
 
 namespace App\model\users;
 
-use App\model\database\dbModel;
-
 class Sponsor extends Person
 {
     protected string $Sponsor_ID='';
@@ -79,5 +77,10 @@ class Sponsor extends Person
     public function getRole(): string
     {
         return 'Sponsors';
+    }
+
+    public function setID(string $ID): void
+    {
+        $this->Sponsor_ID=$ID;
     }
 }

@@ -6,7 +6,18 @@ use App\model\database\dbModel;
 
 abstract class Person extends dbModel
 {
+    public const DONOR='Donor';
+    public const MEDICAL_OFFICER='MedicalOfficer';
+    public const MANAGER='Manager';
+    public const ADMIN='Admin';
+    public const HOSPITAL='Hospital';
+    public const SPONSOR='Sponsor';
+    public const ORGANIZATION='Organization';
+
+
     abstract public function getRole(): string;
+    abstract public function getID(): string;
+    abstract public function setID(string $ID): void;
     protected string $First_Name='';
     protected string $Last_Name='';
     protected string $Address1='';
@@ -15,7 +26,7 @@ abstract class Person extends dbModel
     protected string $NIC='';
     protected string $Gender='';
     protected string $Nationality='';
-    protected string $Contact_No='';
+    protected ?string $Contact_No='';
     protected string $Email='';
     protected string $Profile_Image='';
     protected bool $Availability=true;
@@ -24,14 +35,28 @@ abstract class Person extends dbModel
     /**
      * @return string
      */
+
+
+
+    /**
+     * @return string
+     */
     public function getGender(): string
     {
-        return $this->Gender;
+        return match ($this->Gender) {
+            'F' => 'Female',
+            'M' => 'Male',
+            default => 'Other',
+        };
+    }
+
+    public function getAccountStatus()
+    {
+        return User::findOne(['UID' => $this->getID()])->getAccountStatus();
     }
 
     public function getLastActive(): string
     {
-        //TODO Implement this
         return 'Last Active';
     }
 

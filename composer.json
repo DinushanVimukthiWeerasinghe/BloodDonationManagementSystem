@@ -22,7 +22,6 @@
         "ext-json": "*",
         "ext-gd": "*",
         "phpmailer/phpmailer": "^6.5",
-        "phpunit/phpunit": "^9",
-        "ext-ev": "*"
+        "phpunit/phpunit": "^9"
     }
 }

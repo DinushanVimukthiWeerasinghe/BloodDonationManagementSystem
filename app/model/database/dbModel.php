@@ -75,14 +75,20 @@ abstract class dbModel extends Model
             return $statement->rowCount();
         }
 
+
     }
 
-    public static function Search(array $array,array $limit=[]): bool|array
+    public static function Search(array $array,array $exactMatch=[],array $limit=[]): bool|array
     {
         $tableName = static::tableName();
         $primaryKey = static::PrimaryKey();
         $attributes = array_keys($array);
         $sql= implode(" OR ",array_map(fn($attr)=>"$attr LIKE :$attr",$attributes));
+        if (!empty($exactMatch)){
+            $exactMatchKeys = array_keys($exactMatch);
+            $exactMatchSql = implode(" OR ",array_map(fn($attr)=>"$attr = :$attr",$exactMatchKeys));
+            $sql.=" OR $exactMatchSql";
+        }
         $limits='';
         if (!empty($limit)){
             $limits=" LIMIT $limit[0],$limit[1]";
@@ -90,6 +96,9 @@ abstract class dbModel extends Model
         $statement = self::prepare("SELECT * FROM $tableName WHERE $sql $limits");
         foreach ($array as $key => $value) {
             $statement->bindValue(":$key","%".$value."%");
+        }
+        foreach ($exactMatch as $key => $value) {
+            $statement->bindValue(":$key",$value);
         }
         $statement->execute();
         return $statement->fetchAll(PDO::FETCH_CLASS,static::class);
@@ -171,50 +180,24 @@ abstract class dbModel extends Model
             return $number;
         }
     }
-    public function save()
-    {
-        $tableName = static::tableName();
-        $attributes=$this->attributes();
-        $PK=$this->getPrimaryKey(static::tableName())[0];
-        $params=array_map(fn($attr)=>":$attr",$attributes);
 
-        $statement=self::prepare("INSERT INTO $tableName (".implode(',',$attributes).") VALUES (".implode(',',$params).")");
-
-        foreach ($attributes as $attribute)
-        {
-            $statement->bindValue(":$attribute",$this->{$attribute});
-        }
-
-        if (!$statement->execute()) {
-            return false;
-        }
-
-        return true;
-    }
-
-    public function saver($exclude = [])
+    public function save(array $Exclude=[])
     {
 
         $tableName = static::tableName();
-        $attributes=$this->attributes();
-        $PK=$this->getPrimaryKey(static::tableName())[0];
+        $attributes = $this->attributes();
+        $PK = $this->getPrimaryKey(static::tableName())[0];
+        $params = array_map(fn($attr) => ":$attr", $attributes);
 
-
-        $params=array_map(fn($attr)=>":$attr",$attributes);
-//        print_r($attributes);
-
-        foreach ($exclude as $key => $value) {
-            $index=array_search(":$value",$params);
-//            print_r(":$value");
-//            print_r($index);
+        foreach ($Exclude as $key => $value) {
+            $index = array_search(":$value", $params);
             unset($attributes[$index]);
             unset($params[$index]);
         }
-        $statement=self::prepare("INSERT INTO $tableName (".implode(',',$attributes).") VALUES (".implode(',',$params).")");
+        $statement = self::prepare("INSERT INTO $tableName (" . implode(',', $attributes) . ") VALUES (" . implode(',', $params) . ")");
 //        $attributes['username']="username";
-        foreach ($attributes as $attribute)
-        {
-            $statement->bindValue(":$attribute",$this->{$attribute});
+        foreach ($attributes as $attribute) {
+            $statement->bindValue(":$attribute", $this->{$attribute});
         }
 
         $statement->execute();
@@ -224,19 +207,21 @@ abstract class dbModel extends Model
     }
 
 
-    public function update($id): bool
+    public function update($id, $Exclude = []): bool
     {
         $tableName = static::tableName();
-        $attributes=$this->attributes();
-        $params=array_map(fn($attr)=>":$attr",$attributes);
+        $attributes = $this->attributes();
+        $params = array_map(fn($attr) => ":$attr", $attributes);
 
-        $demo='UPDATE '.$tableName.' SET ';
-        foreach ($attributes as $attribute)
-        {
-            if ($attribute==static::PrimaryKey()){
+        $demo = 'UPDATE ' . $tableName . ' SET ';
+        foreach ($attributes as $attribute) {
+            if ($attribute == static::PrimaryKey()) {
                 continue;
             }
-            $demo.=$attribute.'="'.$this->{$attribute}.'", ';
+            if (in_array($attribute, $Exclude)) {
+                continue;
+            }
+            $demo .= $attribute . '="' . $this->{$attribute} . '", ';
         }
         $demo=substr($demo,0,-2);
         $demo.=' WHERE '.static::PrimaryKey().'="'.$id.'"';
@@ -275,26 +260,28 @@ abstract class dbModel extends Model
         {
             $statement->bindValue(":$key",$item);
         }
-        foreach ($value as $key=>$item)
-        {
-            $statement->bindValue(":$key",$item);
+        foreach ($value as $key => $item) {
+            $statement->bindValue(":$key", $item);
         }
         $statement->execute();
 
         return $statement->fetchObject(static::class);
     }
 
-    public static function findOne($where)
+
+    public static function findOne($where, $OR = true)
     {
-        $tableName= static::tableName();
-        $attributes=array_keys($where);
+        $tableName = static::tableName();
+        $attributes = array_keys($where);
+        if ($OR) {
+            $sql = implode(" OR ", array_map(fn($attr) => "$attr=:$attr", $attributes));
+        } else {
+            $sql = implode(" AND ", array_map(fn($attr) => "$attr=:$attr", $attributes));
+        }
 
-        $sql=implode(" AND ",array_map(fn($attr)=>"$attr=:$attr",$attributes));
-
-        $statement=self::prepare("SELECT * FROM $tableName WHERE $sql");
-        foreach ($where as $key=>$item)
-        {
-            $statement->bindValue(":$key",$item);
+        $statement = self::prepare("SELECT * FROM $tableName WHERE $sql");
+        foreach ($where as $key => $item) {
+            $statement->bindValue(":$key", $item);
         }
         $statement->execute();
 
@@ -331,5 +318,6 @@ abstract class dbModel extends Model
         }
         return $columns;
     }
+
 
 }

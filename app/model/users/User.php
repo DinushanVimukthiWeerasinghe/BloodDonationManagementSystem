@@ -14,7 +14,30 @@ class User extends dbModel
     public const MEDICAL_OFFICER='MedicalOfficer';
     public const MANAGER='Manager';
     public const HOSPITAL='Hospital';
+
+    public const ACTIVE = 0;
+    public const TEMPORARY_DEACTIVATED = 1;
+
+    public const PERMANENTLY_DEACTIVATED = 2;
+    public const SEC_LEVEL_SUSPICIOUS = 1;
+    public const SEC_LEVEL_NORMAL = 0;
+    public const SEC_LEVEL_HIGH = 2;
+
     protected string $UID='';
+    protected string $First_Name='';
+    protected string $Last_Name='';
+    protected string $NIC='';
+    protected string $ContactNo='';
+    protected string $Address1='';
+    protected string $Address2='';
+    protected string $City='';
+    protected int $Status=0;
+    protected string $Profile_Image='';
+    protected string $Email='';
+    protected string $Password='';
+    protected int $Account_Status=0;
+    protected string $Role='';
+
 
     /**
      * @param string $Uid
@@ -23,9 +46,60 @@ class User extends dbModel
     {
         $this->ID = $Uid;
     }
-    protected string $Email='';
-    protected string $Password='';
-    protected string $Role='';
+
+    /**
+     * @param string $Password
+     */
+    public function setPassword(string $Password): void
+    {
+        $this->Password = $Password;
+    }
+
+    public function IsValidRole($role): bool
+    {
+        return in_array($role, [self::ADMIN, self::DONOR, self::ORGANIZATION, self::SPONSOR, self::MEDICAL_OFFICER, self::MANAGER, self::HOSPITAL]);
+    }
+
+
+
+
+    public function getFullName()
+    {
+        return match ($this->Role) {
+            self::DONOR => Donor::findOne(['Donor_ID' => $this->UID])->getFullName(),
+            self::ORGANIZATION => Organization::findOne(['Organization_ID' => $this->UID])->getFullName(),
+            self::SPONSOR => Sponsor::findOne(['Sponsor_ID' => $this->UID])->getFullName(),
+            self::MEDICAL_OFFICER => MedicalOfficer::findOne(['Officer_ID' => $this->UID])->getFullName(),
+            self::MANAGER => Manager::findOne(['Manager_ID' => $this->UID])->getFullName(),
+            self::HOSPITAL => Hospital::findOne(['Hospital_ID' => $this->UID])->getFullName(),
+            self::ADMIN => Admin::findOne(['Admin_ID' => $this->UID])->getFullName(),
+            default => '',
+        };
+
+    }
+
+    /**
+     * @return int
+     */
+    public function getAccountStatus(): int
+    {
+        return $this->Account_Status;
+    }
+
+    /**
+     * @param int $Account_Status
+     */
+    public function setAccountStatus(int $Account_Status): void
+    {
+        $this->Account_Status = $Account_Status;
+    }
+
+
+
+    public function getID(): string
+    {
+        return $this->UID;
+    }
 
     /**
      * @param string $Role
@@ -34,20 +108,9 @@ class User extends dbModel
     {
         $this->Role = $Role;
     }
-    protected string $First_Name='';
-    protected string $Last_Name='';
-    protected string $NIC='';
-    protected string $ContactNo='';
-    protected string $Address1='';
-    protected string $Address2='';
-    protected string $City='';
-    protected string $Status='';
-    protected string $Profile_Image='';
 
-    public function getFullName(): string
-    {
-        return $this->First_Name.' '.$this->Last_Name;
-    }
+
+
 
     /**
      * @return string
@@ -80,6 +143,21 @@ class User extends dbModel
     public function setFirstName(string $First_Name): void
     {
         $this->First_Name = $First_Name;
+    }
+
+    public function IsTemporaryDeactivated(): bool
+    {
+        return $this->Status == self::TEMPORARY_DEACTIVATED;
+    }
+
+    public function IsPermanentlyDeactivated(): bool
+    {
+        return $this->Status == self::PERMANENTLY_DEACTIVATED;
+    }
+
+    public function IsDeactivated(): bool
+    {
+        return $this->IsTemporaryDeactivated() || $this->IsPermanentlyDeactivated();
     }
 
     /**
@@ -160,6 +238,11 @@ class User extends dbModel
     public function setAddress2(string $Address2): void
     {
         $this->Address2 = $Address2;
+    }
+
+    public function getLastActive()
+    {
+        return 'Last Active';
     }
 
     /**
@@ -252,6 +335,14 @@ class User extends dbModel
         return $this->Role === 'Sponsor';
     }
 
+    /**
+     * @return string
+     */
+    public function getPassword(): string
+    {
+        return $this->Password;
+    }
+
 
     /**
      * @return string
@@ -282,35 +373,41 @@ class User extends dbModel
         return true;
     }
 
-    public static function getUserInfo()
+    public static function getUserInfo(string $Role='Donor')
     {
-        $users=User::RetrieveAll();
-        foreach ($users as $key=>$user)
+        $Getters=User::RetrieveAll(false,[],true,['Role'=>$Role]);
+        $users=[];
+        foreach ($Getters as $key=>$user)
         {
             if ($user->getRole()=='Manager'){
-                $data=Manager::findOne(['ID'=>$user->getUid()]);
+                $data=Manager::findOne(['Manager_ID'=>$user->getUid()]);
                 if ($data){
                     $users[$key]=$data;
                 }
             }else if ($user->getRole()=='MedicalOfficer'){
-                $data=MedicalOfficer::findOne(['ID'=>$user->getUid()]);
+                $data=MedicalOfficer::findOne(['Officer_ID'=>$user->getUid()]);
                 if ($data){
                     $users[$key]=$data;
                 }
             }else if ($user->getRole()=='Donor'){
-                $data=Donor::findOne(['ID'=>$user->getUid()]);
+                $data=Donor::findOne(['Donor_ID'=>$user->getUid()]);
                 if ($data){
                     $users[$key]=$data;
                 }
             }else if ($user->getRole()=='Organization'){
-                $data=Organization::findOne(['ID'=>$user->getUid()]);
+                $data=Organization::findOne(['Organization_ID'=>$user->getUid()]);
                 if ($data){
                     $users[$key]=$data;
                 }
             }else if ($user->getRole()=='Sponsor'){
-                $data=Sponsor::findOne(['ID'=>$user->getUid()]);
+                $data=Sponsor::findOne(['Sponsor_ID'=>$user->getUid()]);
                 if ($data){
                     $users[$key]=$data;
+                }
+            }else if($user->getRole()=='Hospital') {
+                $data = Hospital::findOne(['Hospital_ID' => $user->getUid()]);
+                if ($data) {
+                    $users[$key] = $data;
                 }
             }
 
@@ -334,22 +431,22 @@ class User extends dbModel
 
     public static function tableName(): string
     {
-        return 'users';
+        return 'Users';
     }
 
     public static function PrimaryKey(): string
     {
-        return 'Uid';
+        return 'UID';
     }
 
     public function attributes(): array
     {
         return [
-            'Uid',
+            'UID',
             'Email',
             'Password',
-            'UserName',
-            'Role'
+            'Role',
+            'Account_Status'
         ];
     }
 
@@ -363,19 +460,5 @@ class User extends dbModel
             'Role'=>'Role'
         ];
     }
-//    public function save()
-//    {
-//        return parent::save();
-//    }
-//    public function register(){
-//        $this -> save();
-//    }
 
-//    public function setID(string $string)
-//    {
-//    }
-    public function setID(int $id)
-    {
-        $this->UID = $id;
-    }
 }
