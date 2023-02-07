@@ -33,25 +33,6 @@ class managerController extends Controller
         $user=Application::$app->getUser();
         return $this->render('Manager/profile',['user'=>$user]);
     }
-
-
-
-    public function register(Request $request,Response $response ): string
-    {
-        $manager=new Manager();
-        if ($request->isPost())
-        {
-            $manager->loadData($request->getBody());
-            $manager->getFile()->saveFile();
-            if($manager->validate() && $manager->save())
-            {
-                
-                $response->redirect('/manager/login');
-            }
-        }
-        return $this->render('Manager\register');
-    }
-
     public function dashboard(): string
     {
         /* @var Manager $manager*/

@@ -483,7 +483,6 @@ CREATE TABLE IF NOT EXISTS  Sponsor_Notifications
     Valid_Until           TIMESTAMP NULL,
     FOREIGN KEY (Target_ID) REFERENCES Sponsors(Sponsor_ID)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 # Create Admin Notification Table
 # DROP TABLE IF EXISTS Admin_Notifications;

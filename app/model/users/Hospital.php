@@ -30,6 +30,10 @@ class Hospital extends Person
     {
         return $this->Hospital_ID;
     }
+    public function getFullName(): string
+    {
+        return $this->Hospital_Name.' Hospital';
+    }
 
     public function getRole(): string
     {

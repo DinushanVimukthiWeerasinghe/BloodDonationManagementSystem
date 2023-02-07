@@ -9,7 +9,7 @@ use PhpParser\Node\Expr\Array_;
 class MedicalOfficer extends Person
 {
     protected string $BloodBank_ID='';
-    protected string $Joined_Date='';
+    protected string $Joined_At='';
     protected string $Position='';
     protected string $Registration_Number='';
     protected string $Registration_Date='';

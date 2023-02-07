@@ -5,6 +5,7 @@ use App\controller\apiController;
 use App\controller\authController;
 use App\controller\donorController;
 use App\controller\fileController;
+use App\controller\hospitalController;
 use App\controller\managerController;
 use App\controller\siteController;
 use Core\Application;
@@ -17,7 +18,7 @@ $config=[
     'db'=>[
         'dsn'=>$_ENV['DB_DSN'],
         'user'=>$_ENV['DB_USER'],
-        'password'=>$_ENV['DB_PASSWORD']
+        'password'=>$_ENV['DB_PASSWORD'] ?? ''
     ],
     'email'=>[
         'host'=>$_ENV['EMAIL_HOST'],
@@ -133,7 +134,30 @@ $app->router->get('/manager/mngRequests/emergency', [managerController::class, '
 
 $app->router->get('/api/bbank/getall', [apiController::class, 'getBloodBanks']);
 
+//Hospital login
+$app->router->get('/hospital/login', [hospitalController::class, 'login']);
+$app->router->post('/hospital/login', [hospitalController::class, 'login']);
+$app->router->get('/hospital/dashboard', [hospitalController::class, 'dashboard']);
+$app->router->post('/hospital/dashboard', [hospitalController::class, 'dashboard']);
+$app->router->get('/hospital/emergencyRequest', [hospitalController::class, 'emergencyRequest']);
+$app->router->post('/hospital/emergencyRequest', [hospitalController::class, 'emergencyRequest']);
+$app->router->get('/hospital/bloodRequest', [hospitalController::class, 'bloodRequest']);
+$app->router->post('/hospital/bloodRequest', [hospitalController::class, 'bloodRequest']);
+
+$app->router->get('/hospital/donors', [hospitalController::class, 'donors']);
+$app->router->post('/hospital/donors', [hospitalController::class, 'donors']);
+$app->router->get('/hospital/donors/find', [hospitalController::class, 'FindDonor']);
+
+$app->router->get('/hospital/emergencyRequest/addRequest', [hospitalController::class, 'addEmergencyRequest']);
+$app->router->post('/hospital/emergencyRequest/addRequest', [hospitalController::class, 'addEmergencyRequest']);
+$app->router->get('/hospital/emergencyRequest/history', [hospitalController::class, 'emergencyRequestHistory']);
+$app->router->post('/hospital/emergencyRequest/history', [hospitalController::class, 'emergencyRequestHistory']);
+
+$app->router->get('/hospital/bloodRequest/addRequest', [hospitalController::class, 'addBloodRequest']);
+$app->router->post('/hospital/bloodRequest/addRequest', [hospitalController::class, 'addBloodRequest']);
+$app->router->get('/hospital/bloodRequest/history', [hospitalController::class, 'bloodRequestHistory']);
+$app->router->post('/hospital/bloodRequest/history', [hospitalController::class, 'bloodRequestHistory']);
 
 
-//print_r($_SESSION);
+
 $app->run();

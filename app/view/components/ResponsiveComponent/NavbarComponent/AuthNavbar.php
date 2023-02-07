@@ -39,7 +39,7 @@ class AuthNavbar
     private function getProfile()
     {
         $user=Application::$app->getUser();
-        $profileName=$user->getFirstName().' '.$user->getLastName();
+        $profileName=$user->getFullName();
         $actions=Application::$app->request->getPath();
         $path=explode('/',$actions);
         $action=$path[2];
