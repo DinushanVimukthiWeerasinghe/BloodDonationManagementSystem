@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="/public/css/custom/admin/index.css">
     <link rel="stylesheet" href="/public/css/card.css">
     <link rel="stylesheet" href="/public/css/framework/utils.css">
+    <script src="https://kit.fontawesome.com/185eb0391e.js" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">></script>
 
 
@@ -171,5 +172,8 @@
 </script>
 </body>
 <script src="/public/js/components/dialog-box/dialog-box.js"></script>
+<script src="/public/js/components/toasts/toast.js"></script>
 <script src="/public/js/admin/manageBanks.js"></script>
+<script src="/public/js/admin/manageUsers.js"></script>
+<script src="/public/js/admin/manageSetting.js"></script>
 </html>

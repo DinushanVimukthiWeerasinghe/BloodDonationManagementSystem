@@ -1,13 +1,14 @@
 <?php
 /* @var $data array*/
 /* @var $value BloodRequest*/
-
+/* @var $total_pages int*/
+/* @var $current_page int*/
 use App\model\Requests\BloodRequest;
 use App\model\Utils\Date;
-use App\view\components\ResponsiveComponent\ButtonComponent\DashBoardButton;
 use App\view\components\ResponsiveComponent\CardPane\CardPane;
 use App\view\components\ResponsiveComponent\ImageComponent\BackGroundImage;
 use App\view\components\ResponsiveComponent\NavbarComponent\AuthNavbar;
+
 $navbar= new AuthNavbar('Manage Requests','/manager','/public/images/icons/user.png',true,false);
 echo $navbar;
 $background=new BackGroundImage();
@@ -38,18 +39,18 @@ echo $background;
 <!--TODO Implement Emergency Request and Normal Request Filter-->
 
 <div id="detail-pane" class="min-w-80 max-w-90 min-h-80 d-flex justify-content-center flex-column align-items-center">
-    <div id="detail-pane" class="min-w-80 max-w-90 mt-10 min-h-80 d-flex justify-content-center flex-column align-items-center">
+    <div id="detail-pane" class="min-w-80 max-w-90 mt-10 min-h-80 d-flex justify-content-center flex-column align-items-center" style="margin-top: 6rem">
 
         <div id="filter-pane" class="filter-pane">
-            <div class="text-3xl">Filter Request : </div>
-            <div class="d-flex justify-content-evenly">
+<!--            <div class="text-xl">Filter Request : </div>-->
+            <div class="d-flex justify-content-evenly gap-1">
                 <div class="search-input">
                     <input type="checkbox" class="check-box" name="emergencyRequest" id="emergency" onchange="FilterOnlyNormalRequest()" checked>
-                    <label for="emergency" class="search">Emergency Request </label>
+                    <label for="emergency" class="search text-white " style="font-size: 1.5rem">Emergency Request </label>
                 </div>
                 <div class="search-input">
                     <input type="checkbox" class="check-box" name="normalRequest" id="emergency" onchange="FilterOnlyEmergencyRequest()" checked>
-                    <label for="emergency" class="search">Normal Request </label>
+                    <label for="emergency" class="search text-white" style="font-size: 1.5rem">Normal Request </label>
                 </div>
             </div>
 
@@ -57,18 +58,55 @@ echo $background;
         </div>
         <div class="filter-card">
             <div class="card-navigation">
+                <?php
+                if ($current_page<=1):
+                ?>
                 <a class="disabled" href="?page=1"><img class="nav-btn" src="/public/images/icons/previous.png"
                                                         alt=""></a>
+                <?php
+                else :
+                ?>
+                <a  href="?page=<?=$current_page-1?>"><img class="nav-btn" src="/public/images/icons/previous.png"
+                                                        alt=""></a>
+                <?php
+                    endif;
+                ?>
                 <div class="page-numbers">
-                    <a href='?page=1' class='disabled'>
-                        <div class='page-number active'>1</div>
+                    <?php
+                    for ($i=1;$i<=$total_pages;$i++){
+                        if ($i===$current_page):
+                    ?>
+                    <a href='?page=<?=$i?>' class="disabled">
+                        <div class='page-number active'><?=$i?></div>
                     </a>
+                            <?php
+                        else:
+                            ?>
+                            <a href='?page=<?=$i?>'>
+                                <div class='page-number '><?=$i?></div>
+                            </a>
+                            <?php
+                        endif;
+                            ?>
+                    <?php
+                    }
+                    ?>
                 </div>
+                <?php
+                if ($current_page>=$total_pages):
+                ?>
                 <a class="disabled" href="?page=1"><img class="nav-btn" src="/public/images/icons/next.png" alt=""></a>
+                <?php
+                else:
+                ?>
+                <a href="?page=<?=$current_page+1?>"><img class="nav-btn" src="/public/images/icons/next.png" alt=""></a>
+                <?php
+                endif;
+                ?>
             </div>
         </div>
         <div id="card-pane" class="card-pane">
-            <div class="pane-loader">
+            <div id="pane-loader" class="pane-loader">
                 <img src="/public/loading2.svg" alt="" width="200px">
             </div>
             <?php
@@ -76,7 +114,7 @@ echo $background;
                 ?>
                 <div class="card detail-card">
                     <div class="card-image">
-                        <img src="/public/images/icons/manager/manageMedicalOfficer/doctor.png" alt="">
+                        <img src="/public/images/icons/manager/manageRequest/bloodRequest.png" alt="">
                     </div>
                     <div class="card-body">
                         <div class="card-title">
@@ -94,7 +132,7 @@ echo $background;
                 $Image=$value->getBloodTypeImage();
                 $Type=$value->getType();
                 ?>
-                <div class="card bg-white" id="MO7646">
+                <div class="card none bg-white" id="MO7646">
                     <div class="card-image" style="height: auto;min-height: auto">
                         <img src='<?= $Image?>' class="rem-5" alt="" style="border-radius: 50%;height: auto!important;">
                     </div>
@@ -113,11 +151,15 @@ echo $background;
 
         </div
     </div>
+    <script>
     <?php
-    echo CardPane::GetJS('/manager/mngMedicalOfficer/search');
+    echo CardPane::GetLoaderJS();
     ?>
+    </script>
     <script src="/public/scripts/manager/demo.js"></script>
     <script>
+
+
         const fund = () => {
             fetch('https://reqres.in/api/users?page=2', {
                 method: 'GET',

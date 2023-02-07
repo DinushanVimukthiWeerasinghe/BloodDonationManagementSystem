@@ -28,11 +28,11 @@ header {
     z-index: 999;
     position: fixed;
     /*position: absolute;*/
-    top :0;
+    top: 0;
     width: 100%;
     min-height: 8vh;
     max-height: 8vh;
-    background-color: rgba(255, 255, 255, 1);
+    background-color: var(--nav-bar-bg);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -43,7 +43,6 @@ nav{
     justify-content: space-between;
     align-content: center;
     width: 100%;
-    padding-top: 8px;
     background-color: inherit;
     color: rgb(2, 0, 0);
     font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;

@@ -22,6 +22,11 @@ class Controller
 
     }
 
+    public function setFlashMessage($key,$message): void
+    {
+        Application::$app->session->setFlash($key,$message);
+    }
+
     /**
      * @return array
      */

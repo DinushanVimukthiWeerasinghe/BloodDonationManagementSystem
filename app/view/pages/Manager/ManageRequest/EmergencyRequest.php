@@ -1,8 +1,8 @@
 <?php
 
-use App\view\components\ResponsiveComponent\ButtonComponent\DashBoardButton;
 use App\view\components\ResponsiveComponent\ImageComponent\BackGroundImage;
 use App\view\components\ResponsiveComponent\NavbarComponent\AuthNavbar;
+
 $navbar= new AuthNavbar('Emergency Requests','/manager','/public/images/icons/user.png',true,false);
 echo $navbar;
 $background=new BackGroundImage();

@@ -32,6 +32,10 @@ abstract class Person extends dbModel
     protected bool $Availability=true;
     protected string $Status='';
 
+    /**
+     * @return string
+     */
+
 
 
     /**
@@ -39,7 +43,16 @@ abstract class Person extends dbModel
      */
     public function getGender(): string
     {
-        return $this->Gender;
+        return match ($this->Gender) {
+            'F' => 'Female',
+            'M' => 'Male',
+            default => 'Other',
+        };
+    }
+
+    public function getAccountStatus()
+    {
+        return User::findOne(['UID' => $this->getID()])->getAccountStatus();
     }
 
     public function getLastActive(): string

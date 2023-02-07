@@ -1,7 +1,9 @@
 const mediaQuery = window.matchMedia('(max-width: 500px)')
 const RedirectID = (id) => {
-    console.log(id)
     window.location.href = "/manager/mngMedicalOfficer/view?id="+id
+}
+const RedirectDonor = (nic)=>{
+    window.location.href = "/manager/mngDonors/find?nic="+nic
 }
 
 if (mediaQuery.matches)

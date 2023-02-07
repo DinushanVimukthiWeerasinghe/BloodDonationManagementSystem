@@ -10,7 +10,7 @@ body{
 .content{
     position: fixed;
     right: 0;
-    top: 4vh;
+    top: 8vh;
     display: flex;
     flex-direction: column;
     align-items: center;

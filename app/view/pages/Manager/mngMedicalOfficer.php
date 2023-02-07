@@ -12,7 +12,7 @@ use App\view\components\ResponsiveComponent\NavbarComponent\AuthNavbar;
 
 //echo Loader::GetLoader();
 $background = new BackGroundImage();
-$navbar = new AuthNavbar('Manage Medical Officers', '/manager/profile', '/public/images/icons/user.png', false);
+$navbar = new AuthNavbar('Manage Medical Officers', '/manager/profile', '/public/images/icons/user.png', true,false);
 
 
 echo $navbar;
@@ -45,12 +45,12 @@ FlashMessage::RenderFlashMessages();
         <img src="/public/images/icons/add-mo.png" alt="">
     </div>
 </div>
-<div id="detail-pane" class="min-w-80 max-w-90 min-h-80 d-flex justify-content-center flex-column align-items-center">
-    <div id="detail-pane" class="min-w-80 max-w-90 mt-10 min-h-80 d-flex justify-content-center flex-column align-items-center">
+<div id="detail-pane" class="min-w-80 max-w-90 min-h-80 d-flex justify-content-center flex-column align-items-center" >
+    <div id="detail-pane" class="min-w-80 max-w-90 mt-10 min-h-80 d-flex justify-content-center flex-column align-items-center" style="margin-top: 6rem;">
 
         <div id="filter-pane" class="filter-pane">
             <div class="search-input">
-                <label class="search">Search
+                <label class="search text-white">Search
                     <input class="search-box" name="search" id="search" onkeyup="SearchFunction()">
                 </label>
                 <div class="search-icon" id="search-btn" onclick="SearchFunction()">
@@ -98,7 +98,7 @@ FlashMessage::RenderFlashMessages();
                 $NIC=$value->getNIC();
                 $branch=$value->getBranchLocation();
                 ?>
-            <div class="detail-card" id="MO7646" onclick="RedirectID('<?= $id?>')">
+            <div class="detail-card none" id="MO7646" onclick="RedirectID('<?= $id?>')">
                 <div class="card-image">
                     <img src='<?= $image?>' alt="">
                 </div>
@@ -116,9 +116,99 @@ FlashMessage::RenderFlashMessages();
         </div
     </div>
     <?php
-    echo CardPane::GetJS('/manager/mngMedicalOfficer/search');
+//    echo CardPane::GetJS('/manager/mngMedicalOfficer/search');
     ?>
     <script src="/public/scripts/manager/demo.js"></script>
+    <script>
+        const Search=document.getElementById('search');
+        const SearchBtn=document.getElementById('search-btn');
+        const CardPane=document.getElementById('card-pane');
+        const DetailPane=document.getElementById('detail-pane');
+        const PaneLoader=document.getElementsByClassName('pane-loader')[0];
+        window.addEventListener('load',()=>{
+            setTimeout(()=>{
+                const Cards=document.getElementsByClassName('detail-card');
+                for (let i=0;i<Cards.length;i++){
+                    Cards[i].classList.remove('none');
+                }
+                PaneLoader.classList.add('none');
+            },500);
+        });
+        function SearchFunction(path='/manager/mngMedicalOfficer/search'){
+            const Search=document.getElementById('search');
+            const text= Search.value;
+            filter(text,path);
+        }
+        function filter(name,path){
+            PaneLoader.classList.remove('none');
+            fetch(path+'?q='+name,{
+                method:'GET',
+                headers:{
+                    'Content-Type':'text/html'
+                }
+            }).then(response=>response.text())
+                .then(data=>{
+                    console.log(data)
+                    const CardPane=document.getElementById('card-pane');
+                    const PageNumbers=document.getElementsByClassName('page-numbers')[0];
+                    const DOMParse = new DOMParser();
+                    const Doc =DOMParse.parseFromString(data, 'text/html');
+
+                    filterPane=Doc.getElementsByClassName('page-numbers')[0];
+
+                    setTimeout(()=>{
+                        const PaneLoader=document.getElementsByClassName('pane-loader')[0];
+                        const Cards=document.getElementsByClassName('card');
+                        PaneLoader.classList.add('none');
+                        for (let i=0;i<Cards.length;i++){
+                            Cards[i].classList.remove('none');
+                        }
+                    },500);
+
+
+                    cardPane=Doc.getElementById('card-pane');
+                    CardPane.parentElement.replaceChild(cardPane,CardPane);
+                    PageNumbers.parentElement.replaceChild(filterPane,PageNumbers);
+                    const Search=document.getElementById('search');
+                    Search.value=name;
+                    Search.focus();
+                });
+
+            // document.querySelector('.loader').style.display = 'flex';
+            // const XML=new XMLHttpRequest();
+            // XML.onreadystatechange=function () {
+            //     const CardPane=document.getElementById('card-pane');
+            //     const PageNumbers=document.getElementsByClassName('page-numbers')[0];
+            //     if (this.readyState === 4 && this.status === 200) {
+            //
+            //         const DOMParse = new DOMParser();
+            //         const Doc =DOMParse.parseFromString(this.responseText, 'text/html');
+            //
+            //
+            //         filterPane=Doc.getElementsByClassName('page-numbers')[0];
+            //
+            //         setTimeout(()=>{
+            //             const PaneLoader=document.getElementsByClassName('pane-loader')[0];
+            //             const Cards=document.getElementsByClassName('card');
+            //             PaneLoader.classList.add('none');
+            //             for (let i=0;i<Cards.length;i++){
+            //                 Cards[i].classList.remove('none');
+            //             }
+            //         },500);
+            //
+            //
+            //         cardPane=Doc.getElementById('card-pane');
+            //         CardPane.parentElement.replaceChild(cardPane,CardPane);
+            //         PageNumbers.parentElement.replaceChild(filterPane,PageNumbers);
+            //         const Search=document.getElementById('search');
+            //         Search.value=name;
+            //         Search.focus();
+            //     }
+            // }
+            // XML.open('GET','$url?q='+name,true);
+            // XML.send();
+        }
+    </script>
 
 
 

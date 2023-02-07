@@ -59,6 +59,7 @@
     width: 5%;
 }
 
+
 /*Rem*/
 .rem-1{
     width: 1rem !important;
@@ -81,6 +82,30 @@
 .rem-7{
     width: 7rem !important;
 }
+
+/*Max Width*/
+.max-w-rem-1{
+    max-width: 1rem !important;
+}
+.max-w-rem-2{
+    max-width: 2rem !important;
+}
+.max-w-rem-3{
+    max-width: 3rem !important;
+}
+.max-w-rem-4{
+    max-width: 4rem !important;
+}
+.max-w-rem-5{
+    max-width: 5rem !important;
+}
+.max-w-rem-6{
+    max-width: 6rem !important;
+}
+.max-w-rem-7{
+    max-width: 7rem !important;
+}
+
 
 
 
