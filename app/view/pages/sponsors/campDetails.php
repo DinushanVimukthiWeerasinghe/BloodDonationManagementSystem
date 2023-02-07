@@ -17,9 +17,9 @@ use App\view\components\WebComponent\Card\Card;
 echo Card::ImportJS();
 //echo Card::ImportCSS();
 
-/* @var organization $user */
+/* @var Organization $user */
 
-use App\model\users\organization;
+use App\model\users\Organization;
 use App\view\components\WebComponent\Card\NavigationCard;
 //$background = new BackGroundImage();
 //echo $background;

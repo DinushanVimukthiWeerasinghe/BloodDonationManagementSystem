@@ -16,14 +16,14 @@ use App\view\components\WebComponent\Card\Card;
 echo Card::ImportJS();
 //echo Card::ImportCSS();
 
-/* @var organization $user */
+/* @var Organization $user */
 
-use App\model\users\organization;
+use App\model\users\Organization;
 
 use App\view\components\WebComponent\Card\NavigationCard;
 
 $CampaignGuidelines = new NavigationCard('/organization/near', '/public/images/icons/organization/manage/nearby.png', 'Nearby Campaigns');
-$ManageCampaigns = new NavigationCard('/organization/create', '/public/images/icons/Organization/manage/create.png', 'Create Campaign');
+$ManageCampaigns = new NavigationCard('/organization/create', '/public/images/icons/organization/manage/create.png', 'Create Campaign');
 //$History = new NavigationCard('/organization/report', '/public/images/icons/Organization/dashboard/history.png', 'Donor Attendance');
 $background = new BackGroundImage();
 

@@ -6,7 +6,7 @@
 
 /* @var string $lastName */
 
-use App\model\users\organization;
+use App\model\users\Organization;
 use App\view\components\ResponsiveComponent\Alert\FlashMessage;
 use App\view\components\ResponsiveComponent\CardPane\CardPane;
 use App\view\components\ResponsiveComponent\ImageComponent\BackGroundImage;
@@ -19,7 +19,7 @@ $navbar = new AuthNavbar('Nearby Campaigns', '/organization/near', '/public/imag
 echo $navbar;
 echo $background;
 /* @var array $data */
-/* @var organization $value */
+/* @var Organization $value */
 
 
 function GetImage($imageURL)

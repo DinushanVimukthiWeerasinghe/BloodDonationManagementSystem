@@ -6,7 +6,7 @@
 
 /* @var string $lastName */
 
-use App\model\users\organization;
+use App\model\users\Organization;
 use App\view\components\ResponsiveComponent\Alert\FlashMessage;
 use App\view\components\ResponsiveComponent\CardPane\CardPane;
 use App\view\components\ResponsiveComponent\ImageComponent\BackGroundImage;
@@ -14,12 +14,12 @@ use App\view\components\ResponsiveComponent\NavbarComponent\AuthNavbar;
 
 //echo Loader::GetLoader();
 $background = new BackGroundImage();
-$navbar = new AuthNavbar('Nearby Campaigns', '/organization/near', '/public/images/icons/user.png', false);
+$navbar = new AuthNavbar('Nearby Campaigns', '/organization/near', '/public/images/icons/user.png', true,false);
 
 echo $navbar;
 echo $background;
 /* @var array $data */
-/* @var organization $value */
+/* @var Organization $value */
 
 
 function GetImage($imageURL)
@@ -64,19 +64,19 @@ FlashMessage::RenderFlashMessages();
                 <img src="/public/loading4.svg" alt="" width="200px">
             </div>
             <?php
-            //            if (empty($data)){
-            //                ?>
-            <!--                <div class="card detail-card">-->
-            <!--                    <div class="card-image">-->
-            <!--                        <img src="/public/images/icons/manager/manageMedicalOfficer/doctor.png" alt="">-->
-            <!--                    </div>-->
-            <!--                    <div class="card-body">-->
-            <!--                        <div class="card-title">-->
-            <!--                            No Medical Officers-->
-            <!--                        </div>-->
-            <!--                    </div>-->
-            <!--                </div>-->
-            <!--            --><?php //} ?>
+                        if (empty($data)){
+                            ?>
+                            <div class="card detail-card">
+                                <div class="card-image">
+                                    <img src="/public/images/icons/organization/dashboard/campaign.png" alt="">
+                                </div>
+                                <div class="card-body">
+                                    <div class="card-title">
+                                        No Campaigns Found
+                                    </div>
+                                </div>
+                            </div>
+                        <?php } ?>
             <?php foreach ($params as $key=>$row){?>
             <?php if($row['Status'] == 1) {?>
             <div class="card none detail-card">

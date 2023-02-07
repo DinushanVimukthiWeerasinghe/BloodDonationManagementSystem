@@ -503,6 +503,22 @@ CREATE TABLE IF NOT EXISTS Logging_History
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8;
 
+# DROP TABLE IF EXISTS Donation_Campaigns;
+CREATE TABLE IF NOT EXISTS Donation_Campaigns
+(
+    Campaign_ID      VARCHAR(20) PRIMARY KEY,
+    Organization_ID  VARCHAR(20) NOT NULL,
+    Campaign_Name    VARCHAR(100) NOT NULL,
+    Campaign_Date    DATE NOT NULL,
+    Nearest_Blood_Bank VARCHAR(20) NOT NULL,
+    Venue            VARCHAR(100) NOT NULL,
+    Status           INT NOT NULL,
+    FOREIGN KEY (Organization_ID) REFERENCES Organizations (Organization_ID),
+    FOREIGN KEY (Nearest_Blood_Bank) REFERENCES BloodBanks (BloodBank_ID)
+);
+
+
+
 # Insert Default Users for Testing
 INSERT INTO Users (UID, Email, Password, Status, Role)
 VALUES ('Mng_01', 'manager@test.com', '$2y$10$yjcyB1lr8V/nVciydOYedu0Rnedd9JHZ3d6PqPMqM4yNJoPmltlZS', 0, 'Manager');

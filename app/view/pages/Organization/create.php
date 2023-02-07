@@ -22,7 +22,7 @@ echo $background;
 <div class="container p-1" style="margin-top: 5vh;">
     <form action="create" method="post" class="p-3 form form-column">
         <h1 class="form-title mt-0">Create Your Campaign</h1>
-        <div class="form-row">
+        <div class="">
             <div class="form-entity mt-1">
                 <label class="form-label">Campaign Name</label><br><br>
                 <input type="text" class="form-input" name="Campaign_Name" required>

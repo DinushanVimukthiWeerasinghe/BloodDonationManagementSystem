@@ -15,15 +15,15 @@ use App\view\components\WebComponent\Card\Card;
 echo Card::ImportJS();
 //echo Card::ImportCSS();
 
-/* @var organization $user */
+/* @var Organization $user */
 
-use App\model\users\organization;
+use App\model\users\Organization;
 
 use App\view\components\WebComponent\Card\NavigationCard;
 
 $CampaignGuidelines = new NavigationCard('/organization/guideline', '/public/images/icons/manager/dashboard/requests.png', 'Campaign Guidelines');
-$ManageCampaigns = new NavigationCard('/organization/manage', '/public/images/icons/Organization/dashboard/campaign.png', 'Manage Campaigns');
-$History = new NavigationCard('/organization/history', '/public/images/icons/Organization/dashboard/history.png', 'Campaign History');
+$ManageCampaigns = new NavigationCard('/organization/manage', '/public/images/icons/organization/dashboard/campaign.png', 'Manage Campaigns');
+$History = new NavigationCard('/organization/history', '/public/images/icons/organization/dashboard/history.png', 'Campaign History');
 $background = new BackGroundImage();
 
 echo $background;

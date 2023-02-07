@@ -2,7 +2,7 @@
 
 namespace App\controller;
 
-use App\model\users\organization;
+use App\model\users\Organization;
 use App\model\Authentication\Login;
 use App\model\users\Campaign;
 use App\model\users\User;
@@ -69,8 +69,8 @@ class oldOrganizationController extends \Core\Controller{
     public function home(Request $request,Response $response): string
     {
 //        $userName='';
-        /* @var organization $organisation*/
-        $organisation = organization::findOne(['id' => Application::$app->session->get('user')]);
+        /* @var Organization $organisation*/
+        $organisation = Organization::findOne(['id' => Application::$app->session->get('user')]);
         $params=[
             'name'=>$organisation->getName(),
         ];

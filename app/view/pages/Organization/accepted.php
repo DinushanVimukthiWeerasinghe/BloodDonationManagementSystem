@@ -6,7 +6,7 @@
 
 /* @var string $lastName */
 
-use App\model\users\organization;
+use App\model\users\Organization;
 use App\view\components\ResponsiveComponent\Alert\FlashMessage;
 use App\view\components\ResponsiveComponent\CardPane\CardPane;
 use App\view\components\ResponsiveComponent\ImageComponent\BackGroundImage;
@@ -20,7 +20,7 @@ echo $navbar;
 echo $background;
 //echo new primaryTitle('Manage Medical Officers');
 /* @var array $data */
-/* @var organization $value */
+/* @var Organization $value */
 
 
 function GetImage($imageURL)

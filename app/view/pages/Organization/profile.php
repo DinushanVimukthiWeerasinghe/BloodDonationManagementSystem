@@ -1,10 +1,10 @@
 <?php
 /* @var string $firstName*/
 /* @var string $lastName*/
-/** @var organization $user */
+/** @var Organization $user */
 
 use App\model\users\Manager;
-use App\model\users\organization;
+use App\model\users\Organization;
 use App\model\users\Person;
 use App\view\components\ResponsiveComponent\ImageComponent\BackGroundImage;
 use App\view\components\ResponsiveComponent\NavbarComponent\AuthNavbar;

@@ -4,7 +4,7 @@ namespace App\controller;
 
 use App\model\Authentication\Login;
 use App\model\users\organization;
-use App\model\Campaigns\campaigns;
+use App\model\Campaigns\Campaign;
 use App\model\users\User;
 use App\model\Utils\Notification;
 use Core\Application;
@@ -20,12 +20,12 @@ use Core\SessionObject;
 class OrganizationController extends Controller
 {
 
-//    public function __construct()
-//    {
-//        $this->setLayout('Manager');
+    public function __construct()
+    {
+        $this->setLayout('Organization');
 //        $this->registerMiddleware(new AuthenticationMiddleware(['login','register'], BaseMiddleware::ALLOWED_ROUTES));
-////        $this->registerMiddleware(new ManagerMiddleware());
-//    }
+//        $this->registerMiddleware(new ManagerMiddleware());
+    }
 
     public function profile()
     {
@@ -37,7 +37,7 @@ class OrganizationController extends Controller
 
     public function register(Request $request,Response $response ): string
     {
-        $organization=new organization();
+        $organization=new Organization1();
         if ($request->isPost())
         {
             $user = new User();
@@ -73,8 +73,8 @@ class OrganizationController extends Controller
 
     public function dashboard(): string
     {
-        /* @var organization $organization*/
-        $organization = organization::findOne(['Organization_ID' => Application::$app->getUser()->getID()]);
+        /* @var Organization1 $organization*/
+        $organization = Organization::findOne(['Organization_ID' => Application::$app->getUser()->getID()]);
 //        print_r(Application::$app->getUser());
 //        exit();
        $params=[
@@ -93,7 +93,7 @@ class OrganizationController extends Controller
 
     public function create(Request $request,Response $response)
     {
-        $campaign = new campaigns();
+        $campaign = new Campaign();
         if($request->isPost()){
             $campaign->setOrganizationID(Application::$app->getUser()->getID());
             $campaign->setStatus(1);
@@ -114,8 +114,8 @@ class OrganizationController extends Controller
     }
     public function near()
     {
-        /* @var campaigns $campaign */
-        $result = campaigns::RetrieveAll(false, [], false);
+        /* @var Campaign $campaign */
+        $result = Campaign::RetrieveAll(false, [], false);
         foreach ($result as $campaign) {
             $params[] = [
                 'Campaign_Name'=> $campaign->getName(),
@@ -136,10 +136,10 @@ class OrganizationController extends Controller
     }
     public function history()
     {
-        /* @var campaigns $campaign */
+        /* @var Campaign $campaign */
         $conditions = ['Organization_ID' => $_SESSION['Email']];
-        $result = campaigns::RetrieveAll(false, [], true, $conditions);
-//        $campaign = campaigns::findOne(['Organization_ID' => $_SESSION['Email']]);
+        $result = Campaign::RetrieveAll(false, [], true, $conditions);
+//        $campaign = Campaign::findOne(['Organization_ID' => $_SESSION['Email']]);
 //        $params=[
 //            'Campaign_Name'=> $campaign->getName(),
 //            'Campaign_Date' => $campaign->getDate(),
@@ -185,9 +185,9 @@ class OrganizationController extends Controller
     }
     public function campDetails()
     {
-        /* @var campaigns $campaign */
+        /* @var Campaign $campaign */
         $id = $_GET['id'];
-        $campaign = campaigns::findOne(['Campaign_ID'=> $id]);
+        $campaign = Campaign::findOne(['Campaign_ID'=> $id]);
         $params= [
             'Campaign_Name'=> $campaign->getName(),
             'Campaign_Date' => $campaign->getDate(),

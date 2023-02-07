@@ -4,7 +4,7 @@ namespace App\model\Campaigns;
 
 use App\model\database\dbModel;
 
-class campaigns extends dbModel
+class Campaign extends dbModel
 {
     protected string $Campaign_ID='';
     protected string $Organization_ID='';
@@ -12,15 +12,22 @@ class campaigns extends dbModel
     protected string $Campaign_Date='';
     protected string $Nearest_BloodBank='';
     protected string $Venue='';
-    protected int $status;
+    protected int $Status;
     public function labels(): array
     {
-        // TODO: Implement labels() method.
+        return [
+            'Campaign_ID'=>'Campaign ID',
+            'Organization_ID'=>'Organization ID',
+            'Campaign_Name'=>'Campaign Name',
+            'Campaign_Date'=>'Campaign Date',
+            'Nearest_BloodBank'=>'Nearest Blood Bank',
+            'Venue'=>'Venue',
+            'Status'=>'Status',
+        ];
     }
     public function getName(): string
     {
         return $this->Campaign_Name;
-        // TODO: Implement labels() method.
     }
 
     public function getDate(): string{
@@ -32,7 +39,6 @@ class campaigns extends dbModel
 
     public function rules(): array
     {
-        // TODO: Implement rules() method.
         return[
             'Campaign_ID'=>[self::RULE_REQUIRED,self::RULE_UNIQUE],
             'Venue'=>[self::RULE_REQUIRED],
@@ -44,12 +50,12 @@ class campaigns extends dbModel
 
     public static function getTableShort(): string
     {
-        // TODO: Implement getTableShort() method.
+        return 'campaigns';
     }
 
     public static function tableName(): string
     {
-       return 'campaignhistory';
+       return 'Donation_Campaigns';
     }
 
     public static function PrimaryKey(): string
@@ -81,15 +87,15 @@ class campaigns extends dbModel
 
     public function getStatus(): int
     {
-        return $this->status;
+        return $this->Status;
     }
     public function setCampaignID($camaignID): string
     {
         return $this->Campaign_ID=$camaignID;
     }
-    public function setStatus($status): int
+    public function setStatus($Status): int
     {
-        return $this->status = $status;
+        return $this->Status = $Status;
     }
 
     public function getID():string
