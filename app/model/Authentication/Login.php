@@ -192,7 +192,7 @@ class Login extends dbModel
             return false;
         }
         if (!$user->IsManager()){
-            Application::$app->setUser($user);
+            Application::$app->login($user);
             return true;
         }
 
