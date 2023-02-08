@@ -6,6 +6,7 @@ use App\controller\authController;
 use App\controller\blogController;
 use App\controller\donorController;
 use App\controller\fileController;
+use App\controller\OrganizationController;
 use App\controller\hospitalController;
 use App\controller\managerController;
 use App\controller\medicalOfficerController;

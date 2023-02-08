@@ -520,9 +520,9 @@ CREATE TABLE IF NOT EXISTS Campaign (
     Campaign_Date DATE NOT NULL,
     Venue VARCHAR(100) NOT NULL,
     Nearest_City VARCHAR(100) NOT NULL,
-    Status INT NOT NULL,
+    Status INT NOT NULL CHECK ( Status Between 1 AND 3),
     Nearest_BloodBank VARCHAR(20) NOT NULL,
-    Verified INT NOT NULL DEFAULT 0,
+    Verified INT NOT NULL DEFAULT 0 CHECK ( Verified BETWEEN 0 AND 2),
     Verified_By VARCHAR(20) NULL,
     Verified_At TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
     Assigned_Team VARCHAR(20) NULL,
@@ -766,6 +766,22 @@ CREATE TABLE IF NOT EXISTS Logging_History
     FOREIGN KEY (User_ID) REFERENCES Users (UID)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8;
+
+# DROP TABLE IF EXISTS Donation_Campaigns;
+CREATE TABLE IF NOT EXISTS Donation_Campaigns
+(
+    Campaign_ID      VARCHAR(20) PRIMARY KEY,
+    Organization_ID  VARCHAR(20) NOT NULL,
+    Campaign_Name    VARCHAR(100) NOT NULL,
+    Campaign_Date    DATE NOT NULL,
+    Nearest_Blood_Bank VARCHAR(20) NOT NULL,
+    Venue            VARCHAR(100) NOT NULL,
+    Status           INT NOT NULL,
+    FOREIGN KEY (Organization_ID) REFERENCES Organizations (Organization_ID),
+    FOREIGN KEY (Nearest_Blood_Bank) REFERENCES BloodBanks (BloodBank_ID)
+);
+
+
 
 # Insert Default Users for Testing
 INSERT INTO Users (UID, Email, Password, Account_Status, Role)

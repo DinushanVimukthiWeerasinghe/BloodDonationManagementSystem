@@ -22,7 +22,7 @@ class managerController extends Controller
     public function __construct()
     {
         $this->setLayout('Manager');
-        $this->registerMiddleware(new AuthenticationMiddleware(['login'], BaseMiddleware::ALLOWED_ROUTES));
+        $this->registerMiddleware(new AuthenticationMiddleware(['login','register'], BaseMiddleware::ALLOWED_ROUTES));
 //        $this->registerMiddleware(new ManagerMiddleware());
     }
 
