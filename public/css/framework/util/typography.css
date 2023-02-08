@@ -58,10 +58,10 @@
     color: var(--light);
 }
 .text-dark {
-    color: var(--dark);
+    color: var(--dark) !important;
 }
 .text-white {
-    color: var(--white);
+    color: var(--white) !important;
 }
 .text-black {
     color: var(--black);

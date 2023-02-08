@@ -2,33 +2,16 @@
 
 namespace App\model\users;
 
-use App\model\database\dbModel;
-
 class Organization extends Person
 {
     protected string $Organization_ID='';
     protected string $Organization_Name='';
+    protected string $Organization_Email='';
     protected string $Type ='';
 
     public function getID(): string
     {
         return $this->Organization_ID;
-    }
-
-    /**
-     * @return string
-     */
-    public function getOrganizationID(): string
-    {
-        return $this->Organization_ID;
-    }
-
-    /**
-     * @param string $Organization_ID
-     */
-    public function setOrganizationID(string $Organization_ID): void
-    {
-        $this->Organization_ID = $Organization_ID;
     }
 
     /**
@@ -62,6 +45,13 @@ class Organization extends Person
     {
         $this->Type = $Type;
     }
+
+    public function getEmail():string
+    {
+        return $this->Organization_Email;
+    }
+
+
 
     public function labels(): array
     {

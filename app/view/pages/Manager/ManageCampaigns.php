@@ -2,7 +2,7 @@
 
 use App\view\components\ResponsiveComponent\ImageComponent\BackGroundImage;
 use App\view\components\ResponsiveComponent\NavbarComponent\AuthNavbar;
-$navbar= new AuthNavbar('Manage Campaigns','/manager','/public/images/icons/user.png','$firstName'.' '.'$lastName');
+$navbar= new AuthNavbar('Manage Campaigns','/manager','/public/images/icons/user.png',true,false);
 echo $navbar;
 $background=new BackGroundImage();
 echo $background;

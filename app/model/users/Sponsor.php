@@ -2,8 +2,6 @@
 
 namespace App\model\users;
 
-use App\model\database\dbModel;
-
 class Sponsor extends Person
 {
     protected string $Sponsor_ID='';

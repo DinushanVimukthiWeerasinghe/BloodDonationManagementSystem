@@ -60,4 +60,10 @@ class siteController extends \Core\Controller
         
     }
 
+    public function Test()
+    {
+        $this->layout='none';
+        return $this->render('Email/PasswordReset');
+    }
+
 }

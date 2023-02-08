@@ -15,6 +15,16 @@ class File
     protected $pathPrefix='';
 
     /**
+     * @param mixed|string $pathPrefix
+     */
+    public function setPathPrefix(mixed $pathPrefix): void
+    {
+        $this->pathPrefix = $pathPrefix;
+    }
+
+
+
+    /**
      * @param mixed $string
      */
     public function __construct(mixed $string, $prefix = ''){

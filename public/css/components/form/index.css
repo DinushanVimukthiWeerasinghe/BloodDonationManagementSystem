@@ -10,13 +10,6 @@ select{
     text-align: center;
 }
 
-
-::-webkit-input-placeholder {
-    text-align: center;
-}
-:-moz-placeholder {
-    text-align: center;
-}
 .form-title{
     font-size: 2rem;
     margin: 1rem;
@@ -109,7 +102,7 @@ form{
     flex: 1;
     padding: 1rem;
     border: 2px solid transparent;
-    background: rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 1);
     border-radius: 50px;
     font-size: 1.5rem;
 }
