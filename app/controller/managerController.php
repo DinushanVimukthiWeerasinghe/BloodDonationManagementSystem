@@ -202,7 +202,14 @@ class managerController extends Controller
         if ($request->isPost()){
             $Request_ID=$request->getBody()['id'];
             if ($Request_ID):
-                $request=BloodRequest::findOne(['Request_ID'=>$Request_ID]);
+                $BloodRequest=BloodRequest::findOne(['Request_ID'=>$Request_ID]);
+            if ($BloodRequest){
+                $data=[
+                    'status'=>true,
+                    'data'=>$BloodRequest
+                ];
+                return json_encode($data);
+            }
 
             endif;
 

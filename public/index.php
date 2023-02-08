@@ -112,6 +112,7 @@ $app->router->get('/manager/mngMedicalOfficer/search', [managerController::class
 
 $app->router->get('/manager/mngRequests', [managerController::class, 'ManageRequests']);
 $app->router->post('/manager/mngRequests', [managerController::class, 'ManageRequests']);
+$app->router->post('/manager/mngRequests/find', [managerController::class, 'FindRequest']);
 $app->router->get('/manager/mngRequests/er', [managerController::class, 'ManageEmergencyRequests']);
 
 $app->router->get('/manager/mngCampaign/view', [managerController::class, 'ViewCampaign']);
