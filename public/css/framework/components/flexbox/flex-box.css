@@ -189,6 +189,10 @@
     flex-basis: content;
 }
 
+.gap-0-5 {
+    gap: 0.5rem;
+}
+
 .gap-1 {
     gap: 1rem;
 }

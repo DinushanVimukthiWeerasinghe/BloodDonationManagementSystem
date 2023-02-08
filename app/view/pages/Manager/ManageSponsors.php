@@ -5,6 +5,7 @@
 /* @var string $lastName */
 
 use App\model\users\MedicalOfficer;
+use App\model\users\Sponsor;
 use App\view\components\ResponsiveComponent\Alert\FlashMessage;
 use App\view\components\ResponsiveComponent\CardPane\CardPane;
 use App\view\components\ResponsiveComponent\ImageComponent\BackGroundImage;
@@ -19,7 +20,7 @@ echo $navbar;
 echo $background;
 //echo new primaryTitle('Manage Medical Officers');
 /* @var array $data */
-/* @var MedicalOfficer $value */
+/* @var Sponsor $value */
 
 
 function GetImage($imageURL)
@@ -94,9 +95,9 @@ FlashMessage::RenderFlashMessages();
                 $id=$value->getID();
                 $image=$value->getProfileImage();
                 $name=$value->getFullName();
-                $position=$value->getPosition();
-                $NIC=$value->getNIC();
-                $branch=$value->getBranchLocation();
+//                $position=$value->getPosition();
+//                $NIC=$value->getNIC();
+//                $branch=$value->getBranchLocation();
                 ?>
                 <div class="detail-card" id="MO7646" onclick="RedirectID('<?= $id?>')">
                     <div class="card-image">

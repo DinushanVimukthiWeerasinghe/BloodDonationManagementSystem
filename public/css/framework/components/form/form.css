@@ -27,7 +27,7 @@ input[type="text"]{
 
 input[type="checkbox"] {
     transform: scale(3);
-    margin: 0 2rem;
+    /*margin: 0 2rem;*/
 }
 
 input[type="checkbox"]:checked {

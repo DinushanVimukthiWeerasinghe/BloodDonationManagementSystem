@@ -6,6 +6,7 @@ use App\model\Requests\BloodRequest;
 use App\model\users\Donor;
 use App\model\users\Manager;
 use App\model\users\MedicalOfficer;
+use App\model\users\Sponsor;
 use App\model\Utils\Notification;
 use Core\Application;
 use Core\BaseMiddleware;
@@ -167,7 +168,11 @@ class managerController extends Controller
 
     public function ManageSponsors()
     {
-        return $this->render('Manager/ManageSponsors');
+        $Sponsors=Sponsor::RetrieveAll();
+        $params=[
+            'data'=>$Sponsors
+        ];
+        return $this->render('Manager/ManageSponsors',$params);
     }
 
     public function ManageRequests(Request $request,Response $response): string
