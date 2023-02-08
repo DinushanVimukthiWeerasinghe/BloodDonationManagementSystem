@@ -3,6 +3,7 @@
 namespace App\controller;
 
 use App\model\Authentication\Login;
+use App\model\Requests\AttendanceAcceptedRequest;
 use App\model\users\organization;
 use App\model\Campaigns\Campaign;
 use App\model\users\User;
@@ -74,6 +75,8 @@ class OrganizationController extends Controller
     public function dashboard(): string
     {
         /* @var Organization $organization*/
+//        print_r(Application::$app->getUser());
+//        exit();
         $organization = Organization::findOne(['Organization_ID' => Application::$app->getUser()->getID()]);
 //        print_r(Application::$app->getUser());
 //        exit();
@@ -169,12 +172,25 @@ class OrganizationController extends Controller
     }
     public function accepted()
     {
-        return $this->render('Organization/accepted');
+        $attendance = new AttendanceAcceptedRequest();
+        $id = $_GET['id'];
+        $condition = ['Campaign_ID' => $id];
+        $count = $attendance::getCount(false,$condition);
+//        $count = 10;
+        return $this->render('Organization/accepted',['count' => $count]);
     }
     public function guideline()
     {
 
         return $this->render('Organization/guideline');
+    }
+    public function view()
+    {
+        /* @var Campaign $campaign */
+        $ID = Application::$app->getUser()->getID();
+        $result = Campaign::RetrieveAll(false, [], true, ['Organization_ID' => $ID]);
+
+        return $this->render('Organization/campaign/view',['data'=>$result]);
     }
     public function campDetails()
     {

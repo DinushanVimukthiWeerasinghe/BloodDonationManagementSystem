@@ -7,7 +7,7 @@ use App\view\components\ResponsiveComponent\CardGroup\CardGroup;
 use App\view\components\ResponsiveComponent\ImageComponent\BackGroundImage;
 use App\view\components\ResponsiveComponent\NavbarComponent\AuthNavbar;
 
-$navbar = new AuthNavbar(strtoupper($sponsor_Name).' '.'SPONSOR BOARD', '/sponsor', 'bell.png', true,false );
+$navbar = new AuthNavbar(strtoupper($sponsor_Name).' '.'SPONSOR BOARD', '/sponsors', 'bell.png', true,false );
 echo $navbar;
 
 use App\view\components\WebComponent\Card\Card;
@@ -15,15 +15,15 @@ use App\view\components\WebComponent\Card\Card;
 echo Card::ImportJS();
 //echo Card::ImportCSS();
 
-/* @var Organization $user */
+/* @var organization $user */
 
-use App\model\users\Organization;
+use App\model\users\organization;
 
 use App\view\components\WebComponent\Card\NavigationCard;
 
-$CampaignGuidelines = new NavigationCard('/sponsor/guideline', '/public/images/icons/manager/dashboard/requests.png', 'Sponsor Guidelines');
-$ManageCampaigns = new NavigationCard('/sponsor/manage', '/public/images/icons/Organization/dashboard/campaign.png', 'Manage Sponsorships');
-$History = new NavigationCard('/sponsor/history', '/public/images/icons/Organization/dashboard/history.png', 'Sponsorships History');
+$CampaignGuidelines = new NavigationCard('/sponsors/guideline', '/public/images/icons/manager/dashboard/requests.png', 'Sponsor Guidelines');
+$ManageCampaigns = new NavigationCard('/sponsors/manage', '/public/images/icons/Organization/dashboard/campaign.png', 'Manage Sponsorships');
+$History = new NavigationCard('/sponsors/history', '/public/images/icons/Organization/dashboard/history.png', 'Sponsorships History');
 $background = new BackGroundImage();
 
 echo $background;
@@ -35,8 +35,3 @@ echo $History;
 echo CardGroup::CloseCardPanel();
 
 ?>
-
-
-
-
-

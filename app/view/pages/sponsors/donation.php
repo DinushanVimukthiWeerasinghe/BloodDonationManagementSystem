@@ -78,7 +78,7 @@ FlashMessage::RenderFlashMessages();
             <!--                </div>-->
             <!--            --><?php //} ?>
             <?php foreach ($params as $key=>$row){?>
-            <?php if($row['Status'] == 1) {?>
+            <?php if($row['Status'] == 2) {?>
             <div class="card none detail-card">
                 <div class="card-image">
                     <img src='/public/upload/1.jpeg' alt="hello">
@@ -87,6 +87,7 @@ FlashMessage::RenderFlashMessages();
                     <div class="card-title"><?php echo $row['Campaign_Name'] ?></div>
                     <div class="card-description"><?php echo $row['Venue'] ?></div>
                     <div class="card-description"><?php echo $row['Campaign_Date'] ?></div>
+                    <button class="btn btn-success" href="">Sponse</button>
                 </div>
             </div>
                 <?php } ?>

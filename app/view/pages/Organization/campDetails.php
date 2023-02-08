@@ -47,7 +47,7 @@ FlashMessage::RenderFlashMessages();
             </div>
         </div>
         <div class="d-flex">
-            <div class="card nav-card bg-white text-dark" onclick="Redirect('request')">
+            <div class="card nav-card bg-white text-dark" onclick="Redirect('request?id=<?php echo $_GET['id'] ?>')">
                 <div class="card-header">
                     <div class="card-header-img">
                         <img src="/public/images/icons/organization/campaignDetails/request.png" alt="Request" width="100px">
@@ -57,7 +57,7 @@ FlashMessage::RenderFlashMessages();
                     </div>
                 </div>
             </div>
-            <div class="card nav-card bg-white text-dark" onclick="Redirect('received')">
+            <div class="card nav-card bg-white text-dark" onclick="Redirect('received?id=<?php echo $_GET['id'] ?>')">
                 <div class="card-header">
                     <div class="card-header-img">
                         <img src="/public/images/icons/organization/campaignDetails/received.png" alt="Received" width="100px">
@@ -67,7 +67,7 @@ FlashMessage::RenderFlashMessages();
                     </div>
                 </div>
             </div>
-            <div class="card nav-card bg-white text-dark" onclick="Redirect('accepted')">
+            <div class="card nav-card bg-white text-dark" onclick="Redirect('accepted?id=<?php echo $_GET['id'] ?>')">
                 <div class="card-header">
                     <div class="card-header-img">
                         <img src="/public/images/icons/organization/campaignDetails/accepted.png" alt="Accepted" width="100px">
@@ -77,7 +77,7 @@ FlashMessage::RenderFlashMessages();
                     </div>
                 </div>
             </div>
-            <div class="card nav-card bg-white text-dark" onclick="Redirect('inform')">
+            <div class="card nav-card bg-white text-dark" onclick="Redirect('inform?id=<?php echo $_GET['id'] ?>')">
                 <div class="card-header">
                     <div class="card-header-img">
                         <img src="/public/images/icons/organization/campaignDetails/inform.png" alt="Inform" width="100px">

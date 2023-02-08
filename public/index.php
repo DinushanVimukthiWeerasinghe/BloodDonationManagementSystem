@@ -115,6 +115,16 @@ $app->router->get('/organization/campDetails', [OrganizationController::class, '
 $app->router->get('/organization/received', [OrganizationController::class, 'received']);
 $app->router->get('/organization/accepted', [OrganizationController::class, 'accepted']);
 $app->router->get('/organization/profile', [OrganizationController::class, 'profile']);
+$app->router->get('/organization/campaign/view', [OrganizationController::class, 'view']);
+
+//sponsor
+
+$app->router->get('/sponsors/dashboard', [\App\controller\sponsorController::class, 'dashboard']);
+$app->router->get('/sponsors/history', [\App\controller\sponsorController::class, 'history']);
+$app->router->get('/sponsors/manage', [\App\controller\sponsorController::class, 'manage']);
+$app->router->get('/sponsors/donation', [\App\controller\sponsorController::class, 'donation']);
+$app->router->get('/sponsors/campDetails', [\App\controller\sponsorController::class, 'campDetails']);
+$app->router->get('/sponsors/guideline', [\App\controller\sponsorController::class, 'guideline']);
 
 
 // Manager Register

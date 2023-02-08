@@ -3,6 +3,7 @@
 namespace App\model\Authentication;
 
 use App\model\database\dbModel;
+use App\model\users\Organization;
 use App\model\users\User;
 use Core\Application;
 
@@ -187,6 +188,12 @@ class Login extends dbModel
             $this->addError('email', 'Your Account is permanently disabled!');
             return false;
         }
+//        if($user->getRole()!==User::MANAGER){
+            Application::$app->login($user);
+            Application::$app->getUser();
+            return true;
+//        }
+        exit();
 
         /* @var OTPCode $OTP */
         $OTP = OTPCode::findOne(['UserID' => $user->getID()], false);
