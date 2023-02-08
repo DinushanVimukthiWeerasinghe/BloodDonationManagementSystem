@@ -142,7 +142,7 @@ echo $background;
                         <div class="card-description"><?= $Type ?></div>
                     </div>
                     <div class="card-action">
-                        <button class="btn btn-outline-primary" onclick="fund()">View</button>
+                        <button class="btn btn-outline-primary" onclick="ViewRequest()">View</button>
                     </div>
                 </div>
                 <?php
@@ -160,20 +160,10 @@ echo $background;
     <script>
 
 
-        const fund = () => {
-            fetch('https://reqres.in/api/users?page=2', {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            })
-                .then(response => response.json())
-                .then(data => {
-                    console.log('Success:', data);
-                })
-                .catch((error) => {
-                    console.error('Error:', error);
-                });
+        const ViewRequest = () => {
+            fetch
+
+
         }
     </script>
 

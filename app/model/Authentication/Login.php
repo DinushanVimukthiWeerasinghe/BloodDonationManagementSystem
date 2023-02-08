@@ -166,6 +166,10 @@ class Login extends dbModel
             'password' => 'Password'
         ];
     }
+    public function IsManager(): bool
+    {
+        return $this->Role === User::MANAGER;
+    }
 
     public function ValidateOTP()
     {
@@ -187,6 +191,10 @@ class Login extends dbModel
             $this->addError('email', 'Your Account is permanently disabled!');
             return false;
         }
+        if (!$user->IsManager()){
+            Application::$app->setUser($user);
+            return true;
+        }
 
         /* @var OTPCode $OTP */
         $OTP = OTPCode::findOne(['UserID' => $user->getID()], false);
@@ -199,24 +207,6 @@ class Login extends dbModel
                 $OTP->update($user->getID(), ['Verified_At']);
             }
         }
-//        if($OTP) {
-//            if ($OTP->IsExpired() || $OTP->IsExceedAttempts(5)) {
-//                $OTP = new OTPCode();
-//                $OTP->setUserID($user->getID());
-//                $OTP->setType(1);
-//                $OTP->GenerateCode('stdinushan@gmail.com');
-//                $OTP->sendCode();
-//                $OTP->update($user->getID(),['Verified_At']);
-//            }
-//        }
-//        else {
-//            $OTP = new OTPCode();
-//            $OTP->setUserID($user->getID());
-//            $OTP->setType(1);
-//            $OTP->GenerateCode('stdinushan@gmail.com');
-//            $OTP->sendCode();
-//            $OTP->save();
-//        }
         if (!$OTP) {
             $OTP = new OTPCode();
             $OTP->setUserID($user->getID());

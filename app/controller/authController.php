@@ -104,6 +104,9 @@ class authController extends Controller
                 if (!$user) {
                     print_r("Not Login");
                 }
+                if ($user === true){
+                    Application::Redirect('/' . strtolower(Application::$app->getUser()->getRole()) . '/dashboard');
+                }
                 return $this->render('Authentication/OTPAuthentication');
 
             } else {

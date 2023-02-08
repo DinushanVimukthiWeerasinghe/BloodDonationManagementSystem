@@ -23,7 +23,7 @@ class Application
     public Request $request;
     public Response $response;
 
-    private Person | Admin|null $user;
+    private Person | Admin| Login | null $user;
     public static Application $app;
     public Controller $controller;
     public Database $db;
@@ -50,7 +50,7 @@ class Application
     /**
      * @param User|null $user
      */
-    public function setUser(?User $user): void
+    public function setUser(null | User | Login $user): void
     {
         $this->user = $user;
     }
@@ -67,7 +67,7 @@ class Application
     /**
      * @return User|null
      */
-    public function getUser(): Person | null | Admin
+    public function getUser(): Person | null | Admin | Login
     {
 //        print_r($this->user);
         return $this->user;

@@ -197,6 +197,18 @@ class managerController extends Controller
         ]);
     }
 
+    public function FindRequest(Request $request,Response $response)
+    {
+        if ($request->isPost()){
+            $Request_ID=$request->getBody()['id'];
+            if ($Request_ID):
+                $request=BloodRequest::findOne(['Request_ID'=>$Request_ID]);
+
+            endif;
+
+        }
+    }
+
     public function ManageDonors(): string
     {
         return $this->render('Manager/ManageDonors');
