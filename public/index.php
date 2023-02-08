@@ -126,6 +126,21 @@ $app->router->get('/manager/mngRequests/emergency', [managerController::class, '
 //$app->router->post('/manager/mngRequests/emergency', [managerController::class, 'FindRequests']);
 
 
+// Donor 
+$app->router->get('/donor/dashboard', [donorController::class, 'dashboard']);
+$app->router->get('/about', [siteController::class, 'about']);
+$app->router->get('/donor', [donorController::class, 'home']);
+$app->router->get('/donor/login', [donorController::class, 'login']);
+$app->router->post('/donor/login', [donorController::class, 'login']);
+$app->router->get('/donor/signup', [donorController::class, 'signup']);
+$app->router->post('/donor/signup', [donorController::class, 'signup']);
+$app->router->get('/donor/profile', [donorController::class, 'profile']);
+$app->router->get('/donor/register',[donorController::class, 'register']);
+$app->router->post('/donor/register', [donorController::class, 'register']);
+$app->router->get('/donor/guideline', [donorController::class, 'guideline']);
+$app->router->get('/donor/history', [donorController::class, 'history']);
+$app->router->get('/donor/nearby', [donorController::class, 'nearby']);
+
 
 //print_r($_SESSION);
 $app->run();

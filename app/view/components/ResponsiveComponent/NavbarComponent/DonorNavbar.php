@@ -2,13 +2,11 @@
 
 namespace App\view\components\ResponsiveComponent\NavbarComponent;
 
-use App\model\users\Manager;
-use App\model\users\User;
 use App\model\users\Donor;
 use Core\Application;
 use Core\SessionObject;
 
-class AuthNavbar
+class DonorNavbar
 {
     public const Authenticated=true;
     public const NotAuthenticated=false;
@@ -48,24 +46,24 @@ class AuthNavbar
         if ($action==='notification')
         {
             $link[0]=[
-                'link'=>'/manager/dashboard',
+                'link'=>'/donor/dashboard',
                 'icon'=>'/public/images/icons/navbar/home.png',
                 'title'=>'Notification'
             ];
         }else if (($action==='dashboard')){
             $link[0]=[
-                'link'=>'/manager/notification',
+                'link'=>'/donor/notification',
                 'icon'=>'/public/images/icons/navbar/bell.png',
                 'title'=>'Notification'
             ];
         }else{
             $link[0]=[
-                'link'=>'/manager/dashboard',
+                'link'=>'/donor/dashboard',
                 'icon'=>'/public/images/icons/navbar/home.png',
                 'title'=>'Dashboard'
             ];
             $link[1]=[
-                'link'=>'/manager/notification',
+                'link'=>'/donor/notification',
                 'icon'=>'/public/images/icons/navbar/bell.png',
                 'title'=>'Notification'
             ];
@@ -109,24 +107,24 @@ class AuthNavbar
         if ($action==='notification')
         {
             $link[0]=[
-                'link'=>'/manager/dashboard',
+                'link'=>'/donor/dashboard',
                 'icon'=>'/public/images/icons/navbar/home.png',
                 'title'=>'Notification'
             ];
         }else if (($action==='dashboard')){
             $link[0]=[
-                'link'=>'/manager/notification',
+                'link'=>'/donor/notification',
                 'icon'=>'/public/images/icons/navbar/bell.png',
                 'title'=>'Notification'
             ];
         }else{
             $link[0]=[
-                'link'=>'/manager/dashboard',
+                'link'=>'/donor/dashboard',
                 'icon'=>'/public/images/icons/navbar/home.png',
                 'title'=>'Dashboard'
             ];
             $link[1]=[
-                'link'=>'/manager/notification',
+                'link'=>'/donor/notification',
                 'icon'=>'/public/images/icons/navbar/bell.png',
                 'title'=>'Notification'
             ];
