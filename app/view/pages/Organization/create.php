@@ -1,5 +1,5 @@
-<script src="/public/scripts/customAlert.js"></script>
-<link href="/public/styles/alert.css" rel="stylesheet">
+<!--<script src="/public/scripts/customAlert.js"></script>-->
+<!--<link href="/public/styles/alert.css" rel="stylesheet">-->
 <?php
 ///* @var string $firstName */
 ///* @var string $lastName */
@@ -17,49 +17,49 @@ $navbar = new AuthNavbar('Create Campaign', '#', '/public/images/icons/navbar/be
 echo $navbar;
 echo $background;
 ?>
-<link rel="stylesheet" href="/public/css/components/form/index2.css">
-<link rel="stylesheet" href="/public/css/framework/util/border/border-radius.css">
+<!--<link rel="stylesheet" href="/public/css/components/form/index2.css">-->
+<!--<link rel="stylesheet" href="/public/css/framework/util/border/border-radius.css">-->
 <div class="container p-1" style="margin-top: 5vh;">
-    <form action="create" method="post" class="p-3 form form-column">
-        <h1 class="form-title mt-0">Create Your Campaign</h1>
-        <div class="">
-            <div class="form-entity mt-1">
-                <label class="form-label">Campaign Name</label><br><br>
-                <input type="text" class="form-input" name="Campaign_Name" required>
+    <form action="create" method="post" class="p-3 bg-white-0-7  border-radius-10 text-xl">
+        <div class="d-flex text-center flex-column">
+            <div class="form-group">
+                <label class="w-40">Campaign Name</label><br><br>
+                <input type="text" class="form-control" name="Campaign_Name" required>
             </div>
-            <div class="form-entity mt-2">
-                <label class="form-label">Campaign Date</label><br><br>
-                <input type="date" class="form-input" name="Campaign_Date" min= "<?php echo date("Y-m-d", strtotime($Date.'+ 7days')) ?>" required>
+            <div class="form-group">
+                <label class="w-40">Campaign Description</label><br><br>
+                <textarea class="form-textarea" name="Campaign_Description" required></textarea>
             </div>
-        </div><br>
-        <div class="form-row">
-            <div class="form-entity mt-2">
-                <label class="form-label">Venue</label><br><br>
-                <input type="text" class="form-input" name="Venue" required>
+            <div class="form-group">
+                <label class="w-40">Campaign Date</label><br><br>
+                <input type="date" class="form-date form-control" name="Campaign_Date" min= "<?php echo date("Y-m-d", strtotime($Date.'+ 7days')) ?>" required>
             </div>
-            <div class="form-entity mt-2">
-                <label class="form-label">Nearest City</label><br><br>
-                <input type="text" class="form-input" name="Nearest_BloodBank"  required>
+            <div class="form-group">
+                <label class="w-40">Venue</label><br><br>
+                <input type="text" class="form-control" name="Venue" required>
             </div>
-        </div>
-        <div class="form-row">
-            <div class="form-entity mt-2">
-                <label class="form-label">Have You Read the Guidelines? </label><br><br>
-                <select class="form-select" id="error" onchange="read()" required>
-                    <option value="yes">Yes</option>
-                    <option value="no">No</option>
-                </select>
+            <div class="form-group">
+                <label class="w-40">Nearest City</label><br><br>
+                <input type="text" class="form-control" name="Nearest_City"  required>
+            </div>
+            <div class="form-group">
+                <label class="w-40">Nearest Blood Bank</label><br><br>
+                <input type="text" class="form-control" name="Nearest_BloodBank"  required>
+            </div>
+            <div class="form-group" style="justify-content: flex-start">
+                <label class="w-60">Have You Read the Guidelines? </label>
+                <input type="checkbox" class="form-checkbox" id="error" onchange="read()" required>
             </div>
 
         </div>
-        <div class="form-row">
-            <div class="form-entity mt-2">
-                <label class="form-label text-danger" id="errors" style="visibility: hidden;"><b>Please Agree to Our Guidelines First!&nbsp&nbsp<a href="guideline" target="_blank" style="text-decoration: underline;">Read Our Guidelines</a></b></label><br><br>
+            <div class="form-entity mt-2 hidden">
+                <label class="form-label text-danger" id="errors" style="visibility: hidden;">
+                    <b>Please Agree to Our Guidelines First!&nbsp&nbsp<a href="guideline" target="_blank" style="text-decoration: underline;">Read Our Guidelines</a></b>
+                </label><br><br>
             </div>
-        </div>
-        <div>
-            <input type="submit" class="btn btn-success mr-2" id="button">
-            <input type="reset" class="btn btn-dark">
+        <div class="d-flex align-items-center justify-content-center gap-2">
+            <input type="submit" class="btn btn-primary w-30" id="button" value="Create">
+            <input type="reset" class="btn btn-secondary w-30">
         </div>
     </form>
 </div>

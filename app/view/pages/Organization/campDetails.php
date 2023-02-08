@@ -1,8 +1,9 @@
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w==" crossorigin="anonymous" referrerpolicy="no-referrer" /> <?php
+<?php
 /* @var string $Campaign_Name */
-/* @var string $Campaign_Date */
+/* @var Campaign $campaign */
 /* @var string $Venue */
 
+use App\model\Campaigns\Campaign;
 use App\view\components\ResponsiveComponent\Alert\FlashMessage;
 use App\view\components\ResponsiveComponent\CardGroup\CardGroup;
 use App\view\components\ResponsiveComponent\ImageComponent\BackGroundImage;
@@ -20,81 +21,32 @@ echo Card::ImportJS();
 
 use App\model\users\Organization;
 use App\view\components\WebComponent\Card\NavigationCard;
-//$background = new BackGroundImage();
-//echo $background;
+$background = new BackGroundImage();
+echo $background;
 FlashMessage::RenderFlashMessages();
 ?>
-<style>
-    body{
-        background-image: url("/public/images/homebg.png");
-        background-position: center;
-    }
-    input{
-        color: red;
-        font-weight: 900;
-    }
-    .container{
-        margin-top: 140px ;
-    }
-    .cards{
-        margin-top: 10px;
-        display: flex;
-        flex-direction: row;
-    }
-    h3{
-        line-height: 25px;
-    }
-    .cards{
-        align-items: center;
-    }
-    .form-entity{
-        font-size: 2em;
-    }
-    @media only screen and (max-width: 320px) {
-        .form-entity{
-            font-size: 1em;
-        }
-    }
-    @media only screen and (max-width: 500px) {
-        .container{
-            margin-top: 120px;
-        }
-    }
-    @media only screen and (max-width: 1325px) {
-        .cards{
-            align-items: center;
-            display: flex;
-            flex-direction: column;
-        }
-    }
-
-    @media only screen and (max-width: 1312px) {
-        .container{
-            margin-top: 900px;
-        }
-        body{
-            overflow-y: scroll;
-        }
-
-    }
-</style>
-<link rel="stylesheet" href="/public/css/components/form/index2.css">
-<link rel="stylesheet" href="/public/css/framework/util/border/border-radius.css">
-<link rel="stylesheet" href="/public/css/fontawesome/fa.css">
-<div style="background-size: cover; background-color: rgba(0,0,0,0.3);border-radius: 30px;min-width: fit-content" class="container p-3">
-        <div class="form-entity">
-            <label class="form-label fa-brands text-light" style="">Name</label><br><br>
-            <input type="text" value="<?php echo $Campaign_Name?>" style="border-radius: 50px;height: 50px;background-color: rgba(255, 255, 255, 0.3);" disabled>
+<div class="d-flex flex-column w-80 p-3">
+        <div class="d-flex bg-white-0-3 p-3 flex-column">
+            <div class="text-xl bg-white border-radius-10" id="Campaign_Detail">
+                <div class="d-flex gap-1" id="Campaign_Name">
+                    <div class="">Campaign Name </div>
+                    <div class="font-bold"><?=$campaign->getCampaignName(); ?></div>
+                </div>
+                <div class="d-flex gap-1" id="Campaign_Venue">
+                    <div class="">Venue </div>
+                    <div class="font-bold"><?=$campaign->getVenue(); ?></div>
+                </div>
+                <div class="d-flex gap-1" id="Campaign_Date">
+                    <div class="">Date </div>
+                    <div class="font-bold"><?=$campaign->getCampaignDate(); ?></div>
+                </div>
+                <div class="d-flex gap-1" id="Campaign_Status">
+                    <div class="">Time </div>
+                    <div class="font-bold"><?=$campaign->getCampaignStatus(); ?></div>
+                </div>
+            </div>
         </div>
-        <div class="form-entity mt-1">
-            <label class="form-label fa-brands text-light">Date</label><br><br>
-            <input type="text" value="<?php echo $Campaign_Date ?>" style="border-radius: 50px;height: 50px;background-color: rgba(255, 255, 255, 0.3);" disabled>
-        </div>
-        <div class="form-entity mt-1">
-            <label class="form-label fa-brands text-light" >Location</label><br><br>
-            <input type="text" value="<?php echo $Venue ?>" style="border-radius: 50px;height: 50px;background-color: rgba(255, 255, 255, 0.3);" disabled>
-        </div>
-        <div class="cards">
+        <div class="d-flex">
             <div class="card nav-card bg-white text-dark" onclick="Redirect('request')">
                 <div class="card-header">
                     <div class="card-header-img">

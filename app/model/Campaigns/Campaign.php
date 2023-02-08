@@ -2,23 +2,28 @@
 
 namespace App\model\Campaigns;
 
-class Campaign extends \App\model\database\dbModel
+use App\model\database\dbModel;
+
+class Campaign extends dbModel
 {
+    public const PENDING = 1;
+    public const APPROVED = 2;
     protected string $Campaign_ID='';
+    protected string $Organization_ID='';
     protected string $Campaign_Name='';
     protected string $Campaign_Description='';
     protected string $Campaign_Date='';
     protected string $Venue='';
     protected string $Nearest_City='';
-    protected int $Status=0;
+    protected int $Status=1;
     protected string $Nearest_BloodBank='';
     protected int $Verified=0;
-    protected ?string $Verified_By='';
-    protected ?string $Verified_At='';
-    protected ?string $Assigned_Team='';
-    protected ?string $Remarks='';
+    protected ?string $Verified_By=null;
+    protected ?string $Verified_At=null;
+    protected ?string $Assigned_Team=null;
+    protected ?string $Remarks=null;
     protected string $Created_At='';
-    protected ?string $Updated_At='';
+    protected ?string $Updated_At=null;
 
     /**
      * @return string
@@ -26,6 +31,22 @@ class Campaign extends \App\model\database\dbModel
     public function getCampaignID(): string
     {
         return $this->Campaign_ID;
+    }
+
+    /**
+     * @return string
+     */
+    public function getOrganizationID(): string
+    {
+        return $this->Organization_ID;
+    }
+
+    /**
+     * @param string $Organization_ID
+     */
+    public function setOrganizationID(string $Organization_ID): void
+    {
+        $this->Organization_ID = $Organization_ID;
     }
 
     /**
@@ -122,6 +143,15 @@ class Campaign extends \App\model\database\dbModel
     public function getStatus(): int
     {
         return $this->Status;
+    }
+
+    public function getCampaignStatus():string
+    {
+        return match ($this->Status){
+            self::PENDING =>' Pending Approval',
+            self::APPROVED => 'Campaign Approved',
+            default => 'Unknown'
+        };
     }
 
     /**
@@ -260,6 +290,7 @@ class Campaign extends \App\model\database\dbModel
         $this->Updated_At = $Updated_At;
     }
 
+
     public function labels(): array
     {
         return [
@@ -292,8 +323,6 @@ class Campaign extends \App\model\database\dbModel
             'Nearest_City' => [self::RULE_REQUIRED],
             'Status' => [self::RULE_REQUIRED],
             'Nearest_BloodBank' => [self::RULE_REQUIRED],
-            'Assigned_Team' => [self::RULE_REQUIRED],
-            'Remarks' => [self::RULE_REQUIRED],
         ];
     }
 
@@ -316,6 +345,7 @@ class Campaign extends \App\model\database\dbModel
     {
         return [
             'Campaign_ID',
+            'Organization_ID',
             'Campaign_Name',
             'Campaign_Description',
             'Campaign_Date',

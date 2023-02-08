@@ -5,7 +5,9 @@
 /* @var string $firstName */
 
 /* @var string $lastName */
+/* @var Campaign $campaign */
 
+use App\model\Campaigns\Campaign;
 use App\model\users\Organization;
 use App\view\components\ResponsiveComponent\Alert\FlashMessage;
 use App\view\components\ResponsiveComponent\CardPane\CardPane;
@@ -77,19 +79,17 @@ FlashMessage::RenderFlashMessages();
                                 </div>
                             </div>
                         <?php } ?>
-            <?php foreach ($params as $key=>$row){?>
-            <?php if($row['Status'] == 1) {?>
+            <?php foreach ($data as $campaign){?>
             <div class="card none detail-card">
                 <div class="card-image">
-                    <img src='/public/upload/1.jpeg' alt="hello">
+                    <img src='/public/images/campaign.png' alt="hello">
                 </div>
                 <div class="card-body">
-                    <div class="card-title"><?php echo $row['Campaign_Name'] ?></div>
-                    <div class="card-description"><?php echo $row['Venue'] ?></div>
-                    <div class="card-description"><?php echo $row['Campaign_Date'] ?></div>
+                    <div class="card-title"><?= $campaign->getCampaignName()?></div>
+                    <div class="card-description"><?= $campaign->getCampaignDate() ?></div>
+                    <div class="card-description"><?= $campaign->getCampaignDescription() ?></div>
                 </div>
             </div>
-                <?php } ?>
             <?php } ?>
         </div>
     </div>

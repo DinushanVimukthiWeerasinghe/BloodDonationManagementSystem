@@ -18,7 +18,7 @@ input[type="text"]{
     width: 100%;
     height: 40px;
     padding: 0 10px;
-    border: 1px solid var(--primary);
+    border: 1px solid var(--border-color);
     border-radius: 3px;
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
@@ -26,8 +26,8 @@ input[type="text"]{
 }
 
 input[type="checkbox"] {
-    transform: scale(3);
-    margin: 0 2rem;
+    /*transform: scale(3);*/
+    /*margin: 0 2rem;*/
 }
 
 input[type="checkbox"]:checked {
@@ -68,6 +68,19 @@ input[type="file"]{
     width: 100%;
     gap: 1rem;
 }
+.form-checkbox{
+    transform: scale(2);
+}
+.form-textarea{
+    width: 100%;
+    height: 100px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
 
 .form-control, .form-date ,.form-select{
     /*display: block;*/
@@ -75,7 +88,7 @@ input[type="file"]{
     height: 40px;
     padding: 0 10px;
     font-size: 1rem;
-    border: 1px solid #020000;
+    border: 1px solid var(--border-color);
     border-radius: 5px;
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
