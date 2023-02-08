@@ -15,6 +15,53 @@ class Organization extends Person
         return $this->Organization_ID;
     }
 
+    /**
+     * @return string
+     */
+    public function getOrganizationID(): string
+    {
+        return $this->Organization_ID;
+    }
+
+    /**
+     * @param string $Organization_ID
+     */
+    public function setOrganizationID(string $Organization_ID): void
+    {
+        $this->Organization_ID = $Organization_ID;
+    }
+
+    /**
+     * @return string
+     */
+    public function getOrganizationName(): string
+    {
+        return $this->Organization_Name;
+    }
+
+    /**
+     * @param string $Organization_Name
+     */
+    public function setOrganizationName(string $Organization_Name): void
+    {
+        $this->Organization_Name = $Organization_Name;
+    }
+
+    /**
+     * @return string
+     */
+    public function getType(): string
+    {
+        return $this->Type;
+    }
+
+    /**
+     * @param string $Type
+     */
+    public function setType(string $Type): void
+    {
+        $this->Type = $Type;
+    }
 
     public function labels(): array
     {
