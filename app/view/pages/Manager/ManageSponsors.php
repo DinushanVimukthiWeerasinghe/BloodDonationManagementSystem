@@ -94,20 +94,19 @@ FlashMessage::RenderFlashMessages();
             foreach ($data as $value) {
                 $id=$value->getID();
                 $image=$value->getProfileImage();
-                $name=$value->getFullName();
+                $name=$value->getSponsorName();
+                $email=$value->getEmail();
 //                $position=$value->getPosition();
 //                $NIC=$value->getNIC();
 //                $branch=$value->getBranchLocation();
                 ?>
-                <div class="detail-card" id="MO7646" onclick="RedirectID('<?= $id?>')">
+                <div class="detail-card" id="MO7646" onclick="RedirectSponsor('<?= $id?>')">
                     <div class="card-image">
                         <img src='<?= $image?>' alt="">
                     </div>
                     <div class="card-body">
                         <div class="card-title"><?= $name ?></div>
-                        <div class="card-description"><?= $position ?></div>
-                        <div class="card-description"><?= $NIC ?></div>
-                        <div class="card-description"><?= $branch ?></div>
+                        <div class="card-description"><?= $email ?></div>
                     </div>
                 </div>
                 <?php

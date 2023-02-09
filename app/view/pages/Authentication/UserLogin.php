@@ -51,7 +51,7 @@ FlashMessage::RenderFlashMessages();
                     <div class="form-footer-text">
                         <p>Don't have an account? </p>
                         <div>
-                            <input type="button" class="btn-hover color-9" value="Register" onclick="window.location.href='/manager/register'">
+                            <input type="button" class="btn-hover color-9" value="Register" onclick="window.location.href='/register'">
                         </div>
                     </div>
                 </div>

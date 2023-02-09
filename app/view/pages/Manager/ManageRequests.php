@@ -43,14 +43,14 @@ echo $background;
 
         <div id="filter-pane" class="filter-pane">
 <!--            <div class="text-xl">Filter Request : </div>-->
-            <div class="d-flex justify-content-evenly gap-1">
-                <div class="search-input">
-                    <input type="checkbox" class="check-box" name="emergencyRequest" id="emergency" onchange="FilterOnlyNormalRequest()" checked>
+            <div class="d-flex justify-content-evenly gap-4">
+                <div class="search-input gap-2">
                     <label for="emergency" class="search text-white " style="font-size: 1.5rem">Emergency Request </label>
+                    <input type="checkbox" class="check-box" name="emergencyRequest" id="emergency" onchange="FilterOnlyNormalRequest()" checked>
                 </div>
-                <div class="search-input">
-                    <input type="checkbox" class="check-box" name="normalRequest" id="emergency" onchange="FilterOnlyEmergencyRequest()" checked>
+                <div class="search-input gap-2">
                     <label for="emergency" class="search text-white" style="font-size: 1.5rem">Normal Request </label>
+                    <input type="checkbox" class="check-box" name="normalRequest" id="emergency" onchange="FilterOnlyEmergencyRequest()" checked>
                 </div>
             </div>
 
@@ -142,7 +142,7 @@ echo $background;
                         <div class="card-description"><?= $Type ?></div>
                     </div>
                     <div class="card-action">
-                        <button class="btn btn-outline-primary" onclick="ViewRequest()">View</button>
+                        <button class="btn btn-outline-primary" onclick="ViewRequest('<?=$id?>')">View</button>
                     </div>
                 </div>
                 <?php
@@ -160,8 +160,48 @@ echo $background;
     <script>
 
 
-        const ViewRequest = () => {
-            fetch
+        const ViewRequest = (id) => {
+            const url = '/manager/mngRequests/find';
+            const form = new FormData();
+            form.append('id', id);
+            fetch(url, {
+                method: 'POST',
+                body: form
+            }).then((response) => {
+                return response.json();
+            }).then((data) => {
+                if (data.success){
+                    OpenDialogBox({
+                        title: 'Request Details',
+                        content :`
+                            <div class="d-flex align-items-center justify-content-center flex-column">
+                                <div class="d-flex">
+                                    <div class="text-xl">Request ID : </div>
+                                    <div class="text-xl">${data.data.id}</div>
+                                </div>
+                                <div class="d-flex">
+                                    <div class="text-xl">Requester : </div>
+                                    <div class="text-xl">${data.data.hospital}</div>
+                                </div>
+                                <div class="d-flex">
+                                    <div class="text-xl">Blood Group : </div>
+                                    <div class="text-xl">${data.data.bloodGroup}</div>
+                                </div>
+                                <div class="d-flex">
+                                    <div class="text-xl">Request Type : </div>
+                                    <div class="text-xl">${data.data.type}</div>
+                                </div>
+                            </div>
+                        `,
+                        successBtnText: 'Approve',
+                        successBtnAction: () => {
+                            CloseDialogBox();
+                        }
+                    })
+                }
+            }).catch((error) => {
+                console.log(error);
+            });
 
 
         }

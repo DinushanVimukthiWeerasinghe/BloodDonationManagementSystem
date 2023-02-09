@@ -158,7 +158,7 @@ FlashMessage::RenderFlashMessages();
 
                     setTimeout(()=>{
                         const PaneLoader=document.getElementsByClassName('pane-loader')[0];
-                        const Cards=document.getElementsByClassName('card');
+                        const Cards=document.getElementsByClassName('detail-card');
                         PaneLoader.classList.add('none');
                         for (let i=0;i<Cards.length;i++){
                             Cards[i].classList.remove('none');

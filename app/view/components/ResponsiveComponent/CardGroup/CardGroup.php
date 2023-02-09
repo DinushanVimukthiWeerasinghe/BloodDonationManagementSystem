@@ -17,11 +17,9 @@ class CardGroup
 
     public static function CardPanel(): string
     {
-        $css=static::RenderCSS();
         return <<<HTML
-            {$css}
-            <div class="panel">
-                <div class="card-grp">
+            <div class="d-flex flex-wrap flex-column max-w-60 bg-white-0-3 p-3 border-radius-10 justify-content-center align-items-center">
+                <div class="d-flex flex-wrap align-items-center justify-content-center">
         HTML;
     }
     public static function CloseCardPanel(): string

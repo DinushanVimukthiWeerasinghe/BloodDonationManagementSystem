@@ -28,9 +28,9 @@ $c3 = new \App\view\components\Card\ClickableCard("Nearby Donations", $nearby_Do
 
 <div class="super-header">
     <div class="nav-beg">
-        <div class="nav-logo g-flex g-flex-col">
-            <div class="g-flex g-flex-col">
-                <div class="g-flex g-flex-align-center">
+        <div class="nav-logo d-flex g-flex-col">
+            <div class="d-flex g-flex-col">
+                <div class="d-flex g-flex-align-center">
                     <?php echo $Image->render();?>
                     <h1 class="nav-title">Welcome <br> <?php echo $firstName.' '.$lastName ?> </h1>
                 </div>
@@ -50,7 +50,7 @@ $c3 = new \App\view\components\Card\ClickableCard("Nearby Donations", $nearby_Do
 </div>
 
 <div class="home-body">
-    <div class="g-flex g-flex-wrap">
+    <div class="d-flex g-flex-wrap">
         <a href="/donor/guideline"> <?php
             echo $c1->render();
             ?>

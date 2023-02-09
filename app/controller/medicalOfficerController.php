@@ -2,10 +2,12 @@
 
 namespace App\controller;
 
+use App\middleware\medicalOfficerMiddleware;
 use App\model\Campaigns\Campaign;
 use App\model\MedicalTeam\TeamMembers;
 use App\model\users\Donor;
 use Core\Application;
+use Core\BaseMiddleware;
 use Core\Request;
 use Core\Response;
 
@@ -15,6 +17,9 @@ class medicalOfficerController extends \Core\Controller
     public function __construct()
     {
         $this->setLayout('MedicalOfficer');
+
+        $this->registerMiddleware(new medicalOfficerMiddleware(['dashboard'], BaseMiddleware::FORBIDDEN_ROUTES));
+
     }
 
     public function Dashboard(Request $request, Response $response)

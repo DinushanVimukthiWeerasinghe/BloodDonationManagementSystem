@@ -2,6 +2,7 @@
 
 namespace App\controller;
 
+use App\middleware\organizationMiddleware;
 use App\model\Authentication\Login;
 use App\model\Requests\AttendanceAcceptedRequest;
 use App\model\users\organization;
@@ -24,6 +25,8 @@ class OrganizationController extends Controller
     public function __construct()
     {
         $this->setLayout('Organization');
+        $this->registerMiddleware(new organizationMiddleware(['dashboard'], BaseMiddleware::FORBIDDEN_ROUTES));
+
 //        $this->registerMiddleware(new AuthenticationMiddleware(['login','register'], BaseMiddleware::ALLOWED_ROUTES));
 //        $this->registerMiddleware(new ManagerMiddleware());
     }

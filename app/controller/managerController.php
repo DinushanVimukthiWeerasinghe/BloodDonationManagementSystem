@@ -2,6 +2,7 @@
 
 namespace App\controller;
 
+use App\middleware\managerMiddleware;
 use App\model\Requests\BloodRequest;
 use App\model\users\Donor;
 use App\model\users\Manager;
@@ -22,7 +23,7 @@ class managerController extends Controller
     public function __construct()
     {
         $this->setLayout('Manager');
-        $this->registerMiddleware(new AuthenticationMiddleware(['login','register'], BaseMiddleware::ALLOWED_ROUTES));
+        $this->registerMiddleware(new managerMiddleware(['dashboard'], BaseMiddleware::FORBIDDEN_ROUTES));
 //        $this->registerMiddleware(new ManagerMiddleware());
     }
 
@@ -190,9 +191,17 @@ class managerController extends Controller
             if ($Request_ID):
                 $BloodRequest=BloodRequest::findOne(['Request_ID'=>$Request_ID]);
             if ($BloodRequest){
+//                TODO ADD data to the array
                 $data=[
-                    'status'=>true,
-                    'data'=>$BloodRequest
+                    'success'=>true,
+                    'data'=>[
+                        'id'=>$BloodRequest->getRequestID(),
+                        'hospital'=>'Hospital',
+                        'bloodGroup'=>$BloodRequest->getBloodGroup(),
+                        'Urgency'=>'Urgency',
+                        'Contact'=>'Contact',
+                        'type'=>'type',
+                    ]
                 ];
                 return json_encode($data);
             }

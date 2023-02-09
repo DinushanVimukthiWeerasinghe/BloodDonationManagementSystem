@@ -11,6 +11,7 @@ use App\controller\hospitalController;
 use App\controller\managerController;
 use App\controller\medicalOfficerController;
 use App\controller\siteController;
+use App\controller\sponsorController;
 use Core\Application;
 
 
@@ -51,8 +52,8 @@ $app->router->get('/about', [siteController::class, 'about']);
 $app->router->get('/loader', [siteController::class, 'Loader']);
 $app->router->get('/contact', [siteController::class, 'contact']);
 $app->router->post('/contact', [siteController::class, 'contact']);
-$app->router->get('/register', [authController::class, 'userRegister']);
-$app->router->post('/register', [authController::class, 'userRegister']);
+$app->router->get('/register', [authController::class, 'UserRegister']);
+$app->router->post('/register', [authController::class, 'UserRegister']);
 
 //Logout
 $app->router->get('/logout', [authController::class, 'logout']);
@@ -86,12 +87,45 @@ $app->router->post('/user/reActivateUser', [adminController::class, 'ReactivateU
 $app->router->post('/user/deactivateUser', [adminController::class, 'DeactivateUser']);
 $app->router->post('/user/activateUser', [adminController::class, 'ActivateUser']);
 $app->router->post('/user/searchUser', [adminController::class, 'SearchUser']);
-//TODO Delete this
 $app->router->get('/user/searchUser', [adminController::class, 'SearchUser']);
 
 $app->router->post('/upload', [fileController::class, 'upload']);
 
 $app->router->get('/test',[siteController::class,'test']);
+
+$app->router->get('/organization/register', [OrganizationController::class, 'register']);
+$app->router->post('/organization/register', [OrganizationController::class, 'register']);
+$app->router->get('/organization/dashboard', [OrganizationController::class, 'dashboard']);
+$app->router->get('/organization/create', [OrganizationController::class, 'create']);
+$app->router->get('/organization/history', [OrganizationController::class, 'history']);
+$app->router->get('/organization/home', [OrganizationController::class, 'home']);
+$app->router->get('/organization/inform', [OrganizationController::class, 'inform']);
+$app->router->post('/organization/inform', [OrganizationController::class, 'inform']);
+$app->router->get('/organization/manage', [OrganizationController::class, 'manage']);
+$app->router->get('/organization/campaign/create', [OrganizationController::class, 'CreateCampaign']);
+$app->router->post('/organization/campaign/create', [OrganizationController::class, 'CreateCampaign']);
+$app->router->get('/organization/campaign/view', [OrganizationController::class, 'ViewCampaign']);
+$app->router->post('/organization/campaign/view', [OrganizationController::class, 'ViewCampaign']);
+$app->router->get('/organization/near', [OrganizationController::class, 'near']);
+$app->router->get('/organization/report', [OrganizationController::class, 'report']);
+$app->router->get('/organization/history', [OrganizationController::class, 'history']);
+$app->router->get('/organization/guideline', [OrganizationController::class, 'guideline']);
+$app->router->get('/organization/request', [OrganizationController::class, 'request']);
+$app->router->post('/organization/request', [OrganizationController::class, 'request']);
+$app->router->get('/organization/campDetails', [OrganizationController::class, 'campDetails']);
+$app->router->get('/organization/received', [OrganizationController::class, 'received']);
+$app->router->get('/organization/accepted', [OrganizationController::class, 'accepted']);
+$app->router->get('/organization/profile', [OrganizationController::class, 'profile']);
+$app->router->get('/organization/campaign/view', [OrganizationController::class, 'view']);
+
+//sponsor
+
+$app->router->get('/sponsors/dashboard', [sponsorController::class, 'dashboard']);
+$app->router->get('/sponsors/history', [sponsorController::class, 'history']);
+$app->router->get('/sponsors/manage', [sponsorController::class, 'manage']);
+$app->router->get('/sponsors/donation', [sponsorController::class, 'donation']);
+$app->router->get('/sponsors/campDetails', [sponsorController::class, 'campDetails']);
+$app->router->get('/sponsors/guideline', [sponsorController::class, 'guideline']);
 
 
 

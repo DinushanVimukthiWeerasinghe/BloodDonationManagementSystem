@@ -78,6 +78,42 @@ class Application
         return $this->user === null;
     }
 
+    public function isAdmin(): bool
+    {
+        return $this->user!==null && $this->user->getRole() === User::ADMIN;
+    }
+
+    public function isDonor(): bool
+    {
+        return $this->user!==null && $this->user->getRole() === User::DONOR;
+    }
+
+    public function isManager(): bool
+    {
+        return $this->user!==null && $this->user->getRole() === User::MANAGER;
+    }
+
+    public function isOrganization(): bool
+    {
+        return $this->user!==null && $this->user->getRole() === User::ORGANIZATION;
+    }
+
+    public function isSponsor(): bool
+    {
+        return $this->user!==null && $this->user->getRole() === User::SPONSOR;
+    }
+
+    public function isHospital(): bool
+    {
+        return $this->user!==null && $this->user->getRole() === User::HOSPITAL;
+    }
+
+    public function isMedicalOfficer(): bool
+    {
+        return $this->user!==null && $this->user->getRole() === User::MEDICAL_OFFICER;
+    }
+
+
     public function getForbiddenRoutes(): forbiddenRoute
     {
         return $this->forbiddenRoute;
@@ -172,8 +208,8 @@ class Application
         try {
             echo self::$app->router->resolve();
         }catch (Exception $e){
-//            $this->Redirect('/');
-            throw $e;
+            self::Redirect('/login');
+//            throw $e;
         }
     }
 

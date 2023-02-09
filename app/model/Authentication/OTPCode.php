@@ -275,7 +275,6 @@ class OTPCode extends dbModel
 
         try {
             $OTPCodeEmail->send();
-
         } catch (\Exception $e) {
             echo '<pre>';
             print_r($OTPCodeEmail);

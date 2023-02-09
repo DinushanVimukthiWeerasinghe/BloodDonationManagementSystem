@@ -12,12 +12,6 @@
 use App\view\components\ResponsiveComponent\Card\campaignCard;
 
 ?>
-
-<div>
-    <h1>Nearby Campaigns</h1>
-</div>
-
-Nearby Campaigns List
 <div class="sub-panel page-contain">
 <!--    <div class="page-contain">-->
     <?php

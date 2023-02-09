@@ -37,7 +37,7 @@ use App\view\components\ResponsiveComponent\CardPane\CardPane;
     <?php
     if (empty($data)){
         ?>
-        <div class="card detail-card">
+        <div class="card  detail-card">
             <div class="card-image">
                 <img src="/public/images/icons/manager/manageMedicalOfficer/doctor.png" alt="">
             </div>
@@ -57,7 +57,7 @@ use App\view\components\ResponsiveComponent\CardPane\CardPane;
         $NIC=$value->getNIC();
         $branch=$value->getBranchLocation();
         ?>
-        <div class="detail-card" id="MO7646" onclick="RedirectID('<?= $id?>')">
+        <div class="detail-card none" id="MO7646" onclick="RedirectID('<?= $id?>')">
             <div class="card-image">
                 <img src='<?= $image?>' alt="">
             </div>

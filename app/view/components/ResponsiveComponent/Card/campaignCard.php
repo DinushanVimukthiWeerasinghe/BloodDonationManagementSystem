@@ -17,7 +17,7 @@ class campaignCard
             return <<<HTML
         <a href="#" class="data-card">
             <h3>270</h3>
-            <h4>Care Facilities</h4>
+            <h4>Lorem ipsum dolors</h4>
             <p>Aenean lacinia bibendum nulla sed consectetur.</p>
             <span class="link-text">
                 View All Providers

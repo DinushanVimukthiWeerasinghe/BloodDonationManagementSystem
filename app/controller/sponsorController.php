@@ -1,6 +1,7 @@
 <?php
 
 namespace App\controller;
+use App\middleware\sponsorMiddleware;
 use App\model\Authentication\Login;
 use App\model\Requests\AttendanceAcceptedRequest;
 use App\model\sponsor\campaigns_sponsors;
@@ -26,6 +27,8 @@ class sponsorController extends Controller
     public function __construct()
     {
         $this->setLayout('sponsors');
+        $this->registerMiddleware(new sponsorMiddleware(['dashboard'], BaseMiddleware::FORBIDDEN_ROUTES));
+
 //        $this->registerMiddleware(new AuthenticationMiddleware(['login','register'], BaseMiddleware::ALLOWED_ROUTES));
 //        $this->registerMiddleware(new ManagerMiddleware());
     }
