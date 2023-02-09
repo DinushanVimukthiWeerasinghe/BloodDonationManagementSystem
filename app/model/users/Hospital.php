@@ -7,6 +7,7 @@ class Hospital extends Person
     protected string $Hospital_ID='';
     protected string $Hospital_Name='';
 
+
     /**
      * @return string
      */

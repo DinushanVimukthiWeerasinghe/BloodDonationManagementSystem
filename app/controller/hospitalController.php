@@ -92,7 +92,8 @@ class hospitalController extends Controller{
 
     public function emergencyRequestHistory(): string
     {
-        return $this->render('Hospital/emergencyRequestHistory');
+        $donor=Donor::RetrieveAll();
+        return $this->render('Hospital/emergencyRequestHistory',['$data'=>$donor]);
     }
     public function bloodRequestHistory(): string
     {
