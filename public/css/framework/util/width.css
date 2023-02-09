@@ -55,6 +55,9 @@
 .w-10{
     width: 10%;
 }
+.w-12vw{
+    width: 12vw;
+}
 .w-5{
     width: 5%;
 }
@@ -358,6 +361,12 @@
 }
 
 /*Min Height*/
+.min-h-92vh{
+    min-height: 92vh;
+}
+.min-h-100vh{
+    min-height: 100vh;
+}
 .min-h-100{
     min-height: 100%;
 }
