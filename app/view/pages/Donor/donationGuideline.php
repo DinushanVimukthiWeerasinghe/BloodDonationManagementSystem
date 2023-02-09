@@ -1,10 +1,13 @@
 <head>
     <link rel="stylesheet" href="/public/css/home.css">
 </head>
+<?php
+use App\view\components\ResponsiveComponent\NavbarComponent\DonorNavbar;
 
-<div>
-    <h1>Nearby Campaigns</h1>
-</div>
+$navbar = new DonorNavbar('Donation Guideline', '/donor/profile', '/public/images/icons/user.png', true,$firstName . ' ' . $lastName,false );
+echo $navbar;
+
+?>
 
 <div class="sub-panel">
 <h1>Donation Guidelines</h1>

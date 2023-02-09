@@ -13,6 +13,7 @@
 /* @var string $remark */
 
 use App\view\components\ResponsiveComponent\ImageComponent\BackGroundImage;
+use App\view\components\ResponsiveComponent\NavbarComponent\DonorNavbar;
 
 $donorID = "1234";
 $firstName = "John";
@@ -29,6 +30,11 @@ $remark = "Goodbye";
 $background = new BackGroundImage();
 
 echo $background;
+
+$navbar = new DonorNavbar('Donor Profile', '/donor/profile', '/public/images/icons/user.png', true, $firstName . ' ' . $lastName, false);
+echo $navbar;
+
+
 ?>
 
 <!--<head>-->
