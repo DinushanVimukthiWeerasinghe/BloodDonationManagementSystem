@@ -103,7 +103,8 @@ class authController extends Controller
 
 
                 if (!$user) {
-                    print_r("Not Login");
+                    $this->setFlashMessage('error', 'Invalid Credentials');
+                    Application::Redirect('/login');
                 }
                 if ($user === true){
                     Application::Redirect('/' . strtolower(Application::$app->getUser()->getRole()) . '/dashboard');

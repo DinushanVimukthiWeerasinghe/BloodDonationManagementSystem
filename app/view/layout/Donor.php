@@ -16,7 +16,7 @@
     <link rel="stylesheet" href="/public/css/components/cardPane/index.css">
     <script src="/public/scripts/index.js"></script>
 </head>
-<body style="justify-content: flex-start;">
+<body>
     <div class="dark-bg"></div>
 
     <?php

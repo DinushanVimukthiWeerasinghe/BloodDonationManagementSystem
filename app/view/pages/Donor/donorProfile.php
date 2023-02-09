@@ -12,6 +12,8 @@
 /* @var string $weight */
 /* @var string $remark */
 
+use App\view\components\ResponsiveComponent\ImageComponent\BackGroundImage;
+
 $donorID = "1234";
 $firstName = "John";
 $lastName = "Smith";
@@ -24,28 +26,41 @@ $bloodGroup = "B+";
 $weight = "100";
 $remark = "Goodbye";
 
+$background = new BackGroundImage();
+
+echo $background;
 ?>
 
-<head>
-    <link rel="stylesheet" href='/public/css/home.css'>
-    <link rel="stylesheet" href='/public/styles/home.css'>
-</head>
+<!--<head>-->
+<!--    <link rel="stylesheet" href='/public/css/home.css'>-->
+<!--    <link rel="stylesheet" href='/public/styles/home.css'>-->
+<!--</head>-->
 
 
 
-<div class="sub-panel">
-    <div class="container">
-        <div class="left">
-            <img src="https://th.bing.com/th/id/R.d109030661f299bf427a10adebf80646?rik=QvhrbBgRD1Sqzw&pid=ImgRaw&r=0" alt="profile image for user" class="profilePicture" />
+<div class="d-flex bg-white-0-5 mt-7 w-80 p-3 border-radius-10 min-h-80 flex-column justify-content-center align-items-center">
+    <div class="d-flex gap-2">
+        <div class="d-flex">
+            <img src="https://th.bing.com/th/id/R.d109030661f299bf427a10adebf80646?rik=QvhrbBgRD1Sqzw&pid=ImgRaw&r=0" width="200rem" alt="profile image for user" class="profilePicture" />
         </div>
-        <div class="right">
-            <table class="table" style="text-align: left">
-                <tr><td>Donor ID</td><td>:</td><td><?php echo $donorID ?></td></tr>
-                <tr><td>Name</td><td>:</td><td><?php echo $firstName . ' ' . $lastName ?></td></tr>
-                <tr><td>Email</td><td>:</td><td><?php echo $email ?></td></tr>
-                <tr><td>NIC</td><td>:</td><td><?php echo $NIC ?></td></tr>
-                <tr><td>Mobile Number</td><td>:</td><td><?php echo $contactNumber ?></td></tr>
-                <tr><td>Address</td><td>:</td><td><?php echo $city ?></td></tr>
+        <div class="d-flex flex-column">
+            <div class="d-flex flex-column " id="PersonalDetails">
+                <div class="d-flex">
+                    Name : <?php echo $firstName . " " . $lastName ?>
+                </div>
+                <div class="d-flex">
+                    Email : <?php echo $email ?>
+                </div>
+                <div class="d-flex">
+                    NIC : <?php echo $NIC ?>
+                </div>
+                <div class="d-flex">
+                    Contact Number : <?php echo $contactNumber ?>
+                </div>
+                <div class="d-flex">
+                    City : <?php echo $city ?>
+                </div>
+            </div>
         </table>
         </div>
     </div>
