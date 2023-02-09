@@ -7,6 +7,7 @@ use App\model\Requests\BloodRequest;
 use App\model\users\Donor;
 use App\model\users\Manager;
 use App\model\users\MedicalOfficer;
+use App\model\users\Person;
 use App\model\users\Sponsor;
 use App\model\Utils\Notification;
 use Core\Application;
@@ -214,6 +215,21 @@ class managerController extends Controller
     public function ManageDonors(): string
     {
         return $this->render('Manager/ManageDonors');
+    }
+
+    public function DeleteMedicalOfficer(Request $request,Response $response)
+    {
+        if ($request->isPost()){
+            $id=$request->getBody()['id'];
+            $medicalOfficer=MedicalOfficer::findOne(['Officer_ID'=>$id]);
+            if ($medicalOfficer){
+                $medicalOfficer->setStatus(Person::USER_DELETED);
+                $medicalOfficer->update($medicalOfficer->getID());
+                return json_encode(['status'=>true,'message'=>'Successfully Deleted Medical Officer!']);
+            }
+            return json_encode(['status'=>false,'message'=>'Medical Officer Not Found!']);
+        }
+
     }
 
 

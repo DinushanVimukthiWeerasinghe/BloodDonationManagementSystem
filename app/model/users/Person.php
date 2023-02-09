@@ -6,6 +6,7 @@ use App\model\database\dbModel;
 
 abstract class Person extends dbModel
 {
+    public const USER_DELETED = 3;
     public const DONOR='Donor';
     public const MEDICAL_OFFICER='MedicalOfficer';
     public const MANAGER='Manager';

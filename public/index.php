@@ -143,6 +143,7 @@ $app->router->get('/manager/mngMedicalOfficer', [managerController::class, 'Mana
 
 $app->router->get('/manager/mngMedicalOfficer/add', [managerController::class, 'AddMedicalOfficer']);
 $app->router->post('/manager/mngMedicalOfficer/add', [managerController::class, 'AddMedicalOfficer']);
+$app->router->post('/manager/mngMedicalOfficer/delete', [managerController::class, 'DeleteMedicalOfficer']);
 
 $app->router->get('/manager/mngMedicalOfficer/search', [managerController::class, 'SearchMedicalOfficer']);
 

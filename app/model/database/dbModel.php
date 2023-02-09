@@ -295,6 +295,9 @@ abstract class dbModel extends Model
         $attributes=array_keys($where);
         $sql=implode("AND",array_map(fn($attr)=>"$attr=:$attr",$attributes));
         $statement=self::prepare("DELETE FROM $tableName WHERE $sql");
+        print_r($statement);
+        print_r($where);
+        exit();
         foreach ($where as $key=>$item)
         {
             $statement->bindValue(":$key",$item);

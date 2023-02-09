@@ -6,6 +6,7 @@ use App\model\BloodBankBranch\BloodBank;
 
 class MedicalOfficer extends Person
 {
+
     protected string $BloodBank_ID = '';
     protected string $Joined_At = '';
     protected string $Position = '';
