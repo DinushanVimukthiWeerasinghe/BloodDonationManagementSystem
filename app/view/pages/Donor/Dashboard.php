@@ -6,7 +6,10 @@
 </head>
 <?php
 
+use App\model\Notification\DonorNotification;
 use App\view\components\ResponsiveComponent\NavbarComponent\AuthNavbar;
+use App\view\components\ResponsiveComponent\NavbarComponent\DonorNavbar;
+use App\view\components\ResponsiveComponent\NotificationComponent\Notification;
 
 $donation_Image='/public/images/donation.png';
 $donation_History='/public/images/Icons/icons8-order-history-80.png';
@@ -23,6 +26,12 @@ $Image=new \App\view\components\Image\GeneralImage("/public/images/logo.png", "H
 $c1 = new \App\view\components\Card\ClickableCard("Donation Guideline", $donation_Guideline,"Donation Guideline");
 $c2 = new \App\view\components\Card\ClickableCard("Donation History", $donation_History,"Donation History");
 $c3 = new \App\view\components\Card\ClickableCard("Nearby Donations", $nearby_Donations,"Nearby Donations");
+
+$navbar = new DonorNavbar('Donor Board', '/donor/profile', '/public/images/icons/user.png', true,$firstName . ' ' . $lastName,false );
+echo $navbar;
+
+//$notification = new Notification;
+//echo $notification->getNotification('Notification', 'Are you sure you want to', 'Notification', 'Are you sure', 'Are you sure', 'Are you sure', 'Are you sure', 'Are you sure');
 ?>
 
 

@@ -29,8 +29,6 @@
 
 //    echo $background;
 
-    $navbar = new DonorNavbar('Donor Board', '/donor/profile', '/public/images/icons/user.png', true,$firstName . ' ' . $lastName,false );
-        echo $navbar;
     ?>
     {{content}}
 </body>

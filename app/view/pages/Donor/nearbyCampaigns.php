@@ -9,14 +9,20 @@
 </head>
 <?php
 
-use App\view\components\ResponsiveComponent\Card\campaignCard;
+use \App\view\components\ResponsiveComponent\Card\donationCard;
+use App\view\components\ResponsiveComponent\NavbarComponent\DonorNavbar;
+
+$navbar = new DonorNavbar('Nearby Campaigns', '/donor/profile', '/public/images/icons/user.png', true, $firstName . ' ' . $lastName, false);
+echo $navbar;
+
 
 ?>
+
 <div class="sub-panel page-contain">
 <!--    <div class="page-contain">-->
     <?php
     for ($i = 0; $i < 8; $i++) {
-        $card = new CampaignCard(['campaign' => 'campaign', 'venue' => 'venue', 'date' => 'date', 'organization' => 'organization']);
+        $card = new donationCard(['title' => 'Date', 'subtitle' => 'venue', 'description' => 'Organization']);
         echo $card->render();
     }
     ?>
