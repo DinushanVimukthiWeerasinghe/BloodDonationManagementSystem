@@ -27,7 +27,7 @@ class sponsorController extends Controller
     public function __construct()
     {
         $this->setLayout('sponsors');
-        $this->registerMiddleware(new sponsorMiddleware(['dashboard'], BaseMiddleware::FORBIDDEN_ROUTES));
+//        $this->registerMiddleware(new sponsorMiddleware());
 
 //        $this->registerMiddleware(new AuthenticationMiddleware(['login','register'], BaseMiddleware::ALLOWED_ROUTES));
 //        $this->registerMiddleware(new ManagerMiddleware());
@@ -40,41 +40,41 @@ class sponsorController extends Controller
 
 
 
-    public function register(Request $request,Response $response ): string
-    {
-        $sponsor=new Sponsor();
-//        if ($request->isPost())
-//        {
-//            $user = new User();
-//            $organization->loadData($request->getBody());
-//            $organization->getFile()->saveFile();
-//            $user->loadData($request->getBody());
-//            $organization->loadData($request->getBody());
-//            $id =mt_rand(1000,10000);
-//            $organization->setID($id);
-//            $user ->setID($id);
-//            print_r($organization);
-//            echo '<br>';
-//            echo '<br>';
-//            echo '<br>';
-//            print_r($user);
-//            echo '<br>';
-//            echo '<br>';
-//            echo '<br>';
-//
-//            if($user->validate() && $user->saver()) {
-//                if ($organization->validate() && $organization->save()) {
-//                    $response->redirect('/login');
-//                } else {
-//                    print_r($organization->errors);
-//                }
-//            }else{
-//                print_r($user->errors);
-//            }
-//        }
-//
-//        return $this->render('organization\register', ['model' => $organization]);
-    }
+//    public function register(Request $request,Response $response ): string
+//    {
+//        $sponsor=new Sponsor();
+////        if ($request->isPost())
+////        {
+////            $user = new User();
+////            $organization->loadData($request->getBody());
+////            $organization->getFile()->saveFile();
+////            $user->loadData($request->getBody());
+////            $organization->loadData($request->getBody());
+////            $id =mt_rand(1000,10000);
+////            $organization->setID($id);
+////            $user ->setID($id);
+////            print_r($organization);
+////            echo '<br>';
+////            echo '<br>';
+////            echo '<br>';
+////            print_r($user);
+////            echo '<br>';
+////            echo '<br>';
+////            echo '<br>';
+////
+////            if($user->validate() && $user->saver()) {
+////                if ($organization->validate() && $organization->save()) {
+////                    $response->redirect('/login');
+////                } else {
+////                    print_r($organization->errors);
+////                }
+////            }else{
+////                print_r($user->errors);
+////            }
+////        }
+////
+////        return $this->render('organization\register', ['model' => $organization]);
+//    }
 
     public function dashboard(): string
     {
@@ -87,7 +87,7 @@ class sponsorController extends Controller
         ];
 
         Application::$app->session->setFlash('success','Welcome Back!'.' '.$sponsor->getSponsorName());
-        return $this->render('Sponsors/sponsorBoard',$params);
+        return $this->render('sponsors/sponsorBoard',$params);
     }
 
     public function manage()
@@ -147,6 +147,7 @@ class sponsorController extends Controller
         $id = Application::$app->getUser()->getID();
         $conditions = ['Sponsor_ID' => Application::$app->getUser()->getID()];
         $campaigns = campaigns_sponsors::RetrieveAll(false,[],true, $conditions);
+
 //        $mycampaign = array_filter($campaigns,function ($campaign)use($id){
 //            return $campaign->getSponsorID()==$id;
 //        });

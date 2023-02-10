@@ -33,32 +33,32 @@ $background = new BackGroundImage();
 echo $background;
 ?>
 <div class="h-90 bg-white-0-5 d-flex align-items-center justify-content-center min-h-92vh absolute w-12vw left-0 bottom-0" style="z-index: 999">
-    <div class="d-flex w-100 m-1 flex-column justify-content-center align-items-center gap-1">
-        <div class="d-flex p-1 border-radius-10 w-100 bg-primary text-white align-items-center justify-content-center text-xl font-bold">
+    <div class="d-flex w-100 m-1 flex-column justify-content-center align-items-center gap-1" >
+        <div class="d-flex p-1 border-radius-10 w-100 bg-primary text-white align-items-center justify-content-center text-xl font-bold cursor" onclick="Redirect('/manager/dashboard')">
             <img src="/public/icons/dashboard.png" class="mr-1" width="24px" alt="" style="filter: invert(100%)">
             Dashboard
         </div>
-        <div class="d-flex p-1 w-100 bg-primary border-radius-10 text-white align-items-center justify-content-center text-xl font-bold">
+        <div class="d-flex p-1 w-100 bg-primary border-radius-10 text-white align-items-center justify-content-center text-xl font-bold cursor" onclick="Redirect('/manager/mngRequests')">
             <img src="/public/icons/requests.png" class="mr-1" width="24px" alt="" style="filter: invert(100%)">
             Requests
         </div>
-        <div class="d-flex p-1 w-100 bg-primary border-radius-10 text-white align-items-center justify-content-center text-xl font-bold">
+        <div class="d-flex p-1 w-100 bg-primary border-radius-10 text-white align-items-center justify-content-center text-xl font-bold cursor" onclick="Redirect('/manager/mngDonors')">
             <img src="/public/icons/donor.png" class="mr-1" width="24px" alt="" style="filter: invert(100%)">
             Donors
         </div>
-        <div class="d-flex p-1 w-100 bg-primary border-radius-10 text-white align-items-center justify-content-center text-xl font-bold">
+        <div class="d-flex p-1 w-100 bg-primary border-radius-10 text-white align-items-center justify-content-center text-xl font-bold cursor" onclick="Redirect('/manager/mngSponsorship')">
             <img src="/public/icons/sponsors.png" class="mr-1" width="24px" alt="" style="filter: invert(100%)">
             Sponsors
         </div>
-        <div class="d-flex p-1 w-100 bg-primary border-radius-10 text-white align-items-center justify-content-center text-xl font-bold">
+        <div class="d-flex p-1 w-100 bg-primary border-radius-10 text-white align-items-center justify-content-center text-xl font-bold cursor" onclick="Redirect('/manager/mngMedicalOfficer')">
             <img src="/public/icons/MedicalOfficer.png" class="mr-1" width="24px" alt="" style="filter: invert(100%)">
             Officers
         </div>
-        <div class="d-flex p-1 w-100 bg-primary border-radius-10 text-white align-items-center justify-content-center text-xl font-bold">
+        <div class="d-flex p-1 w-100 bg-primary border-radius-10 text-white align-items-center justify-content-center text-xl font-bold cursor" onclick="Redirect('/manager/mngCampaigns')">
             <img src="/public/icons/campaign.png" class="mr-1" width="24px" alt="" style="filter: invert(100%)">
             Campaigns
         </div>
-        <div class="d-flex p-1 w-100 bg-primary border-radius-10 text-white align-items-center justify-content-center text-xl font-bold">
+        <div class="d-flex p-1 w-100 bg-primary border-radius-10 text-white align-items-center justify-content-center text-xl font-bold cursor" onclick="Redirect('/manager/mngReport')">
             <img src="/public/icons/dashboard.png" class="mr-1" width="24px" alt="" style="filter: invert(100%)">
             Reports
         </div>

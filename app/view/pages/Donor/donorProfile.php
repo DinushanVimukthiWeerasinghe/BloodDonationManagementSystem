@@ -44,14 +44,14 @@ echo $navbar;
 
 
 
-<div class="d-flex bg-white-0-5 mt-7 w-80 p-3 border-radius-10 min-h-80 flex-column justify-content-center align-items-center">
-    <div class="d-flex gap-2">
+<div class="d-flex gap-1 bg-white-0-5 mt-7 p-3 border-radius-10 min-h-80 flex-column justify-content-center align-items-center">
+    <div class="d-flex border-radius-10 gap-2 bg-white p-2">
         <div class="d-flex">
-            <img src="https://th.bing.com/th/id/R.d109030661f299bf427a10adebf80646?rik=QvhrbBgRD1Sqzw&pid=ImgRaw&r=0" width="200rem" alt="profile image for user" class="profilePicture" />
+            <img src="/public/upload/profile/donorDefault.png" width="300rem" alt="profile image for user" class="border-2 border-radius-10 border-success" />
         </div>
-        <div class="d-flex flex-column">
-            <div class="d-flex flex-column " id="PersonalDetails">
-                <div class="d-flex">
+        <div class="d-flex flex-column bg-white p-2">
+            <div class="d-flex gap-1 flex-column " id="PersonalDetails">
+                <div class="d-flex ">
                     Name : <?php echo $firstName . " " . $lastName ?>
                 </div>
                 <div class="d-flex">
@@ -66,17 +66,24 @@ echo $navbar;
                 <div class="d-flex">
                     City : <?php echo $city ?>
                 </div>
+                <div class="button">
+                    <button type="button" class="btn btn-success">Change Password</button>
+                </div>
             </div>
-        </table>
         </div>
     </div>
-
-    <div class="button">
-        <button type="button" class="button-9">Change Password</button>
-    </div>
-    <div class="info-card shadow">
+    <div class="d-flex gap-1 justify-content-evenly">
+        <div class="bg-white d-flex flex-column gap-1 p-3 border-radius-10">
             <p> Blood Type: <?php echo $bloodGroup ?></p>
             <p>Weight(Kg): <?php echo $weight ?> </p>
             <p>Chronic Diseases: <?php echo $remark ?></p>
+        </div>
+        <div class="bg-white d-flex flex-column gap-1 p-3 border-radius-10">
+            <p> Blood Type: <?php echo $bloodGroup ?></p>
+            <p>Weight(Kg): <?php echo $weight ?> </p>
+            <p>Chronic Diseases: <?php echo $remark ?></p>
+        </div>
+
     </div>
+
 </div>
