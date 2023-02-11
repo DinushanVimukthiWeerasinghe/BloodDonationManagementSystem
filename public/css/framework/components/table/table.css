@@ -5,15 +5,15 @@ table{
     text-align: center;
 }
 th{
-    background-color: var(--red-8);
+    background-color: var(--dark-red);
     color: var(--white);
 }
 tr{
-    background-color: var(--white);
+    /*background-color: var(--white);*/
 }
 tr:hover{
-    background-color: var(--dark-red);
-    color: var(--white);
+    /*background-color: var(--dark-red);*/
+    /*color: var(--white);*/
 }
 
 .z-table tr:nth-child(even) {background-color: var(--blue-2);}

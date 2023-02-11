@@ -346,3 +346,6 @@
 .bg-pink-10 {
     background: var(--pink-10);
 }
+.bg-transparent{
+    background: transparent;
+}

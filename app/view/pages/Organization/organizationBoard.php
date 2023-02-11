@@ -7,7 +7,7 @@ use App\view\components\ResponsiveComponent\CardGroup\CardGroup;
 use App\view\components\ResponsiveComponent\ImageComponent\BackGroundImage;
 use App\view\components\ResponsiveComponent\NavbarComponent\AuthNavbar;
 
-$navbar = new AuthNavbar('Dashboard', '/organization/profile', 'bell.png', true,false );
+$navbar = new AuthNavbar('Dashboard', '/organization/profile', '/public/images/icons/user/organization.png', true,false );
 echo $navbar;
 
 

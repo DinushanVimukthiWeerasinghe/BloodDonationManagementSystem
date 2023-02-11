@@ -26,8 +26,9 @@ class sponsorController extends Controller
 {
     public function __construct()
     {
+        print_r('Kk');
         $this->setLayout('sponsors');
-//        $this->registerMiddleware(new sponsorMiddleware());
+        $this->registerMiddleware(new sponsorMiddleware());
 
 //        $this->registerMiddleware(new AuthenticationMiddleware(['login','register'], BaseMiddleware::ALLOWED_ROUTES));
 //        $this->registerMiddleware(new ManagerMiddleware());

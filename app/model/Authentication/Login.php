@@ -186,14 +186,7 @@ class Login extends dbModel
             $this->addError('password', 'Incorrect Password!');
             return false;
         }
-        else if ($user->IsAccountTemporaryBanned()) {
-            $this->addError('email', 'Your Account is temporarily disabled!');
-            return false;
-        }
-        else if ($user->IsAccountPermanentlyBanned()) {
-            $this->addError('email', 'Your Account is permanently disabled!');
-            return false;
-        }
+
         else if (!$user->IsManager()){
             Application::$app->login($user);
             return true;
@@ -241,26 +234,29 @@ class Login extends dbModel
     public function login(): bool
     {
 
-        //    Hashing Algorithm PASSWORD_BCRYPT
-//        $user= Login::findOne(['Email' => $this->Email]);
-//        if(!$user)
-//        {
-//            $this->addError('email','Invalid User Credential!');
-//            return false;
-//        }
-//
-//        if(!password_verify($this->Password,$user->getPassword()))
-//        {
-//            $this->addError('password','Incorrect Password!');
-//            return false;
-//        }
-//        $OTP= new OTPCode();
-//        $OTP->setUserID($user->getID());
-//        $OTP->setType(1);
-//        $OTP->GenerateCode('stdinushan@gmail.com');
-//        $OTP->sendCode();
+//            Hashing Algorithm PASSWORD_BCRYPT
+        $user= Login::findOne(['Email' => $this->Email]);
+        if(!$user)
+        {
+            $this->addError('email','Invalid User Credential!');
+            return false;
+        }
 
-//        Application::$app->login($user);
+        if(!password_verify($this->Password,$user->getPassword()))
+        {
+            $this->addError('password','Incorrect Password!');
+            return false;
+        }
+        else if ($user->IsAccountTemporaryBanned()) {
+            $this->addError('email', 'Your Account is temporarily disabled!');
+            return false;
+        }
+        else if ($user->IsAccountPermanentlyBanned()) {
+            $this->addError('email', 'Your Account is permanently disabled!');
+            return false;
+        }
+
+        Application::$app->login($user);
 
         Application::$app->session->setFlash('success', 'Login Successful!');
         return true;

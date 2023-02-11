@@ -99,9 +99,9 @@ class authController extends Controller
             if ($login->validate()) {
 
 
-                $user = $login->ValidateOTP();
-
-
+                $user = $login->login();
+//                var_dump($user);
+//                exit();
                 if (!$user) {
                     $this->setFlashMessage('error', 'Invalid Credentials');
                     Application::Redirect('/login');
@@ -109,7 +109,7 @@ class authController extends Controller
                 if ($user === true){
                     Application::Redirect('/' . strtolower(Application::$app->getUser()->getRole()) . '/dashboard');
                 }
-                return $this->render('Authentication/OTPAuthentication');
+//                return $this->render('Authentication/OTPAuthentication');
 
             } else {
                 print_r("Not Login");
