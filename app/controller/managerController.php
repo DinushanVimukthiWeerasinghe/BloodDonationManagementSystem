@@ -3,12 +3,18 @@
 namespace App\controller;
 
 use App\middleware\managerMiddleware;
+use App\model\Authentication\Login;
+use App\model\BloodBankBranch\BloodBank;
+use App\model\Campaigns\Campaign;
+use App\model\Email\Email;
 use App\model\Requests\BloodRequest;
 use App\model\users\Donor;
 use App\model\users\Manager;
 use App\model\users\MedicalOfficer;
+use App\model\users\Organization;
 use App\model\users\Person;
 use App\model\users\Sponsor;
+use App\model\users\User;
 use App\model\Utils\Notification;
 use Core\Application;
 use Core\BaseMiddleware;
@@ -17,6 +23,7 @@ use Core\File;
 use Core\middleware\AuthenticationMiddleware;
 use Core\Request;
 use Core\Response;
+use PHPMailer\PHPMailer\Exception;
 
 class managerController extends Controller
 {
@@ -44,10 +51,40 @@ class managerController extends Controller
         return $this->render('Manager/managerBoard',$params);
     }
 
-    public function ViewCampaign()
+    public function AssignTeam(Request $request,Response $response): string
     {
+        return $this->render('Manager/ManageCampaign/AssignMedicalTeam');
+    }
 
-        return $this->render('Manager/viewCampaign');
+    public function ViewCampaign(Request $request, Response $response): string
+    {
+        if ($request->isPost()){
+            $id=$request->getBody()['id'];
+            /* @var $campaign Campaign*/
+            $campaign = Campaign::findOne(['Campaign_ID' => $id]);
+            $Org_ID=$campaign->getOrganizationID();
+            $Org=Organization::findOne(['Organization_ID' => $Org_ID]);
+            if ($campaign){
+                return json_encode(['status'=>true,'data'=>$campaign->toArray(),'org'=>$Org->toArray()]);
+            }
+        }
+//        return $this->render('Manager/viewCampaign');
+    }
+
+    public function RejectCampaign(Request $request, Response $response): string
+    {
+        if ($request->isPost()){
+            $id=$request->getBody()['id'];
+            /* @var $campaign Campaign*/
+            $campaign = Campaign::findOne(['Campaign_ID' => $id]);
+            if ($campaign){
+                $campaign->setVerifiedBy(Application::$app->getUser()->getID());
+                $campaign->setVerifiedAt(date('Y-m-d H:i:s'));
+                $campaign->setStatus(Campaign::REJECTED);
+                $campaign->update($campaign->getCampaignID(),['Assigned_Team']);
+                return json_encode(['status'=>true]);
+            }
+        }
     }
 
     public function Notification(Request $request, Response $response): string
@@ -68,20 +105,24 @@ class managerController extends Controller
 
         /* @var Manager $manager*/
         $manager = Application::$app->getUser();
-        $limit = 14;
+//        $limit = 15;
         $page = $request->getBody()['page'] ?? 1;
+        $limit = $request->getBody()['rpp'] ?? 15;
         $initial = ($page - 1) * $limit;
         $id=Application::$app->getUser()->getID();
         $total_rows = MedicalOfficer::getCount();
         $total_pages = ceil ($total_rows / $limit);
+        $BloodBanks=BloodBank::RetrieveAll();
 
         $medicalOfficers=MedicalOfficer::RetrieveAll(true,[$initial,$limit]);
         $params=[
+            'rpp'=>$limit,
             'firstName'=>$manager->getFirstName(),
             'lastName'=>$manager->getLastName(),
             'data'=>$medicalOfficers,
             'total_pages'=>$total_pages,
-            'current_page'=>$page
+            'current_page'=>$page,
+            'bloodBanks'=>$BloodBanks,
         ];
         return $this->render('Manager/mngMedicalOfficer',$params);
     }
@@ -91,47 +132,137 @@ class managerController extends Controller
         $medicalOfficer=new MedicalOfficer();
         if (Application::$app->request->isPost()){
             $medicalOfficer->loadData($request->getBody());
-            $medicalOfficer->setID('Mof' . rand(1000, 999999));
+            $medicalOfficer->setID('MO_' . rand(1000, 999999));
             $medicalOfficer->setStatus(1);
+            $medicalOfficer->setGenderFromNIC();
+            $medicalOfficer->setJoinedAt(date('Y-m-d H:i:s'));
             $file=new File($_FILES['image'],'Profile/MedicalOfficer');
             $fileName=$file->GenerateFileName('MO');
             $medicalOfficer->setProfileImage($fileName);
             $hash = password_hash($medicalOfficer->getNIC(), PASSWORD_DEFAULT);
-            if ($medicalOfficer->validate() && $medicalOfficer->save()) {
-                $file->saveFile();
-                Application::$app->session->setFlash('success', 'Successfully Added Medical Officer!');
-                $response->redirect('/manager/mngMedicalOfficer');
+//            print_r($medicalOfficer);
+
+            if ($medicalOfficer->validate()) {
+                $user= new User();
+                $user->setUid($medicalOfficer->getID());
+                $user->setPassword($hash);
+                $user->setEmail($medicalOfficer->getEmail());
+                $user->setRole(User::MEDICAL_OFFICER);
+                if ($user->validate() && $user->save() && $medicalOfficer->save()){
+                    $file->saveFile();
+                    Application::$app->session->setFlash('success', 'Successfully Added Medical Officer!');
+                    return json_encode(['status' => true, 'message' => 'Successfully Added Medical Officer!']);
+                }else{
+                    return json_encode(['status' => false, 'message' => 'Failed to Add Medical Officer!', 'errors' => $user->errors]);
+                }
+
             } else {
-                print_r($medicalOfficer->errors);
-                exit();
+                return json_encode(['status' => false, 'message' => 'Failed to Add Medical Officer!', 'errors' => $medicalOfficer->errors]);
             }
         }
-        return $this->render('Manager/ManageMOfficer/addMedicalOfficer', [
-            'model' => $medicalOfficer
-        ]);
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function SendEmail(Request $request, Response $response):string
+    {
+        if ($request->isPost()) {
+            $id = $request->getBody()['Officer_ID'];
+            $medicalOfficer = MedicalOfficer::findOne(['Officer_ID' => $id]);
+
+            $email = $medicalOfficer->getEmail();
+
+            $subject = $request->getBody()['subject'];
+            $message = $request->getBody()['message'];
+            /* @var $attachment File*/
+            $attachment = $request->getBody()['attachment'] ?? null;
+//            TODO : Attachment Thing
+
+
+    //        $file=new File($attachment,'Emails');
+            $mail = Application::$app->email;
+            $mail->setTo($email);
+            $mail->setSubject($subject);
+            $mail->setBody($message);
+            $mail->setFrom('bdmsgroupcs46@gmail.com');
+            $EmailRecord=new Email();
+            $EmailRecord->setReceiver($email);
+            $EmailRecord->setSender($id);
+            $EmailRecord->setSubject($subject);
+            $EmailRecord->setBody($message);
+            $EmailRecord->setEmailType(EMAIL::NORMAL_EMAIL);
+            $EmailRecord->setEmailStatus(Email::EMAIL_PENDING);
+            $EmailRecordId=uniqid('EA_');
+            $EmailRecord->setEmailID($EmailRecordId);
+            if ($EmailRecord->validate()) {
+                if ($attachment && $attachment->getFileName() != '') {
+                    $attachment->GenerateFileName('Email/' . $EmailRecordId);
+                    $attachment->saveFile();
+                    $AttachmentName =Application::$ROOT_DIR . $attachment->getFileName();
+                    $mail->addAttachment($AttachmentName);
+                    $EmailRecord->setAttachment($AttachmentName);
+                }
+                try {
+//                    $mail->send();
+                    $EmailRecord->setEmailStatus(Email::EMAIL_SENT);
+                    if ($mail->send()):
+                        if ($EmailRecord->save()):
+//                        Application::$app->session->setFlash('success', 'Successfully Sent Email!');
+                            return json_encode(['status' => true, 'message' => 'Successfully Sent Email!']);
+                        else:
+//                        Application::$app->session->setFlash('error', 'Failed to Send Email!');
+                            return json_encode(['status' => false, 'message' => 'Failed to Send Email!']);
+                        endif;
+                        else:
+//                        Application::$app->session->setFlash('error', 'Failed to Send Email!');
+                        return json_encode(['status' => false, 'message' => 'Failed to Send Email!']);
+                    endif;
+
+                } catch (Exception $e) {
+                    Application::$app->session->setFlash('error', 'Failed to Send Email!');
+                    return json_encode(['status' => false, 'message' => 'Failed to Send Email!']);
+                }
+            }else{
+                return json_encode(['status' => false, 'message' => 'Please Fill Required Information', 'errors' => $EmailRecord->errors]);
+            }
+        }
+        return json_encode(['status' => false, 'message' => 'Failed to Send Emails!']);
+    }
+
+
+    public function UpdateMedicalOfficer(Request $request, Response $response):string
+    {
+        if (Application::$app->request->isPost()){
+            $id=$request->getBody()['Officer_ID'];
+            $medicalOfficer=MedicalOfficer::findOne(['Officer_ID'=>$id]);
+            $medicalOfficer->loadData($request->getBody());
+            $medicalOfficer->setStatus(1);
+            $file=new File($_FILES['image'],'Profile/MedicalOfficer');
+            $fileName=$file->GenerateFileName('MO');
+            $medicalOfficer->setProfileImage($fileName);
+//            $hash = password_hash($medicalOfficer->getNIC(), PASSWORD_DEFAULT);
+
+            if ($medicalOfficer->validate(true) && $medicalOfficer->update($id)) {
+                $file->saveFile();
+                Application::$app->session->setFlash('success', 'Successfully Added Medical Officer!');
+                return json_encode(['status' => true, 'message' => 'Successfully Updated Medical Officer!']);
+            } else {
+                return json_encode(['status' => false, 'message' => 'Failed to Add Medical Officer!', 'errors' => $medicalOfficer->errors]);
+            }
+        }
     }
 
 
     public function ViewMedicalOfficer(Request $request, Response $response)
     {
-        if ($request->isGet()){
-            $medicalOfficer=MedicalOfficer::findOne(['Officer_ID'=>$request->getBody()['id']]);
-            if (Application::$app->session->get('ID')){
-                Application::$app->session->remove('ID');
-            }
-            Application::$app->session->setPermanant('ID',$medicalOfficer->getID());
-            return $this->render('Manager/ManageMOfficer/viewMedicalOfficer', [
-                'model' => $medicalOfficer
-            ]);
-        }
         if ($request->isPost()){
-            $Officer_ID=Application::$app->session->get('ID');
-            $medicalOfficer=MedicalOfficer::findOne(['ID'=>$Officer_ID]);
-            $medicalOfficer->loadData($request->getBody());
-
-            if ($medicalOfficer->validate(true) && $medicalOfficer->update($Officer_ID)){
-                Application::$app->session->setFlash('success','Successfully Updated Medical Officer!');
-                $response->redirect('/manager/mngMedicalOfficer?update=true');
+            $Officer_ID=$request->getBody()['Medical_Officer_ID'];
+            $medicalOfficer=MedicalOfficer::findOne(['Officer_ID'=>$Officer_ID]);
+            if ($medicalOfficer){
+                return json_encode(['status'=>true,'data'=>$medicalOfficer->toArray()]);
+            }else{
+                return json_encode(['status'=>false,'message'=>'Medical Officer Not Found!']);
             }
         }
     }
@@ -214,7 +345,11 @@ class managerController extends Controller
 
     public function ManageDonors(): string
     {
-        return $this->render('Manager/ManageDonors');
+        $data= Donor::RetrieveAll();
+        return $this->render('Manager/ManageDonors',
+        [
+            'data'=>$data
+        ]);
     }
 
     public function DeleteMedicalOfficer(Request $request,Response $response)
@@ -235,7 +370,15 @@ class managerController extends Controller
 
     public function ManageCampaigns(): string
     {
-        return $this->render('Manager/ManageCampaigns');
+        $data= Campaign::RetrieveAll();
+        $total_pages=1;
+        $current_page=1;
+        return $this->render('Manager/ManageCampaigns',
+            [
+                'total_pages'=>$total_pages,
+                'current_page'=>$current_page,
+                'data'=>$data
+            ]);
     }
     public function ManageReport(): string
     {
@@ -245,6 +388,7 @@ class managerController extends Controller
     public function SearchMedicalOfficer(Request $request, Response $response): string
     {
         $search=$request->getBody()['q'];
+        $search=str_replace(' ','%',$search);
 
         /* @var Manager $manager*/
         $manager = Application::$app->getUser();
@@ -255,9 +399,7 @@ class managerController extends Controller
 
         $total_rows = MedicalOfficer::getCount(true,['NIC'=>$search]);
         $total_pages = ceil ($total_rows / $limit);
-        $medicalOfficers=MedicalOfficer::Search(['NIC'=>$search,'First_Name'=>$search,'Position'=>$search],[],[$initial,$limit]);
-
-//        $medicalOfficers=medicalOfficer::RetrieveAll(true,[$initial,$limit]);
+        $medicalOfficers=MedicalOfficer::Search(['NIC'=>$search,'First_Name'=>$search,'Last_Name'=>$search,'Position'=>$search,'Email'=>$search],[],[$initial,$limit]);
         $params=[
             'firstName'=>$manager->getFirstName(),
             'lastName'=>$manager->getLastName(),

@@ -233,5 +233,19 @@
     gap: 10rem;
 }
 
+@media screen and (max-width: 920px) {
+    .flex-row{
+        flex-direction: column;
+    }
+    .flex-row{
+        flex-direction: column !important;
+    }
+}
+@media screen and (max-width: 500px) {
+    .gap-1{
+        gap: 0.6rem;
+    }
+}
+
 
 

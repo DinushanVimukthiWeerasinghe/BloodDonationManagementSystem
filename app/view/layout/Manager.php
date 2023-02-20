@@ -1,5 +1,6 @@
 <?php
 
+use App\view\components\ResponsiveComponent\Alert\FlashMessage;
 use App\view\components\ResponsiveComponent\ImageComponent\BackGroundImage;
 use App\view\components\ResponsiveComponent\NavbarComponent\AuthNavbar;
 
@@ -25,42 +26,52 @@ $background = new BackGroundImage();
 </head>
 <body class="d-flex">
 <?= $navbar;?>
-<?= $background;?>
-<div id="sidePanel" class="h-90 bg-white-0-3 d-flex align-items-center justify-content-center min-h-92vh absolute w-12vw left-0 bottom-0" style="z-index: 999">
-    <div class="d-flex w-100 m-1 flex-column justify-content-center align-items-center gap-1" >
-        <div class="d-flex p-1 border-radius-10 w-100 bg-primary text-white align-items-center justify-content-center text-xl font-bold cursor" onclick="Redirect('/manager/dashboard')">
-            <img src="/public/icons/dashboard.png" class="mr-1" width="24px" alt="" style="filter: invert(100%)">
-            Dashboard
+<?php FlashMessage::RenderFlashMessages();?>
+<!--BreadCrumbs-->
+
+<div id="sidePanel" class="h-90 p-0-5 bg-white-0-3 d-flex align-items-center min-h-92vh absolute w-200px left-0 bottom-0" style="z-index: 989">
+    <div class="breadcrumb">
+        <div class="breadcrumb-item">
+            <a href="/manager/dashboard"><img src="/public/icons/home.svg"> </a>
         </div>
-        <div class="d-flex p-1 w-100 bg-primary border-radius-10 text-white align-items-center justify-content-center text-xl font-bold cursor" onclick="Redirect('/manager/mngRequests')">
-            <img src="/public/icons/requests.png" class="mr-1" width="24px" alt="" style="filter: invert(100%)">
-            Requests
+        <div class="breadcrumb-item">
+            <a href="/manager/mngRequests" class="d-flex align-items-center justify-content-center font-bold active"><img src="/public/icons/request.svg"><span>Requests</span></a>
         </div>
-        <div class="d-flex p-1 w-100 bg-primary border-radius-10 text-white align-items-center justify-content-center text-xl font-bold cursor" onclick="Redirect('/manager/mngDonors')">
-            <img src="/public/icons/donor.png" class="mr-1" width="24px" alt="" style="filter: invert(100%)">
-            Donors
+    </div>
+    <div id="SideBarLinks" class="d-flex w-100 flex-column justify-content-center align-items-center gap-1" >
+        <div class="d-flex p-1 w-100 align-items-center text-xl " onclick="Redirect('/manager/dashboard')">
+            <img src="/public/icons/dashboard.svg" class="mr-1" width="24px" alt="" data-tooltip="Dashboard" data-tooltip-position="top">
+            <span>Dashboard</span>
         </div>
-        <div class="d-flex p-1 w-100 bg-primary border-radius-10 text-white align-items-center justify-content-center text-xl font-bold cursor" onclick="Redirect('/manager/mngSponsorship')">
-            <img src="/public/icons/sponsors.png" class="mr-1" width="24px" alt="" style="filter: invert(100%)">
-            Sponsors
+        <div class="d-flex w-100 p-1 align-items-center text-xl cursor" id="mngRequests" onclick="Redirect('/manager/mngRequests')">
+            <img src="/public/icons/requests.png" class="mr-1" width="24px" alt="">
+            <span>Requests</span>
         </div>
-        <div class="d-flex p-1 w-100 bg-primary border-radius-10 text-white align-items-center justify-content-center text-xl font-bold cursor" onclick="Redirect('/manager/mngMedicalOfficer')">
-            <img src="/public/icons/MedicalOfficer.png" class="mr-1" width="24px" alt="" style="filter: invert(100%)">
-            Officers
+        <div class="d-flex p-1 w-100 align-items-center text-xl cursor" id="mngDonors" onclick="Redirect('/manager/mngDonors')">
+            <img src="/public/icons/donor.png" class="mr-1" width="24px" alt="">
+            <span>Donors</span>
         </div>
-        <div class="d-flex p-1 w-100 bg-primary border-radius-10 text-white align-items-center justify-content-center text-xl font-bold cursor" onclick="Redirect('/manager/mngCampaigns')">
-            <img src="/public/icons/campaign.png" class="mr-1" width="24px" alt="" style="filter: invert(100%)">
-            Campaigns
+        <div class="d-flex p-1 w-100  align-items-center text-xl cursor" id="mngSponsorship" onclick="Redirect('/manager/mngSponsorship')">
+            <img src="/public/icons/sponsors.png" class="mr-1" width="24px" alt="">
+            <span>Sponsors</span>
         </div>
-        <div class="d-flex p-1 w-100 bg-primary border-radius-10 text-white align-items-center justify-content-center text-xl font-bold cursor" onclick="Redirect('/manager/mngReport')">
-            <img src="/public/icons/dashboard.png" class="mr-1" width="24px" alt="" style="filter: invert(100%)">
-            Reports
+        <div class="d-flex p-1 w-100  align-items-center text-xl cursor" id="mngMedicalOfficer" onclick="Redirect('/manager/mngMedicalOfficer')">
+            <img src="/public/icons/MedicalOfficer.png" class="mr-1" width="24px" alt="">
+            <span>Officers</span>
+        </div>
+        <div class="d-flex p-1 w-100 align-items-center text-xl cursor" id="mngCampaigns" onclick="Redirect('/manager/mngCampaigns')">
+                <img src="/public/icons/campaign.png" class="mr-1" width="24px" alt="">
+                <span>Campaigns</span>
+        </div>
+        <div class="d-flex p-1 w-100 align-items-center text-xl cursor" id="mngReport" onclick="Redirect('/manager/mngReport')">
+            <img src="/public/icons/file-text.svg" class="mr-1" width="24px" alt="">
+            <span>Reports</span>
         </div>
 
 
     </div>
 </div>
-    <div class="absolute d-flex justify-content-center align-items-center" style="left: 12vw;top: 8vh;height: 92vh;width: 88vw;">
+    <div class="absolute d-flex" style="top: 8vh;height: 92vh;width: calc(100vw - 200px);max-width: calc(100vw - 200px);left: 200px;background: #f2f2f2" id="Content">
         {{content}}
     </div>
 </body>
@@ -69,4 +80,14 @@ $background = new BackGroundImage();
 <script src="/public/js/components/toasts/toast.js"></script>
 
 <script src="/public/js/components/accordion/accordion.js"></script>
+<script src="/public/js/manager.js"></script>
+<script>
+    window.addEventListener('load',()=>{
+        const path=window.location.href.toString();
+        const action = path.substring(path.lastIndexOf('/')).slice(1)
+        const element =document.getElementById(action);
+        element.classList.add('bg-primary','border-radius-10','text-white','font-bold','justify-content-center')
+        element.getElementsByTagName('img')[0].classList.add('invert-100')
+    })
+</script>
 </html>

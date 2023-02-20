@@ -44,7 +44,7 @@ class User extends dbModel
      */
     public function setUid(string $Uid): void
     {
-        $this->ID = $Uid;
+        $this->UID = $Uid;
     }
 
     /**

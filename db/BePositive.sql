@@ -1,6 +1,21 @@
 DROP database IF EXISTS bepositive;
 CREATE DATABASE IF NOT EXISTS `bepositive` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
 use bepositive;
+
+
+DROP TABLE IF EXISTS Email;
+CREATE TABLE IF NOT EXISTS Email(
+    Email_ID      VARCHAR(20) PRIMARY KEY,
+    Receiver     VARCHAR(100) NOT NULL,
+    Sender        VARCHAR(20) NOT NULL,
+    Email_Type    INT NOT NULL,
+    Attachment    VARCHAR(100) NULL,
+    Subject       VARCHAR(100) NOT NULL,
+    Body          TEXT         NOT NULL,
+    Email_Status  INT          NOT NULL DEFAULT 0,
+    Created_At    TIMESTAMP             DEFAULT CURRENT_TIMESTAMP,
+    Updated_At    TIMESTAMP             DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 # DROP TABLE IF EXISTS Users;
 CREATE TABLE IF NOT EXISTS Users(
                                     UID            VARCHAR(20) PRIMARY KEY,

@@ -8,6 +8,7 @@ class Campaign extends dbModel
 {
     public const PENDING = 1;
     public const APPROVED = 2;
+    public const REJECTED = 3;
     protected string $Campaign_ID='';
     protected string $Organization_ID='';
     protected string $Campaign_Name='';
@@ -103,6 +104,11 @@ class Campaign extends dbModel
     public function setCampaignDate(string $Campaign_Date): void
     {
         $this->Campaign_Date = $Campaign_Date;
+    }
+
+    public function IsVerified()
+    {
+        return $this->Verified;
     }
 
     /**

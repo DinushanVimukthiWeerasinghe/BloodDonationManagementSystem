@@ -9,203 +9,108 @@ use App\view\components\ResponsiveComponent\CardPane\CardPane;
 use App\view\components\ResponsiveComponent\ImageComponent\BackGroundImage;
 use App\view\components\ResponsiveComponent\NavbarComponent\AuthNavbar;
 
-$navbar= new AuthNavbar('Manage Requests','/manager','/public/images/icons/user.png',true,false);
-echo $navbar;
-$background=new BackGroundImage();
-echo $background;
 ?>
 
 
-<!--<div class="class-pane d-flex ">-->
-<!--    <div class="card nav-card" onclick="Redirect('/manager/mngRequests/er')">-->
-<!--        <div class="card-header">-->
-<!--            <img src="/public/images/icons/search.png" style="filter: invert(100%)" alt="">-->
-<!--            <div class="header-title">Emergency Request</div>-->
-<!--        </div>-->
-<!--    </div>-->
-<!--    <div class="card nav-card">-->
-<!--        <div class="card-header nav">-->
-<!--            <img src="/public/images/icons/camera.png" style="filter: invert(100%)" alt="">-->
-<!--            <div class="header-title">Blood Request</div>-->
-<!--        </div>-->
-<!--    </div>-->
-<!--    <div class="card nav-card">-->
-<!--        <div class="card-header">-->
-<!--            <img src="/public/images/icons/search.png" style="filter: invert(100%)" alt="">-->
-<!--            <div class="header-title">Disable Donor</div>-->
-<!--        </div>-->
-<!--    </div>-->
-<!--</div>-->
 <!--TODO Implement Emergency Request and Normal Request Filter-->
 
-<div id="detail-pane" class="min-w-80 max-w-90 min-h-80 d-flex justify-content-center flex-column align-items-center">
-    <div id="detail-pane" class="min-w-80 max-w-90 mt-10 min-h-80 d-flex justify-content-center flex-column align-items-center" style="margin-top: 6rem">
 
-        <div id="filter-pane" class="filter-pane">
-<!--            <div class="text-xl">Filter Request : </div>-->
-            <div class="d-flex justify-content-evenly gap-4">
-                <div class="search-input gap-2">
-                    <label for="emergency" class="search text-white " style="font-size: 1.5rem">Emergency Request </label>
-                    <input type="checkbox" class="check-box" name="emergencyRequest" id="emergency" onchange="FilterOnlyNormalRequest()" checked>
-                </div>
-                <div class="search-input gap-2">
-                    <label for="emergency" class="search text-white" style="font-size: 1.5rem">Normal Request </label>
-                    <input type="checkbox" class="check-box" name="normalRequest" id="emergency" onchange="FilterOnlyEmergencyRequest()" checked>
-                </div>
+<div class="d-flex w-100 flex-column align-items-center bg-white-0-3 p-2">
+    <div class="d-flex w-100">
+        <div class="d-flex bg-white-0-7 p-1 text-dark justify-content-between align-items-center w-100 ">
+            <div id="Search" class="d-flex gap-0-5 align-items-center">
+                <label for="search" class="search">Search </label>
+                <input class="form-control" name="search" id="search" onkeyup="SearchFunction()">
             </div>
+            <div id="Filters" class="d-flex gap-1">
+                <div class="form-group">
+                    <label for="filter" class="search ">Position</label>
+                    <select class="form-control" name="filter" id="filter">
+                        <option value="All">All</option>
+                        <option value="Active">Active</option>
+                        <option value="Inactive">Inactive</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="filter" class="search ">Branch</label>
+                    <select class="form-control" name="filter" id="filter">
+                        <option value="All">All</option>
+                        <option value="Active">Active</option>
+                        <option value="Inactive">Inactive</option>
+                    </select>
+                </div>
 
-
+            </div>
+            <!--a-->
         </div>
-        <div class="filter-card">
-            <div class="card-navigation">
-                <?php
-                if ($current_page<=1):
-                ?>
-                <a class="disabled" href="?page=1"><img class="nav-btn" src="/public/images/icons/previous.png"
-                                                        alt=""></a>
-                <?php
-                else :
-                ?>
-                <a  href="?page=<?=$current_page-1?>"><img class="nav-btn" src="/public/images/icons/previous.png"
-                                                        alt=""></a>
-                <?php
-                    endif;
-                ?>
-                <div class="page-numbers">
-                    <?php
-                    for ($i=1;$i<=$total_pages;$i++){
-                        if ($i===$current_page):
-                    ?>
-                    <a href='?page=<?=$i?>' class="disabled">
-                        <div class='page-number active'><?=$i?></div>
-                    </a>
-                            <?php
-                        else:
-                            ?>
-                            <a href='?page=<?=$i?>'>
-                                <div class='page-number '><?=$i?></div>
-                            </a>
-                            <?php
-                        endif;
-                            ?>
-                    <?php
-                    }
-                    ?>
-                </div>
-                <?php
-                if ($current_page>=$total_pages):
-                ?>
-                <a class="disabled" href="?page=1"><img class="nav-btn" src="/public/images/icons/next.png" alt=""></a>
-                <?php
-                else:
-                ?>
-                <a href="?page=<?=$current_page+1?>"><img class="nav-btn" src="/public/images/icons/next.png" alt=""></a>
-                <?php
-                endif;
-                ?>
-            </div>
-        </div>
-        <div id="card-pane" class="card-pane">
-            <div id="pane-loader" class="pane-loader">
-                <img src="/public/loading2.svg" alt="" width="200px">
-            </div>
+    </div>
+    <div class="d-flex justify-content-center align-items-center w-100">
+        <table class="w-100">
+            <thead>
+            <tr>
+                <th scope="col">No</th>
+                <th scope="col">Request Type</th>
+                <th scope="col">Request by</th>
+                <th scope="col">Request Date</th>
+                <th scope="col">Request Type</th>
+                <th scope="col">Requested Blood Group</th>
+                <th scope="col">Request Status</th>
+                <th scope="col">Action</th>
+            </tr>
+            </thead>
+            <tbody>
             <?php
-            if (empty($data)){
-                ?>
-                <div class="card detail-card">
-                    <div class="card-image">
-                        <img src="/public/images/icons/manager/manageRequest/bloodRequest.png" alt="">
-                    </div>
-                    <div class="card-body">
-                        <div class="card-title">
-                            No Requests
-                        </div>
-                    </div>
-                </div>
-                <?php
-            }
-            foreach ($data as $value) {
-                $id=$value->getRequestID();
-                $BloodGroup=$value->getBloodGroup();
-                $Requester=$value->getRequestedBy();
-                $Time= Date::GetProperDateTime($value->getRequestedAt());
-                $Image=$value->getBloodTypeImage();
-                $Type=$value->getType();
-                ?>
-                <div class="card none bg-white" id="MO7646">
-                    <div class="card-image" style="height: auto;min-height: auto">
-                        <img src='<?= $Image?>' class="rem-5" alt="" style="border-radius: 50%;height: auto!important;">
-                    </div>
-                    <div class="card-body">
-                        <div class="card-title"><?= $Requester ?></div>
-                        <div class="card-description"><?= $Time ?></div>
-                        <div class="card-description"><?= $Type ?></div>
-                    </div>
-                    <div class="card-action">
-                        <button class="btn btn-outline-primary" onclick="ViewRequest('<?=$id?>')">View</button>
-                    </div>
-                </div>
-                <?php
-            }
+            $i=1;
+            foreach ($data as $value):
+            ?>
+            <tr>
+                <td><?= $i++;?></td>
+                <td><?php echo $value->getRequestedBy()?></td>
+                <td><?php echo $value->getRequestedBy()?></td>
+                <td><?php echo Date::GetProperDate($value->getRequestedAt())?></td>
+                <td><?php echo $value->getType()?></td>
+                <td><?php echo $value->getBloodGroup()?></td>
+                <td><?php echo $value->getRequestStatus()?></td>
+                <td class="d-flex justify-content-center gap-0-5 align-items-center sticky right-0 bg-white">
+                    <a class="text-dark btn gap-0-5 btn-outline-info d-flex align-items-center justify-content-center" href="/manager/mngMedicalOfficer/edit/<?php echo $id ?>" ><img src="/public/icons/view.svg" width="24px" alt="">View</a>
+                    <a class="text-dark btn gap-0-5 btn-outline-success d-flex align-items-center justify-content-center" href="/manager/mngMedicalOfficer/edit/<?php echo $id ?>" ><img src="/public/icons/verify.svg" width="24px" alt="">Approve</a>
+                </td>
+            </tr>
+            <?php
+            endforeach;
             ?>
 
-        </div
+            </tbody>
+        </table>
     </div>
-    <script>
-    <?php
-    echo CardPane::GetLoaderJS();
-    ?>
-    </script>
-    <script src="/public/scripts/manager/demo.js"></script>
-    <script>
-
-
-        const ViewRequest = (id) => {
-            const url = '/manager/mngRequests/find';
-            const form = new FormData();
-            form.append('id', id);
-            fetch(url, {
-                method: 'POST',
-                body: form
-            }).then((response) => {
-                return response.json();
-            }).then((data) => {
-                if (data.success){
-                    OpenDialogBox({
-                        title: 'Request Details',
-                        content :`
-                            <div class="d-flex align-items-center justify-content-center flex-column">
-                                <div class="d-flex">
-                                    <div class="text-xl">Request ID : </div>
-                                    <div class="text-xl">${data.data.id}</div>
-                                </div>
-                                <div class="d-flex">
-                                    <div class="text-xl">Requester : </div>
-                                    <div class="text-xl">${data.data.hospital}</div>
-                                </div>
-                                <div class="d-flex">
-                                    <div class="text-xl">Blood Group : </div>
-                                    <div class="text-xl">${data.data.bloodGroup}</div>
-                                </div>
-                                <div class="d-flex">
-                                    <div class="text-xl">Request Type : </div>
-                                    <div class="text-xl">${data.data.type}</div>
-                                </div>
-                            </div>
-                        `,
-                        successBtnText: 'Approve',
-                        successBtnAction: () => {
-                            CloseDialogBox();
+    <div id="tableFooter" class="py-0-5 bg-white w-100 d-flex justify-content-end align-items-center">
+        <div class="d-flex">
+            <div class="d-flex align-items-center justify-content-center">
+                <div class="d-flex gap-1 align-items-center">
+                    <label for="page" class="search">Record Per Page</label>
+                    <select class="px-2 py-0-5" name="page" id="page">
+                        <?php
+                        for ($i = 1; $i <= $total_pages; $i++) {
+                            if ($i == $current_page) {
+                                echo "<option value='$i' selected>$i</option>";
+                            } else {
+                                echo "<option value='$i'>$i</option>";
+                            }
                         }
-                    })
-                }
-            }).catch((error) => {
-                console.log(error);
-            });
+                        ?>
+                    </select>
+                </div>
+            </div>
+            <div class="d-flex align-items-center justify-content-center bg-white border-radius-10 " style="padding: 0.3rem 0.6rem">
+                <img src="/public/icons/chevron-left.svg" width="20rem">
+            </div>
+            <div class="d-flex align-items-center justify-content-center bg-white-0-5 border-radius-10 " style="padding: 0.3rem 0.6rem">
+                <img src="/public/icons/chevron-right.svg" width="20rem">
+            </div>
+        </div>
+    </div>
+</div>
 
-
-        }
-    </script>
 
 
 

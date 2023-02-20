@@ -208,8 +208,9 @@ class Application
         try {
             echo self::$app->router->resolve();
         }catch (Exception $e){
-            self::Redirect('/login');
-//            throw $e;
+//            self::Redirect('/login');
+            print_r($e->getMessage());
+            throw $e;
         }
     }
 

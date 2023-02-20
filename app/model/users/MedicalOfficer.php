@@ -7,6 +7,8 @@ use App\model\BloodBankBranch\BloodBank;
 class MedicalOfficer extends Person
 {
 
+    public const UNAVAILABLE_MEDICAL_OFFICER= 1;
+
     protected string $BloodBank_ID = '';
     protected string $Joined_At = '';
     protected string $Position = '';
@@ -36,7 +38,6 @@ class MedicalOfficer extends Person
     {
         return Person::MEDICAL_OFFICER;
     }
-
 
 
     public function getFullName(): string
@@ -168,7 +169,7 @@ class MedicalOfficer extends Person
             'First_Name' => [self::RULE_REQUIRED],
             'Last_Name' => [self::RULE_REQUIRED],
             'NIC' => [self::RULE_REQUIRED, self::RULE_UNIQUE, self::RULE_MIN => 10, self::RULE_MAX => 12],
-            'Joined_At' => [self::RULE_REQUIRED, self::RULE_OLDER_DATE],
+            'Joined_At' => [self::RULE_REQUIRED, self::RULE_TODAY_OR_OLDER_DATE],
             'Status' => [self::RULE_REQUIRED],
             'Position' => [self::RULE_REQUIRED],
             'Email' => [self::RULE_REQUIRED, self::RULE_UNIQUE, self::RULE_EMAIL],
@@ -177,10 +178,10 @@ class MedicalOfficer extends Person
             'City' => [self::RULE_REQUIRED],
             'Profile_Image' => [self::RULE_REQUIRED],
             'Contact_No' => [self::RULE_REQUIRED, self::RULE_MOBILE_NO],
-            'Gender' => [self::RULE_REQUIRED],
+//            'Gender' => [self::RULE_REQUIRED],
             'Nationality' => [self::RULE_REQUIRED],
             'Registration_Number'=>[self::RULE_REQUIRED,self::RULE_UNIQUE],
-            'Registration_Date'=>[self::RULE_REQUIRED,self::RULE_OLDER_DATE],
+            'Registration_Date'=>[self::RULE_REQUIRED,self::RULE_TODAY_OR_OLDER_DATE],
         ];
     }
 

@@ -117,4 +117,9 @@ class Donor extends Person
     {
         $this->Donor_ID = $ID;
     }
+
+    public function getBloodGroup()
+    {
+        return "A+";
+    }
 }

@@ -36,6 +36,14 @@ abstract class dbModel extends Model
     {
         $this->WherePrimaryKey = $PrimaryKey;
     }
+    public function toArray(): array
+    {
+        $array = [];
+        foreach ($this as $key => $value) {
+            $array[$key] = $value;
+        }
+        return $array;
+    }
 
     public static function InnerJoinRetrieveAll(string $JoinTableName,string $inner_ID = 'ID')
     {

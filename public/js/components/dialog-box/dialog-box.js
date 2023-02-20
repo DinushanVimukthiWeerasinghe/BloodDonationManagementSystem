@@ -12,14 +12,15 @@ const OpenDialogBox= (props) => {
         secondaryBtnAction,
         cancelBtnAction,
         popupOrder,
-        showCancelButton
+        showCancelButton,
+        footer
     } = props;
     const dialogBoxOuter = document.createElement('div');
     dialogBoxOuter.id = id;
     if (popupOrder) {
-        dialogBoxOuter.style.zIndex = 999 + popupOrder;
+        dialogBoxOuter.style.zIndex = 1000 + popupOrder;
     } else {
-        dialogBoxOuter.style.zIndex = '999';
+        dialogBoxOuter.style.zIndex = '1000';
     }
     dialogBoxOuter.className = 'dialog-box-outer';
     const dialogBoxInner = document.createElement('div');
@@ -48,7 +49,7 @@ const OpenDialogBox= (props) => {
     const dialogBoxActionBtn= document.createElement('div');
     dialogBoxActionBtn.className= 'dialog-box-action';
     const OKBtn= document.createElement('button');
-    OKBtn.className= 'btn btn-success';
+    OKBtn.className= 'btn btn-outline-success';
     OKBtn.innerHTML= successBtnText || 'OK';
 
     if (successBtnAction) {
@@ -61,7 +62,7 @@ const OpenDialogBox= (props) => {
     dialogBoxActionBtn.appendChild(OKBtn);
     if (secondaryBtnText) {
         const secondaryBtnElement= document.createElement('button');
-        secondaryBtnElement.className= 'btn btn-secondary';
+        secondaryBtnElement.className= 'btn btn-outline-secondary';
         secondaryBtnElement.innerHTML= secondaryBtnText;
         if (secondaryBtnAction) {
             secondaryBtnElement.addEventListener('click', secondaryBtnAction);
@@ -78,7 +79,7 @@ const OpenDialogBox= (props) => {
         // OKBtn.style.width= '50%';
     }else{
         const cancelBtnElement= document.createElement('button');
-        cancelBtnElement.className= 'btn btn-danger';
+        cancelBtnElement.className= 'btn btn-outline-danger';
         cancelBtnElement.innerHTML= cancelBtnText || 'Cancel';
         if (cancelBtnAction) {
             cancelBtnElement.addEventListener('click', cancelBtnAction);
@@ -92,10 +93,17 @@ const OpenDialogBox= (props) => {
 
 
 
+
     dialogBoxInner.appendChild(dialogBoxTitle);
     dialogBoxInner.appendChild(dialogBoxContent);
     if (dialogBoxCloseBtn) {
         dialogBoxInner.appendChild(dialogBoxCloseBtn);
+    }
+    if (footer) {
+        const footerElement= document.createElement('div');
+        footerElement.className= 'dialog-box-footer';
+        footerElement.innerHTML= footer;
+        dialogBoxInner.appendChild(footerElement);
     }
     dialogBoxInner.appendChild(dialogBoxActionBtn);
     dialogBoxOuter.appendChild(dialogBoxInner);

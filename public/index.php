@@ -145,15 +145,17 @@ $app->router->get('/manager/mngMedicalOfficer/add', [managerController::class, '
 $app->router->post('/manager/mngMedicalOfficer/add', [managerController::class, 'AddMedicalOfficer']);
 $app->router->post('/manager/mngMedicalOfficer/delete', [managerController::class, 'DeleteMedicalOfficer']);
 
-$app->router->get('/manager/mngMedicalOfficer/search', [managerController::class, 'SearchMedicalOfficer']);
+$app->router->post('/manager/mngMedicalOfficer/search', [managerController::class, 'SearchMedicalOfficer']);
 
 $app->router->get('/manager/mngRequests', [managerController::class, 'ManageRequests']);
 $app->router->post('/manager/mngRequests', [managerController::class, 'ManageRequests']);
 $app->router->post('/manager/mngRequests/find', [managerController::class, 'FindRequest']);
 $app->router->get('/manager/mngRequests/er', [managerController::class, 'ManageEmergencyRequests']);
 
-$app->router->get('/manager/mngCampaign/view', [managerController::class, 'ViewCampaign']);
 $app->router->post('/manager/mngCampaign/view', [managerController::class, 'ViewCampaign']);
+$app->router->post('/manager/mngCampaign/reject', [managerController::class, 'RejectCampaign']);
+$app->router->post('/manager/mngCampaign/view', [managerController::class, 'ViewCampaign']);
+$app->router->get('/manager/mngCampaign/assign-team', [managerController::class, 'AssignTeam']);
 
 
 $app->router->get('/manager/mngSponsorship', [managerController::class, 'ManageSponsors']);
@@ -174,8 +176,11 @@ $app->router->post('/manager/upload', [managerController::class, 'upload']);
 
 
 //View Medical Officer
-$app->router->get('/manager/mngMedicalOfficer/view', [managerController::class, 'ViewMedicalOfficer']);
-$app->router->post('/manager/mngMedicalOfficer/view', [managerController::class, 'ViewMedicalOfficer']);
+//$app->router->get('/manager/mngMedicalOfficer/view', [managerController::class, 'ViewMedicalOfficer']);
+$app->router->post('/manager/mngMedicalOfficer/get', [managerController::class, 'ViewMedicalOfficer']);
+$app->router->post('/manager/mngMedicalOfficer/update', [managerController::class, 'UpdateMedicalOfficer']);
+$app->router->post('/manager/mngMedicalOfficer/sendEmail', [managerController::class, 'SendEmail']);
+$app->router->get('/manager/mngMedicalOfficer/sendEmail', [managerController::class, 'SendEmail']);
 
 //Manage Donors
 
