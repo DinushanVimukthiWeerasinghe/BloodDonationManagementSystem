@@ -20,7 +20,6 @@ echo card::ImportJS();
 use App\view\components\WebComponent\Card\NavigationCard;
 
 $EmergencyRequestCard = new NavigationCard('/hospital/emergencyRequest', '/public/images/icons/manager/dashboard/requests.png', 'Emergency Blood Request');
-$donorCard = new NavigationCard('/hospital/donors', '/public/images/icons/manager/dashboard/donor.png', 'Manage Donors');
 $RequestCard = new NavigationCard('/hospital/bloodRequest', '/public/images/icons/manager/dashboard/requests.png','Blood Request');
 $background = new BackGroundImage();
 
@@ -28,6 +27,5 @@ echo $background;
 FlashMessage::RenderFlashMessages();
 echo cardGroup::CardPanel();
 echo $EmergencyRequestCard;
-echo $donorCard;
 echo $RequestCard;
 echo CardGroup::CloseCardPanel();

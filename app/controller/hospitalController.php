@@ -67,18 +67,6 @@ class hospitalController extends Controller{
         $requests=BloodRequest::RetrieveAll();
         return $this->render('Hospital/bloodRequest',['$data'=>$requests]);
     }
-
-    public function donors(): string
-    {
-        $donors=Donor::RetrieveAll();
-        return $this->render('Hospital/donors',['$data'=>$donors]);
-    }
-
-    public function FindDonor(Request $request,Response $response): string
-    {
-        $NIC=$request->getBody()['nic'];
-        return $this->render('Hospital/donors/findDonor');
-    }
     public function addEmergencyRequest(Request $request, Response $response): string
     {
         return $this->render('Hospital/addEmergencyRequest');
