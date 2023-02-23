@@ -1,10 +1,11 @@
 const Loader=document.getElementById('loader');
-const Search = (path)=>{
+const Search = (path,type='')=>{
     console.log(this);
     const url=path;
     const q=document.getElementById('search').value;
     const Form = new FormData();
     Form.append('q',q)
+    Form.append('type',type)
     fetch(path,{
         method : 'POST',
         body : Form
@@ -16,6 +17,9 @@ const Search = (path)=>{
             const DP = new DOMParser();
             const Doc = DP.parseFromString(data,'text/html');
             document.getElementById('content').innerHTML=Doc.getElementById('content').innerHTML;
+            if (type ==='assign'){
+
+            }
             setTimeout(()=>{
                 Loader.classList.add('none')
             },500)
@@ -98,7 +102,7 @@ const ViewCampaignRequest = (id) =>{
 }
 
 const AssignTeam = (id) =>{
-    console.log("Assign Team")
+    window.location.href = '/manager/mngCampaign/assignTeam?campId='+id;
 }
 
 const AcceptCampaignRequest = (id) =>{

@@ -215,21 +215,32 @@ abstract class dbModel extends Model
     }
 
 
-    public function update($id, $Exclude = []): bool
+    public function update($id, $Exclude = [],$Include=[]): bool
     {
         $tableName = static::tableName();
         $attributes = $this->attributes();
         $params = array_map(fn($attr) => ":$attr", $attributes);
 
         $demo = 'UPDATE ' . $tableName . ' SET ';
-        foreach ($attributes as $attribute) {
-            if ($attribute == static::PrimaryKey()) {
-                continue;
+        if (!empty($Include)){
+            foreach ($attributes as $attribute) {
+                if ($attribute == static::PrimaryKey()) {
+                    continue;
+                }
+                if (in_array($attribute, $Include)) {
+                    $demo .= $attribute . '="' . $this->{$attribute} . '", ';
+                }
             }
-            if (in_array($attribute, $Exclude)) {
-                continue;
+        }else {
+            foreach ($attributes as $attribute) {
+                if ($attribute == static::PrimaryKey()) {
+                    continue;
+                }
+                if (in_array($attribute, $Exclude)) {
+                    continue;
+                }
+                $demo .= $attribute . '="' . $this->{$attribute} . '", ';
             }
-            $demo .= $attribute . '="' . $this->{$attribute} . '", ';
         }
         $demo=substr($demo,0,-2);
         $demo.=' WHERE '.static::PrimaryKey().'="'.$id.'"';

@@ -13,7 +13,8 @@ const OpenDialogBox= (props) => {
         cancelBtnAction,
         popupOrder,
         showCancelButton,
-        footer
+        footer,
+        contentSize
     } = props;
     const dialogBoxOuter = document.createElement('div');
     dialogBoxOuter.id = id;
@@ -25,6 +26,9 @@ const OpenDialogBox= (props) => {
     dialogBoxOuter.className = 'dialog-box-outer';
     const dialogBoxInner = document.createElement('div');
     dialogBoxInner.className = 'dialog-box';
+    if (contentSize){
+        dialogBoxInner.style.minWidth=contentSize+'%';
+    }
     const dialogBoxTitle = document.createElement('div');
     dialogBoxTitle.className = 'dialog-box-title';
     if (title) {

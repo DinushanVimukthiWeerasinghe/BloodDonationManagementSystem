@@ -127,6 +127,8 @@ $app->router->get('/sponsors/donation', [sponsorController::class, 'donation']);
 $app->router->get('/sponsors/campDetails', [sponsorController::class, 'campDetails']);
 $app->router->get('/sponsors/guideline', [sponsorController::class, 'guideline']);
 
+$app->router->get('/gmp', [siteController::class, 'gmap']);
+
 
 
 // Manager Register
@@ -144,6 +146,8 @@ $app->router->get('/manager/mngMedicalOfficer', [managerController::class, 'Mana
 $app->router->get('/manager/mngMedicalOfficer/add', [managerController::class, 'AddMedicalOfficer']);
 $app->router->post('/manager/mngMedicalOfficer/add', [managerController::class, 'AddMedicalOfficer']);
 $app->router->post('/manager/mngMedicalOfficer/delete', [managerController::class, 'DeleteMedicalOfficer']);
+$app->router->get('/manager/mngCampaign/assignTeam', [managerController::class, 'AssignTeam']);
+$app->router->post('/manager/mngCampaign/assignTeam', [managerController::class, 'AssignTeam']);
 
 $app->router->post('/manager/mngMedicalOfficer/search', [managerController::class, 'SearchMedicalOfficer']);
 
@@ -156,6 +160,7 @@ $app->router->post('/manager/mngCampaign/view', [managerController::class, 'View
 $app->router->post('/manager/mngCampaign/reject', [managerController::class, 'RejectCampaign']);
 $app->router->post('/manager/mngCampaign/view', [managerController::class, 'ViewCampaign']);
 $app->router->get('/manager/mngCampaign/assign-team', [managerController::class, 'AssignTeam']);
+$app->router->post('/manager/mngCampaign/assignTeam/assign', [managerController::class, 'AssignTeamMember']);
 
 
 $app->router->get('/manager/mngSponsorship', [managerController::class, 'ManageSponsors']);

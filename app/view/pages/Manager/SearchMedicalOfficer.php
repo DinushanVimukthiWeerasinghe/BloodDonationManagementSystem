@@ -76,8 +76,15 @@ use App\view\components\ResponsiveComponent\CardPane\CardPane;
                         <td data-label="Position"><?php echo $position ?></td>
                         <td data-label="Nationality"><?php echo $nationality?></td>
                         <td class="d-flex justify-content-center gap-1 align-items-center">
-                            <button class="text-dark btn gap-0-5 btn-outline-success d-flex align-items-center justify-content-center" onclick="EditMedicalOfficer('<?php echo $id ?>')" ><img src="/public/icons/edit.png" width="24px" alt="">Edit</button>
-                            <button class="text-dark btn gap-0-5 btn-outline-info d-flex align-items-center justify-content-center" onclick="SendEmail('<?php echo $id ?>')" ><img src="/public/icons/mail.png" width="24px" alt="">Send Email</button>
+                            <?php /** @var string $type */
+                            if ($type==='assign'): ?>
+                            <button id="btn-<?= $id?>" class="text-dark btn gap-0-5 btn-outline-success d-flex align-items-center justify-content-center" onclick="AssignMedicalOfficer('<?php echo $id ?>')" ><img src="/public/icons/checkCircle.svg" width="24px" alt=""><span>Assign</span></button>
+                    <?php  else: ?>
+                        <button class="text-dark btn gap-0-5 btn-outline-success d-flex align-items-center justify-content-center" onclick="EditMedicalOfficer('<?php echo $id ?>')" ><img src="/public/icons/edit.png" width="24px" alt="">Edit</button>
+                        <button class="text-dark btn gap-0-5 btn-outline-info d-flex align-items-center justify-content-center" onclick="SendEmail('<?php echo $id ?>')" ><img src="/public/icons/mail.png" width="24px" alt="">Send Email</button>
+                        <?php
+                            endif;
+                        ?>
                         </td>
                     </tr>
             <?php }
