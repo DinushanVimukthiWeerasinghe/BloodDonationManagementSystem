@@ -23,5 +23,5 @@ $background = new BackGroundImage();
 
 echo $background;
 
-//print_r($data);
-//exit();
+print_r($data);
+exit();
