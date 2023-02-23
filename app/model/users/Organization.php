@@ -2,18 +2,55 @@
 
 namespace App\model\users;
 
-use App\model\database\dbModel;
-
 class Organization extends Person
 {
     protected string $Organization_ID='';
     protected string $Organization_Name='';
+    protected string $Organization_Email='';
     protected string $Type ='';
 
     public function getID(): string
     {
         return $this->Organization_ID;
     }
+
+    /**
+     * @return string
+     */
+    public function getOrganizationName(): string
+    {
+        return $this->Organization_Name;
+    }
+
+    /**
+     * @param string $Organization_Name
+     */
+    public function setOrganizationName(string $Organization_Name): void
+    {
+        $this->Organization_Name = $Organization_Name;
+    }
+
+    /**
+     * @return string
+     */
+    public function getType(): string
+    {
+        return $this->Type;
+    }
+
+    /**
+     * @param string $Type
+     */
+    public function setType(string $Type): void
+    {
+        $this->Type = $Type;
+    }
+
+    public function getEmail():string
+    {
+        return $this->Organization_Email;
+    }
+
 
 
     public function labels(): array

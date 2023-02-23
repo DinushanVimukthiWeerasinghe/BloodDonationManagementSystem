@@ -1,8 +1,8 @@
 <?php
 
-use App\view\components\ResponsiveComponent\ButtonComponent\DashBoardButton;
 use App\view\components\ResponsiveComponent\ImageComponent\BackGroundImage;
 use App\view\components\ResponsiveComponent\NavbarComponent\AuthNavbar;
+
 $navbar= new AuthNavbar('Emergency Requests','/manager','/public/images/icons/user.png',true,false);
 echo $navbar;
 $background=new BackGroundImage();
@@ -34,9 +34,6 @@ echo $background;
             </div>
         </div>
         <div id="card-pane" class="card-pane min-h-75 w-100 d-flex flex-wrap justify-content-center align-items-start m-1 p-1 border-radius-6 ">
-<!--            <div class="pane-loader">-->
-<!--                <img src="/public/loading2.svg" alt="" width="200px">-->
-<!--            </div>-->
             <?php
             if (empty($data)){
                 ?>

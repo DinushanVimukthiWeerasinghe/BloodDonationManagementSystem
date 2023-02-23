@@ -1,29 +1,30 @@
 
-<div class="information-cards d-flex justify-content-center align-items-center">
-        <div class="card bg-white border border-radius-5 d-flex align-center flex-row justify-content-center">
+<div class="information-cards d-flex justify-content-center align-items-center bg-white-0-5">
+        <div class="card card-sm bg-white border border-radius-5 d-flex align-center flex-row justify-content-center">
             <div class="card-header">
-                <img src="/public/images/icons/admin/dashboard/blood-donation.png" alt="">
+                <img src="/public/images/icons/admin/dashboard/blood-donation.png" alt="" class="max-w-rem-4">
                 <div class="card-title">
-                    <div class="text-center text-dark text-2xl p-2 border-2 border-radius-15 border-primary">15</div>
+                    <div class="text-center text-dark text-2xl p-1 border-2 border-radius-15 border-primary">15</div>
                 </div>
             </div>
         </div>
-        <div class="card bg-white border border-radius-5 d-flex align-center flex-row justify-content-center">
+        <div class="card card-sm bg-white border border-radius-5 d-flex align-center flex-row justify-content-center">
             <div class="card-header">
-                <img src="/public/images/icons/admin/dashboard/medical-team.png" alt="">
+                <img src="/public/images/icons/admin/dashboard/organization-chart.png" alt="" class="max-w-rem-4">
                 <div class="card-title">
-                    <div class="text-center  text-dark text-2xl p-2 border-2 border-radius-15 border-primary">15</div>
+                    <div class="text-center text-dark text-2xl p-1 border-2 border-radius-15 border-primary">15</div>
                 </div>
             </div>
         </div>
-        <div class="card bg-white border border-radius-5 d-flex align-center flex-row justify-content-center">
+        <div class="card card-sm bg-white border border-radius-5 d-flex align-center flex-row justify-content-center">
             <div class="card-header">
-                <img src="/public/images/icons/admin/dashboard/organization-chart.png" alt="">
+                <img src="/public/images/icons/admin/dashboard/blood-bank.png" alt="" class="max-w-rem-4">
                 <div class="card-title">
-                    <div class="text-center text-dark text-2xl p-2 border-2 border-radius-15 border-primary">15</div>
+                    <div class="text-center text-dark text-2xl p-1 border-2 border-radius-15 border-primary">15</div>
                 </div>
             </div>
         </div>
+
 </div>
 <div class="d-flex w-100 min-h-15 justify-content-center align-items-center gap-1 mt-1">
     <div class="min-w-30 bg-white p-2 border-radius-10">

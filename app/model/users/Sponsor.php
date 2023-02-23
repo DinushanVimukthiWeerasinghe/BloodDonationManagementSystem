@@ -2,8 +2,6 @@
 
 namespace App\model\users;
 
-use App\model\database\dbModel;
-
 class Sponsor extends Person
 {
     protected string $Sponsor_ID='';
@@ -29,6 +27,54 @@ class Sponsor extends Person
             'Type'=>'Type',
             'Profile_Image'=>'Profile Image'
         ];
+    }
+
+    /**
+     * @return string
+     */
+    public function getSponsorID(): string
+    {
+        return $this->Sponsor_ID;
+    }
+
+    /**
+     * @param string $Sponsor_ID
+     */
+    public function setSponsorID(string $Sponsor_ID): void
+    {
+        $this->Sponsor_ID = $Sponsor_ID;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSponsorName(): string
+    {
+        return $this->Sponsor_Name;
+    }
+
+    /**
+     * @param string $Sponsor_Name
+     */
+    public function setSponsorName(string $Sponsor_Name): void
+    {
+        $this->Sponsor_Name = $Sponsor_Name;
+    }
+
+    /**
+     * @return string
+     */
+    public function getType(): string
+    {
+        return $this->Type;
+    }
+
+    /**
+     * @param string $Type
+     */
+    public function setType(string $Type): void
+    {
+        $this->Type = $Type;
     }
 
     public function rules(): array
@@ -78,7 +124,7 @@ class Sponsor extends Person
 
     public function getRole(): string
     {
-        return 'Sponsors';
+        return User::SPONSOR;
     }
 
     public function setID(string $ID): void

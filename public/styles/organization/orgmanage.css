@@ -1,0 +1,193 @@
+body{
+    background-image: url("../../public/images/orgblood.jpg");
+    z-index: -1;
+    position: relative;
+    width: 50%;
+    height: 80vh;
+    filter: brightness(0.8);
+    object-fit: contain;
+    background-size:cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.profileBanner{
+    position: absolute;
+    width: 738px;
+    height: 80px;
+    left: 400px;
+    top: 24px;
+    border-radius: 5px;
+
+    /*background: #E6E2E2;*/
+}
+
+.profileBanner h1{
+    position: absolute;
+    left: 30%;
+
+    font-family:"Bell MT";
+    font-style: normal;
+    font-weight: 400;
+    font-size: 40px;
+    line-height: 30px;
+
+    color: #000000;
+}
+.contentArea{
+    position: absolute;
+    width: 1300px;
+    height: 510px;
+    left: 160px;
+    top: 120px;
+    border-radius: 51px;
+    /*background-color: #cccccc;*/
+}
+.near1{
+    position: absolute;
+    width: 300px;
+    height: 400px;
+    left: 80px;
+    top: 80px;
+    border-radius: 5px;
+
+    background: #FFFFFF;
+    cursor: pointer;
+}
+.near1 img{
+    object-fit: contain;
+    position: absolute;
+    width: 30%;
+    height: 30%;
+    left: 80px;
+    top: 40px;
+}
+.near1 p{
+    position: absolute;
+    width: 229px;
+    height: 116px;
+    left: 10%;
+    top: 200px;
+
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 30px;
+    line-height: 25px;
+    text-align: center;
+
+    color: #000000;
+
+}
+.near2{
+    position: absolute;
+    width: 286px;
+    height: 400px;
+    left: 500px;
+    top: 80px;
+    border-radius: 5px;
+
+    background: #FFFFFF;
+    cursor: pointer;
+}
+.near2 img{
+    position: absolute;
+    object-fit: contain;
+    width: 30%;
+    height: 30%;
+    left: 80px;
+    top: 40px;
+}
+.near2 p{
+    position: absolute;
+    width: 229px;
+    height: 116px;
+    left: 10%;
+    top: 200px;
+
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 30px;
+    line-height: 25px;
+    text-align: center;
+
+    color: #000000;
+
+}
+.near3{
+    position: absolute;
+    width: 286px;
+    height: 400px;
+    left: 900px;
+    top: 80px;
+    border-radius: 5px;
+
+    background: #FFFFFF;
+    cursor: pointer;
+}
+.near3 img{
+    position: absolute;
+    object-fit: contain;
+    width: 30%;
+    height: 30%;
+    left: 80px;
+    top: 40px;
+}
+.near3 p{
+    position: absolute;
+    width: 229px;
+    height: 116px;
+    left: 10%;
+    top: 200px;
+
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 30px;
+    line-height: 25px;
+    text-align: center;
+
+    color: #000000;
+
+}
+.near1:hover{
+    background-color:rgba(226, 83, 69, 1);
+}
+.near2:hover{
+    background-color:rgba(226, 83, 69, 1);
+}
+.near3:hover{
+    background-color:rgba(226, 83, 69, 1);
+}
+.near1 p:hover{
+    color:whitesmoke;
+}
+.near2 p:hover{
+    color:whitesmoke;
+}
+.near3 p:hover{
+    color:whitesmoke;
+}
+button{
+    position: absolute;
+    font-size: 15pt;
+    margin-top: -250px;
+    margin-left: -350px;
+    border-radius: 5px;
+    padding-left: 5px;
+    padding-right: 5px;
+    padding-top: 15px;
+    padding-bottom: 10px;
+    width: 20%;
+    color: #D9D9D9;
+    background-color: black;
+    cursor: pointer;
+}
+button:hover{
+    background-color: #e14e53;
+    color: #D9D9D9;
+}

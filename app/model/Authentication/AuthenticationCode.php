@@ -3,7 +3,6 @@
 namespace App\model\Authentication;
 
 use App\model\database\dbModel;
-use App\model\users\Person;
 use Core\Application;
 
 class AuthenticationCode extends dbModel
@@ -173,16 +172,18 @@ class AuthenticationCode extends dbModel
     {
         self::save();
     }
-    private function GenerateCode($n =6){
-        $Generator='123456789';
-        $result='';
-        for ($i=0;$i<$n;$i++){
-                $result.=substr($Generator,(rand()%strlen($Generator)),1);
+
+    private function GenerateCode($n = 6): string
+    {
+        $Generator = '123456789';
+        $result = '';
+        for ($i = 0; $i < $n; $i++) {
+            $result .= substr($Generator, (rand() % strlen($Generator)), 1);
         }
         return $result;
     }
 
-    public function Generate(int $Type,string $UserID=''): bool
+    public function Generate(int $Type, string $UserID = ''): bool
     {
         if ($Type===self::Change_Password){
 

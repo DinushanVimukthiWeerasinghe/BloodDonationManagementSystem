@@ -2,8 +2,6 @@
 
 namespace App\model\users;
 
-use App\model\database\dbModel;
-
 class Hospital extends Person
 {
     protected string $Hospital_ID='';

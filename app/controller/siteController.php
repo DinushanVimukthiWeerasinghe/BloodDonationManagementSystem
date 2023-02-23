@@ -30,6 +30,12 @@ class siteController extends \Core\Controller
         return $this->render('home',['params'=>$params]);
     }
 
+    public function gmap(Request $request,Response $response)
+    {
+        $this->layout='none';
+        return $this->render('gmap');
+    }
+
     public function userRegister(Request $request, Response $response)
     {
         return $this->render('Authentication/UserRegister');
@@ -58,6 +64,12 @@ class siteController extends \Core\Controller
     public function ManagerLogin()
     {
         
+    }
+
+    public function Test()
+    {
+        $this->layout='none';
+        return $this->render('Email/PasswordReset');
     }
 
 }

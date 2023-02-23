@@ -12,6 +12,12 @@ class Request
         return $path;
     }
 
+    public function getDeviceIP()
+    {
+        return $_SERVER['REMOTE_ADDR'];
+
+    }
+
     public function method()
     {
         return strtolower($_SERVER['REQUEST_METHOD']);
@@ -41,10 +47,15 @@ class Request
                     $body[$key] = filter_input(INPUT_POST, $key, FILTER_SANITIZE_SPECIAL_CHARS);
                 }
             }
-
-            if (isset($_FILES['file'])) {
-                $body['file'] =new File($_FILES['file']);
+            if (!empty($_FILES)){
+                foreach ($_FILES as $key => $value) {
+                    $body[$key]=new File($value);
+                }
             }
+//
+//            if (isset($_FILES['file'])) {
+//                $body['file'] =new File($_FILES['file']);
+//            }
         }
         return $body;
     }

@@ -37,6 +37,8 @@ class BloodRequest extends dbModel
         };
     }
 
+
+
     /**
      * @param int $Type
      */
@@ -138,6 +140,14 @@ class BloodRequest extends dbModel
     public function getStatus(): string
     {
         return $this->Status;
+    }
+
+    public function getRequestStatus()
+    {
+        return match ($this->Status) {
+            self::REQUEST_STATUS_PENDING => 'Pending',
+            self::REQUEST_STATUS_FULFILLED => 'Fulfilled',
+        };
     }
 
     /**

@@ -10,6 +10,7 @@ abstract class Model
     public const RULE_UNIQUE = 'uniq';
     public const RULE_MATCH = 'match';
     public const RULE_OLDER_DATE = 'older_date';
+    public const RULE_TODAY_OR_OLDER_DATE = 'today_or_older_date';
     public const RULE_UPCOMING_DATE = 'upcoming_date';
 
     public const RULE_MOBILE_NO = 'mobile';
@@ -77,6 +78,10 @@ abstract class Model
                 }if ($rulename===self::RULE_MOBILE_NO && !preg_match('/^(?:0|94|\+94)?(?:(0|2|3|4|5|7|9)|7(0|1|2|4|5|6|7|8)\d)\d{6}$/', $value))
                 {
                     $this->addErrorRule($attribute, self::RULE_MOBILE_NO);
+                }
+                if ($rulename===self::RULE_TODAY_OR_OLDER_DATE && strtotime($value) > strtotime(date('Y-m-d') . ' +1 day'))
+                {
+                    $this->addErrorRule($attribute, self::RULE_TODAY_OR_OLDER_DATE,['field'=>$this->getLabel($attribute)]);
                 }
                 if ($rulename===self::RULE_OLDER_DATE && strtotime($value) > strtotime(date('Y-m-d')))
                 {

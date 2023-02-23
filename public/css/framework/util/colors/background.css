@@ -2,6 +2,9 @@
 .bg-primary {
     background: var(--primary);
 }
+.bg-accent{
+    background: var(--accent);
+}
 /*Secondary Background*/
 .bg-secondary {
     background: var(--secondary);
@@ -50,6 +53,9 @@
 /*Dark Background*/
 .bg-dark {
     background: var(--dark);
+}
+.bg-dark div{
+    color: white;
 }
 /*White Background*/
 .bg-white {
@@ -339,4 +345,7 @@
 /* Pink-10 Background */
 .bg-pink-10 {
     background: var(--pink-10);
+}
+.bg-transparent{
+    background: transparent;
 }

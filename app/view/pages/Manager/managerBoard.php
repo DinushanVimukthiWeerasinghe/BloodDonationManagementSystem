@@ -8,8 +8,6 @@ use App\view\components\ResponsiveComponent\CardGroup\CardGroup;
 use App\view\components\ResponsiveComponent\ImageComponent\BackGroundImage;
 use App\view\components\ResponsiveComponent\NavbarComponent\AuthNavbar;
 
-$navbar = new AuthNavbar('Manager Board', '/manager', '/public/images/icons/user.png', true,false );
-echo $navbar;
 
 use App\view\components\WebComponent\Card\Card;
 
@@ -28,9 +26,10 @@ $ManageSponsorshipCard = new NavigationCard('/manager/mngSponsorship', '/public/
 $ManageMedicalOfficerCard = new NavigationCard('/manager/mngMedicalOfficer', '/public/images/icons/manager/dashboard/MedicalOfficer.png', 'Manage Medical Officer');
 $ManageCampaignCard = new NavigationCard('/manager/mngCampaigns', '/public/images/icons/manager/dashboard/camp.png', 'Manage Campaigns');
 $ManageReportCard = new NavigationCard('/manager/mngReport', '/public/images/icons/manager/dashboard/report.png', 'Manage Report');
-$background = new BackGroundImage();
 
-echo $background;
+?>
+
+<?php
 FlashMessage::RenderFlashMessages();
 echo CardGroup::CardPanel();
 echo $ManageRequestCard;

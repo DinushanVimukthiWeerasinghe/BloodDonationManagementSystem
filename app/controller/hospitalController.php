@@ -1,6 +1,7 @@
 <?php
  namespace App\controller;
 
+ use App\middleware\hospitalMiddleware;
  use App\model\Authentication\Login;
  use App\model\Requests\BloodRequest;
  use App\model\users\Donor;
@@ -22,7 +23,8 @@ class hospitalController extends Controller{
     public function __construct()
     {
         $this->setLayout('hospital');
-        $this->registerMiddleware(new AuthenticationMiddleware(['login'], BaseMiddleware::ALLOWED_ROUTES));
+        $this->registerMiddleware(new hospitalMiddleware(['dashboard'], BaseMiddleware::FORBIDDEN_ROUTES));
+
     }
     public function profile(){
         $user=Application::$app->getUser();

@@ -39,7 +39,7 @@ class AuthNavbar
     private function getProfile()
     {
         $user=Application::$app->getUser();
-        $profileName=$user->getFullName();
+        $profileName=$user->getFirstName().' '.$user->getLastName();
         $actions=Application::$app->request->getPath();
         $path=explode('/',$actions);
         $action=$path[2];
@@ -60,12 +60,12 @@ class AuthNavbar
         }else{
             $link[0]=[
                 'link'=>'/manager/dashboard',
-                'icon'=>'/public/images/icons/navbar/home.png',
+                'icon'=>'/public/icons/home.svg',
                 'title'=>'Dashboard'
             ];
             $link[1]=[
                 'link'=>'/manager/notification',
-                'icon'=>'/public/images/icons/navbar/bell.png',
+                'icon'=>'/public/icons/bell.svg',
                 'title'=>'Notification'
             ];
 
@@ -75,7 +75,7 @@ class AuthNavbar
         {
             $lnk.="
             <a href='{$item['link']}' class='logout'>
-                <img src='{$item['icon']}' alt='' width='45rem'>
+                <img src='{$item['icon']}' alt='' width='30rem'>
             </a>
             ";
         }
@@ -85,7 +85,7 @@ class AuthNavbar
            return <<<HTML
                 <div class="profile">
                         $lnk
-                        <a href="/logout" class="logout"><img src="/public/images/icons/navbar/sign-out.png" alt="" width="45rem"> </a>
+                        <a href="/logout" class="logout"><img src="/public/icons/log-out.svg" alt="" width="30rem"> </a>
                         <a  href="$profileLnk" class="navProfile"><img class="profile-icon" src="$profilePicture" width="40rem" alt="profile"></a>
                         <div class="navProfileName"><span>{$profileName}</span></div>
                 </div>

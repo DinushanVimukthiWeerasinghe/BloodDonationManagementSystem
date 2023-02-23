@@ -4,18 +4,21 @@
     --red: rgb(210, 43, 43);
     --primary: #b90209;
     --secondary: #6c757d;
+    --accent: #e3e3e3;
     --success: #28a745;
     --danger: #dc3545;
     --warning: #ffc107;
-    --info: #17a2b8;
+    --disabled: #6c757d;
+    --info: #093cc0;
     --light: #f8f9fa;
     --dark: #343a40;
     --body-bg: rgb(222, 222, 222);
     --border-color: #e9ecef;
-    --accent-color:#b90209;
+    --accent-color: #b90209;
     /*--side-bar-bg: #5d0018;*/
     --side-bar-bg: #ffffff;
     --top-bar-bg: #ffffff;
+    --nav-bar-bg: #ffffff;
     /*Accordion*/
     --accordion-bg: #ffffff;
     --accordion-bg-hover: --primary;
