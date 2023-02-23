@@ -32,11 +32,10 @@ class hospitalController extends Controller{
     public function dashboard():string
     {
      /* @var Hospital $hospital */
-     $hospital = Hospital::findOne(['Hospital_ID'=>Application::$app->getUser()->getID()]);
-     $params=[
-         'Hospital_Name'=>$hospital->getHospitalName(),
-     ];
-     return $this->render('Hospital/dashboard',$params);
+     $requests=BloodRequest::RetrieveAll();
+//     print_r($requests);
+//     exit();
+     return $this->render('Hospital/dashboard',['data'=>$requests]);
     }
 
     public function notification(Request $request, Response $response): string
@@ -55,35 +54,4 @@ class hospitalController extends Controller{
         ];
         return $this->render('Hospital/notification', $params);
     }
-
-    public function emergencyRequest(): string
-    {
-        $requests=BloodRequest::RetrieveAll();
-        return $this->render('Hospital/emergencyRequest',['$data'=>$requests]);
-    }
-
-    public function bloodRequest(): string
-    {
-        $requests=BloodRequest::RetrieveAll();
-        return $this->render('Hospital/bloodRequest',['$data'=>$requests]);
-    }
-    public function addEmergencyRequest(Request $request, Response $response): string
-    {
-        return $this->render('Hospital/addEmergencyRequest');
-    }
-    public function addBloodRequest(Request $request, Response $response): string
-    {
-        return $this->render('Hospital/addRequest');
-    }
-
-    public function emergencyRequestHistory(): string
-    {
-        $donor=Donor::RetrieveAll();
-        return $this->render('Hospital/emergencyRequestHistory',['$data'=>$donor]);
-    }
-    public function bloodRequestHistory(): string
-    {
-        return $this->render('Hospital/bloodRequestHistory');
-    }
-
 }

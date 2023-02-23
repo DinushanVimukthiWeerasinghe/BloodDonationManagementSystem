@@ -1,6 +1,6 @@
 <link rel="stylesheet"  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 <?php
-/* @var string $Hospital_Name */
+/* @var string $data */
 
 use App\model\users\Hospital;
 use App\view\components\ResponsiveComponent\Alert\FlashMessage;
@@ -19,13 +19,9 @@ echo card::ImportJS();
 
 use App\view\components\WebComponent\Card\NavigationCard;
 
-$EmergencyRequestCard = new NavigationCard('/hospital/emergencyRequest', '/public/images/icons/manager/dashboard/requests.png', 'Emergency Blood Request');
-$RequestCard = new NavigationCard('/hospital/bloodRequest', '/public/images/icons/manager/dashboard/requests.png','Blood Request');
 $background = new BackGroundImage();
 
 echo $background;
-FlashMessage::RenderFlashMessages();
-echo cardGroup::CardPanel();
-echo $EmergencyRequestCard;
-echo $RequestCard;
-echo CardGroup::CloseCardPanel();
+
+//print_r($data);
+//exit();
