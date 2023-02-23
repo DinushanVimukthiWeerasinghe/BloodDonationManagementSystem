@@ -44,7 +44,9 @@ class hospitalController extends Controller{
                 'Blood Group'=>$request->getBloodGroup(),
                 'Requested At'=>$request->getRequestedAt(),
                 'Type'=>$request->getType(),
-                'Status'=>$request->getStatus()
+                'Status'=>$request->getStatus(),
+                'Quantity'=>$request->getQuantity(),
+                'Remarks'=>$request->getRemarks(),
             ];
         }
         //print_r($reqData);
