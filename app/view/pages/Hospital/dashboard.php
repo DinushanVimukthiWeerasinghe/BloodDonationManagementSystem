@@ -23,5 +23,7 @@ $background = new BackGroundImage();
 
 echo $background;
 
+$table = new \App\view\components\Table\DetailTable(['Request ID', 'Blood Group', 'Requested At', 'Type', 'Status'], $data);
+echo $table->render();
 print_r($data);
-exit();
+//exit();
