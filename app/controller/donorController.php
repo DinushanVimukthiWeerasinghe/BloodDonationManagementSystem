@@ -48,6 +48,7 @@ class donorController extends Controller
 
     public function profile(Request $request ,Response $response){
         $donor = Donor::findOne(['Donor_ID' => Application::$app->getUser()->getID()]);
+        //$data=[];
         $data = $donor->toArray();
         //print_r( $donor->toArray() );
         //exit();
