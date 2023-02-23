@@ -3,6 +3,7 @@
 namespace App\controller;
 
 use App\model\Authentication\Login;
+use App\model\inform\informDonors;
 use App\model\Requests\AttendanceAcceptedRequest;
 use App\model\users\organization;
 use App\model\Campaigns\Campaign;
@@ -112,8 +113,9 @@ class OrganizationController extends Controller
             $campaign->setCreatedAt(date("Y-m-d H:i:s"));
             $id = uniqid("Camp_");
             $campaign->setCampaignID($id);
+
             if($campaign->validate() && $campaign->save()) {
-                    $response->redirect('/organization/history');
+                    $response->redirect('/Organization/history');
             }else{
                 print_r($campaign->errors);
             }
@@ -155,11 +157,23 @@ class OrganizationController extends Controller
 //        ];
         return $this->render('Organization/history',['data'=>$result]);
     }
-    public function inform()
+    public function inform(Request $request, Response $response)
     {
-
-
-        return $this->render('Organization/inform');
+        $inform = new informDonors();
+        if ($request->isPost()) {
+            $inform->loadData($request->getBody());
+            $id = uniqid("Message_");
+            $inform->setMessageID($id);
+            $inform->setCampaignID($_GET['id']);
+            $inform->setStatus($inform::PENDING);
+            if($inform->save() && $inform->validate()) {
+                Application::$app->session->setFlash('success','You have successfully submitted your Message.');
+//                $response->redirect('/organization/inform?id= echo $_GET['id']');
+            }else {
+                    $errors = $inform->errors;
+            }
+        }
+        return $this->render('Organization/inform',['inform' => $inform]);
     }
     public function request()
     {

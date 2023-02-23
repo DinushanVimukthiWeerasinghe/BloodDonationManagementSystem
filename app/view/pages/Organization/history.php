@@ -81,7 +81,7 @@ echo $background;
                             <div class="card-description"><?= $campaign->getCampaignDate(); ?></div>
                             <div class="card-description"><?= $campaign->getCampaignStatus(); ?></div>
                             <?php if($campaign->getStatus() == 2) {?>
-                            <a href="campDetails?id=<?php echo $campaign->getCampaignID()?>"><button class="btn btn-success">Campaign Detaila</button></a>
+                            <a href="campDetails?id=<?php echo $campaign->getCampaignID()?>"><button class="btn btn-success">Campaign Details</button></a>
                             <?php } ?>
                         </div>
                     </div>

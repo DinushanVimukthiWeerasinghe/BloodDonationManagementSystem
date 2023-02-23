@@ -18,29 +18,40 @@ echo Card::ImportJS();
 /* @var Organization $user */
 
 use App\model\users\Organization;
+use App\model\inform\informDonors;
 use App\view\components\WebComponent\Card\NavigationCard;
+/* @var informDonors $inform */
 $background = new BackGroundImage();
 echo $background;
 FlashMessage::RenderFlashMessages();
 ?>
+<style>
+    @media only screen and (max-width: 376px) {
+        h1{
+            color: red;
+        }
+    }
+</style>
 <link rel="stylesheet" href="/public/css/components/form/index2.css">
 <link rel="stylesheet" href="/public/css/framework/util/border/border-radius.css">
-<div class="container p-5">
-    <form action="#" method="post" class="form-column p-3">
+<link rel="stylesheet" href="/public/css/fontawesome/fa.css">
+<div class="container p-5 mt-4">
+    <form action="inform?id=<?php echo $_GET['id'] ?>" method="post" class="form-column p-3">
         <h1 class="form-title mt-0">Inform Donors</h1>
         <div class="form-entity mt-2">
             <label class="form-label">Your Message</label><br><br>
-            <input type="text" class="form-input">
-        </div>
+            <input type="text" class="form-input" name="Message" required>
+        </div><br>
+        <label class="form-label" style="color: red;font-size: 15pt;"><?php echo $inform->getFirstError('Message') ?></label>
         <div class="form-entity mt-3">
             <label class="form-label">Message Type</label><br><br>
-            <select class="form-select">
-                <option>Urgent</option>
-                <option>Not Urgent</option>
+            <select class="form-select fa fa-1" name="Type" required>
+                <option class="fa fa-1" value="1">Urgent</option>
+                <option  class="fa fa-1" value="2">Not Urgent</option>
             </select>
         </div><br><br>
         <div class="form-row">
-            <input type="submit" class="btn btn-success mr-2">
+            <input type="submit" class="btn btn-success mr-2" >
             <input type="reset" class="btn btn-dark">
          <div>
     </form>
