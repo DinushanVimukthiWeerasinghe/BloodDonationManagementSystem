@@ -25,7 +25,9 @@ class DetailTable
         $table .= "<tbody>";
         foreach ($this->content as $content) {
             $table .= "<tr>";
-            foreach ($content as $item) {
+            //print_r($content);
+            foreach ($content as $lable => $item) {
+                //echo $lable;
                 $table .= "<td>$item</td>";
             }
             $table .= "</tr>";

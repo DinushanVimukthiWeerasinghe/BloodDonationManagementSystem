@@ -35,7 +35,20 @@ class hospitalController extends Controller{
      $requests=BloodRequest::RetrieveAll();
 //     print_r($requests);
 //     exit();
-     return $this->render('Hospital/dashboard',['data'=>$requests]);
+        $reqData=array();
+        foreach ($requests as $request){
+            //echo $request->getRequestedBy();
+            //request->getRequestedAt();
+            $reqData[]=[
+                'Request ID'=>$request->getRequestID(),
+                'Blood Group'=>$request->getBloodGroup(),
+                'Requested At'=>$request->getRequestedAt(),
+                'Type'=>$request->getType(),
+                'Status'=>$request->getStatus()
+            ];
+        }
+        //print_r($reqData);
+     return $this->render('Hospital/dashboard',['data'=>$reqData]);
     }
 
     public function notification(Request $request, Response $response): string
