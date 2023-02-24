@@ -4,6 +4,7 @@ namespace App\controller;
 
 use App\middleware\donorMiddleware;
 use App\model\Authentication\Login;
+use App\model\Campaigns\Campaign;
 use App\model\Donations\AcceptedDonations;
 use App\model\Donations\Donation;
 use App\model\Report\Report;
@@ -135,6 +136,9 @@ class donorController extends Controller
     }
 
     public function nearby(Request $request, Response $response){
+        $data = Campaign::RetrieveAll();
+        print_r($data);
+        exit();
         return $this->render('Donor/nearbyCampaigns');
     }
 }

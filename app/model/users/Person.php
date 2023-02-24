@@ -37,16 +37,6 @@ abstract class Person extends dbModel
      * @return array
      */
 
-    public function toArray(): array
-    {
-        $array = [];
-        foreach ($this as $key => $value) {
-            $array[$key] = $value;
-        }
-        return $array;
-    }
-
-
 
     /**
      * @return string
