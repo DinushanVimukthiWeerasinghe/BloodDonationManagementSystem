@@ -29,8 +29,10 @@ FlashMessage::RenderFlashMessages();
 <!--<div id="loader" class="none bg-white absolute w-100 h-100 d-flex justify-content-center align-items-center" style="z-index: 999">-->
 <!--    <img src="/public/loading2.svg" alt="" width="100px">-->
 <!--</div>-->
-
-<div class="d-flex w-60 flex-column align-items-center bg-white p-1 border-radius-10 m-1">
+<div id="loader" class="bg-white absolute w-100 h-100 d-flex justify-content-center align-items-center m-1 border-radius-10" style="z-index: 999;height: 97%;width: 98%">
+    <img src="/public/loading2.svg" alt="" width="100px">
+</div>
+<div id="MedOfficers" class="d-flex w-60 flex-column align-items-center bg-white p-1 border-radius-10 m-1">
     <div class="d-flex w-100 flex-row">
         <div class="d-flex bg-white-0-7 p-1 text-dark justify-content-between align-items-center w-100 flex-row gap-0-5 justify-content-center ">
             <div class="d-flex align-items-center gap-1 btn btn-outline-success" onclick="AddMedicalOfficer()">
@@ -39,7 +41,7 @@ FlashMessage::RenderFlashMessages();
             </div>
             <div id="Search" class="d-flex gap-0-5 align-items-center">
                 <label for="search" class="search">Search </label>
-                <input class="form-control" name="search" id="search" onkeyup="SearchAssignOfficer('/manager/mngMedicalOfficer/search','assign')">
+                <input class="form-control" name="search" id="search" onkeyup="SearchAssignOfficer('/manager/mngMedicalOfficer/search-for-team','assign')">
             </div>
             <div id="Filters" class="d-flex gap-1">
                 <div class="form-group">
@@ -77,9 +79,7 @@ FlashMessage::RenderFlashMessages();
             </tr>
             </thead>
             <tbody id="content" class="">
-            <div id="loader" class="none bg-white absolute w-100 h-100 d-flex justify-content-center align-items-center" style="z-index: 999;height: 90%;margin-top: 35px;">
-                <img src="/public/loading2.svg" alt="" width="100px">
-            </div>
+
             <?php
             $i=1;
             if (!empty($data)):
@@ -158,7 +158,7 @@ FlashMessage::RenderFlashMessages();
         </div>
     </div>
 </div>
-<div class="d-flex w-40 flex-column align-items-center bg-white p-1 gap-1 border-radius-10 m-1">
+<div id="AssignTeam-Content" class="d-flex w-40 flex-column align-items-center bg-white p-1 gap-1 border-radius-10 m-1">
     <div class="font-bold text-2xl">Assign Team</div>
         <div class="d-flex flex-column overflow-y-scroll w-100">
             <table class="w-100">
@@ -171,17 +171,31 @@ FlashMessage::RenderFlashMessages();
                     </tr>
                 </thead>
                 <tbody id="AssignTeam-Content">
+                <?php
+                if (empty($AssignedMedicalOfficers)):
+                ?>
                 <tr id="no-data">
                     <td colspan="6" class="text-center">No Data Found</td>
                 </tr>
-    <!--                <tr>-->
-    <!--                    <td>1</td>-->
-    <!--                    <td>Dr. A</td>-->
-    <!--                    <td>123456789V</td>-->
-    <!--                    <td>test@test.com</td>-->
-    <!--                    <td>Doctor</td>-->
-    <!--                    <td><button class="btn btn-danger d-flex align-items-center gap-1"><img src="/public/icons/remove.svg" class="invert-100" width="24px"/><span>Remove</span> </button> </td>-->
-    <!--                </tr>-->
+                <?php
+                else:
+                    foreach ($AssignedMedicalOfficers as $AssignedMedicalOfficer):
+                    $NIC=$AssignedMedicalOfficer->getNIC();
+                    $email=$AssignedMedicalOfficer->getEmail();
+                    $position=$AssignedMedicalOfficer->getPosition();
+                    $Id=$AssignedMedicalOfficer->getID();
+                ?>
+                    <tr>
+
+                        <td><?=$NIC?></td>
+                        <td><?=$email?></td>
+                        <td><?=$position?></td>
+                        <td><button class="btn btn-danger d-flex align-items-center gap-1" onclick="RemoveAssignedMedicalOfficer('<?=$Id?>')"><img src="/public/icons/remove.svg" class="invert-100" width="24px"/><span>Remove</span> </button> </td>
+                    </tr>
+                <?php
+                    endforeach;
+                endif;
+                ?>
                 </tbody>
             </table>
         </div>
@@ -199,26 +213,6 @@ FlashMessage::RenderFlashMessages();
         window.location.href="?rpp="+RecordsPerPage
     }
     const AssignMedicalOfficer = (id,order)=>{
-        // const AssignTeamContent =document.getElementById('AssignTeam-Content');
-        // if (SelectedMedicalOfficer.includes(id)){
-        //     SelectedMedicalOfficer=SelectedMedicalOfficer.filter((value)=>value!==id)
-        // }else {
-        //     if (SelectedMedicalOfficer.length===0){
-        //         AssignTeamContent.children[0].remove()
-        //     }
-        //     const tr = document.createElement('tr');
-        //     tr.id='Arow-'+id;
-        //     tr.innerHTML=`
-        //             <td>${document.getElementById('nic-'+id).innerText}</td>
-        //             <td>${document.getElementById('email-'+id).innerText}</td>
-        //             <td>${document.getElementById('position-'+id).innerText}</td>
-        //             <td><button id="btn-${id}" class=" btn gap-0-5 btn-danger d-flex align-items-center justify-content-center" onclick="RemoveAssignedMedicalOfficer('${id}')" >
-        //                         <img src="/public/icons/remove.svg" class="invert-100" width="24px" alt=""><span>Remove</span></button> </td>`
-        //     AssignTeamContent.appendChild(tr)
-        //     SelectedMedicalOfficer.push(id)
-        //     document.getElementById('row-'+order).remove();
-        //
-        // }
         const url='/manager/mngCampaign/assignTeam/assign';
         // Get Campaign ID from URL GET Parameter
         const urlParams = new URLSearchParams(window.location.search);
@@ -230,18 +224,12 @@ FlashMessage::RenderFlashMessages();
             id : 'Assign',
             title : 'Assign Team',
             content :
-                `
-                    <div class="d-flex w-100">
-                        <div class="form-control">
-                            <select id="position" class="form-control">
-                                <option value="Leader">Leader</option>
-                                <option value="Member">Member</option>
-                            </select>
-                        </div>
-                    </div>
-                `,
+                ` <div class="d-flex font-bold text-2xl">Confirm The Assignment ?</div>
+               `,
             successBtnText: 'Assign',
             successBtnAction: ()=>{
+                CloseDialogBox('Assign');
+                ShowLoader();
                 fetch(url,{
                     method : 'POST',
                     body : Form
@@ -250,6 +238,41 @@ FlashMessage::RenderFlashMessages();
                     .then((res)=>res.text())
                     .then((data)=>{
                         console.log(data)
+                        if (data.status){
+                            ShowToast({
+                                type : 'success',
+                                message : 'Successfully Assigned'
+                            })
+                            ShowLoader();
+                        //     Get current URL
+                            const url = '/manager/mngCampaign/assignTeam?campId='+campId;
+                            fetch(url).then((res)=>res.text()).then((data)=>{
+                                if (data){
+                                    const DParsed = new DOMParser();
+                                    const DHTML = DParsed.parseFromString(data,'text/html');
+                                    const AssignTeamContent =document.getElementById('AssignTeam-Content');
+                                    const MedOfficersContent =document.getElementById('MedOfficers');
+                                    const AssignTeam = DHTML.getElementById('AssignTeam-Content');
+                                    const MedOfficers = DHTML.getElementById('MedOfficers');
+                                    AssignTeamContent.innerHTML=AssignTeam.innerHTML;
+                                    MedOfficersContent.innerHTML=MedOfficers.innerHTML;
+                                }else{
+                                    ShowToast({
+                                        type : 'error',
+                                        message : 'Failed to Assign'
+                                    })
+                                }
+                                setTimeout(()=>{
+                                    HideLoader();
+                                },200)
+                            })
+
+                        }else{
+                            ShowToast({
+                                type : 'error',
+                                message : 'Failed to Assign'
+                            })
+                        }
 
                     })
             }
@@ -258,17 +281,69 @@ FlashMessage::RenderFlashMessages();
     }
 
     const RemoveAssignedMedicalOfficer = (id)=>{
-        const AssignTeamContent =document.getElementById('AssignTeam-Content');
-        SelectedMedicalOfficer=SelectedMedicalOfficer.filter((value)=>value!==id)
-        document.getElementById('Arow-'+id).remove();
-        if (SelectedMedicalOfficer.length===0){
-            const tr = document.createElement('tr');
-            tr.id="no-data";
-            tr.innerHTML=`
-                    <td colspan="6" class="text-center">No Data Found</td>
-                `
-            AssignTeamContent.appendChild(tr)
-        }
+        const url='/manager/mngCampaign/assignTeam/remove';
+        // Get Campaign ID from URL GET Parameter
+        const urlParams = new URLSearchParams(window.location.search);
+        const campId = urlParams.get('campId');
+        const Form = new FormData();
+        Form.append('Campaign_ID',campId)
+        Form.append('Member_ID',id)
+        OpenDialogBox({
+            id : 'Remove',
+            title : 'Remove Team',
+            content :
+                ` <div class="d-flex font-bold text-2xl">Confirm The Removal ?</div>
+               `,
+            successBtnText: 'Remove',
+            successBtnAction: ()=>{
+                CloseDialogBox('Remove');
+                ShowLoader();
+                fetch(url,{
+                    method : 'POST',
+                    body : Form
+
+                })
+                    .then((res)=>res.json())
+                    .then((data)=>{
+                        if (data.status){
+                            ShowToast({
+                                type : 'success',
+                                message : 'Successfully Removed'
+                            })
+                            ShowLoader();
+                        //     Get current URL
+                            const url = '/manager/mngCampaign/assignTeam?campId='+campId;
+                            fetch(url).then((res)=>res.text()).then((data)=>{
+                                if (data){
+                                    const DParsed = new DOMParser();
+                                    const DHTML = DParsed.parseFromString(data,'text/html');
+                                    const AssignTeamContent =document.getElementById('AssignTeam-Content');
+                                    const MedOfficersContent =document.getElementById('MedOfficers');
+                                    const AssignTeam = DHTML.getElementById('AssignTeam-Content');
+                                    const MedOfficers = DHTML.getElementById('MedOfficers');
+                                    AssignTeamContent.innerHTML=AssignTeam.innerHTML;
+                                    MedOfficersContent.innerHTML=MedOfficers.innerHTML;
+                                }else{
+                                    ShowToast({
+                                        type : 'error',
+                                        message : 'Failed to Remove'
+                                    })
+                                }
+                                setTimeout(()=>{
+                                    HideLoader();
+                                },200)
+                            })
+
+                        }else{
+                            ShowToast({
+                                type : 'error',
+                                message : 'Failed to Remove'
+                            })
+                        }
+
+                    })
+            }
+        })
     }
     const SearchAssignOfficer = (path,type='')=>{
         const url=path;
@@ -283,6 +358,7 @@ FlashMessage::RenderFlashMessages();
         })
             .then((res)=>res.text())
             .then((data)=>{
+                console.log(data)
                 Loader.classList.remove('none');
                 const DP = new DOMParser();
                 const Doc = DP.parseFromString(data,'text/html');

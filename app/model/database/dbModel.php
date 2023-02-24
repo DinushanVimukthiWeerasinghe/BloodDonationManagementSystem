@@ -92,14 +92,18 @@ abstract class dbModel extends Model
         $primaryKey = static::PrimaryKey();
         $attributes = array_keys($array);
         $sql= implode(" OR ",array_map(fn($attr)=>"$attr LIKE :$attr",$attributes));
+        $exactMatchSql='';
         if (!empty($exactMatch)){
             $exactMatchKeys = array_keys($exactMatch);
             $exactMatchSql = implode(" OR ",array_map(fn($attr)=>"$attr = :$attr",$exactMatchKeys));
-            $sql.=" OR $exactMatchSql";
         }
+
         $limits='';
         if (!empty($limit)){
             $limits=" LIMIT $limit[0],$limit[1]";
+        }
+        if (!empty($exactMatchSql)){
+            $sql="(".$sql.") AND "."(".$exactMatchSql.")";
         }
         $statement = self::prepare("SELECT * FROM $tableName WHERE $sql $limits");
         foreach ($array as $key => $value) {
@@ -212,6 +216,28 @@ abstract class dbModel extends Model
 
 
         return true;
+    }
+
+    public function delete(array $where=[])
+    {
+        $tableName = static::tableName();
+        if (!empty($where)){
+            $attributes = array_keys($where);
+            $sql= implode(" AND ",array_map(fn($attr)=>"$attr = :$attr",$attributes));
+            $statement = self::prepare("DELETE FROM $tableName WHERE $sql");
+            foreach ($where as $key => $value) {
+                $statement->bindValue(":$key",$value);
+            }
+            $statement->execute();
+            return $statement->rowCount();
+        }else{
+            $primaryKey = static::PrimaryKey();
+            $statement = self::prepare("DELETE FROM $tableName WHERE $primaryKey = :$primaryKey");
+            $statement->bindValue(":$primaryKey", $this->{$primaryKey});
+            var_dump($statement);
+            $statement->execute();
+            return $statement->rowCount();
+        }
     }
 
 

@@ -108,4 +108,9 @@ class TeamMembers extends dbModel
     {
         return ['Team_ID', 'Member_ID', 'Position'];
     }
+
+    public function getCampaign() : Campaign
+    {
+        return Campaign::findOne(['Campaign_ID' => $this->getCampaignID()]);
+    }
 }

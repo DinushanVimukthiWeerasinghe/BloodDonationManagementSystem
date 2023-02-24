@@ -3,11 +3,16 @@
 namespace App\model\users;
 
 use App\model\BloodBankBranch\BloodBank;
+use App\model\Campaigns\Campaign;
+use App\model\MedicalTeam\MedicalTeam;
+use App\model\MedicalTeam\TeamMembers;
 
 class MedicalOfficer extends Person
 {
 
     public const UNAVAILABLE_MEDICAL_OFFICER= 1;
+    public const ASSIGNED_FOR_TEAM = 5;
+    public const AVAILABLE_MEDICAL_OFFICER = 1;
 
     protected string $BloodBank_ID = '';
     protected string $Joined_At = '';
@@ -159,6 +164,37 @@ class MedicalOfficer extends Person
     public function setOfficerID(string $Officer_ID): void
     {
         $this->Officer_ID = $Officer_ID;
+    }
+
+    public function getAssignedTeam(): ?MedicalTeam
+    {
+        return MedicalTeam::findOne(['Team_Leader_ID' => $this->Officer_ID]);
+    }
+
+    public function getAssignedCampaigns(): array
+    {
+        $AssignedCampaigns = [];
+        /* @var $MedicalTeam TeamMembers*/
+        $MedicalTeams = TeamMembers::RetrieveAll(false,[],true,['Member_ID' => $this->Officer_ID]);
+        if (count($MedicalTeams) > 0) {
+            foreach ($MedicalTeams as $MedicalTeam) {
+                $AssignedCampaigns[] = $MedicalTeam->getCampaign();
+            }
+        }
+        return $AssignedCampaigns;
+    }
+
+    public function getAssignedCampaignsDate():array
+    {
+        $AssignedDates = [];
+        $AssignedCampaigns = $this->getAssignedCampaigns();
+        /* @var Campaign $AssignedCampaign */
+        if (count($AssignedCampaigns) > 0) {
+            foreach ($AssignedCampaigns as $AssignedCampaign) {
+                $AssignedDates[] = $AssignedCampaign->getCampaignDate();
+            }
+        }
+        return $AssignedDates;
     }
 
 

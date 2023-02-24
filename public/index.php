@@ -150,6 +150,7 @@ $app->router->get('/manager/mngCampaign/assignTeam', [managerController::class, 
 $app->router->post('/manager/mngCampaign/assignTeam', [managerController::class, 'AssignTeam']);
 
 $app->router->post('/manager/mngMedicalOfficer/search', [managerController::class, 'SearchMedicalOfficer']);
+$app->router->post('/manager/mngMedicalOfficer/search-for-team', [managerController::class, 'SearchMedicalOfficerForTeam']);
 
 $app->router->get('/manager/mngRequests', [managerController::class, 'ManageRequests']);
 $app->router->post('/manager/mngRequests', [managerController::class, 'ManageRequests']);
@@ -161,6 +162,7 @@ $app->router->post('/manager/mngCampaign/reject', [managerController::class, 'Re
 $app->router->post('/manager/mngCampaign/view', [managerController::class, 'ViewCampaign']);
 $app->router->get('/manager/mngCampaign/assign-team', [managerController::class, 'AssignTeam']);
 $app->router->post('/manager/mngCampaign/assignTeam/assign', [managerController::class, 'AssignTeamMember']);
+$app->router->post('/manager/mngCampaign/assignTeam/remove', [managerController::class, 'RemoveTeamMember']);
 
 
 $app->router->get('/manager/mngSponsorship', [managerController::class, 'ManageSponsors']);

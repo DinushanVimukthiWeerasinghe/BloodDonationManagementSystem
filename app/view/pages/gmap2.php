@@ -10,11 +10,11 @@ Make Google Map Location Maker
 <button onclick="ViewMap()">Try It</button>
 <button onclick="ViewMapS()">Try It 2</button>
 <!--The div element for the map -->
-
-<script
-        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCvbYq82SFP1JVqiFXWTMKAfwpUWQUtaPs&callback=initMap&v=weekly&libraries=places"
-        defer
-></script>
+<!--Map API KY-->
+<!--<script-->
+<!--        src="https://maps.googleapis.com/maps/api/js?key=&callback=initMap&v=weekly&libraries=places"-->
+<!--        defer-->
+<!--></script>-->
 <script>
     const ViewMap = ()=>{
         OpenDialogBox({

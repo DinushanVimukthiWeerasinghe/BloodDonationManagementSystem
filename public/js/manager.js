@@ -26,6 +26,19 @@ const Search = (path,type='')=>{
         })
 
 }
+window.onload = () => {
+    if (Loader) {
+        setTimeout(() => {
+            Loader.classList.add('none')
+        }, 500)
+    }
+}
+const ShowLoader = () => {
+    Loader.classList.remove('none')
+}
+const HideLoader = () => {
+    Loader.classList.add('none')
+}
 
 const ViewCampaignRequest = (id) =>{
     const url = '/manager/mngCampaign/view?id='+id;
