@@ -137,8 +137,8 @@ class donorController extends Controller
 
     public function nearby(Request $request, Response $response){
         $data = Campaign::RetrieveAll();
-        print_r($data);
-        exit();
-        return $this->render('Donor/nearbyCampaigns');
+        //exit();
+        //echo $data;
+        return $this->render('Donor/nearbyCampaigns',["data"=> $data]);
     }
 }
