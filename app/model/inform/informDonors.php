@@ -120,6 +120,22 @@ class informDonors extends dbModel
         return 'Message_ID';
     }
 
+    /**
+     * @return string
+     */
+    public function getMessage(): string
+    {
+        return $this->Message;
+    }
+
+    /**
+     * @param string $Message
+     */
+    public function setMessage(string $Message): void
+    {
+        $this->Message = $Message;
+    }
+
     public function attributes(): array
     {
         // TODO: Implement attributes() method.

@@ -36,11 +36,12 @@ FlashMessage::RenderFlashMessages();
 <link rel="stylesheet" href="/public/css/framework/util/border/border-radius.css">
 <link rel="stylesheet" href="/public/css/fontawesome/fa.css">
 <div class="container p-5 mt-4">
-    <form action="inform?id=<?php echo $_GET['id'] ?>" method="post" class="form-column p-3">
+    <form action="inform?id=<?php echo $_GET['id'] ?>" method="post" class="form-column p-3" enctype="multipart/form-data">
         <h1 class="form-title mt-0">Inform Donors</h1>
         <div class="form-entity mt-2">
             <label class="form-label">Your Message</label><br><br>
-            <input type="text" class="form-input" name="Message" required>
+<!--            <input type="text" class="form-input" name="Message" style="padding: 50px;" required>-->
+            <textarea name="Message" style="max-height: 50vh;border-radius: 10px;background-color: rgb(255,255,255,0);border: 2px solid black;max-width: 30vw;" class="fa fa-1" required></textarea>
         </div><br>
         <label class="form-label" style="color: red;font-size: 15pt;"><?php echo $inform->getFirstError('Message') ?></label>
         <div class="form-entity mt-3">
