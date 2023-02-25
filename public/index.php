@@ -1,5 +1,5 @@
 <?php
-
+;
 use App\controller\adminController;
 use App\controller\apiController;
 use App\controller\authController;
