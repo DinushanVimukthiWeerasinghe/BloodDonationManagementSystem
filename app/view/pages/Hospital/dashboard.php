@@ -23,7 +23,7 @@ $background = new BackGroundImage();
 
 echo $background;
 
-$table = new \App\view\components\Table\DetailTable(['Request ID', 'Blood Group', 'Requested At', 'Type', 'Status','Quantity','Remarks'], $data);
+$table = new \App\view\components\Table\DetailTable(['Request ID', 'Blood Group', 'Requested At', 'Type', 'Status','Quantity (In Pints)','Remarks'], $data);
 echo $table->render();
 //print_r($data);
 //exit();
@@ -41,10 +41,10 @@ echo $table->render();
             id:'AddNewRequest',
             title: 'Add New Request',
             content: `
-            <div class="form">
+            <form class="form" action="/hospital/request" method="post" id="form">
                 <div class="form-group">
                     <label for="bloodGroup">Blood Group</label>
-                    <select class="form-control" id="bloodGroup">
+                    <select class="form-control" id="bloodGroup" name="bloodGroup">
                         <option value="A+">A+</option>
                         <option value="A-">A-</option>
                         <option value="B+">B+</option>
@@ -57,22 +57,24 @@ echo $table->render();
                 </div>
                 <div class="form-group">
                     <label for="type">Type</label>
-                    <select class="form-control" id="type">
-                        <option value="Emergency">Emergency</option>
-                        <option value="Normal">Normal</option>
+                    <select class="form-control" id="type" name="type">
+                        <option value="2">Emergency</option>
+                        <option value="1">Normal</option>
                     </select>
                 </div>
                 <div class="form-group">
                     <label for="quantity">Quantity</label>
-                    <input type="number" class="form-control" id="quantity" placeholder="Quantity">
+                    <input type="number" class="form-control" id="quantity" placeholder="Quantity (In Pints)" name="quantity">
                 </div>
                 <div class="form-group">
                     <label for="remarks">Remarks</label>
-                    <textarea class="form-control" id="remarks" rows="3"></textarea>
+                    <textarea class="form-control" id="remarks" rows="3" name="remarks"></textarea>
                 </div>
-            </div>
+            </form>
             `,
             successBtnText: 'Add',
+            successBtnAction:()=>{
+                document.getElementById('form').submit();
             }
         })
     }

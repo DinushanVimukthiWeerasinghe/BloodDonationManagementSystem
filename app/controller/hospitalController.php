@@ -73,26 +73,40 @@
         return $this->render('Hospital/notification', $params);
     }
 
-    public function addRequest(Request $request, Response $response): string
+    public function addRequest(Request $request, Response $response)
     {
-        $Request = new BloodRequest();
-        if (Application::$app->request->isPost()){
-            $Request->loadData($request->getBody());
-            $Request->setRequestedBy(Application::$app->getUser()->getID());
-            $Request->setRequestedAt(date('Y-m-d H:i:s'));
-            $Request->setStatus('Pending');
-            $Request->setRemarks('Pending');
-            if ($Request->validate() && $Request->save()){
-                Application::$app->session->setFlash('success', 'Request Added Successfully');
-                $response->redirect('/hospital/dashboard');
-                return json_encode(['status' => true , 'message'=>'Request Added Successfully']);
+        $hospital = Hospital::findOne(['Hospital_ID' => Application::$app->getUser()->getID()]);
+        $BloodRequest = new BloodRequest();
+        $data =$request->getBody();
+//        print_r($data);
+//        exit();
 
-            }else{
-                return json_encode(['status'=>false, 'message'=>'Request Added Failed']);
+        if ($request->isPost()){
+            $newBloodGroup = $data['bloodGroup'];
+            $newType = $data['type'];
+            $newQuantity = $data['quantity'];
+            $newRemarks = $data['remarks'];
+            $newRequestedAt = date('Y-m-d H:i:s');
+            $newRequestedBy =  Application::$app->getUser()->getID();
+            $newStatus = 1;
+            $newRequestID = $BloodRequest->getNewPrimaryKey();
+            $BloodRequest->setRequestID($newRequestID);
+            $BloodRequest->setBloodGroup($newBloodGroup);
+            $BloodRequest->setType($newType);
+            $BloodRequest->setQuantity($newQuantity);
+            $BloodRequest->setRemarks($newRemarks);
+            $BloodRequest->setRequestedAt($newRequestedAt);
+            $BloodRequest->setRequestedBy($newRequestedBy);
+            $BloodRequest->setStatus($newStatus);
+//            $BloodRequest->save();
+            if ($BloodRequest->validate() && $BloodRequest->save()){
+                $response->redirect('/hospital/dashboard');
+            }
+            else{
+                print_r("Gon Athal Denna epa Hutto");
+                exit();
             }
         }
-        else{
-            return json_encode(['status'=>false, 'message'=>'Request Added Failed']);
-        }
+
     }
 }

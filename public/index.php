@@ -230,6 +230,7 @@ $app->router->get('/hospital/emergencyRequest/addRequest', [hospitalController::
 $app->router->post('/hospital/emergencyRequest/addRequest', [hospitalController::class, 'addEmergencyRequest']);
 $app->router->get('/hospital/emergencyRequest/history', [hospitalController::class, 'emergencyRequestHistory']);
 $app->router->post('/hospital/emergencyRequest/history', [hospitalController::class, 'emergencyRequestHistory']);
+$app->router->post('/hospital/request', [hospitalController::class, 'addRequest']);
 // Donor
 $app->router->get('/donor/dashboard', [donorController::class, 'dashboard']);
 $app->router->get('/about', [siteController::class, 'about']);

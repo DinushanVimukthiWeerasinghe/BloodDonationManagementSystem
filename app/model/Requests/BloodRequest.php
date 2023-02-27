@@ -115,7 +115,7 @@ class BloodRequest extends dbModel
      */
     public function setRequestedBy(string $RequestedBy): void
     {
-        $this->RequestedBy = $RequestedBy;
+        $this->Requested_By = $RequestedBy;
     }
 
     /**
@@ -183,7 +183,7 @@ class BloodRequest extends dbModel
         return [
             'Request_ID' => 'Request ID',
             'BloodGroup' => 'Blood Group',
-            'RequestedBy' => 'Requested By',
+            'Requested_By' => 'Requested By',
             'Requested_At' => 'Requested At',
             'Status' => 'Status',
             'quantity' => 'Quantity',
@@ -196,7 +196,7 @@ class BloodRequest extends dbModel
         return [
             'Request_ID' => [self::RULE_REQUIRED],
             'BloodGroup' => [self::RULE_REQUIRED],
-            'RequestedBy' => [self::RULE_REQUIRED],
+            'Requested_By' => [self::RULE_REQUIRED],
             'Requested_At' => [self::RULE_REQUIRED],
             'Status' => [self::RULE_REQUIRED],
             'Type' => [self::RULE_REQUIRED],
@@ -226,13 +226,23 @@ class BloodRequest extends dbModel
         return [
             'Request_ID',
             'BloodGroup',
-            'RequestedBy',
+            'Requested_By',
             'Requested_At',
             'Status',
             'Type',
             'Quantity',
             'Remark'
         ];
+    }
+
+    public function getNewPrimaryKey()
+    {
+     $newKey = 'Req_'.rand(1000,9999);
+     if (self::findOne(['Request_ID' => $newKey])){
+         return $newKey = $this->getNewPrimaryKey();
+     }else{
+         return $newKey;
+     }
     }
 
 }
