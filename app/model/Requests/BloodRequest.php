@@ -235,9 +235,13 @@ class BloodRequest extends dbModel
         ];
     }
 
-    public function getNewPrimaryKey()
+    public function getNewPrimaryKey($Type)
     {
-     $newKey = 'Req_'.rand(1000,9999);
+        if($Type==2){
+            $newKey = 'Req_'.rand(0,999);
+        }else{
+            $newKey = 'Req_'.rand(1000,9999);
+        }
      if (self::findOne(['Request_ID' => $newKey])){
          return $newKey = $this->getNewPrimaryKey();
      }else{

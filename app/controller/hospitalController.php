@@ -89,7 +89,7 @@
             $newRequestedAt = date('Y-m-d H:i:s');
             $newRequestedBy =  Application::$app->getUser()->getID();
             $newStatus = 1;
-            $newRequestID = $BloodRequest->getNewPrimaryKey();
+            $newRequestID = $BloodRequest->getNewPrimaryKey($newType);
             $BloodRequest->setRequestID($newRequestID);
             $BloodRequest->setBloodGroup($newBloodGroup);
             $BloodRequest->setType($newType);
