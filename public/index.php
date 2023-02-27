@@ -14,7 +14,6 @@ use App\controller\siteController;
 use App\controller\sponsorController;
 use Core\Application;
 
-
 require_once __DIR__ . '/../vendor/autoload.php';
 $dotenv = Dotenv\Dotenv::createImmutable(dirname(__DIR__));
 $dotenv->load();
@@ -218,6 +217,41 @@ $app->router->post('/hospital/login', [hospitalController::class, 'login']);
 $app->router->get('/hospital/dashboard', [hospitalController::class, 'dashboard']);
 $app->router->post('/hospital/dashboard', [hospitalController::class, 'dashboard']);
 $app->router->post('/hospital/addRequest', [hospitalController::class, 'AddRequest']);
+$app->router->get('/hospital/emergencyRequest', [hospitalController::class, 'emergencyRequest']);
+$app->router->post('/hospital/emergencyRequest', [hospitalController::class, 'emergencyRequest']);
+$app->router->get('/hospital/bloodRequest', [hospitalController::class, 'bloodRequest']);
+$app->router->post('/hospital/bloodRequest', [hospitalController::class, 'bloodRequest']);
+
+$app->router->get('/hospital/donors', [hospitalController::class, 'donors']);
+$app->router->post('/hospital/donors', [hospitalController::class, 'donors']);
+$app->router->get('/hospital/donors/find', [hospitalController::class, 'FindDonor']);
+
+$app->router->get('/hospital/emergencyRequest/addRequest', [hospitalController::class, 'addEmergencyRequest']);
+$app->router->post('/hospital/emergencyRequest/addRequest', [hospitalController::class, 'addEmergencyRequest']);
+$app->router->get('/hospital/emergencyRequest/history', [hospitalController::class, 'emergencyRequestHistory']);
+$app->router->post('/hospital/emergencyRequest/history', [hospitalController::class, 'emergencyRequestHistory']);
+// Donor
+$app->router->get('/donor/dashboard', [donorController::class, 'dashboard']);
+$app->router->get('/about', [siteController::class, 'about']);
+$app->router->get('/donor', [donorController::class, 'home']);
+$app->router->get('/donor/login', [donorController::class, 'login']);
+$app->router->post('/donor/login', [donorController::class, 'login']);
+$app->router->get('/donor/signup', [donorController::class, 'signup']);
+$app->router->post('/donor/signup', [donorController::class, 'signup']);
+$app->router->get('/donor/profile', [donorController::class, 'profile']);
+$app->router->get('/donor/register',[donorController::class, 'register']);
+$app->router->post('/donor/register', [donorController::class, 'register']);
+$app->router->get('/donor/guideline', [donorController::class, 'guideline']);
+$app->router->get('/donor/history', [donorController::class, 'history']);
+$app->router->get('/donor/nearby', [donorController::class, 'nearby']);
+$app->router->post('/donor/profile/edit', [donorController::class, 'editDetails']);
+
+
+$app->router->get('/hospital/bloodRequest/addRequest', [hospitalController::class, 'addBloodRequest']);
+$app->router->post('/hospital/bloodRequest/addRequest', [hospitalController::class, 'addBloodRequest']);
+$app->router->get('/hospital/bloodRequest/history', [hospitalController::class, 'bloodRequestHistory']);
+$app->router->post('/hospital/bloodRequest/history', [hospitalController::class, 'bloodRequestHistory']);
+
 
 //Blogs
 $app->router->post('/blog/add', [blogController::class, 'AddBlog']);
