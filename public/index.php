@@ -217,7 +217,7 @@ $app->router->get('/hospital/login', [hospitalController::class, 'login']);
 $app->router->post('/hospital/login', [hospitalController::class, 'login']);
 $app->router->get('/hospital/dashboard', [hospitalController::class, 'dashboard']);
 $app->router->post('/hospital/dashboard', [hospitalController::class, 'dashboard']);
-
+$app->router->post('/hospital/addRequest', [hospitalController::class, 'AddRequest']);
 
 //Blogs
 $app->router->post('/blog/add', [blogController::class, 'AddBlog']);

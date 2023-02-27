@@ -18,8 +18,9 @@
  use Core\Request;
  use Core\Response;
  use Core\SessionObject;
+ use http\Message;
 
-class hospitalController extends Controller{
+ class hospitalController extends Controller{
     public function __construct()
     {
         $this->setLayout('hospital');
@@ -70,5 +71,28 @@ class hospitalController extends Controller{
             'page' => $page
         ];
         return $this->render('Hospital/notification', $params);
+    }
+
+    public function addRequest(Request $request, Response $response): string
+    {
+        $Request = new BloodRequest();
+        if (Application::$app->request->isPost()){
+            $Request->loadData($request->getBody());
+            $Request->setRequestedBy(Application::$app->getUser()->getID());
+            $Request->setRequestedAt(date('Y-m-d H:i:s'));
+            $Request->setStatus('Pending');
+            $Request->setRemarks('Pending');
+            if ($Request->validate() && $Request->save()){
+                Application::$app->session->setFlash('success', 'Request Added Successfully');
+                $response->redirect('/hospital/dashboard');
+                return json_encode(['status' => true , 'message'=>'Request Added Successfully']);
+
+            }else{
+                return json_encode(['status'=>false, 'message'=>'Request Added Failed']);
+            }
+        }
+        else{
+            return json_encode(['status'=>false, 'message'=>'Request Added Failed']);
+        }
     }
 }
