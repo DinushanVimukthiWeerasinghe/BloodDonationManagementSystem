@@ -72,40 +72,7 @@ echo $table->render();
                 </div>
             </div>
             `,
-            footer: `<div id="error" class="text-danger">Hello</div>`,
             successBtnText: 'Add',
-            successBtnAction : ()=>{
-                const error=document.getElementById('error');
-                const form = new FormData();
-                    form.append('bloodGroup', document.getElementById('bloodGroup').value);
-                    form.append('type', document.getElementById('type').value);
-                    form.append('quantity', document.getElementById('quantity').value);
-                    form.append('remarks', document.getElementById('remarks').value);
-
-                    fetch('/hospital/addRequest',{
-                        method: 'POST',
-                        body: form
-                    }).then(res=>res.json()).then(data=>{
-                        if(data.status){
-                            CloseDialogBox();
-                            location.reload();
-                        }else{
-                            if (data.errors) {
-                                console.log(data.errors)
-                                for (const [key, value] of Object.entries(data.errors)) {
-                                    console.log(key, value)
-                                    const element = document.getElementsByName(key)[0];
-                                    element.classList.add('border-danger');
-                                    element.classList.add('text-danger');
-                                }
-                            }
-                            ShowToast({
-                                title: 'Error',
-                                message: data.message,
-                                type: 'danger'
-                            })
-                        }
-                    })
             }
         })
     }
