@@ -27,8 +27,12 @@ echo $navbar;
     foreach ($data as $campaign) {
 
 //        echo("hi");
-            $campaign = $campaign->toArray();
-        $card = new donationCard(['title' => $campaign['Campaign_Name'], 'subtitle' => $campaign['Venue'], 'description' => $campaign['Campaign_Description']]);
+        //$names = $campaign->labels();
+        $campaign = $campaign->toArray();
+        $longDescription = $campaign['Campaign_Name']. " will held at ". $campaign['Venue']. " on " . $campaign['Campaign_Date'];
+        //$longDescription ="hi";
+        //echo $longDescription;
+        $card = new donationCard(['title' => $campaign['Campaign_Name'], 'subtitle' => $campaign['Venue'], 'description' => $campaign['Campaign_Description']], $longDescription);
         echo $card->render();
     }
 

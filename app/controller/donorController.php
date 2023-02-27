@@ -14,6 +14,7 @@ use App\view\components\Card\donationDetailsCard;
 use Core\Application;
 use Core\BaseMiddleware;
 use Core\Controller;
+use Core\Email;
 use Core\middleware\AuthenticationMiddleware;
 use Core\Request;
 use Core\Response;
@@ -141,4 +142,19 @@ class donorController extends Controller
         //echo $data;
         return $this->render('Donor/nearbyCampaigns',["data"=> $data]);
     }
+
+    public function editDetails(Request $request,Response $response){
+        $donor = Donor::findOne(['Donor_ID' => Application::$app->getUser()->getID()]);
+        $data = $request->getBody();
+
+        if ($request->isPost()){
+            $newEmail = $data['Email'];
+            $newContact_No = $data['Contact_No'];
+            $donor->updateOne(['Donor_ID' => Application::$app->getUser()->getID()], ['Email' => $newEmail, 'Contact_No' => $newContact_No]);
+            $user = User::findOne(['UID' => Application::$app->getUser()->getID()]);
+            $user->updateOne(['UID' => Application::$app->getUser()->getID()], ['Email' => $newEmail]);
+        }
+        $response->redirect('/donor/profile');
+    }
+
 }

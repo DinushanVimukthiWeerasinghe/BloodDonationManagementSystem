@@ -37,7 +37,7 @@ echo $navbar;
         $date = explode(" ", $date)[0];
         $date = explode("-", $date);
         $date = implode("/", $date);
-        $card = new donationCard(['title'=>'On ' . $date , 'subtitle'=> $donation->getDonationId(), 'description'=> $donation->getPacketId()]);
+        $card = new donationCard(['title'=>'On ' . $date , 'subtitle'=> $donation->getDonationId(), 'description'=> $donation->getPacketId()], "");
 
 
         echo $card->render();

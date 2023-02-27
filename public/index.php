@@ -14,7 +14,6 @@ use App\controller\siteController;
 use App\controller\sponsorController;
 use Core\Application;
 
-
 require_once __DIR__ . '/../vendor/autoload.php';
 $dotenv = Dotenv\Dotenv::createImmutable(dirname(__DIR__));
 $dotenv->load();
@@ -234,6 +233,7 @@ $app->router->post('/donor/register', [donorController::class, 'register']);
 $app->router->get('/donor/guideline', [donorController::class, 'guideline']);
 $app->router->get('/donor/history', [donorController::class, 'history']);
 $app->router->get('/donor/nearby', [donorController::class, 'nearby']);
+$app->router->post('/donor/profile/edit', [donorController::class, 'editDetails']);
 
 
 $app->router->get('/hospital/bloodRequest/addRequest', [hospitalController::class, 'addBloodRequest']);
