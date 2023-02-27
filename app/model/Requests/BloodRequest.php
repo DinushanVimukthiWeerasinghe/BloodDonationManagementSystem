@@ -201,7 +201,6 @@ class BloodRequest extends dbModel
             'Status' => [self::RULE_REQUIRED],
             'Type' => [self::RULE_REQUIRED],
             'Quantity' => [self::RULE_REQUIRED],
-            'Remark' => [self::RULE_REQUIRED]
 
         ];
     }
