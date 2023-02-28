@@ -104,24 +104,21 @@
             $BloodRequest->setRequestedBy($newRequestedBy);
             $BloodRequest->setStatus($newStatus);
 //            $BloodRequest->save();
-            if (trim($BloodRequest->getRemark())==""){
-                $this->setFlashMessage('error','Please Enter Remarks');
-                $response->redirect('/hospital/dashboard');
-            }else if(strlen($BloodRequest->getRemarks())>100){
-                $this->setFlashMessage('error','Remarks should be less than 100 characters');
-                $response->redirect('/hospital/dashboard');
-            }
-            else
-            if($BloodRequest->getQuantity()<0){
+            if($BloodRequest->getQuantity()<1){
                 $this->setFlashMessage('error','Please Enter Valid Quantity');
                 Application::Redirect('/hospital/dashboard');
-            }
-            else{
+            }else if (trim($BloodRequest->getRemark())==""){
+                $this->setFlashMessage('error','Please Enter Remarks');
+                Application::Redirect('/hospital/dashboard');
+            }else if(strlen($BloodRequest->getRemarks())>100){
+                $this->setFlashMessage('error','Remarks should be less than 100 characters');
+                Application::Redirect('/hospital/dashboard');
+            }else{
                 if ($BloodRequest->validate() && $BloodRequest->save()){
                     $this->setFlashMessage('success','Request sent Successfully');
                 }
                 else{
-                    $this->setFlashMessage('error','Please Enter A Remark');
+                    $this->setFlashMessage('error','Request sending failed');
                 }
             }
             $response->redirect('/hospital/dashboard');
