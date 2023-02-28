@@ -21,9 +21,27 @@ class BloodRequest extends dbModel
 
     protected int $Type=1;
 
-    protected float $Quantity;
+    protected int $Quantity;
 
-    protected ?string $Remark=null;
+    protected string $Remark;
+
+    /**
+     * @return string
+     */
+    public function getRemark(): string
+    {
+        return $this->Remark;
+    }
+
+    /**
+     * @param string $Remark
+     */
+    public function setRemark(string $Remark): void
+    {
+        $this->Remark = $Remark;
+    }
+
+
 
 
     /**
@@ -157,7 +175,7 @@ class BloodRequest extends dbModel
     {
         $this->Status = $Status;
     }
-    public function getQuantity(): float
+    public function getQuantity(): int
     {
         return $this->Quantity;
     }
@@ -166,7 +184,7 @@ class BloodRequest extends dbModel
         $this->Quantity = $Quantity;
     }
 
-    public function getRemarks(): string | null
+    public function getRemarks(): string
     {
         return $this->Remark;
     }
@@ -201,6 +219,7 @@ class BloodRequest extends dbModel
             'Status' => [self::RULE_REQUIRED],
             'Type' => [self::RULE_REQUIRED],
             'Quantity' => [self::RULE_REQUIRED],
+            'Remark' => [self::RULE_REQUIRED]
 
         ];
     }
@@ -242,7 +261,7 @@ class BloodRequest extends dbModel
             $newKey = 'Req_'.rand(1000,9999);
         }
      if (self::findOne(['Request_ID' => $newKey])){
-         return $newKey = $this->getNewPrimaryKey();
+         return $newKey = $this->getNewPrimaryKey($Type);
      }else{
          return $newKey;
      }

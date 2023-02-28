@@ -23,6 +23,7 @@
  class hospitalController extends Controller{
     public function __construct()
     {
+         date_default_timezone_set('Asia/Colombo');
         $this->setLayout('hospital');
         $this->registerMiddleware(new hospitalMiddleware(['dashboard'], BaseMiddleware::FORBIDDEN_ROUTES));
 
@@ -35,7 +36,7 @@
     public function dashboard():string
     {
      /* @var Hospital $hospital */
-     $requests=BloodRequest::RetrieveAll();
+     $requests=BloodRequest::RetrieveAll(false,[],true,['Requested_By'=>Application::$app->getUser()->getID()]);
 //     print_r($requests);
 //     exit();
         $reqData=array();
@@ -82,31 +83,48 @@
 //        exit();
 
         if ($request->isPost()){
-            $newBloodGroup = $data['bloodGroup'];
-            $newType = $data['type'];
-            $newQuantity = $data['quantity'];
-            $newRemarks = $data['remarks'];
+//            print_r($request->getBody());
+            $BloodRequest->loadData($request->getBody());
+//            print_r($request->getBody());
+//            exit();
+//            $newBloodGroup = $data['bloodGroup'];
+//            $newType = $data['type'];
+//            $newQuantity = $data['quantity'];
+//            $newRemarks = $data['remarks'];
             $newRequestedAt = date('Y-m-d H:i:s');
             $newRequestedBy =  Application::$app->getUser()->getID();
             $newStatus = 1;
-            $newRequestID = $BloodRequest->getNewPrimaryKey($newType);
+            $newRequestID = $BloodRequest->getNewPrimaryKey($BloodRequest->getType());
             $BloodRequest->setRequestID($newRequestID);
-            $BloodRequest->setBloodGroup($newBloodGroup);
-            $BloodRequest->setType($newType);
-            $BloodRequest->setQuantity($newQuantity);
-            $BloodRequest->setRemarks($newRemarks);
+//            $BloodRequest->setBloodGroup($newBloodGroup);
+//            $BloodRequest->setType($newType);
+//            $BloodRequest->setQuantity($newQuantity);
+//            $BloodRequest->setRemarks($newRemarks);
             $BloodRequest->setRequestedAt($newRequestedAt);
             $BloodRequest->setRequestedBy($newRequestedBy);
             $BloodRequest->setStatus($newStatus);
 //            $BloodRequest->save();
-            if ($BloodRequest->validate() && $BloodRequest->save()){
+            if (trim($BloodRequest->getRemark())==""){
+                $this->setFlashMessage('error','Please Enter Remarks');
+                $response->redirect('/hospital/dashboard');
+            }else if(strlen($BloodRequest->getRemarks())>100){
+                $this->setFlashMessage('error','Remarks should be less than 100 characters');
                 $response->redirect('/hospital/dashboard');
             }
-            else{
-                print_r("Gon Athal Denna epa Hutto");
-                exit();
+            else
+            if($BloodRequest->getQuantity()<0){
+                $this->setFlashMessage('error','Please Enter Valid Quantity');
+                Application::Redirect('/hospital/dashboard');
             }
+            else{
+                if ($BloodRequest->validate() && $BloodRequest->save()){
+                    $this->setFlashMessage('success','Request sent Successfully');
+                }
+                else{
+                    $this->setFlashMessage('error','Please Enter A Remark');
+                }
+            }
+            $response->redirect('/hospital/dashboard');
         }
-
     }
 }

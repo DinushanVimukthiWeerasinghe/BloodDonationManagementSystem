@@ -12,14 +12,14 @@ class DetailTable
         $this->content = $content;
     }
 
-    public function render(): string
+    public function render($id): string
     {
         if(count($this->content)==0)
         {
             return "<h1>No Data Found</h1>";
         }else{
-            $table = "<table class='table table-striped table-hover table-bordered'>";
-            $table .= "<thead>";
+            $table = "<table class='table table-striped table-hover table-bordered' id='$id'style='width: 90%;'>";
+            $table .= "<thead style='color: var(--primary);background: rgba(255, 255, 255, 0.2);'>";
             $table .= "<tr>";
             foreach ($this->title as $title) {
                 $table .= "<th>$title</th>";
@@ -44,3 +44,5 @@ class DetailTable
 
 
 }
+?>
+
