@@ -54,12 +54,12 @@
                     <span class="nav-link-text">DashBoard</span>
                 </a>
             </div>
-            <div onclick="RenderPage('manageDonors')" class="side-bar-link" id="manageDonors">
-                <a >
-                    <img src="/public/images/icons/admin/dashboard/donation.png" width="40rem" alt="">
-                    <span class="nav-link-text">Donors</span>
-                </a>
-            </div>
+<!--            <div onclick="RenderPage('manageDonors')" class="side-bar-link" id="manageDonors">-->
+<!--                <a >-->
+<!--                    <img src="/public/images/icons/admin/dashboard/donation.png" width="40rem" alt="">-->
+<!--                    <span class="nav-link-text">Donors</span>-->
+<!--                </a>-->
+<!--            </div>-->
             <div onclick="RenderPage('manageBanks')" class="side-bar-link" id="manageBanks">
                 <a >
                     <img src="/public/images/icons/admin/dashboard/blood-bank.png" width="40rem" alt="">
@@ -110,6 +110,96 @@
     {{content}}
 </div>
 <script>
+    function addNewBank() {
+        OpenDialogBox({
+                id: 'addBankPop',
+                title: 'Add Bank',
+                content: `<form id="addBankForm" action="/admin/dashboard/manageBanks/add" method="post">
+                            <label for="bank_name">Bank Name</label>
+                            <input type="text" name="BankName" placeholder="Bank Name" ">
+                            <label for="address">Address</label>
+                            <input type="text" name="Address1" placeholder="Address Line 01">
+                            <input type="text" name="Address2" placeholder="Address Line 02">
+                            <label for="city">City</label>
+                            <input type="text" name="City" placeholder="City">
+                            <label for="telephone">Telephone</label>
+                            <input type="text" name="Telephone_No" placeholder="Telephone Number">
+                            <label for="numberOfDoctors">Number of Doctors</label>
+                            <input type="text" name="No_Of_Doctors" placeholder="Number Of Doctors">
+                            <label for="numberOfNurses">Number Of Nurses</label>
+                            <input type="text" name="No_Of_Nurses" placeholder="Number Of Nurses">
+                            <label for="numberOfBeds">Number Of Beds</label>
+                            <input type="text" name="No_Of_Beds" placeholder="Number Of Beds">
+                            <label for="numberOfStorages">Number Of Storages</label>
+                            <input type="text" name="No_Of_Storages" placeholder="Number Of Storages">
+                            <label for="type">Type</label>
+                            <input type="text" name="Type" placeholder="Type (0/1)">
+                        </form>`,
+                //closeDialog,
+                successBtnText: 'Add New Blood Bank',
+                //cancelBtnText,
+                //closeDialogBtn,
+                successBtnAction:()=>{
+                    document.getElementById('addBankForm').submit();
+                }
+                //cancelBtnAction,
+                //popupOrder,
+                //showCancelButton
+            }
+        )
+    }
+
+    function editBnkData(tr){
+//        document.getElementsByName(tr);
+        let data = document.getElementById(tr).valueOf().innerText.split('\t');
+        // console.log(data);
+        // for (let i in data){
+        //      console.log(data[i]);
+        // }
+        //console.log(tr);        //console.log(id);
+        OpenDialogBox({
+                id: 'editBankPop',
+            title: 'Edit Data',
+            content: `<form id="editBankForm" action="/admin/dashboard/manageBanks/edit" method="post">
+                            <input type="hidden" name="BloodBank_ID" value="${data[1]}">
+                            <label for="bank_name">Bank Name</label>
+                            <input type="text" name="BankName" value="${data[2]}">
+                            <label for="address">Address</label>
+                            <input type="text" name="Address1" value="${data[3].split(', ')[0]}">
+                            <input type="text" name="Address2" value="${data[3].split(', ')[1]}">
+                            <label for="city">City</label>
+                            <input type="text" name="City" value="${data[4]}">
+                            <label for="telephone">Telephone</label>
+                            <input type="text" name="Telephone_No" value="${data[5]}">
+                            <label for="numberOfDoctors">Number of Doctors</label>
+                            <input type="text" name="No_Of_Doctors" value="${data[6]}">
+                            <label for="numberOfNurses">Number Of Nurses</label>
+                            <input type="text" name="No_Of_Nurses" value="${data[7]}">
+                            <label for="numberOfBeds">Number Of Beds</label>
+                            <input type="text" name="No_Of_Beds" value="${data[8]}">
+                            <label for="numberOfStorages">Number Of Storages</label>
+                            <input type="text" name="No_Of_Storages" value="${data[9]}">
+                            <label for="type">Type</label>
+                            <input type="text" name="Type" value="${data[10]}">
+                        </form>`,
+            //closeDialog,
+                successBtnText: 'Save Changes',
+                //cancelBtnText,
+                //closeDialogBtn,
+                successBtnAction:()=>{
+                    document.getElementById('editBankForm').submit();
+                },
+                secondaryBtnText : 'Remove Bank',
+                secondaryBtnAction : () => {
+                    document.getElementById('editBankForm').action = "/admin/dashboard/manageBanks/delete";
+                    document.getElementById('editBankForm').submit();
+                },
+                //cancelBtnAction,
+                //popupOrder,
+                //showCancelButton
+            }
+        )
+    }
 
     function ToggleSideBar(){
         let sideBar = document.querySelector('.side-bar');
