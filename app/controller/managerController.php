@@ -68,8 +68,37 @@ class managerController extends Controller
                 $total_rows = MedicalOfficer::getCount();
                 $total_pages = ceil ($total_rows / $limit);
                 $BloodBanks=BloodBank::RetrieveAll();
+                $Campaign=Campaign::findOne(['Campaign_ID' => $campaignID]);
+//                $Date=date('Y-m-d',strtotime($Campaign->getCampaignDate().'+1 day'));
+                $Date=$Campaign->getCampaignDate();
+                $Campaigns_On_Same_Date = Campaign::RetrieveAll(false, [], true, ['Campaign_Date' => $Date]);
+                $Teams= [];
+                foreach ($Campaigns_On_Same_Date as $campaign){
+                    $Team=MedicalTeam::findOne(['Campaign_ID'=>$campaign->getCampaignID()]);
+                    if ($Team){
+                        $Teams[]=$Team;
+                    }
+                }
+                $AssignedOfficersOnSameDate=[];
+                if (count($Teams)>0){
+                    foreach ($Teams as $team){
+                        $members=TeamMembers::RetrieveAll(false,[],true,['Team_ID'=>$team->getTeamID()]);
+                        foreach ($members as $member){
+                            $ID=$member->getMemberID();
+                            if (!in_array($ID,$AssignedOfficersOnSameDate)){
+                                $AssignedOfficersOnSameDate[]=$member->getMemberID();
+                            }
 
-                $medicalOfficers=MedicalOfficer::RetrieveAll(true,[$initial,$limit],true,['Status'=>MedicalOfficer::AVAILABLE_MEDICAL_OFFICER]);
+                        }
+                    }
+                }
+                $MedicalOfiicers=[];
+                if ($AssignedOfficersOnSameDate) {
+                    $MedicalOfiicers = MedicalOfficer::RetrieveAvailableMedicalOfficer(false, [$initial, $limit], $AssignedOfficersOnSameDate);
+                }
+                else{
+                    $MedicalOfiicers = MedicalOfficer::RetrieveAll(false, [$initial, $limit], true, ['Status' => MedicalOfficer::AVAILABLE_MEDICAL_OFFICER]);
+                }
                 /* @var $AssignedMedicalTeam MedicalTeam*/
                 /* @var $members array*/
                 /* @var $member MedicalOfficer*/
@@ -87,7 +116,7 @@ class managerController extends Controller
                     'rpp'=>$limit,
                     'firstName'=>$manager->getFirstName(),
                     'lastName'=>$manager->getLastName(),
-                    'data'=>$medicalOfficers,
+                    'data'=>$MedicalOfiicers,
                     'total_pages'=>$total_pages,
                     'current_page'=>$page,
                     'bloodBanks'=>$BloodBanks,
@@ -109,9 +138,13 @@ class managerController extends Controller
         /* @var $MedicalOfficer MedicalOfficer */
         $MedicalTeam=MedicalTeam::findOne(['Campaign_ID' => $CampaignID]);
         $MedicalOfficer = MedicalOfficer::findOne(['Officer_ID' => $MemberID]);
+        $Campaign=Campaign::findOne(['Campaign_ID'=>$CampaignID]);
         $AssignedCampaigns=$MedicalOfficer->getAssignedCampaignsDate();
-        print_r($AssignedCampaigns);
-        exit();
+        $CampaignDate=$Campaign->getCampaignDate();
+
+//        print_r($CampaignDate);
+//        print_r($AssignedCampaigns);
+//        exit();
         if (!$MedicalOfficer){
             return json_encode(['status'=>false,'message'=>'Medical Officer Not Found !']);
         }
@@ -129,6 +162,10 @@ class managerController extends Controller
             if (!($MedicalTeam->validate() && $MedicalTeam->save())) {
                 return json_encode(['status' => false, 'message' => 'Error on Server', 'data' => $MedicalTeam->errors]);
             }
+        }
+        $IsAlreadyAssigned=TeamMembers::findOne(['Member_ID'=>$MemberID,'Team_ID'=>$MedicalTeam->getTeamID()],false);
+        if ($IsAlreadyAssigned){
+            return json_encode(['status'=>false,'message'=>'Medical Officer Already Assigned !']);
         }
         $MedicalTeam->setNoOfMembers($MedicalTeam->getNoOfMembers()+1);
         $MedicalTeam->update($MedicalTeam->getTeamID(),[],['No_Of_Member']);
@@ -175,7 +212,7 @@ class managerController extends Controller
         if (!$MedicalOfficer){
             return json_encode(['status'=>false,'message'=>'Medical Officer Not Found !']);
         }
-        if ($MedicalOfficer->getStatus() != MedicalOfficer::ASSIGNED_FOR_TEAM){
+        if ($MedicalOfficer->getStatus() != MedicalOfficer::AVAILABLE_MEDICAL_OFFICER){
             return json_encode(['status'=>false,'message'=>'Medical Officer Not Assigned for the Team !']);
         }
         $TeamMember= TeamMembers::findOne(['Team_ID'=>$MedicalTeam->getTeamID(),'Member_ID'=>$MemberID]);

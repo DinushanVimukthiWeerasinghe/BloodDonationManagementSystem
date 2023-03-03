@@ -25,6 +25,9 @@ class Campaign extends dbModel
     protected ?string $Remarks=null;
     protected string $Created_At='';
     protected ?string $Updated_At=null;
+    protected ?string $Longitude=null;
+    protected ?string $Latitude=null;
+
 
     /**
      * @return string
@@ -49,6 +52,39 @@ class Campaign extends dbModel
     {
         $this->Organization_ID = $Organization_ID;
     }
+
+    /**
+     * @return string|null
+     */
+    public function getLongitude(): ?string
+    {
+        return $this->Longitude;
+    }
+
+    /**
+     * @param string|null $Longitude
+     */
+    public function setLongitude(?string $Longitude): void
+    {
+        $this->Longitude = $Longitude;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getLatitude(): ?string
+    {
+        return $this->Latitude;
+    }
+
+    /**
+     * @param string|null $Latitude
+     */
+    public function setLatitude(?string $Latitude): void
+    {
+        $this->Latitude = $Latitude;
+    }
+
 
     /**
      * @param string $Campaign_ID

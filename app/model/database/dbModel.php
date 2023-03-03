@@ -115,6 +115,13 @@ abstract class dbModel extends Model
         $statement->execute();
         return $statement->fetchAll(PDO::FETCH_CLASS,static::class);
     }
+
+    public static function RetrieveAllowedMedicalOfficerByCampaignDate(string $campaignDate,array $CampaignDateArray,bool $pagination=false,array $limit=[])
+    {
+        $tableName = static::tableName();
+        $sql = "SELECT * FROM $tableName WHERE ";
+
+    }
     
 
     public static function RetrieveAll(bool $pagination=false,array $limit=[],bool $IsConditional=false,array $conditions=[]): bool|array

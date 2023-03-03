@@ -6,6 +6,8 @@ use App\model\BloodBankBranch\BloodBank;
 use App\model\Campaigns\Campaign;
 use App\model\MedicalTeam\MedicalTeam;
 use App\model\MedicalTeam\TeamMembers;
+use Core\Application;
+use PDO;
 
 class MedicalOfficer extends Person
 {
@@ -22,6 +24,8 @@ class MedicalOfficer extends Person
 
     protected string $Officer_ID = '';
     protected string $Branch_ID = '';
+
+
 
     public function getID():string
     {
@@ -73,6 +77,15 @@ class MedicalOfficer extends Person
     {
         $this->Branch_ID = $Branch_ID;
     }
+
+    /**
+     * @return string
+     */
+    public function getBranchID(): string
+    {
+        return $this->Branch_ID;
+    }
+
 
     /**
      * @param string $Joined_Date
@@ -171,6 +184,33 @@ class MedicalOfficer extends Person
         return MedicalTeam::findOne(['Team_Leader_ID' => $this->Officer_ID]);
     }
 
+    public function getMedicalTeamPosition($TeamID)
+    {
+        $Team= TeamMembers::findOne(['Member_ID' => $this->Officer_ID, 'Team_ID' => $TeamID,false]);
+        if ($Team) {
+            return $Team->getPosition();
+        }else{
+            return null;
+        }
+    }
+
+    public function getMedicalTeamTask($TeamID)
+    {
+        $Team= TeamMembers::findOne(['Member_ID' => $this->Officer_ID, 'Team_ID' => $TeamID,false]);
+        if ($Team) {
+            return match ($Team->getTask()) {
+                TeamMembers::TASK_NOT_ASSIGNED => 'Not Assigned',
+                TeamMembers::TASK_REGISTRATION => 'Registration',
+                TeamMembers::TASK_HEALTH_CHECK => 'Health Check',
+                TeamMembers::TASK_BLOOD_CHECK => 'Blood CHECK',
+                TeamMembers::TASK_BLOOD_RETRIEVAL => 'Blood Retrieval',
+                default => 'Unknown',
+            };
+        }else{
+            return null;
+        }
+    }
+
     public function getAssignedCampaigns(): array
     {
         $AssignedCampaigns = [];
@@ -195,6 +235,93 @@ class MedicalOfficer extends Person
             }
         }
         return $AssignedDates;
+    }
+
+    public static function RetrieveAvailableMedicalOfficer(bool $pagination, array $paginationParams,array $Exclude): array
+    {
+        $tableName = static::tableName();
+        $sql = "SELECT * FROM $tableName WHERE Officer_ID NOT IN (";
+        foreach ($Exclude as $key => $value) {
+            $sql .= "'$value',";
+        }
+        $sql = rtrim($sql, ',');
+        $sql .= ')';
+        $sql .= " AND Status = '".self::AVAILABLE_MEDICAL_OFFICER."'";
+        $sql .= " ORDER BY First_Name ASC";
+        $sql .= " LIMIT {$paginationParams[0]},{$paginationParams[1]}";
+        if ($pagination) {
+            $sql .= " LIMIT {$paginationParams['offset']},{$paginationParams['limit']}";
+        }
+        $gp = self::prepare($sql);
+        $gp->execute();
+        return $gp->fetchAll(PDO::FETCH_CLASS,static::class);
+
+
+    }
+
+
+
+    private function saveRealtion(string $table1,string $table2){
+        return $table1.'_'.$table2;
+    }
+    private function countDigits($MyNum){
+        $MyNum = (int)$MyNum;
+        $count = 0;
+
+        while($MyNum != 0){
+            $MyNum = (int)($MyNum / 10);
+            $count++;
+        }
+        return $count;
+    }
+
+    public static function getAssignedCampaign(string $Date)
+    {
+        $tableName = static::tableName();
+        $AssignedTeams=TeamMembers::RetrieveAll(false,[],true,['Member_ID' => Application::$app->getUser()->getID()]);
+        $AssignedCampaigns=[];
+        if (count($AssignedTeams) > 0) {
+            $Assign_Team=[];
+            foreach ($AssignedTeams as $AssignedTeam) {
+                $Assign_Team[] = MedicalTeam::findOne(['Team_ID'=>$AssignedTeam->getTeamID()]);
+            }
+            if (count($Assign_Team) > 0) {
+                foreach ($Assign_Team as $AssignedCampaign) {
+                    $AssignedCampaigns[] = Campaign::findOne(['Campaign_ID'=>$AssignedCampaign->getCampaignID()]);
+                }
+            }
+        }
+        if (count($AssignedCampaigns) > 0) {
+            $out=array_filter($AssignedCampaigns, function ($AssignedCampaign) use ($Date) {
+                return $AssignedCampaign->getCampaignDate() == $Date;
+            });
+            if (count($out) > 0) {
+                return $out[0];
+            }else{
+                return null;
+            }
+
+        }
+    }
+
+
+    private function getPrimaryKey($table){
+        $sql = "SHOW INDEX FROM $table WHERE Key_name = 'PRIMARY'";
+        $gp = self::prepare($sql);
+        $gp->execute();
+        $cgp = $gp->rowCount();
+        $PK=[];
+        if ($cgp > 0) {
+            // Note I'm not using a while loop because I never use more than one prim key column
+            $result = $gp->fetchAll();
+            foreach ($result as $key => $value) {
+                $PK[] = $value['Column_name'];
+            }
+            return($PK);
+        } else {
+            return(false);
+        }
+
     }
 
 

@@ -235,7 +235,7 @@ FlashMessage::RenderFlashMessages();
                     body : Form
 
                 })
-                    .then((res)=>res.text())
+                    .then((res)=>res.json())
                     .then((data)=>{
                         console.log(data)
                         if (data.status){
@@ -305,6 +305,7 @@ FlashMessage::RenderFlashMessages();
                 })
                     .then((res)=>res.json())
                     .then((data)=>{
+                        console.log(data)
                         if (data.status){
                             ShowToast({
                                 type : 'success',

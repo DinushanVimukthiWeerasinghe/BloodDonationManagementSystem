@@ -17,7 +17,6 @@ class User extends dbModel
 
     public const ACTIVE = 0;
     public const TEMPORARY_DEACTIVATED = 1;
-
     public const PERMANENTLY_DEACTIVATED = 2;
     public const SEC_LEVEL_SUSPICIOUS = 1;
     public const SEC_LEVEL_NORMAL = 0;

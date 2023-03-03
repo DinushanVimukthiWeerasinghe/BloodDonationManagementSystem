@@ -136,6 +136,8 @@ class Application
         $this->session = new Session();
         $this->router = new Router($this->request, $this->response);
         $this->email = new BaseEmail($config['email']);
+//        Set Timezone to Asia/Colombo
+        date_default_timezone_set('Asia/Colombo');
 //        $this->db->applyMigrations();
 
         if(isset($_SESSION['user']))

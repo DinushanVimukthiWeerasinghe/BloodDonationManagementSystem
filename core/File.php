@@ -34,7 +34,11 @@ class File
         $this->error=$string['error'];
         $this->size=$string['size'];
         $this->pathPrefix=$prefix;
-        $this->path=Application::$ROOT_DIR.'/public/upload/'.$prefix.'/';
+        if ($prefix===''){
+            $this->path=Application::$ROOT_DIR.'/public/upload/';
+        }else{
+            $this->path=Application::$ROOT_DIR.'/public/upload/'.$prefix.'/';
+        }
         $this->extension=pathinfo($this->name,PATHINFO_EXTENSION);
         $this->file=$string;
     }

@@ -7,6 +7,41 @@ class BloodGroup extends \App\model\database\dbModel
     protected string $BloodGroup_ID='';
     protected string $BloodGroup_Name='';
 
+    /**
+     * @return string
+     */
+    public function getBloodGroupID(): string
+    {
+        return $this->BloodGroup_ID;
+    }
+
+    /**
+     * @param string $BloodGroup_ID
+     */
+    public function setBloodGroupID(string $BloodGroup_ID): void
+    {
+        $this->BloodGroup_ID = $BloodGroup_ID;
+    }
+
+    /**
+     * @return string
+     */
+    public function getBloodGroupName(): string
+    {
+        return $this->BloodGroup_Name;
+    }
+
+    /**
+     * @param string $BloodGroup_Name
+     */
+    public function setBloodGroupName(string $BloodGroup_Name): void
+    {
+        $this->BloodGroup_Name = $BloodGroup_Name;
+    }
+
+
+
+
     public function labels(): array
     {
         return [

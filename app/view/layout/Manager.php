@@ -72,7 +72,7 @@ $background = new BackGroundImage();
     </div>
 </div>
 
-    <div class="absolute d-flex" style="top: 8vh;height: 92vh;width: calc(100vw - 200px);max-width: calc(100vw - 200px);left: 200px;background: #f2f2f2" id="Content">
+    <div class="absolute d-flex justify-content-center" style="top: 8vh;height: 92vh;width: calc(100vw - 200px);max-width: calc(100vw - 200px);left: 200px;background: #f2f2f2" id="Content">
         {{content}}
     </div>
 </body>

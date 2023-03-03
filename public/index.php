@@ -31,8 +31,13 @@ $config=[
         'password'=>$_ENV['EMAIL_PASSWORD'],
         'encryption'=>$_ENV['EMAIL_ENCRYPTION'],
         'from'=>$_ENV['EMAIL_FROM']
-    ]
+    ],
+    'map'=>[
+        'key'=>$_ENV['MAP_API_KEY']
+    ],
 ];
+//Set Env Variables
+$MAP_API_KEY=$_ENV['MAP_API_KEY'];
 
 
 try {
@@ -199,15 +204,25 @@ $app->router->get('/manager/mngDonors/reportedDonor', [managerController::class,
 $app->router->get('/manager/mngDonors/informDonor', [managerController::class, 'InformDonor']);
 $app->router->post('/manager/mngDonors/informDonor', [managerController::class, 'InformDonor']);
 //$app->router->post('/manager/mngDonors/find', [managerController::class, 'FindDonor']);
-
+$app->router->get('/manager/mngRequests/emergency', [managerController::class, 'ManageEmergencyRequests']);
 
 //Medical Officer
 $app->router->get('/medicalofficer/dashboard', [medicalOfficerController::class, 'Dashboard']);
 
 //Manage Requests
-$app->router->get('/manager/mngRequests/emergency', [managerController::class, 'ManageEmergencyRequests']);
-$app->router->get('/medicalofficer/assignedCampaign', [medicalOfficerController::class, 'CampaignAssignment']);
-$app->router->get('/medicalofficer/verifyDonor', [medicalOfficerController::class, 'VerifyDonor']);
+
+$app->router->get('/mofficer/campaigns', [medicalOfficerController::class, 'ManageCampaigns']);
+$app->router->get('/mofficer/donors', [medicalOfficerController::class, 'ManageDonors']);
+$app->router->get('/mofficer/take-donation', [medicalOfficerController::class, 'ManageDonation']);
+$app->router->post('/mofficer/take-donation', [medicalOfficerController::class, 'ManageDonation']);
+$app->router->get('/mofficer/donation', [medicalOfficerController::class, 'ManageDonation']);
+$app->router->post('/mofficer/startBloodDonation', [medicalOfficerController::class, 'StartDonation']);
+$app->router->post('/mofficer/CompleteDonation', [medicalOfficerController::class, 'CompleteDonation']);
+$app->router->get('/mofficer/AbortDonation', [medicalOfficerController::class, 'AbortDonation']);
+$app->router->get('/mofficer/searchdonor', [medicalOfficerController::class, 'SearchDonor']);
+$app->router->post('/mofficer/registerDonor', [medicalOfficerController::class, 'RegisterDonor']);
+$app->router->post('/mofficer/registerDonorForCampaign', [medicalOfficerController::class, 'RegisterDonorForCampaign']);
+//$app->router->get('/mofficer/campaigns', [medicalOfficerController::class, 'VerifyDonor']);
 $app->router->post('/medicalofficer/get-donor', [medicalOfficerController::class, 'FindDonor']);
 //$app->router->post('/manager/mngRequests/emergency', [managerController::class, 'FindRequests']);
 

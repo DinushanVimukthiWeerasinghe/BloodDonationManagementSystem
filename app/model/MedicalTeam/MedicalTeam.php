@@ -3,9 +3,13 @@
 namespace App\model\MedicalTeam;
 
 use App\model\Campaigns\Campaign;
+use App\model\users\MedicalOfficer;
 
 class MedicalTeam extends \App\model\database\dbModel
 {
+    const TEAM_LEADER = 'Team Leader';
+    const TEAM_MEMBER = 'Team Member';
+
     protected string $Team_ID='';
     protected string $Campaign_ID='';
     protected ?string $Team_Leader=null;
@@ -27,6 +31,20 @@ class MedicalTeam extends \App\model\database\dbModel
     public function getNoOfMembers(): int
     {
         return $this->No_Of_Member;
+    }
+
+    public function getTeamMembers()
+    {
+        $TeamMembers= TeamMembers::RetrieveAll(false,[],true,['Team_ID' => $this->Team_ID]);
+        $MedicalOfficers=[];
+        /* @var $TeamMember TeamMembers*/
+        if ($TeamMembers){
+            foreach ($TeamMembers as $TeamMember){
+                $MedicalOfficers[]=MedicalOfficer::findOne(['Officer_ID' => $TeamMember->getMemberID()]);
+            }
+        }
+        return $MedicalOfficers;
+
     }
 
     /**
@@ -120,6 +138,8 @@ class MedicalTeam extends \App\model\database\dbModel
     {
         $this->Assigned_By = $Assigned_By;
     }
+
+
 
 
 

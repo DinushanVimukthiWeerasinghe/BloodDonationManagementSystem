@@ -7,9 +7,16 @@ use App\model\database\dbModel;
 
 class TeamMembers extends dbModel
 {
+
+    const TASK_NOT_ASSIGNED = 1;
+    const TASK_REGISTRATION = 2;
+    const TASK_HEALTH_CHECK = 3;
+    const TASK_BLOOD_CHECK = 4;
+    const TASK_BLOOD_RETRIEVAL = 5;
     protected string $Team_ID='';
     protected string $Member_ID='';
     protected string $Position='';
+    protected int $Task=1;
 
     public const MEDICAL_DIRECTOR = 'Medical Director';
     public const PHLEBOTOMISTS = 'Phlebotomists';
@@ -68,6 +75,34 @@ class TeamMembers extends dbModel
     public function setPosition(string $Position): void
     {
         $this->Position = $Position;
+    }
+
+    /**
+     * @return int
+     */
+    public function getTask(): int
+    {
+        return $this->Task;
+    }
+
+    /**
+     * @param int $Task
+     */
+    public function setTask(int $Task): void
+    {
+        $this->Task = $Task;
+    }
+
+    public function getTaskName(): string
+    {
+        return match ($this->Task) {
+            self::TASK_NOT_ASSIGNED => 'Not Assigned',
+            self::TASK_REGISTRATION => 'Registration',
+            self::TASK_HEALTH_CHECK => 'Health Check',
+            self::TASK_BLOOD_CHECK => 'Blood Check',
+            self::TASK_BLOOD_RETRIEVAL => 'Blood Retrieval',
+            default => 'Not Assigned',
+        };
     }
 
 
