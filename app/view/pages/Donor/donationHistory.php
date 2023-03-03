@@ -5,12 +5,17 @@
 
 </head>
 <?php
+
+
+use App\model\Donations\AcceptedDonations;
+use App\model\Donations\Donation;
 use \App\view\components\ResponsiveComponent\Card\donationCard;
 use App\view\components\ResponsiveComponent\NavbarComponent\DonorNavbar;
 
 
 $navbar = new DonorNavbar('Donor History', '/donor/profile', '/public/images/icons/user.png', true,$firstName . ' ' . $lastName,false );
 echo $navbar;
+
 
 ?>
 
@@ -20,10 +25,21 @@ echo $navbar;
 <label class="card-view">Recent Donations</label>
 <div class="sub-panel page-contain">
     <?php
+    /* var array $data */
 
-    $card = new donationCard(['title'=>'May 21', 'subtitle'=>'2l', 'description'=>'Healthy']);
-    for ($i =0; $i < 4; $i++)
+    //$data = [];
+    //print_r( $data[0]);
+    foreach($data as $i)
     {
+        $donation = new AcceptedDonations();
+        $donation ->loadData($i);
+        $date = date($donation -> getDonationDateTime());
+        $date = explode(" ", $date)[0];
+        $date = explode("-", $date);
+        $date = implode("/", $date);
+        $card = new donationCard(['title'=>'On ' . $date , 'subtitle'=> $donation->getDonationId(), 'description'=> $donation->getPacketId()]);
+
+
         echo $card->render();
     }
     ?>
