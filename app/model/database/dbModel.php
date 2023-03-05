@@ -280,6 +280,7 @@ abstract class dbModel extends Model
         }
 
         $statement = self::prepare("SELECT * FROM $tableName WHERE $sql");
+
         foreach ($where as $key => $item) {
             $statement->bindValue(":$key", $item);
         }

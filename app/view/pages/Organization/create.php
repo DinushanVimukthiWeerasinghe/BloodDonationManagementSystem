@@ -17,22 +17,28 @@ $navbar = new AuthNavbar('Create Campaign', '#', '/public/images/icons/navbar/be
 echo $navbar;
 echo $background;
 ?>
+<style>
+    .direction{
+        display: flex;
+        flex-direction: row;
+    }
+</style>
 <!--<link rel="stylesheet" href="/public/css/components/form/index2.css">-->
 <!--<link rel="stylesheet" href="/public/css/framework/util/border/border-radius.css">-->
-<div class="container p-1" style="margin-top: 5vh;">
+<div class="container p-1" style="margin-top: 10vh;">
     <form action="create" method="post" class="p-3 bg-white-0-7  border-radius-10 text-xl">
         <div class="d-flex text-center flex-column">
             <div class="form-group">
                 <label class="w-40">Campaign Name</label><br><br>
                 <input type="text" class="form-control" name="Campaign_Name" required>
             </div>
-            <div class="form-group">
-                <label class="w-40">Campaign Description</label><br><br>
-                <textarea class="form-textarea" name="Campaign_Description" required></textarea>
-            </div>
+<!--            <div class="form-group">-->
+<!--                <label class="w-40">Campaign Description</label><br><br>-->
+<!--                <textarea class="form-textarea" name="Campaign_Description" required></textarea>-->
+<!--            </div>-->
             <div class="form-group">
                 <label class="w-40">Campaign Date</label><br><br>
-                <input type="date" class="form-date form-control" name="Campaign_Date" min= "<?php echo date("Y-m-d", strtotime($Date.'+ 7days')) ?>" required>
+                <input type="date" class="form-date form-control" name="Campaign_Date" min= "<?php echo date("Y-m-d", strtotime($Date.'+ 8days')) ?>" required>
             </div>
             <div class="form-group">
                 <label class="w-40">Venue</label><br><br>
@@ -44,8 +50,27 @@ echo $background;
             </div>
             <div class="form-group">
                 <label class="w-40">Nearest Blood Bank</label><br><br>
-                <input type="text" class="form-control" name="Nearest_BloodBank"  required>
+                <select class="form-select w-40" style="height: 50px;" name="Nearest_BloodBank">
+                    <?php foreach ($banks as $bank){ ?>
+                    <option value="<?= $bank->getBloodBankID() ?>"><?= $bank->getBankName() ?></option>
+                    <?php } ?>
+                </select>
             </div>
+
+            <div class="form-group">
+                <label class="w-40">Requested Sponsorship Package</label><br><br>
+                <select class="form-select w-40" style="height: 50px;" name="Package_ID">
+                    <?php foreach ($package as $packages) { ?>
+                        <option value="<?= $packages->getPackageID() ?>"><?= $packages->getPackageName().' (Rs: '.$packages->getPackagePrice().')' ?></option>
+                    <?php } ?>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="w-40">Expected Amount</label><br><br>
+                    <label class="bg-white">LKR.</label>
+                    <input type="text" class="form-control" name="Expected_Amount"  required>
+                </div>
+
             <div class="form-group" style="justify-content: flex-start">
                 <label class="w-60">Have You Read the Guidelines? </label>
                 <input type="checkbox" class="form-checkbox" id="error" onchange="read()" required>

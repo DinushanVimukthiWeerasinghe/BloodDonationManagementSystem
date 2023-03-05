@@ -62,10 +62,7 @@ FlashMessage::RenderFlashMessages();
         <div class="d-flex flex-column justify-content-center align-items-center text-white">
             <div class="text-center text-3xl bg-white text-dark p-1 border-radius-10 font-bold">Who Can Create Campaigns?</div>
             <div class="p-3 mx-4 bg-white text-dark m-1 border-radius-10">
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ad aperiam consequuntur cumque
-                cupiditate debitis eos ex exercitationem facere fuga laborum nemo numquam officiis perferendis,
-                placeat quia. Accusamus aliquid beatae commodi deleniti eligendi enim eum fugiat id libero, minus
-                modi natus quaerat quisquam reiciendis, sint soluta suscipit ut vel vero voluptatibus.
+                All of the Registered Organizations have facility for create campaigns.<span class="text-danger">Please be note that you can create only one Campaign at a particular time.</span>
             </div>
         </div>
         <div class="d-flex flex-column justify-content-center align-items-center text-white p-3 text-center">
@@ -73,16 +70,13 @@ FlashMessage::RenderFlashMessages();
             <div class="d-flex flex-column gap-1 mt-1">
                 <div class="d-flex flex-column  bg-white text-dark m-1 border-radius-10 p-2">
                     <div class="d-flex">
-                        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Adipisci aliquam consequuntur cupiditate delectus
-                        ex ipsam minima nostrum totam veritatis vero?Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusamus
-                        adipisci minima quod? Distinctio ea est inventore libero omnis quo tenetur totam veniam. Atque aut dicta dolore
-                        dolores eos error excepturi fuga illo modi nulla, quam qui ut vero? Excepturi, exercitationem!
+                       If you are a registered organization, You have full facility for create campaigns and request sponsorships with the
+                       Admin Approval.
                     </div>
                     <ul class="mt-1 d-flex flex-column gap-0-5 justify-content-center align-items-center">
-                        <li>Lorem ipsum dolor sit amet, consectetur.</li>
-                        <li>Lorem ipsum dolor sit amet, consectetur.</li>
-                        <li>Lorem ipsum dolor sit amet, consectetur.</li>
-                        <li>Lorem ipsum dolor sit amet, consectetur.</li>
+                        <li>Your created campaign will be available as a registered campaign after the BDMS adminstrator Approval.</li>
+                        <li>You can request sponsorships from the Sponsors after the Administrator Approval.</li>
+                        <li>If you create a campaign and it is still on the pending review state you cannot create another campaign until it is on the approved State.</li>
                     </ul>
                 </div>
             </div>
