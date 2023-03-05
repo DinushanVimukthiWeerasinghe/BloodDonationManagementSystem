@@ -255,6 +255,9 @@
 .max-h-80{
     max-height: 80%;
 }
+.max-h-80vh{
+    max-height: 80vh;
+}
 .max-h-75{
     max-height: 75%;
 }

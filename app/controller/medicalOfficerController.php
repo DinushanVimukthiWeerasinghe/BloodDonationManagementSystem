@@ -8,10 +8,12 @@ use App\model\Blood\BloodPackets;
 use App\model\Blood\DonorBloodCheck;
 use App\model\Campaigns\Campaign;
 use App\model\Campaigns\CampaignDonorQueue;
+use App\model\Donations\AcceptedDonations;
 use App\model\Donations\Donation;
 use App\model\Donor\DonorHealthCheckUp;
 use App\model\MedicalTeam\MedicalTeam;
 use App\model\MedicalTeam\TeamMembers;
+use App\model\Notification\MedicalOfficerNotification;
 use App\model\users\Donor;
 use App\model\users\MedicalOfficer;
 use App\model\users\Organization;
@@ -33,9 +35,31 @@ class medicalOfficerController extends \Core\Controller
 
     }
 
+    public function getNotification(Request $request,Response $response)
+    {
+        $Notifications=MedicalOfficerNotification::RetrieveAll(false,[],true,['Target_ID'=>Application::$app->getUser()->getId()],['Notification_Date'=>'ASC']);
+//        Convert values to array
+        $Notifications = array_map(function ($object) {
+            return $object->toArray();
+        }, $Notifications);
+        return json_encode([
+            'status'=>true,
+            'notifications'=>$Notifications
+        ]);
+
+    }
+
     public function Dashboard(Request $request, Response $response)
     {
-        return $this->render('/MedicalOfficer/MedicalOfficerdashboard');
+        $Campaign=MedicalOfficer::getAssignedCampaign();
+        $User = Application::$app->getUser();
+//        $Campaign = Campaign::RetrieveAll(false,[],false,[],['Campaign_Date'=>'ASC']);
+        return $this->render('/MedicalOfficer/MedicalOfficerdashboard',['Campaigns'=>$Campaign,'User'=>$User]);
+    }
+
+    public function ManageHistory()
+    {
+        return $this->render('/MedicalOfficer/OfficerHistory');
     }
 
     public function CampaignAssignment(Request $request, Response $response)
@@ -87,12 +111,11 @@ class medicalOfficerController extends \Core\Controller
         /* @var Campaign $Campaign*/
 
         $Campaign=MedicalOfficer::getAssignedCampaign($Date);
+
         if (!$Campaign){
             $this->setFlashMessage('error','No Campaign Assigned!');
             return $this->render('/MedicalOfficer/ManageCampaigns');
         }
-//        print_r($Campaign);
-//        exit();
         $MedicalTeam = MedicalTeam::findOne(['Campaign_ID' => $Campaign->getCampaignID()]);
         $Organization = Organization::findOne(['Organization_ID' => $Campaign->getOrganizationID()]);
 
@@ -109,6 +132,40 @@ class medicalOfficerController extends \Core\Controller
         return $this->render('/MedicalOfficer/ManageCampaigns',$model);
     }
 
+
+    public function GetStatistics(Request $request,Response $response)
+    {
+        if ($request->isPost()){
+            $ID=$request->getBody()['ID'];
+            if ($ID){
+                $IsOfficerExist=MedicalOfficer::findOne(['Officer_ID'=>$ID]);
+                if ($IsOfficerExist){
+
+                    $AllMedicalTeamAssignments= TeamMembers::RetrieveAll(false,[],true,['Member_ID'=>$ID]);
+                    $TotalAssignmentsInMonth = ['January' => 0, 'February' => 0, 'March' => 0, 'April' => 0, 'May' => 0, 'June' => 0, 'July' => 0, 'August' => 0, 'September' => 0, 'October' => 0, 'November' => 0, 'December' => 0];
+                    foreach ($AllMedicalTeamAssignments as $Assignment){
+                        $CampaignDate=$Assignment->getCampaign()->getCampaignDate();
+                        $Month=date('F',strtotime($CampaignDate));
+                        $TotalAssignmentsInMonth[$Month]++;
+                    }
+                    return json_encode([
+                        'status'=>true,
+                        'data'=>[
+                            'TotalAssignmentsInMonth'=>$TotalAssignmentsInMonth
+                        ]
+                    ]);
+
+
+                }else{
+                    return json_encode([
+                        'status'=>false,
+                        'message'=>'Medical Officer Not Found!'
+                    ]);
+                }
+            }
+        }
+
+    }
     public function ManageDonation(Request $request, Response $response)
     {
         if ($request->isGet())
@@ -122,11 +179,13 @@ class medicalOfficerController extends \Core\Controller
                 return $this->render('/MedicalOfficer/ManageDonation');
             }
 
+
             $MedicalTeam = MedicalTeam::findOne(['Campaign_ID' => $Campaign->getCampaignID()]);
             $Organization = Organization::findOne(['Organization_ID' => $Campaign->getOrganizationID()]);
             $model=[
                 'Campaign'=>$Campaign,
             ];
+
             if ($MedicalTeam){
                 $TeamMember = TeamMembers::findOne(['Team_ID' => $MedicalTeam->getTeamID(), 'Member_ID' => $UserID],false);
                 if ($TeamMember){
@@ -250,6 +309,10 @@ class medicalOfficerController extends \Core\Controller
                             return $this->render('/MedicalOfficer/TakeDonationQueue', $model);
                         }
                     }
+                    else{
+                        $this->setFlashMessage('error','You are not assigned to any task!, Contact Team Leader');
+                        Application::Redirect('/medicalofficer/dashboard');
+                    }
                 }
             }
         }
@@ -370,6 +433,7 @@ class medicalOfficerController extends \Core\Controller
             if (!$Donation){
                 return json_encode(['status'=>false,'message'=>'Donation not started!']);
             }
+            $DonorQueue->setDonor_Status(CampaignDonorQueue::STAGE_4);
             $Donation->setStatus(Donation::STATUS_BLOOD_RETRIEVED);
             $Donation->setEndAt(date('Y-m-d H:i:s'));
             $BloodPacket = new BloodPackets();
@@ -380,16 +444,26 @@ class medicalOfficerController extends \Core\Controller
             $BloodPacket->setBloodGroup($BloodGroup);
             $BloodPacket->setStoredAt(date('Y-m-d H:i:s'));
             if ($BloodPacket->validate() && $BloodPacket->save()){
-//                $Accepted_Donation=new
-            }
-            print_r($BloodPacket);
-            exit();
-
-            if ($Donation->validate() && $Donation->update($Donation->getDonationID(),[],['Status','End_At'])) {
-                return json_encode(['status' => true, 'message' => 'Donation Completed!']);
+                $Accepted_Donation=new AcceptedDonations();
+                $Accepted_Donation->setDonationID($Donation->getDonationID());
+                $Accepted_Donation->setDonatedAt($Donation->getStartAt());
+                $Accepted_Donation->setInTime($Donation->getStartAt());
+                $Accepted_Donation->setOutTime($Donation->getEndAt());
+                $Accepted_Donation->setPacketID($BloodPacket->getPacketID());
+                $Accepted_Donation->setDonorID($DonorID);
+                $Accepted_Donation->setRetrievedBy(Application::$app->getUser()->getID());
+                $Accepted_Donation->setVerifiedBy(Application::$app->getUser()->getID());
+                $Donation->update($Donation->getDonationID(),[],['Status','End_At']);
+                $DonorQueue->update($DonorQueue->getDonorID(),[],['Donor_Status']);
+                if ($Accepted_Donation->validate() && $Accepted_Donation->save()) {
+                    return json_encode(['status' => true, 'message' => 'Donation Completed!']);
+                }else{
+                    $this->setFlashMessage('error', 'Donation Failed!');
+                    return json_encode(['status' => false, 'message' => 'Donation Failed!']);
+                }
             }else{
                 $this->setFlashMessage('error', 'Donation Failed!');
-                return json_encode(['status' => false, 'message' => 'Donation Failed!']);
+                return json_encode(['status' => false, 'message' => 'Donation Failed!s']);
             }
         }
     }
@@ -508,6 +582,186 @@ class medicalOfficerController extends \Core\Controller
                 }
             }
         }
+    }
+
+    public function AssignTasks(Request $request,Response $response)
+    {
+        if ($request->isPost())
+        {
+            $OfficerTasks = $request->getBody()['OfficerTasks'] ?? [];
+            $TeamID = $request->getBody()['MedicalTeamID'] ?? null;
+
+            if (!empty($OfficerTasks)){
+                foreach ($OfficerTasks as $OfficerTask){
+                    TeamMembers::updateOne(['Team_ID'=>$TeamID,'Member_ID'=>$OfficerTask['OfficerID']],['Task'=>$OfficerTask['OfficerTask']]);
+                }
+                return json_encode([
+                    'status'=>true,
+                    'message'=>'Tasks Assigned Successfully!'
+                ]);
+            }else{
+                return json_encode([
+                    'status'=>false,
+                    'message'=>'No Tasks Assigned!'
+                ]);
+            }
+
+        }
+    }
+
+    public function ChangeProfileImage(Request $request,Response $response)
+    {
+        /** @var $File File*/
+        /** @var $MedicalOfficer MedicalOfficer*/
+        $UserID= Application::$app->getUser()->getId();
+        $MedicalOfficer = MedicalOfficer::findOne(['Officer_ID'=>$UserID]);
+        $ExistingFile = $MedicalOfficer->getProfileImage();
+        $File=$request->getBody()['profileImage'];
+        if($File) {
+            $File->setPath('Profile/MedicalOfficer');
+            $filename = $File->GenerateFileName('MO_');
+            $MedicalOfficer->setProfileImage($filename);
+            if ($MedicalOfficer->update($MedicalOfficer->getID(), [], ['Profile_Image'])){
+                $File->saveFile();
+                File::DeleteFileByPath($ExistingFile);
+                return json_encode([
+                    'status' => true,
+                    'filename' => $filename,
+                    'data' => $File,
+                    'message' => 'File Selected!'
+                ]);
+            }else{
+                return json_encode([
+                    'status'=>false,
+                    'message'=>'File Not Selected!'
+                ]);
+            }
+        }else{
+            return json_encode([
+                'status'=>false,
+                'message'=>'No File Selected!'
+            ]);
+        }
+    }
+
+    public function ChangePassword(Request $request,Response $response)
+    {
+        if ($request->isPost()){
+            $CurrentPassword = $request->getBody()['CurrentPassword'];
+            $NewPassword = $request->getBody()['NewPassword'];
+            $ConfirmPassword = $request->getBody()['ConfirmPassword'];
+            if (empty($CurrentPassword) || empty($NewPassword) || empty($ConfirmPassword)){
+                if (empty($CurrentPassword)){
+                    return json_encode([
+                        'status'=>false,
+                        'message'=>'Current Password is required!',
+                        'field'=>'CurrentPassword'
+                    ]);
+                }
+                if (empty($NewPassword)){
+                    return json_encode([
+                        'status'=>false,
+                        'message'=>'New Password is required!',
+                        'field'=>'NewPassword'
+                    ]);
+                }
+                if (empty($ConfirmPassword)){
+                    return json_encode([
+                        'status'=>false,
+                        'message'=>'Confirm Password is required!',
+                        'field'=>'ConfirmPassword'
+                    ]);
+                }
+            }
+            if (strlen($NewPassword)<8){
+                return json_encode([
+                    'status'=>false,
+                    'message'=>'Password must be at least 8 characters long!',
+                    'field'=>'NewPassword'
+                ]);
+            }
+
+//            if (preg_match('/[A-Z]/', $NewPassword)===0){
+//                return json_encode([
+//                    'status'=>false,
+//                    'message'=>'Password must contain at least one uppercase letter!'
+//                ]);
+//            }
+//
+//            if (preg_match('/[a-z]/', $NewPassword)===0){
+//                return json_encode([
+//                    'status'=>false,
+//                    'message'=>'Password must contain at least one lowercase letter!'
+//                ]);
+//            }
+//
+//            if (preg_match('/[0-9]/', $NewPassword)===0){
+//                return json_encode([
+//                    'status'=>false,
+//                    'message'=>'Password must contain at least one number!'
+//                ]);
+//            }
+//
+//            if (preg_match('/[^a-zA-Z\d]/', $NewPassword)===0){
+//                return json_encode([
+//                    'status'=>false,
+//                    'message'=>'Password must contain at least one special character!'
+//                ]);
+//            }
+//
+//            if (preg_match('/\s/', $NewPassword)===1){
+//                return json_encode([
+//                    'status'=>false,
+//                    'message'=>'Password must not contain any whitespace!'
+//                ]);
+//            }
+
+            if ($ConfirmPassword!==$NewPassword){
+                return json_encode([
+                    'status'=>false,
+                    'message'=>'New Password and Confirm Password does not match!',
+                    'field'=>'ConfirmPassword'
+                ]);
+            }
+
+            if ($CurrentPassword===$NewPassword){
+                return json_encode([
+                    'status'=>false,
+                    'message'=>'New Password and Current Password cannot be same!',
+                    'field'=>'NewPassword'
+                ]);
+            }
+
+
+            $User = User::findOne(['UID'=>Application::$app->getUser()->getId()]);
+            if (password_verify($CurrentPassword,$User->getPassword())){
+                if ($NewPassword===$ConfirmPassword){
+                    $User->setPassword(password_hash($NewPassword,PASSWORD_DEFAULT));
+                    if ($User->update($User->getID(),[],['Password'])){
+                        return json_encode([
+                            'status'=>true,
+                            'message'=>'Password Changed Successfully!'
+                        ]);
+                    }else{
+                        return json_encode([
+                            'status'=>false,
+                            'message'=>'Password Not Changed!'
+                        ]);
+                    }
+                }else{
+                    return json_encode([
+                        'status'=>false,
+                        'message'=>'New Password and Confirm Password does not match!'
+                    ]);
+                }
+            }else{
+                return json_encode([
+                    'status'=>false,
+                    'message'=>'Current Password is incorrect!'
+                ]);
+            }
+        }
+
     }
 
 

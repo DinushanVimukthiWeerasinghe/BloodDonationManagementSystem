@@ -1,14 +1,17 @@
 <?php
 /* @var DonorHealthCheckUp $DonorCheck */
 /* @var Donor $Donor */
+/* @var Campaign $Campaign */
 
+use App\model\Campaigns\Campaign;
 use App\model\Donor\DonorHealthCheckUp;
 use App\model\users\Donor;
 
 ?>
 
 
-<div class="d-flex w-100 justify-content-center align-items-center bg-white m-1 border-radius-10">
+<div class="d-flex flex-column w-100 justify-content-start align-items-center bg-white m-1 border-radius-10">
+    <div class="bg-dark py-1 text-xl w-100 text-center text-white mb-3">Health Check - Queue (<?=$Campaign->getCampaignName()?>)</div>
         <div class="d-flex w-80 overflow-y-scroll ">
             <table class="w-100 ">
                 <thead class="sticky top-0">

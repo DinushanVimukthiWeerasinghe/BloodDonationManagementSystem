@@ -9,6 +9,8 @@ use App\model\Campaigns\Campaign;
 use App\model\Email\Email;
 use App\model\MedicalTeam\MedicalTeam;
 use App\model\MedicalTeam\TeamMembers;
+use App\model\Notification\ManagerNotification;
+use App\model\Notification\MedicalOfficerNotification;
 use App\model\Requests\BloodRequest;
 use App\model\users\Donor;
 use App\model\users\Manager;
@@ -51,6 +53,20 @@ class managerController extends Controller
             'lastName'=>$manager->getLastName()
         ];
         return $this->render('Manager/managerBoard',$params);
+    }
+
+    public function ManageNotification(Request $request,Response $response): bool|string
+    {
+        $Notifications=ManagerNotification::RetrieveAll(false,[],true,['Target_ID'=>Application::$app->getUser()->getId()],['Notification_Date'=>'ASC']);
+        if ($Notifications){
+            $Notifications = array_map(function ($object) {
+                return $object->toArray();
+            }, $Notifications);
+        }
+        return json_encode([
+            'status'=>true,
+            'notifications'=>$Notifications
+        ]);
     }
 
     public function AssignTeam(Request $request,Response $response): string
@@ -313,8 +329,6 @@ class managerController extends Controller
             $fileName=$file->GenerateFileName('MO');
             $medicalOfficer->setProfileImage($fileName);
             $hash = password_hash($medicalOfficer->getNIC(), PASSWORD_DEFAULT);
-//            print_r($medicalOfficer);
-
             if ($medicalOfficer->validate()) {
                 $user= new User();
                 $user->setUid($medicalOfficer->getID());

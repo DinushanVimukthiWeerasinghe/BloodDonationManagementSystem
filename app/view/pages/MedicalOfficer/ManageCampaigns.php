@@ -5,9 +5,11 @@
 /* @var  $MedicalOfficer MedicalOfficer */
 /* @var  $Organization Organization */
 /** @var string $MAP_API_KEY */
+/** @var string $Position */
 
 use App\model\Campaigns\Campaign;
 use App\model\MedicalTeam\MedicalTeam;
+use App\model\MedicalTeam\TeamMembers;
 use App\model\users\MedicalOfficer;
 use App\model\users\Organization;
 
@@ -23,33 +25,28 @@ Hi
     ?>
     <div id="campaign-information" class="d-flex flex-column align-items-center w-70 m-1 ">
         <div class="d-flex flex-column w-100 p-1 align-items-center">
-            <div class="d-flex text-4xl font-bold mb-1"> <span class="ml-1"><?= $Campaign->getCampaignName();?></span></div>
+            <div class="d-flex text-4xl font-bold mb-1 bg-dark py-0-5 px-2 text-center text-white w-80 justify-content-center"> <span class="ml-1"><?= $Campaign->getCampaignName();?></span></div>
             <div class="d-flex"> Venue: <span class="ml-1"><?= $Campaign->getVenue();?></span></div>
             <div class="d-flex"> Date: <span class="ml-1"><?= $Campaign->getCampaignDate();?></span></div>
             <div class="d-flex"> Status: <span class="ml-1"><?= $Campaign->getCampaignStatus();?></span></div>
-            <div class="d-flex"> Remarks: <span class="ml-1"><?= $Campaign->getLongitude();?></span></div>
-            <div class="d-flex"> Remarks: <span class="ml-1"><?= $Campaign->getLatitude();?></span></div>
-            <div id="Map-Container" style="position: absolute; width: 50%;height: 50%; bottom: 10vh;left: 10vw">
-                <div id="map" class="w-100 h-100" style="position:sticky;overflow: visible"></div>
-                <div id="place"></div>
-            </div>
+
         </div>
         <div class="d-flex flex-column w-100 p-1 align-items-center">
-            <div class="d-flex text-4xl font-bold mb-1"> <span class="ml-1"><?= $Organization->getOrganizationName();?></span></div>
+            <div class="d-flex text-4xl font-bold mb-1 bg-dark py-0-5 px-2 text-center text-white justify-content-center w-80"> <span class="ml-1"><?= $Organization->getOrganizationName();?> Organization</span></div>
             <div class="d-flex"><span class="ml-1"><?= $Organization->getAddress();?></span></div>
             <div class="d-flex"> <span class="ml-1"><?= $Organization->getContactNo();?></span></div>
             <div class="d-flex"> <span class="ml-1"><?= $Organization->getEmail();?></span></div>
             <div class="d-flex"> Status: <span class="ml-1"><?= $Organization->getStatus();?></span></div>
-            <div id="Map-Container" style="width: 50%;height: 50%; bottom: 10vh;left: 10vw">
-                <div id="map" class="w-100 h-100" ></div>
+            <div id="Map-Container" style="position: absolute; width: 50%;height: 50%; bottom: 5vh;left: 10vw">
+                <div id="map" class="w-100 h-100" style="position:sticky;overflow: visible"></div>
                 <div id="place"></div>
             </div>
         </div>
 
     </div>
     <div id="campaign-information" class="d-flex justify-content-center w-30 align-items-center m-1">
-        <div class="d-flex flex-column w-100 bg-dark p-1 gap-1">
-            <div class="d-flex text-3xl"> <span class="ml-1">Assigned Medical Team</span></div>
+        <div class="d-flex flex-column w-100 border-2 p-1 gap-1">
+            <div class="d-flex text-3xl bg-dark text-white py-0-5 px-1 text-center justify-content-center"> <span class="ml-1">Assigned Medical Team</span></div>
             <div class="d-flex">No Of Officers: <span class="ml-1"><?= $MedicalTeam->getNoOfMembers();?></span></div>
             <table class="" >
                 <thead>
@@ -75,9 +72,12 @@ Hi
                 </tbody>
             </table>
             <?php
+            if ($Position===MedicalTeam::TEAM_LEADER):
             $MedicalOfficers = $MedicalTeam->getTeamMembers();
-
-
+            ?>
+            <button class="btn btn-outline-success" onclick="AllocateTask()">Allocate Task</button>
+            <?php
+            endif;
             ?>
 
         </div>
@@ -95,6 +95,102 @@ Hi
     ?>
 </div>
 <script>
+    <?php
+        if($MedicalTeam):
+        ?>
+    const AllocateTask = ()=>{
+        OpenDialogBox({
+            id: "AllocateTask",
+            title: "Allocate Task",
+            content:`
+                        <div class="d-flex flex-column w-100 p-1 align-items-center">
+                            <table class="" id="AllocateTask" >
+                                  <thead>
+                                        <tr>
+                                           <th>Officer Name</th>
+                                           <th>Officer NIC</th>
+                                           <th>Task</th>
+                                        </tr>
+                                  </thead>
+                                  <tbody>
+                                  <?php
+                                        $MedicalOfficers = $MedicalTeam->getTeamMembers();
+                                        foreach ($MedicalOfficers as $MedicalOfficer){
+                                  ?>
+                                        <tr>
+                                            <td><?= $MedicalOfficer->getFullName();?></td>
+                                            <td><?= $MedicalOfficer->getNIC();?></td>
+                                            <td>
+                                                <select class="form-select" id="<?=$MedicalOfficer->getID()?>">
+                                                    <?php
+                                                        $Tasks= TeamMembers::getTasks();
+                                                        foreach ($Tasks as $key=>$Task){
+                                                    ?>
+                                                        <option value="<?= $key;?>"><?= $Task;?></option>
+                                                    <?php
+                                                        }
+                                                    ?>
+                                                </select>
+                                            </td>
+                                        </tr>
+                                        <?php
+                                            }
+                                        ?>
+                                            </tbody>
+                                        </table>
+
+                                </select>
+                            </div>
+                        </div>
+                    `,
+            successBtnText: "Allocate",
+            successBtnAction: ()=>{
+                const AllocateTask = document.getElementById("AllocateTask");
+                const Officers = AllocateTask.getElementsByTagName("tbody")[0].getElementsByTagName("tr");
+                const OfficerTasks = [];
+                for (let i = 0; i < Officers.length; i++) {
+                    const Officer = Officers[i];
+                    const OfficerID = Officer.getElementsByTagName("td")[2].getElementsByTagName("select")[0].id;
+                    const OfficerTask = Officer.getElementsByTagName("td")[2].getElementsByTagName("select")[0].value;
+                    OfficerTasks.push({OfficerID,OfficerTask});
+                }
+                const url ="/mofficer/medicalteam/allocateTask";
+                const formData = new FormData();
+                formData.append("MedicalTeamID",'<?= $MedicalTeam->getTeamID();?>');
+                formData.append("OfficerTasks",JSON.stringify(OfficerTasks));
+                fetch(url,{
+                    method: "POST",
+                    body: formData
+                }).then((response)=>{
+                    if (response.ok){
+                        return response.json();
+                    }else{
+                        throw new Error("Something Went Wrong");
+                    }
+                }).then((data)=>{
+                    console.log(data)
+                    if (data.status){
+                        CloseDialogBox("AllocateTask");
+                        ShowToast({
+                            message: data.message,
+                            type: "success"
+                        })
+                        setTimeout(()=>{
+                            location.reload();
+                        },1000);
+                    }else{
+                        alert(data.message);
+                    }
+                }).catch((error)=>{
+                    alert(error.message);
+
+                })
+            }
+        })
+    }
+    <?php
+        endif;
+    ?>
     function initMap() {
         const colombo = { lat: 6.8781340776734385, lng: 79.8833214428759 };
         const mylating = { lat: 6.8781340776734385, lng: 79.8833214428759 };

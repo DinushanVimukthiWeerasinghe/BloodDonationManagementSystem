@@ -13,6 +13,7 @@ const OpenDialogBox= (props) => {
         cancelBtnAction,
         popupOrder,
         showCancelButton,
+        showSuccessButton,
         footer,
         contentSize
     } = props;
@@ -52,18 +53,23 @@ const OpenDialogBox= (props) => {
     }
     const dialogBoxActionBtn= document.createElement('div');
     dialogBoxActionBtn.className= 'dialog-box-action';
-    const OKBtn= document.createElement('button');
-    OKBtn.className= 'btn btn-outline-success';
-    OKBtn.innerHTML= successBtnText || 'OK';
-
-    if (successBtnAction) {
-        OKBtn.addEventListener('click', successBtnAction);
-    }else{
-        OKBtn.addEventListener('click', closeDialog || function() {
-            dialogBoxOuter.remove();
-        });
+    if (showSuccessButton === false) {
+        // do nothing
     }
-    dialogBoxActionBtn.appendChild(OKBtn);
+    else {
+        const OKBtn = document.createElement('button');
+        OKBtn.className = 'btn btn-outline-success';
+        OKBtn.innerHTML = successBtnText || 'OK';
+
+        if (successBtnAction) {
+            OKBtn.addEventListener('click', successBtnAction);
+        } else {
+            OKBtn.addEventListener('click', closeDialog || function () {
+                dialogBoxOuter.remove();
+            });
+        }
+        dialogBoxActionBtn.appendChild(OKBtn);
+    }
     if (secondaryBtnText) {
         const secondaryBtnElement= document.createElement('button');
         secondaryBtnElement.className= 'btn btn-outline-secondary';
@@ -80,7 +86,7 @@ const OpenDialogBox= (props) => {
 
 
     if (showCancelButton === false) {
-        // OKBtn.style.width= '50%';
+        // do nothing
     }else{
         const cancelBtnElement= document.createElement('button');
         cancelBtnElement.className= 'btn btn-outline-danger';

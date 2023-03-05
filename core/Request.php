@@ -30,6 +30,10 @@ class Request
     {
         return $this->method() === 'post';
     }
+    private function is_Json($string) {
+        json_decode($string);
+        return json_last_error() === JSON_ERROR_NONE;
+    }
     public function getBody()
     {
         $body=[];
@@ -43,7 +47,13 @@ class Request
             foreach ($_POST as $key => $value) {
                 if(is_array($value)){
                     $body[$key]=filter_input(INPUT_POST, $key, FILTER_SANITIZE_SPECIAL_CHARS, FILTER_REQUIRE_ARRAY);
-                }else {
+                }
+                elseif (is_array(json_decode($value, true))){
+                    foreach (json_decode($value, true) as $key1 => $value1) {
+                        $body[$key][$key1]=$value1;
+                    }
+                }
+                else {
                     $body[$key] = filter_input(INPUT_POST, $key, FILTER_SANITIZE_SPECIAL_CHARS);
                 }
             }

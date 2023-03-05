@@ -148,4 +148,14 @@ class TeamMembers extends dbModel
     {
         return Campaign::findOne(['Campaign_ID' => $this->getCampaignID()]);
     }
+
+    public static function getTasks() : array
+    {
+        return [
+            self::TASK_REGISTRATION => 'Registration',
+            self::TASK_HEALTH_CHECK => 'Health Check',
+            self::TASK_BLOOD_CHECK => 'Blood Check',
+            self::TASK_BLOOD_RETRIEVAL => 'Blood Retrieval',
+        ];
+    }
 }

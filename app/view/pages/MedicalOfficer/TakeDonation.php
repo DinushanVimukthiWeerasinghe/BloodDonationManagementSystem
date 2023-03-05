@@ -165,12 +165,26 @@ endif;
                 fetch(url, {
                     method: "POST",
                     body: formData
-                }).then((response) => response.text()).then((data) => {
+                })
+                    .then((res) => res.json())
+                    .then((data) => {
                     console.log(data)
                     if (data.status) {
-
+                        CloseDialogBox("CompleteDonation");
+                        ShowToast({
+                            message: data.message,
+                            type: "success",
+                            duration: 3000
+                        })
+                        setTimeout(()=>{
+                            window.location.reload();
+                        },3000)
                     } else {
-                        alert(data.message);
+                        ShowToast({
+                            message: data.message,
+                            type: "error",
+                            duration: 3000
+                        })
                     }
                 }).catch((error) => {
                     console.log(error)

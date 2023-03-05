@@ -124,7 +124,7 @@ abstract class dbModel extends Model
     }
     
 
-    public static function RetrieveAll(bool $pagination=false,array $limit=[],bool $IsConditional=false,array $conditions=[]): bool|array
+    public static function RetrieveAll(bool $pagination=false,array $limit=[],bool $IsConditional=false,array $conditions=[],array $OrderBy=[],array $GroupBy=[]): bool|array
     {
         $tableName = static::tableName();
         $sql = "SELECT * FROM $tableName";
@@ -132,9 +132,17 @@ abstract class dbModel extends Model
             $sql = "SELECT * FROM $tableName WHERE ";
             $attributes = array_keys($conditions);
             $sql .= implode(' AND ', array_map(fn($attr) => "$attr = :$attr", $attributes));
+            if ($OrderBy){
+                $sql.=" ORDER BY ";
+                foreach ($OrderBy as $key => $value) {
+                    $sql.="$key $value,";
+                }
+                $sql=substr($sql,0,-1);
+            }
             if ($pagination) {
                 $sql .= " LIMIT $limit[0],$limit[1]";
             }
+
             $statement = self::prepare($sql);
             foreach ($conditions as $key => $value) {
                 $statement->bindValue(":$key", $value);
@@ -142,6 +150,13 @@ abstract class dbModel extends Model
             $statement->execute();
             return $statement->fetchAll(PDO::FETCH_CLASS,static::class);
         } else {
+            if ($OrderBy){
+                $sql.=" ORDER BY ";
+                foreach ($OrderBy as $key => $value) {
+                    $sql.="$key $value,";
+                }
+                $sql=substr($sql,0,-1);
+            }
             if ($pagination) {
                 $sql .= " LIMIT $limit[0],$limit[1]";
             }
@@ -345,11 +360,11 @@ abstract class dbModel extends Model
     {
         $tableName= static::tableName();
         $attributes=array_keys($where);
-        $sql=implode("AND",array_map(fn($attr)=>"$attr=:$attr",$attributes));
+        $sql=implode(" AND ",array_map(fn($attr)=>"$attr=:$attr",$attributes));
         $statement=self::prepare("DELETE FROM $tableName WHERE $sql");
-        print_r($statement);
-        print_r($where);
-        exit();
+//        print_r($statement);
+//        print_r($where);
+//        exit();
         foreach ($where as $key=>$item)
         {
             $statement->bindValue(":$key",$item);

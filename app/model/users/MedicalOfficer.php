@@ -179,6 +179,11 @@ class MedicalOfficer extends Person
         $this->Officer_ID = $Officer_ID;
     }
 
+    public function getBloodBank() : ?BloodBank
+    {
+        return BloodBank::findOne(['BloodBank_ID' => $this->Branch_ID]);
+    }
+
     public function getAssignedTeam(): ?MedicalTeam
     {
         return MedicalTeam::findOne(['Team_Leader_ID' => $this->Officer_ID]);
@@ -194,9 +199,11 @@ class MedicalOfficer extends Person
         }
     }
 
+
+
     public function getMedicalTeamTask($TeamID)
     {
-        $Team= TeamMembers::findOne(['Member_ID' => $this->Officer_ID, 'Team_ID' => $TeamID,false]);
+        $Team= TeamMembers::findOne(['Member_ID' => $this->Officer_ID, 'Team_ID' => $TeamID],false);
         if ($Team) {
             return match ($Team->getTask()) {
                 TeamMembers::TASK_NOT_ASSIGNED => 'Not Assigned',
@@ -275,7 +282,7 @@ class MedicalOfficer extends Person
         return $count;
     }
 
-    public static function getAssignedCampaign(string $Date)
+    public static function getAssignedCampaign(string $Date='')
     {
         $tableName = static::tableName();
         $AssignedTeams=TeamMembers::RetrieveAll(false,[],true,['Member_ID' => Application::$app->getUser()->getID()]);
@@ -292,13 +299,22 @@ class MedicalOfficer extends Person
             }
         }
         if (count($AssignedCampaigns) > 0) {
-            $out=array_filter($AssignedCampaigns, function ($AssignedCampaign) use ($Date) {
-                return $AssignedCampaign->getCampaignDate() == $Date;
-            });
-            if (count($out) > 0) {
-                return $out[0];
+            if (trim($Date) == '') {
+                // Sort the array by date
+                usort($AssignedCampaigns, function ($a, $b) {
+                    return strtotime($a->getCampaignDate()) - strtotime($b->getCampaignDate());
+                });
+                return $AssignedCampaigns;
             }else{
-                return null;
+                $out=array_filter($AssignedCampaigns, function ($AssignedCampaign) use ($Date) {
+                    return $AssignedCampaign->getCampaignDate() == $Date;
+                });
+                $out = array_values($out);
+                if (count($out) > 0) {
+                    return $out[0];
+                }else{
+                    return null;
+                }
             }
 
         }

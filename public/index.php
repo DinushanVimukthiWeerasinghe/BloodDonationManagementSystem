@@ -138,12 +138,12 @@ $app->router->get('/gmp', [siteController::class, 'gmap']);
 
 // Manager Register
 $app->router->get('/manager/register', [managerController::class, 'register']);
+$app->router->get('/manager/notification', [managerController::class, 'ManageNotification']);
 $app->router->post('/manager/register', [managerController::class, 'register']);
 
 //Manager Dashboard
 $app->router->get('/manager/dashboard', [managerController::class, 'dashboard']);
 $app->router->get('/manager/profile', [managerController::class, 'Profile']);
-$app->router->get('/manager/notification', [managerController::class, 'Notification']);
 
 
 $app->router->get('/manager/mngMedicalOfficer', [managerController::class, 'ManageMedicalOfficer']);
@@ -208,15 +208,21 @@ $app->router->get('/manager/mngRequests/emergency', [managerController::class, '
 
 //Medical Officer
 $app->router->get('/medicalofficer/dashboard', [medicalOfficerController::class, 'Dashboard']);
+$app->router->get('/medicalofficer/notification', [medicalOfficerController::class, 'getNotification']);
 
 //Manage Requests
 
 $app->router->get('/mofficer/campaigns', [medicalOfficerController::class, 'ManageCampaigns']);
+$app->router->post('/mofficer/changepassword', [medicalOfficerController::class, 'ChangePassword']);
+$app->router->post('/mofficer/stat', [medicalOfficerController::class, 'GetStatistics']);
+$app->router->post('/mofficer/changeProfile', [medicalOfficerController::class, 'ChangeProfileImage']);
+$app->router->get('/mofficer/history', [medicalOfficerController::class, 'ManageHistory']);
 $app->router->get('/mofficer/donors', [medicalOfficerController::class, 'ManageDonors']);
 $app->router->get('/mofficer/take-donation', [medicalOfficerController::class, 'ManageDonation']);
 $app->router->post('/mofficer/take-donation', [medicalOfficerController::class, 'ManageDonation']);
 $app->router->get('/mofficer/donation', [medicalOfficerController::class, 'ManageDonation']);
 $app->router->post('/mofficer/startBloodDonation', [medicalOfficerController::class, 'StartDonation']);
+$app->router->post('/mofficer/medicalteam/allocateTask', [medicalOfficerController::class, 'AssignTasks']);
 $app->router->post('/mofficer/CompleteDonation', [medicalOfficerController::class, 'CompleteDonation']);
 $app->router->get('/mofficer/AbortDonation', [medicalOfficerController::class, 'AbortDonation']);
 $app->router->get('/mofficer/searchdonor', [medicalOfficerController::class, 'SearchDonor']);

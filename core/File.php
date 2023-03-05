@@ -22,6 +22,17 @@ class File
         $this->pathPrefix = $pathPrefix;
     }
 
+    public static function DeleteFileByPath($path): bool
+    {
+        $DeletePath=Application::$ROOT_DIR.'/'.$path;
+        $status=unlink($DeletePath);
+        if ($status){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
 
 
     /**
@@ -48,6 +59,17 @@ class File
         $this->name= $prefix.uniqid().'.'.$this->extension;
         return '/public/upload/'.$this->pathPrefix.'/'.$this->name;
     }
+
+    /**
+     * @param string $prefix
+     */
+    public function setPath(string $prefix): void
+    {
+        $this->path=Application::$ROOT_DIR.'/public/upload/'.$prefix.'/';
+        $this->pathPrefix=$prefix;
+    }
+
+
 
     public function saveFile(): bool
     {

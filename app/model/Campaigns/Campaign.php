@@ -3,6 +3,7 @@
 namespace App\model\Campaigns;
 
 use App\model\database\dbModel;
+use App\model\MedicalTeam\MedicalTeam;
 
 class Campaign extends dbModel
 {
@@ -21,7 +22,6 @@ class Campaign extends dbModel
     protected int $Verified=0;
     protected ?string $Verified_By=null;
     protected ?string $Verified_At=null;
-    protected ?string $Assigned_Team=null;
     protected ?string $Remarks=null;
     protected string $Created_At='';
     protected ?string $Updated_At=null;
@@ -271,18 +271,19 @@ class Campaign extends dbModel
     /**
      * @return string
      */
-    public function getAssignedTeam(): string
+    public function getAssignedTeam(): MedicalTeam | string
     {
-        return $this->Assigned_Team;
+        /** @var MedicalTeam $MedicalTeam */
+        $MedicalTeam=MedicalTeam::findOne(['Campaign_ID'=>$this->Campaign_ID]);
+        if ($MedicalTeam)
+            return $MedicalTeam;
+        else
+            return 'Not Assigned';
     }
 
     /**
      * @param string $Assigned_Team
      */
-    public function setAssignedTeam(string $Assigned_Team): void
-    {
-        $this->Assigned_Team = $Assigned_Team;
-    }
 
     /**
      * @return string

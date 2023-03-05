@@ -440,39 +440,58 @@ CREATE TABLE IF NOT EXISTS Team_Members
 # Create Table for Campaigns
 # DROP TABLE IF EXISTS Campaign;
 CREATE TABLE IF NOT EXISTS Campaign (
-    Campaign_ID VARCHAR(20) NOT NULL  PRIMARY KEY,
-    Campaign_Name VARCHAR(100) NOT NULL,
-    Organization_ID VARCHAR(20) NOT NULL,
-    Campaign_Description VARCHAR(100) NOT NULL,
-    Campaign_Date DATE NOT NULL,
-    Venue VARCHAR(100) NOT NULL,
-    Nearest_City VARCHAR(100) NOT NULL,
-    Status INT NOT NULL CHECK ( Status Between 1 AND 3),
-    Latitude VARCHAR(100) NOT NULL,
-    Longitude VARCHAR(100) NOT NULL,
-    Nearest_BloodBank VARCHAR(20) NOT NULL,
-    Verified INT NOT NULL DEFAULT 0 CHECK ( Verified BETWEEN 0 AND 2),
-    Verified_By VARCHAR(20) NULL,
-    Verified_At TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
-    Assigned_Team VARCHAR(20) NULL,
-    Remarks VARCHAR(100) NULL,
-    Created_At TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    Updated_At TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (Verified_By) REFERENCES Managers(Manager_ID),
-    FOREIGN KEY (Assigned_Team) REFERENCES Medical_Team(Team_ID),
-    FOREIGN KEY (Nearest_BloodBank) REFERENCES BloodBanks(BloodBank_ID),
-    FOREIGN KEY (Organization_ID) REFERENCES Organizations(Organization_ID)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+                                        Campaign_ID          VARCHAR(20)  NOT NULL  PRIMARY KEY,
+                                        Campaign_Name        VARCHAR(100) NOT NULL,
+                                        Organization_ID      VARCHAR(20)  NOT NULL,
+                                        Campaign_Description VARCHAR(100) NOT NULL,
+                                        Campaign_Date        DATE         NOT NULL,
+                                        Venue                VARCHAR(100) NOT NULL,
+                                        Nearest_City         VARCHAR(100) NOT NULL,
+                                        Status               INT          NOT NULL CHECK ( Status Between 1 AND 3),
+                                        Latitude             VARCHAR(100) NOT NULL,
+                                        Longitude            VARCHAR(100) NOT NULL,
+                                        Nearest_BloodBank    VARCHAR(20)  NOT NULL,
+                                        Verified             INT          NOT NULL DEFAULT 0 CHECK ( Verified BETWEEN 0 AND 2),
+                                        Verified_By          VARCHAR(20)  NULL,
+                                        Verified_At          TIMESTAMP    NULL ON UPDATE CURRENT_TIMESTAMP,
+                                        Assigned_Team        VARCHAR(20)  NULL,
+                                        Remarks              VARCHAR(100) NULL,
+                                        Package_ID           VARCHAR(20)  NOT NULL,
+                                        Expected_Amount      VARCHAR(20)  NOT NULL,
+                                        Created_At           TIMESTAMP             DEFAULT CURRENT_TIMESTAMP,
+                                        Updated_At           TIMESTAMP             DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                                        FOREIGN KEY (Verified_By) REFERENCES Managers (Manager_ID),
+                                        FOREIGN KEY (Assigned_Team) REFERENCES Medical_Team (Team_ID),
+                                        FOREIGN KEY (Nearest_BloodBank) REFERENCES BloodBanks (BloodBank_ID),
+                                        FOREIGN KEY (Organization_ID) REFERENCES Organizations (Organization_ID)
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8;
+
+CREATE TABLE IF NOT EXISTS `additional_sponsorship_requests`
+(
+    `Request_ID`     varchar(255) NOT NULL,
+    `Account_Number` varchar(255) NOT NULL,
+    `Bank_Name`      varchar(255) NOT NULL,
+    `Branch_Name`    varchar(255) NOT NULL,
+    `Account_Name`   varchar(255) NOT NULL,
+    `Status`         int(11)      NOT NULL,
+    `Amount`         varchar(255) NOT NULL,
+    `Campaign_ID`    varchar(255) NOT NULL
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8
+  COLLATE = utf8;
 
 # # DROP TABLE IF EXISTS Campaigns_Sponsors;
-CREATE TABLE IF NOT EXISTS Campaigns_Sponsors (
+CREATE TABLE IF NOT EXISTS Campaigns_Sponsors
+(
     Campaign_ID VARCHAR(20) NOT NULL,
-    Sponsor_ID VARCHAR(20) NOT NULL,
-    Package_ID VARCHAR(20) NOT NULL,
-    FOREIGN KEY (Campaign_ID) REFERENCES Campaign(Campaign_ID),
-    FOREIGN KEY (Sponsor_ID) REFERENCES Sponsors(Sponsor_ID),
-    FOREIGN KEY (Package_ID) REFERENCES Sponsorship_Packages(Package_ID)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+    Sponsor_ID  VARCHAR(20) NOT NULL,
+    Package_ID  VARCHAR(20) NOT NULL,
+    FOREIGN KEY (Campaign_ID) REFERENCES Campaign (Campaign_ID),
+    FOREIGN KEY (Sponsor_ID) REFERENCES Sponsors (Sponsor_ID),
+    FOREIGN KEY (Package_ID) REFERENCES Sponsorship_Packages (Package_ID)
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8;
 
 DROP TABLE IF EXISTS Donor_Health_Checkup;
 CREATE TABLE IF NOT EXISTS Donor_Health_Checkup (
