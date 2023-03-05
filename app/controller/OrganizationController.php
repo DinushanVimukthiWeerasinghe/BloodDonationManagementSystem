@@ -4,6 +4,7 @@ namespace App\controller;
 
 use App\middleware\organizationMiddleware;
 use App\model\Authentication\Login;
+use App\model\BloodBankBranch\BloodBank;
 use App\model\database\dbModel;
 use App\model\inform\informDonors;
 use App\model\Requests\additional_sponsorship_request;
@@ -100,9 +101,11 @@ class OrganizationController extends Controller
     public function manage()
     {
         $ID=Application::$app->getUser()->getID();
-        $AlreadyCreatedCampaign=Campaign::findOne(['Organization_ID'=>$ID,'Status'=>Campaign::PENDING]);
+        $Camp=Campaign::findOne(['Organization_ID'=>$ID,'Status'=> Campaign::PENDING]);
+        $AlreadyCreatedCampaign = $Camp::findOne(['Status' => Campaign::PENDING]);
         $Exist=false;
         if ($AlreadyCreatedCampaign){
+            Application::$app->session->setFlash('error','Previously Created Campaign is in Progress.');
             $Exist=true;
         }
         return $this->render('Organization/manage',[
@@ -113,6 +116,9 @@ class OrganizationController extends Controller
     public function CreateCampaign(Request $request,Response $response)
     {
         $campaign = new Campaign();
+        $bank = BloodBank::RetrieveAll(false,[],false);
+        $packages = sponsorship_packages::RetrieveAll(false,[],false);
+
         if($request->isPost()){
             $campaign->loadData($request->getBody());
             $campaign->setOrganizationID(Application::$app->getUser()->getID());
@@ -123,14 +129,14 @@ class OrganizationController extends Controller
             $campaign->setCampaignID($id);
 
             if($campaign->validate() && $campaign->save()) {
-                    $response->redirect('/Organization/history');
+                    $response->redirect('/organization/history');
             }else{
                 print_r($campaign->errors);
             }
 
         }
         Application::$app->session->setFlash('success','You Successfully Created a Campaign! Please Wait for the Admin Approval.');
-        return $this->render('Organization/create');
+        return $this->render('Organization/create',['banks'=> $bank,'package' => $packages]);
     }
 
     public function ViewCampaign(Request $request,Response $response)
@@ -216,16 +222,26 @@ class OrganizationController extends Controller
         /* @var Sponsor $sponser */
         /* @var sponsorship_packages $pack */
         $attendance = new campaigns_sponsors();
+        $total = 0;
+        $reached = 0;
         $id = $_GET['id'];
         $condition = ['Campaign_ID' => $id];
         $count = $attendance::getCount(false,$condition);
+        $campaign = Campaign::findOne(['Campaign_ID' => $id]);
+        $amount = $campaign->getExpectedAmount();
         $sponsor = $attendance::findOne(['Campaign_ID' => $id]);
-        $package_ID = $sponsor->getPackageID();
-        $package = sponsorship_packages::findOne(['Package_ID' => $package_ID]);
-        $price = $package->getPackagePrice();
-        $total = $count * $price;
-
-        return $this->render('Organization/received',['data' => $total]);
+        if($sponsor){
+            $package_ID = $sponsor->getPackageID();
+            $package = sponsorship_packages::findOne(['Package_ID' => $package_ID]);
+            $price = $package->getPackagePrice();
+            $total = $count * $price;
+            $total = 25000;
+        }
+        if($amount == $total){
+            Application::$app->session->setFlash('success','You have Reached Your Expected Amount! You campaign will not be visible to Sponsors.');
+            $reached = 1;
+        }
+        return $this->render('Organization/received',['data' => $total, 'reach' => $reached]);
     }
     public function accepted()
     {

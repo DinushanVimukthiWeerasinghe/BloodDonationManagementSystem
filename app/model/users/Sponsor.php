@@ -6,6 +6,23 @@ class Sponsor extends Person
 {
     protected string $Sponsor_ID='';
     protected string $Sponsor_Name='';
+    protected string $Package_ID='';
+
+    /**
+     * @return string
+     */
+    public function getPackageID(): string
+    {
+        return $this->Package_ID;
+    }
+
+    /**
+     * @param string $Package_ID
+     */
+    public function setPackageID(string $Package_ID): void
+    {
+        $this->Package_ID = $Package_ID;
+    }
     protected string $Type ='';
 
     public function getID(): string

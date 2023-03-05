@@ -36,7 +36,9 @@ function GetImage($imageURL)
 
 FlashMessage::RenderFlashMessages();
 ?>
-
+<?php if($reach) {?>
+    <h1 class="bg-warning p-1">You have reached Your Expected Amount</h1><br>
+<?php } ?>
 <div class="card none detail-card p-2"  style="height: 40vh;cursor: default;width: 40vw;min-width: auto;background-size: cover">
     <div class="card-title">
         <h1 style="font-size: 2em;">Total Income:</h1>

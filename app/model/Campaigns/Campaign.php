@@ -12,10 +12,12 @@ class Campaign extends dbModel
     public const REJECTED = 3;
     protected string $Campaign_ID='';
     protected string $Organization_ID='';
+    protected string $Expected_Amount='';
     protected string $Campaign_Name='';
     protected string $Campaign_Description='';
     protected string $Campaign_Date='';
     protected string $Venue='';
+    protected string $Package_ID='';
     protected string $Nearest_City='';
     protected int $Status=1;
     protected string $Nearest_BloodBank='';
@@ -320,6 +322,22 @@ class Campaign extends dbModel
     /**
      * @return string
      */
+    public function getPackageID(): string
+    {
+        return $this->Package_ID;
+    }
+
+    /**
+     * @param string $Package_ID
+     */
+    public function setPackageID(string $Package_ID): void
+    {
+        $this->Package_ID = $Package_ID;
+    }
+
+    /**
+     * @return string
+     */
     public function getUpdatedAt(): string
     {
         return $this->Updated_At;
@@ -341,6 +359,7 @@ class Campaign extends dbModel
             'Campaign_Name' => 'Campaign Name',
             'Campaign_Description' => 'Campaign Description',
             'Campaign_Date' => 'Campaign Date',
+            'Package_ID' => 'Package ID',
             'Venue' => 'Venue',
             'Nearest_City' => 'Nearest City',
             'Status' => 'Status',
@@ -388,6 +407,7 @@ class Campaign extends dbModel
     {
         return [
             'Campaign_ID',
+            'Package_ID',
             'Organization_ID',
             'Campaign_Name',
             'Campaign_Description',
@@ -403,8 +423,25 @@ class Campaign extends dbModel
             'Remarks',
             'Created_At',
             'Updated_At',
+            'Expected_Amount',
             'Latitude',
             'Longitude'
         ];
+    }
+
+    /**
+     * @return string
+     */
+    public function getExpectedAmount(): string
+    {
+        return $this->Expected_Amount;
+    }
+
+    /**
+     * @param string $Expected_Amount
+     */
+    public function setExpectedAmount(string $Expected_Amount): void
+    {
+        $this->Expected_Amount = $Expected_Amount;
     }
 }

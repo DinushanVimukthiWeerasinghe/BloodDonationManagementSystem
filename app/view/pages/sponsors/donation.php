@@ -14,7 +14,7 @@ use App\view\components\ResponsiveComponent\NavbarComponent\AuthNavbar;
 
 //echo Loader::GetLoader();
 $background = new BackGroundImage();
-$navbar = new AuthNavbar('Nearby Campaigns', '/organization/near', '/public/images/icons/user.png', false);
+$navbar = new AuthNavbar('Donation Campaigns', '/organization/near', '/public/images/icons/user.png', false);
 
 echo $navbar;
 echo $background;
@@ -35,18 +35,6 @@ FlashMessage::RenderFlashMessages();
 ?>
 
 <div id="detail-pane" class="detail-pane">
-    <div id="detail-pane" class="detail-pane">
-        <div id="filter-pane" class="filter-pane">
-            <div class="search-input">
-                <label class="search">Search
-                    <input class="search-box" name="search" id="search" onkeyup="SearchFunction()">
-                </label>
-                <div class="search-icon" id="search-btn" onclick="SearchFunction()">
-                    <img src="/public/images/icons/search.png" alt="">
-                </div>
-            </div>
-
-        </div>
         <div class="filter-card">
             <div class="card-navigation">
                 <a class="disabled" href="?page=1"><img class="nav-btn" src="/public/images/icons/previous.png"
@@ -60,33 +48,28 @@ FlashMessage::RenderFlashMessages();
             </div>
         </div>
         <div id="card-pane" class="card-pane">
-            <div class="pane-loader">
-                <img src="/public/loading4.svg" alt="" width="200px">
-            </div>
             <?php
-            //            if (empty($data)){
-            //                ?>
-            <!--                <div class="card detail-card">-->
-            <!--                    <div class="card-image">-->
-            <!--                        <img src="/public/images/icons/manager/manageMedicalOfficer/doctor.png" alt="">-->
-            <!--                    </div>-->
-            <!--                    <div class="card-body">-->
-            <!--                        <div class="card-title">-->
-            <!--                            No Medical Officers-->
-            <!--                        </div>-->
-            <!--                    </div>-->
-            <!--                </div>-->
-            <!--            --><?php //} ?>
+            if (empty($params)){
+                ?>
+                <div class="card detail-card">
+                    <div class="card-image">
+                        <img src="/public/images/icons/organization/dashboard/campaign.png" alt="">
+                    </div>
+                    <div class="card-body">
+                        <div class="card-title">
+                            No Campaigns Found
+                        </div>
+                    </div>
+                </div>
+            <?php } ?>
             <?php foreach ($params as $key=>$row){?>
             <?php if($row['Status'] == 2) {?>
-            <div class="card none detail-card">
-                <div class="card-image">
-                    <img src='/public/upload/1.jpeg' alt="hello">
-                </div>
+            <div class="card none detail-card" style="height: 300px;">
                 <div class="card-body">
-                    <div class="card-title"><?php echo $row['Campaign_Name'] ?></div>
-                    <div class="card-description"><?php echo $row['Venue'] ?></div>
-                    <div class="card-description"><?php echo $row['Campaign_Date'] ?></div>
+                    <div class="card-title" style="font-size: 2em;"><?php echo $row['Campaign_Name'] ?></div>
+                    <div class="card-description" style="font-size: 1.2em;font-weight: 900;"><?php echo $row['Venue'] ?></div>
+                    <div class="card-description" style="font-size: 1.2em;font-weight: 900;"><?php echo $row['Campaign_Date'] ?></div><br>
+                    <div class="card-description bg-yellow-6 p-1" style="font-size: 1.5em;font-weight: 900;"><?php echo $row['Package_Name'] ?></div><br>
                     <button class="btn btn-success" href="">Sponse</button>
                 </div>
             </div>

@@ -121,19 +121,43 @@ class sponsorController extends Controller
     {
         /* @var Campaign $campaign */
         $today = date("Y-m-d");
-//        $conditions = [$campaign->getStatus() => 0];
+//        $conditions = ['Package_ID'];
+        /* @var Sponsor $sponsor*/
+        $sponsor = sponsor::findOne(['Sponsor_ID' => Application::$app->getUser()->getID()]);
+        $sponPack = sponsorship_packages::findOne(['Package_ID' => $sponsor->getPackageID()]);
+        $pri = $sponPack->getPackagePrice();
         $result = Campaign::RetrieveAll(false, [], false);
+        //check sponsored Campaigns
+        $confirmsponse = campaigns_sponsors::RetrieveAll(false,[],true,['Sponsor_ID' => Application::$app->getUser()->getID()]);
+        $par = [];
+        //initialize sponsored state
+        $paid = 0;
         $params = [];
         foreach ($result as $campaign) {
-            $params[] = [
-                'Campaign_Name'=> $campaign->getCampaignName(),
-                'Campaign_Date' => $campaign->getCampaignDate(),
-                'Venue'=> $campaign->getVenue(),
-                'Status'=> $campaign->getStatus(),
-                'Campaign_ID'=> $campaign->getCampaignID(),
-            ];
-        }
+            $packid = $campaign->getPackageID();
+            $pack = sponsorship_packages::findOne(['Package_ID' => $packid]);
+            $price = $pack->getPackagePrice();
+            foreach ($confirmsponse as $con) {
+                if ($con->getID() === $campaign->getCampaignID()) {
+                    $paid = 1;
+                }
+            }
+                if ($price <= $pri && $paid == 0 && $campaign->getCampaignDate() >= date("Y-m-d")) {
+                    $params[] = [
+                        'Campaign_Name' => $campaign->getCampaignName(),
+                        'Campaign_Date' => $campaign->getCampaignDate(),
+                        'Venue' => $campaign->getVenue(),
+                        'Status' => $campaign->getStatus(),
+                        'Campaign_ID' => $campaign->getCampaignID(),
+                        'Package_Name' => $pack->getPackageName(),
+                    ];
+                } else {
+                    $params = [];
+                }
 
+        }
+        print_r($params);
+        exit();
         return $this->render('sponsors/donation',$params);
     }
     public function report()
