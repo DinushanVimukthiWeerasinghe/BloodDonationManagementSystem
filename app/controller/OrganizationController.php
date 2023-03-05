@@ -247,6 +247,7 @@ class OrganizationController extends Controller
         $ID = Application::$app->getUser()->getID();
         $result = Campaign::RetrieveAll(false, [], true, ['Organization_ID' => $ID]);
 
+
         return $this->render('Organization/campaign/view',['data'=>$result]);
     }
     public function campDetails()

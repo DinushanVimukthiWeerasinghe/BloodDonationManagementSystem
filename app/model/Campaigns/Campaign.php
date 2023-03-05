@@ -19,7 +19,7 @@ class Campaign extends dbModel
     protected string $Nearest_City='';
     protected int $Status=1;
     protected string $Nearest_BloodBank='';
-    protected int $Verified=0;
+    protected int $Verified=1;
     protected ?string $Verified_By=null;
     protected ?string $Verified_At=null;
     protected ?string $Remarks=null;
@@ -189,7 +189,7 @@ class Campaign extends dbModel
 
     public function getCampaignStatus():string
     {
-        return match ($this->Status){
+        return match ($this->Verified){
             self::PENDING =>' Pending Approval',
             self::APPROVED => 'Campaign Approved',
             default => 'Unknown'
@@ -371,12 +371,12 @@ class Campaign extends dbModel
 
     public static function getTableShort(): string
     {
-        return 'campaign';
+        return 'Campaign';
     }
 
     public static function tableName(): string
     {
-        return 'campaign';
+        return 'Campaign';
     }
 
     public static function PrimaryKey(): string
@@ -403,6 +403,8 @@ class Campaign extends dbModel
             'Remarks',
             'Created_At',
             'Updated_At',
+            'Latitude',
+            'Longitude'
         ];
     }
 }

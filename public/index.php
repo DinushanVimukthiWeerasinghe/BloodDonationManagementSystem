@@ -109,8 +109,6 @@ $app->router->post('/organization/inform', [OrganizationController::class, 'info
 $app->router->get('/organization/manage', [OrganizationController::class, 'manage']);
 $app->router->get('/organization/create', [OrganizationController::class, 'CreateCampaign']);
 $app->router->post('/organization/create', [OrganizationController::class, 'CreateCampaign']);
-$app->router->get('/organization/campaign/view', [OrganizationController::class, 'ViewCampaign']);
-$app->router->post('/organization/campaign/view', [OrganizationController::class, 'ViewCampaign']);
 $app->router->get('/organization/near', [OrganizationController::class, 'near']);
 $app->router->get('/organization/report', [OrganizationController::class, 'report']);
 $app->router->get('/organization/history', [OrganizationController::class, 'history']);
