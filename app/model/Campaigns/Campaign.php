@@ -371,12 +371,12 @@ class Campaign extends dbModel
 
     public static function getTableShort(): string
     {
-        return 'campaigns';
+        return 'campaign';
     }
 
     public static function tableName(): string
     {
-        return 'Campaign';
+        return 'campaign';
     }
 
     public static function PrimaryKey(): string

@@ -4,9 +4,15 @@ namespace App\controller;
 
 use App\middleware\organizationMiddleware;
 use App\model\Authentication\Login;
+use App\model\database\dbModel;
+use App\model\inform\informDonors;
+use App\model\Requests\additional_sponsorship_request;
 use App\model\Requests\AttendanceAcceptedRequest;
+use App\model\sponsor\campaigns_sponsors;
+use App\model\sponsor\sponsorship_packages;
 use App\model\users\organization;
 use App\model\Campaigns\Campaign;
+use App\model\users\Sponsor;
 use App\model\users\User;
 use App\model\Utils\Notification;
 use Core\Application;
@@ -115,8 +121,9 @@ class OrganizationController extends Controller
             $campaign->setCreatedAt(date("Y-m-d H:i:s"));
             $id = uniqid("Camp_");
             $campaign->setCampaignID($id);
+
             if($campaign->validate() && $campaign->save()) {
-                    $response->redirect('/organization/history');
+                    $response->redirect('/Organization/history');
             }else{
                 print_r($campaign->errors);
             }
@@ -158,20 +165,67 @@ class OrganizationController extends Controller
 //        ];
         return $this->render('Organization/history',['data'=>$result]);
     }
-    public function inform()
+    public function inform(Request $request, Response $response)
     {
+        $inform = new informDonors();
+        if ($request->isPost()) {
+            $inform->loadData($request->getBody());
+            $id = uniqid("Message_");
+            $inform->setMessageID($id);
+            $inform->setCampaignID($_GET['id']);
+            $inform->setStatus($inform::PENDING);
+            if($inform->validate()) {
+                if($inform->save()) {
+                    $response->redirect('/organization/inform?id=' . $_GET['id']);
+                    Application::$app->session->setFlash('success', 'You have successfully submitted your Message.');
+                    return;
 
-
-        return $this->render('Organization/inform');
+                }
+            }else {
+                    $errors = $inform->errors;
+            }
+        }
+        return $this->render('Organization/inform',['inform' => $inform]);
     }
-    public function request()
+    public function request(Request $request,Response $response)
     {
-        return $this->render('Organization/request');
+        $req = new additional_sponsorship_request();
+        $message = 0;
+        if ($request->isPost()) {
+            $req->loadData($request->getBody());
+            $id = uniqid("Request_");
+            $req->setRequestID($id);
+            $req->setCampaignID($_GET['id']);
+            $req->setStatus($req::PENDING);
+            if($req->validate()) {
+                $GLOBALS['message'] = 1;
+                if($req->save()) {
+                    $response->redirect('/organization/request?id=' . $_GET['id']);
+                    Application::$app->session->setFlash('success', 'You have successfully submitted your Sponsorship Request.');
+                    return;
+                }
+            }else {
+                $errors = $req->errors;
+            }
+        }
+
+        return $this->render('Organization/request',['req'=>$req]);
     }
     public function received()
     {
+        /* @var Sponsor $sponser */
+        /* @var sponsorship_packages $pack */
+        $attendance = new campaigns_sponsors();
+        $id = $_GET['id'];
+        $condition = ['Campaign_ID' => $id];
+        $count = $attendance::getCount(false,$condition);
+        $sponsor = $attendance::findOne(['Campaign_ID' => $id]);
+        $package_ID = $sponsor->getPackageID();
+        $package = sponsorship_packages::findOne(['Package_ID' => $package_ID]);
+        $price = $package->getPackagePrice();
+        $total = $count * $price;
 
-        return $this->render('Organization/received');
+        return $this->render('Organization/received',['data' => $total]);
     }
     public function accepted()
     {

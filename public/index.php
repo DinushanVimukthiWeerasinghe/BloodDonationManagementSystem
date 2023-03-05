@@ -1,5 +1,5 @@
 <?php
-
+;
 use App\controller\adminController;
 use App\controller\apiController;
 use App\controller\authController;
@@ -101,14 +101,14 @@ $app->router->get('/test',[siteController::class,'test']);
 $app->router->get('/organization/register', [OrganizationController::class, 'register']);
 $app->router->post('/organization/register', [OrganizationController::class, 'register']);
 $app->router->get('/organization/dashboard', [OrganizationController::class, 'dashboard']);
-$app->router->get('/organization/create', [OrganizationController::class, 'create']);
+$app->router->get('/organization/create', [OrganizationController::class, 'CreateCampaign']);
 $app->router->get('/organization/history', [OrganizationController::class, 'history']);
 $app->router->get('/organization/home', [OrganizationController::class, 'home']);
 $app->router->get('/organization/inform', [OrganizationController::class, 'inform']);
 $app->router->post('/organization/inform', [OrganizationController::class, 'inform']);
 $app->router->get('/organization/manage', [OrganizationController::class, 'manage']);
-$app->router->get('/organization/campaign/create', [OrganizationController::class, 'CreateCampaign']);
-$app->router->post('/organization/campaign/create', [OrganizationController::class, 'CreateCampaign']);
+$app->router->get('/organization/create', [OrganizationController::class, 'CreateCampaign']);
+$app->router->post('/organization/create', [OrganizationController::class, 'CreateCampaign']);
 $app->router->get('/organization/campaign/view', [OrganizationController::class, 'ViewCampaign']);
 $app->router->post('/organization/campaign/view', [OrganizationController::class, 'ViewCampaign']);
 $app->router->get('/organization/near', [OrganizationController::class, 'near']);
