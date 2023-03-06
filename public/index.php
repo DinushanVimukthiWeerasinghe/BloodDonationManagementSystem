@@ -237,6 +237,7 @@ $app->router->get('/donor/guideline', [donorController::class, 'guideline']);
 $app->router->get('/donor/history', [donorController::class, 'history']);
 $app->router->get('/donor/nearby', [donorController::class, 'nearby']);
 $app->router->post('/donor/profile/edit', [donorController::class, 'editDetails']);
+$app->router->post('/donor/profile/loginPrompt', [donorController::class, 'loginPrompt']);
 
 
 $app->router->get('/hospital/bloodRequest/addRequest', [hospitalController::class, 'addBloodRequest']);

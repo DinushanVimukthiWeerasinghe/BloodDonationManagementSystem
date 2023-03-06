@@ -297,7 +297,7 @@ abstract class dbModel extends Model
         $statement=self::prepare("DELETE FROM $tableName WHERE $sql");
         print_r($statement);
         print_r($where);
-        exit();
+        //exit();
         foreach ($where as $key=>$item)
         {
             $statement->bindValue(":$key",$item);
