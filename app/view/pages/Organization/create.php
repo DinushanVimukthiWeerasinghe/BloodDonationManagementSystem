@@ -57,14 +57,6 @@ echo $background;
                 </select>
             </div>
 
-            <div class="form-group">
-                <label class="w-40">Requested Sponsorship Package</label><br><br>
-                <select class="form-select w-40" style="height: 50px;" name="Package_ID">
-                    <?php foreach ($package as $packages) { ?>
-                        <option value="<?= $packages->getPackageID() ?>"><?= $packages->getPackageName().' (Rs: '.$packages->getPackagePrice().')' ?></option>
-                    <?php } ?>
-                    </select>
-                </div>
                 <div class="form-group">
                     <label class="w-40">Expected Amount</label><br><br>
                     <label class="bg-white">LKR.</label>

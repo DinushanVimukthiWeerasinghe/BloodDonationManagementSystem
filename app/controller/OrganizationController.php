@@ -270,6 +270,7 @@ class OrganizationController extends Controller
         /* @var Campaign $campaign */
         $ID = Application::$app->getUser()->getID();
         $result = Campaign::RetrieveAll(false, [], true, ['Organization_ID' => $ID]);
+        $params = [];
         foreach ($result as $res){
             if($res->getCampaignDate() >= date("Y-m-d")){
                 $params[] = [

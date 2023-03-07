@@ -34,7 +34,7 @@ echo $background;
             </div>
             <div class="card-body">
                 <div class="card-title fa fa-2x" style="color: red">
-                    No Campaigns.
+                    No Ongoing Campaigns.
                 </div>
             </div>
         </div>
