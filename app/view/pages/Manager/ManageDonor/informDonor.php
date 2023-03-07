@@ -12,26 +12,26 @@ echo $background;
 ?>
 <div class="d-flex min-h-70">
     <div class="d-flex bg-white-0-3 p-3 border-radius-10">
-        <form action="/manager/mngDonors/informDonor" method="post">
+        <form action="/manager/mngDonors/informDonor" class="gap-0-5 d-flex flex-column" method="post">
             <div class="form-group">
-                <label for="title">Title</label>
-                <input id="title" name="title" type="text" required>
+                <label class="w-30" for="title">Title</label>
+                <input id="title" class="w-70" name="title" type="text" required>
             </div>
             <div class="form-group">
-                <label for="message">Message</label>
-                <textarea id="message" name="message" cols="50" maxlength="100"></textarea>
+                <label class="w-10" for="message">Message</label>
+                <textarea class="w-75" id="message" name="message" cols="50" maxlength="100"></textarea>
             </div>
-            <div class="form-group d-flex align-items-center flex-row" onclick="CustomExpiration()">
-                <label for="custom_date" style="margin-bottom: 0">Custom Expiration Date</label>
+            <div class="form-group d-flex align-items-center flex-row" style="justify-content: flex-start" onclick="CustomExpiration()">
+                <label class="w-35" for="custom_date"  style="margin-bottom: 0;">Custom Expiration Date</label>
                 <input id="custom_date" type="checkbox" class="form-checkbox">
             </div>
             <div class="form-group hidden" id="valid_until">
-                <label for="valid_until">Valid Until</label>
-                <input id="valid_until" name="valid_until" class="form-date" type="date">
+                <label class="w-30" for="valid_until">Valid Until</label>
+                <input id="valid_until" name="valid_until" class="form-date w-70" type="date">
             </div>
             <div class="form-group">
-                <label for="selectDonor">Select Donor</label>
-                <select id="selectDonor" name="group" class="form-select" onchange="TriggerCustomSelect()">
+                <label class="w-30" for="selectDonor">Select Donor</label>
+                <select id="selectDonor" name="group" class="form-select w-70" onchange="TriggerCustomSelect()">
                     <option value="all">All</option>
                     <option value="reported">Reported</option>
                     <option value="custom">Custom</option>

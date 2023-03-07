@@ -2,6 +2,7 @@
 
 namespace App\controller;
 
+use App\middleware\adminMiddleware;
 use App\model\Authentication\AuthenticationCode;
 use App\model\Authentication\PasswordReset;
 use App\model\BloodBankBranch\BloodBank;
@@ -22,7 +23,7 @@ class adminController extends \Core\Controller
     public function __construct()
     {
         $this->layout = 'admin';
-//        $this->registerMiddleware(new AuthenticationMiddleware(['login'],BaseMiddleware::ALLOWED_ROUTES));
+        $this->registerMiddleware(new adminMiddleware(['login'],BaseMiddleware::ALLOWED_ROUTES));
     }
     public function login(Request $request, Response $response): string
     {

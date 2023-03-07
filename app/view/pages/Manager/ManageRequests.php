@@ -9,173 +9,153 @@ use App\view\components\ResponsiveComponent\CardPane\CardPane;
 use App\view\components\ResponsiveComponent\ImageComponent\BackGroundImage;
 use App\view\components\ResponsiveComponent\NavbarComponent\AuthNavbar;
 
-$navbar= new AuthNavbar('Manage Requests','/manager','/public/images/icons/user.png',true,false);
-echo $navbar;
-$background=new BackGroundImage();
-echo $background;
+$getParams = function ($params) {
+    $str = '?';
+    if (empty($params)) return $str;
+    foreach ($params as $key => $value) {
+        if ($key == 'page')
+            continue;
+        $str .= $key . '=' . $value . '&';
+    }
+    return $str;
+};
 ?>
 
 
-<!--<div class="class-pane d-flex ">-->
-<!--    <div class="card nav-card" onclick="Redirect('/manager/mngRequests/er')">-->
-<!--        <div class="card-header">-->
-<!--            <img src="/public/images/icons/search.png" style="filter: invert(100%)" alt="">-->
-<!--            <div class="header-title">Emergency Request</div>-->
-<!--        </div>-->
-<!--    </div>-->
-<!--    <div class="card nav-card">-->
-<!--        <div class="card-header nav">-->
-<!--            <img src="/public/images/icons/camera.png" style="filter: invert(100%)" alt="">-->
-<!--            <div class="header-title">Blood Request</div>-->
-<!--        </div>-->
-<!--    </div>-->
-<!--    <div class="card nav-card">-->
-<!--        <div class="card-header">-->
-<!--            <img src="/public/images/icons/search.png" style="filter: invert(100%)" alt="">-->
-<!--            <div class="header-title">Disable Donor</div>-->
-<!--        </div>-->
-<!--    </div>-->
-<!--</div>-->
 <!--TODO Implement Emergency Request and Normal Request Filter-->
 
-<div id="detail-pane" class="min-w-80 max-w-90 min-h-80 d-flex justify-content-center flex-column align-items-center">
-    <div id="detail-pane" class="min-w-80 max-w-90 mt-10 min-h-80 d-flex justify-content-center flex-column align-items-center" style="margin-top: 6rem">
 
-        <div id="filter-pane" class="filter-pane">
-<!--            <div class="text-xl">Filter Request : </div>-->
-            <div class="d-flex justify-content-evenly gap-1">
-                <div class="search-input">
-                    <input type="checkbox" class="check-box" name="emergencyRequest" id="emergency" onchange="FilterOnlyNormalRequest()" checked>
-                    <label for="emergency" class="search text-white " style="font-size: 1.5rem">Emergency Request </label>
-                </div>
-                <div class="search-input">
-                    <input type="checkbox" class="check-box" name="normalRequest" id="emergency" onchange="FilterOnlyEmergencyRequest()" checked>
-                    <label for="emergency" class="search text-white" style="font-size: 1.5rem">Normal Request </label>
-                </div>
+<div class="d-flex w-100 flex-column align-items-center bg-white p-1 border-radius-10 m-1">
+    <div class="d-flex w-100 flex-row">
+        <div class="d-flex bg-white-0-7 p-1 text-dark justify-content-between align-items-center w-100 flex-row gap-0-5 justify-content-center ">
+            <div class="d-flex align-items-center gap-1 btn btn-outline-success" onclick="AddMedicalOfficer()">
+                <img src="/public/icons/person-add.svg" width="24" alt=""/>
+                <span class=" font-bold">Add Officer</span>
             </div>
-
-
-        </div>
-        <div class="filter-card">
-            <div class="card-navigation">
-                <?php
-                if ($current_page<=1):
-                ?>
-                <a class="disabled" href="?page=1"><img class="nav-btn" src="/public/images/icons/previous.png"
-                                                        alt=""></a>
-                <?php
-                else :
-                ?>
-                <a  href="?page=<?=$current_page-1?>"><img class="nav-btn" src="/public/images/icons/previous.png"
-                                                        alt=""></a>
-                <?php
-                    endif;
-                ?>
-                <div class="page-numbers">
-                    <?php
-                    for ($i=1;$i<=$total_pages;$i++){
-                        if ($i===$current_page):
-                    ?>
-                    <a href='?page=<?=$i?>' class="disabled">
-                        <div class='page-number active'><?=$i?></div>
-                    </a>
-                            <?php
-                        else:
-                            ?>
-                            <a href='?page=<?=$i?>'>
-                                <div class='page-number '><?=$i?></div>
-                            </a>
-                            <?php
-                        endif;
-                            ?>
-                    <?php
-                    }
-                    ?>
+            <div id="Search" class="d-flex gap-0-5 align-items-center">
+                <label for="search" class="search">Search </label>
+                <input class="form-control" name="search" id="search" onkeyup="Search('/manager/mngMedicalOfficer/search')">
+            </div>
+            <div id="Filters" class="d-flex gap-1">
+                <div class="form-group">
+                    <label for="filter" class="search ">Position</label>
+                    <select class="form-control" name="filter" id="filter">
+                        <option value="All">All</option>
+                        <option value="Active">Active</option>
+                        <option value="Inactive">Inactive</option>
+                    </select>
                 </div>
-                <?php
-                if ($current_page>=$total_pages):
-                ?>
-                <a class="disabled" href="?page=1"><img class="nav-btn" src="/public/images/icons/next.png" alt=""></a>
-                <?php
-                else:
-                ?>
-                <a href="?page=<?=$current_page+1?>"><img class="nav-btn" src="/public/images/icons/next.png" alt=""></a>
-                <?php
-                endif;
-                ?>
+                <div class="form-group">
+                    <label for="filter" class="search ">Branch</label>
+                    <select class="form-control" name="filter" id="filter">
+                        <option value="All">All</option>
+                        <option value="Active">Active</option>
+                        <option value="Inactive">Inactive</option>
+                    </select>
+                </div>
             </div>
         </div>
-        <div id="card-pane" class="card-pane">
-            <div id="pane-loader" class="pane-loader">
-                <img src="/public/loading2.svg" alt="" width="200px">
-            </div>
+    </div>
+    <div class="d-flex w-100 overflow-y-scroll" style="margin-left: 50px">
+        <table class="w-100 ">
+            <thead class="sticky top-0">
+            <tr>
+                <th scope="col">No</th>
+                <th scope="col">Request Type</th>
+                <th scope="col">Request by</th>
+                <th scope="col">Request Date</th>
+                <th scope="col">Request Type</th>
+                <th scope="col">Requested Blood Group</th>
+                <th scope="col">Request Status</th>
+                <th scope="col">Action</th>
+            </tr>
+            </thead>
+            <tbody>
             <?php
-            if (empty($data)){
-                ?>
-                <div class="card detail-card">
-                    <div class="card-image">
-                        <img src="/public/images/icons/manager/manageRequest/bloodRequest.png" alt="">
-                    </div>
-                    <div class="card-body">
-                        <div class="card-title">
-                            No Requests
-                        </div>
-                    </div>
-                </div>
-                <?php
-            }
-            foreach ($data as $value) {
-                $id=$value->getRequestID();
-                $BloodGroup=$value->getBloodGroup();
-                $Requester=$value->getRequestedBy();
-                $Time= Date::GetProperDateTime($value->getRequestedAt());
-                $Image=$value->getBloodTypeImage();
-                $Type=$value->getType();
-                ?>
-                <div class="card none bg-white" id="MO7646">
-                    <div class="card-image" style="height: auto;min-height: auto">
-                        <img src='<?= $Image?>' class="rem-5" alt="" style="border-radius: 50%;height: auto!important;">
-                    </div>
-                    <div class="card-body">
-                        <div class="card-title"><?= $Requester ?></div>
-                        <div class="card-description"><?= $Time ?></div>
-                        <div class="card-description"><?= $Type ?></div>
-                    </div>
-                    <div class="card-action">
-                        <button class="btn btn-outline-primary" onclick="fund()">View</button>
-                    </div>
-                </div>
-                <?php
-            }
+            $i=1;
+            foreach ($data as $value):
+                $id = $value->getRequestID();
+            ?>
+            <tr>
+                <td><?= $i++;?></td>
+                <td><?php echo $value->getRequestedBy()?></td>
+                <td><?php echo $value->getRequestedBy()?></td>
+                <td><?php echo Date::GetProperDate($value->getRequestedAt())?></td>
+                <td><?php echo $value->getType()?></td>
+                <td><?php echo $value->getBloodGroup()?></td>
+                <td><?php echo $value->getRequestStatus()?></td>
+                <td class="d-flex justify-content-center gap-0-5 align-items-center sticky right-0 bg-white">
+                    <button class="text-dark btn gap-0-5 btn-outline-success d-flex align-items-center justify-content-center" onclick="ViewBloodRequest('<?php echo $id ?>')" ><img src="/public/icons/eye.svg" width="24px" alt="">View</button>
+                    <button class="text-dark btn gap-0-5 btn-outline-info d-flex align-items-center justify-content-center" onclick="ApproveRequest('<?php echo $id ?>')" ><img src="/public/icons/checkCircle.svg" width="24px" alt="">Supply</button>
+                </td>
+            </tr>
+            <?php
+            endforeach;
             ?>
 
-        </div
+            </tbody>
+        </table>
     </div>
-    <script>
-    <?php
-    echo CardPane::GetLoaderJS();
-    ?>
-    </script>
-    <script src="/public/scripts/manager/demo.js"></script>
-    <script>
+    <div id="tableFooter" class="py-0-5 bg-white w-100 d-flex justify-content-end align-items-center">
+        <div class="d-flex">
+            <div class="d-flex align-items-center justify-content-center">
+                <div class="d-flex gap-1 align-items-center">
+                    <label for="page" class="search">Record Per Page</label>
+                    <select class="px-2 py-0-5" name="page" id="rpp" onchange="ChangeRecordsPerPage()">
+                        <?php
+                        $i=5;
+                        while ($i<20):
+                            /** @var int $rpp */
+                            if ((int)$rpp===$i):
+                                ?>
+                                <option selected value="<?=$i?>"><?=$i?></option>
+                            <?php
+                            else :
+                                ?>
+                                <option value="<?=$i?>"><?=$i?></option>
+                            <?php
+                            endif;
+                            ?>
+                            <?php
+                            $i=$i+5;
+                        endwhile;
+                        ?>
+                    </select>
+                </div>
+            </div>
+            <div class="d-flex align-items-center justify-content-center bg-white border-radius-10 " style="padding: 0.3rem 0.6rem">
+                <a href="<?=$getParams($_GET)?>page=<?=$current_page-1?>">
+                    <img src="/public/icons/chevron-left.svg" width="20rem">
+                </a>
+            </div>
+            <div class="d-flex align-items-center justify-content-center bg-white-0-5 border-radius-10 " style="padding: 0.3rem 0.6rem">
+                <a href="<?=$getParams($_GET)?>page=<?=$current_page+1?>">
+                    <img src="/public/icons/chevron-right.svg" width="20rem">
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
 
-
-        const fund = () => {
-            fetch('https://reqres.in/api/users?page=2', {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
+<script>
+    const  ViewBloodRequest = (id) => {
+        const url = `/manager/mngRequests/find`;
+        const formData = new FormData();
+        formData.append('id', id);
+        fetch(url, {
+            method: 'POST',
+            body: formData
+        }).then(response => response.json())
+            .then(data => {
+                console.log(data)
             })
-                .then(response => response.json())
-                .then(data => {
-                    console.log('Success:', data);
-                })
-                .catch((error) => {
-                    console.error('Error:', error);
-                });
-        }
-    </script>
+    }
+
+    const  ApproveRequest = (id) => {
+        console.log(id)
+    }
+</script>
+
 
 
 

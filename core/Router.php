@@ -72,8 +72,7 @@ class Router
 
         $callback=$this->route[$method][$path] ?? false;
         if(!$callback){
-            $this->response->setStatusCode(404);
-            echo "Error 404";
+            Application::Redirect('/login');
 //            throw new Exception();
         }
 //        if (is_string($callback)) {
@@ -93,6 +92,7 @@ class Router
 //        echo '<pre>';
 //        print_r($callback);
 //        exit();
+//        print_r($callback);
         return call_user_func($callback,$this->request,$this->response);
 
     }

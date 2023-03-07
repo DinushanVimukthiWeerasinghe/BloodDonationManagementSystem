@@ -141,7 +141,7 @@ class Sponsor extends Person
 
     public function getRole(): string
     {
-        return 'Sponsors';
+        return User::SPONSOR;
     }
 
     public function setID(string $ID): void

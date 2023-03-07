@@ -18,6 +18,7 @@ class BloodRequest extends dbModel
     protected string $Requested_At;
     protected int $Status=1;
     protected int $Type=1;
+    protected float $Volume = 0.0;
 
     /**
      * @return int
@@ -30,6 +31,8 @@ class BloodRequest extends dbModel
         };
     }
 
+
+
     /**
      * @param int $Type
      */
@@ -37,6 +40,24 @@ class BloodRequest extends dbModel
     {
         $this->Type = $Type;
     }
+
+    /**
+     * @return float
+     */
+    public function getVolume(): float
+    {
+        return $this->Volume;
+    }
+
+    /**
+     * @param float $Volume
+     */
+    public function setVolume(float $Volume): void
+    {
+        $this->Volume = $Volume;
+    }
+
+
 
     /**
      * @return string
@@ -133,6 +154,14 @@ class BloodRequest extends dbModel
         return $this->Status;
     }
 
+    public function getRequestStatus()
+    {
+        return match ($this->Status) {
+            self::REQUEST_STATUS_PENDING => 'Pending',
+            self::REQUEST_STATUS_FULFILLED => 'Fulfilled',
+        };
+    }
+
     /**
      * @param string $Status
      */
@@ -151,7 +180,9 @@ class BloodRequest extends dbModel
             'BloodGroup' => 'Blood Group',
             'RequestedBy' => 'Requested By',
             'Requested_At' => 'Requested At',
-            'Status' => 'Status'
+            'Status' => 'Status',
+            'Type' => 'Type',
+            'Volume' => 'Volume'
         ];
     }
 
@@ -163,7 +194,8 @@ class BloodRequest extends dbModel
             'RequestedBy' => [self::RULE_REQUIRED],
             'Requested_At' => [self::RULE_REQUIRED],
             'Status' => [self::RULE_REQUIRED],
-            'Type' => [self::RULE_REQUIRED]
+            'Type' => [self::RULE_REQUIRED],
+            'Volume' => [self::RULE_REQUIRED]
         ];
     }
 
@@ -190,7 +222,9 @@ class BloodRequest extends dbModel
             'RequestedBy',
             'Requested_At',
             'Status',
-            'Type'
+            'Type',
+            'Volume'
         ];
     }
+
 }

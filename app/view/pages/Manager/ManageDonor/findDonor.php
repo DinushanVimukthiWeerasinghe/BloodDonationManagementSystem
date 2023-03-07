@@ -127,21 +127,20 @@ echo $background;
             </div>
             <div class="d-flex text-2xl font-bold mb-1  bg-white border-radius-10 py-1 px-2">Actions</div>
             <div class="d-flex gap-1 justify-content-between text-center bg-white-0-3 border-radius-10 p-2" id="RecentDonation">
-                <div class="card card-xs bg-white">
+                <div class="card card-xs bg-success text-white cursor" style="width: 150px">
                     <div class="card-body">
                         <div class="d-flex justify-content-center" id="Name">
-                            <div>Send Message</div>
+                            <div>Contact Donor</div>
                         </div>
                     </div>
                 </div>
-                <div class="card card-xs bg-white">
+                <div class="card card-xs bg-success text-white cursor" style="width: 150px" >
                     <div class="card-body">
                         <div class="d-flex justify-content-center" id="Name">
-                            <div>Send Message</div>
+                            <div>Send An Email</div>
                         </div>
                     </div>
                 </div>
-
             </div>
 
         </div>

@@ -7,6 +7,7 @@ class Hospital extends Person
     protected string $Hospital_ID='';
     protected string $Hospital_Name='';
 
+
     /**
      * @return string
      */
@@ -27,6 +28,10 @@ class Hospital extends Person
     public function getID(): string
     {
         return $this->Hospital_ID;
+    }
+    public function getFullName(): string
+    {
+        return $this->Hospital_Name.' Hospital';
     }
 
     public function getRole(): string

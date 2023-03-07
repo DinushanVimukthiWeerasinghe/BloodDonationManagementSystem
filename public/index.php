@@ -7,9 +7,11 @@ use App\controller\blogController;
 use App\controller\donorController;
 use App\controller\fileController;
 use App\controller\OrganizationController;
+use App\controller\hospitalController;
 use App\controller\managerController;
 use App\controller\medicalOfficerController;
 use App\controller\siteController;
+use App\controller\sponsorController;
 use Core\Application;
 
 
@@ -20,7 +22,7 @@ $config=[
     'db'=>[
         'dsn'=>$_ENV['DB_DSN'],
         'user'=>$_ENV['DB_USER'],
-        'password'=>$_ENV['DB_PASSWORD']
+        'password'=>$_ENV['DB_PASSWORD'] ?? ''
     ],
     'email'=>[
         'host'=>$_ENV['EMAIL_HOST'],
@@ -29,8 +31,13 @@ $config=[
         'password'=>$_ENV['EMAIL_PASSWORD'],
         'encryption'=>$_ENV['EMAIL_ENCRYPTION'],
         'from'=>$_ENV['EMAIL_FROM']
-    ]
+    ],
+    'map'=>[
+        'key'=>$_ENV['MAP_API_KEY']
+    ],
 ];
+//Set Env Variables
+$MAP_API_KEY=$_ENV['MAP_API_KEY'];
 
 
 try {
@@ -50,8 +57,8 @@ $app->router->get('/about', [siteController::class, 'about']);
 $app->router->get('/loader', [siteController::class, 'Loader']);
 $app->router->get('/contact', [siteController::class, 'contact']);
 $app->router->post('/contact', [siteController::class, 'contact']);
-$app->router->get('/register', [authController::class, 'userRegister']);
-$app->router->post('/register', [authController::class, 'userRegister']);
+$app->router->get('/register', [authController::class, 'UserRegister']);
+$app->router->post('/register', [authController::class, 'UserRegister']);
 
 //Logout
 $app->router->get('/logout', [authController::class, 'logout']);
@@ -85,7 +92,6 @@ $app->router->post('/user/reActivateUser', [adminController::class, 'ReactivateU
 $app->router->post('/user/deactivateUser', [adminController::class, 'DeactivateUser']);
 $app->router->post('/user/activateUser', [adminController::class, 'ActivateUser']);
 $app->router->post('/user/searchUser', [adminController::class, 'SearchUser']);
-//TODO Delete this
 $app->router->get('/user/searchUser', [adminController::class, 'SearchUser']);
 
 $app->router->post('/upload', [fileController::class, 'upload']);
@@ -103,8 +109,6 @@ $app->router->post('/organization/inform', [OrganizationController::class, 'info
 $app->router->get('/organization/manage', [OrganizationController::class, 'manage']);
 $app->router->get('/organization/create', [OrganizationController::class, 'CreateCampaign']);
 $app->router->post('/organization/create', [OrganizationController::class, 'CreateCampaign']);
-$app->router->get('/organization/campaign/view', [OrganizationController::class, 'ViewCampaign']);
-$app->router->post('/organization/campaign/view', [OrganizationController::class, 'ViewCampaign']);
 $app->router->get('/organization/near', [OrganizationController::class, 'near']);
 $app->router->get('/organization/report', [OrganizationController::class, 'report']);
 $app->router->get('/organization/history', [OrganizationController::class, 'history']);
@@ -119,41 +123,57 @@ $app->router->get('/organization/campaign/view', [OrganizationController::class,
 
 //sponsor
 
-$app->router->get('/sponsors/dashboard', [\App\controller\sponsorController::class, 'dashboard']);
-$app->router->get('/sponsors/history', [\App\controller\sponsorController::class, 'history']);
-$app->router->get('/sponsors/manage', [\App\controller\sponsorController::class, 'manage']);
-$app->router->get('/sponsors/donation', [\App\controller\sponsorController::class, 'donation']);
-$app->router->get('/sponsors/campDetails', [\App\controller\sponsorController::class, 'campDetails']);
-$app->router->get('/sponsors/guideline', [\App\controller\sponsorController::class, 'guideline']);
+$app->router->get('/sponsor/dashboard', [sponsorController::class, 'dashboard']);
+$app->router->get('/sponsor/history', [sponsorController::class, 'history']);
+$app->router->get('/sponsor/manage', [sponsorController::class, 'manage']);
+$app->router->get('/sponsor/donation', [sponsorController::class, 'donation']);
+$app->router->get('/sponsor/campDetails', [sponsorController::class, 'campDetails']);
+$app->router->get('/sponsor/guideline', [sponsorController::class, 'guideline']);
+
+$app->router->get('/gmp', [siteController::class, 'gmap']);
+
 
 
 // Manager Register
 $app->router->get('/manager/register', [managerController::class, 'register']);
+$app->router->get('/manager/notification', [managerController::class, 'ManageNotification']);
 $app->router->post('/manager/register', [managerController::class, 'register']);
 
 //Manager Dashboard
 $app->router->get('/manager/dashboard', [managerController::class, 'dashboard']);
 $app->router->get('/manager/profile', [managerController::class, 'Profile']);
-$app->router->get('/manager/notification', [managerController::class, 'Notification']);
 
 
 $app->router->get('/manager/mngMedicalOfficer', [managerController::class, 'ManageMedicalOfficer']);
 
 $app->router->get('/manager/mngMedicalOfficer/add', [managerController::class, 'AddMedicalOfficer']);
 $app->router->post('/manager/mngMedicalOfficer/add', [managerController::class, 'AddMedicalOfficer']);
+$app->router->post('/manager/mngMedicalOfficer/delete', [managerController::class, 'DeleteMedicalOfficer']);
+$app->router->get('/manager/mngCampaign/assignTeam', [managerController::class, 'AssignTeam']);
+$app->router->post('/manager/mngCampaign/assignTeam', [managerController::class, 'AssignTeam']);
 
-$app->router->get('/manager/mngMedicalOfficer/search', [managerController::class, 'SearchMedicalOfficer']);
+$app->router->post('/manager/mngMedicalOfficer/search', [managerController::class, 'SearchMedicalOfficer']);
+$app->router->post('/manager/mngMedicalOfficer/search-for-team', [managerController::class, 'SearchMedicalOfficerForTeam']);
 
 $app->router->get('/manager/mngRequests', [managerController::class, 'ManageRequests']);
 $app->router->post('/manager/mngRequests', [managerController::class, 'ManageRequests']);
+$app->router->post('/manager/mngRequests/find', [managerController::class, 'FindRequest']);
 $app->router->get('/manager/mngRequests/er', [managerController::class, 'ManageEmergencyRequests']);
 
-$app->router->get('/manager/mngCampaign/view', [managerController::class, 'ViewCampaign']);
 $app->router->post('/manager/mngCampaign/view', [managerController::class, 'ViewCampaign']);
+$app->router->post('/manager/mngCampaign/reject', [managerController::class, 'RejectCampaign']);
+$app->router->post('/manager/mngCampaign/accept', [managerController::class, 'AcceptCampaign']);
+$app->router->get('/manager/mngCampaign/assign-team', [managerController::class, 'AssignTeam']);
+$app->router->post('/manager/mngCampaign/assignTeam/assign', [managerController::class, 'AssignTeamMember']);
+$app->router->post('/manager/mngCampaign/assignTeam/remove', [managerController::class, 'RemoveTeamMember']);
 
 
-$app->router->get('/manager/mngSponsorship', [managerController::class, 'ManageSponsors']);
-$app->router->post('/manager/mngSponsorship', [managerController::class, 'ManageSponsors']);
+$app->router->get('/manager/mngSponsors', [managerController::class, 'ManageSponsors']);
+$app->router->post('/manager/mngSponsors', [managerController::class, 'ManageSponsors']);
+
+$app->router->get('/manager/mngSponsorship', [managerController::class, 'ManageSponsorship']);
+$app->router->post('/manager/mngSponsorship', [managerController::class, 'ManageSponsorship']);
+
 
 $app->router->get('/manager/mngDonors', [managerController::class, 'ManageDonors']);
 $app->router->post('/manager/mngDonors', [managerController::class, 'ManageDonors']);
@@ -170,33 +190,92 @@ $app->router->post('/manager/upload', [managerController::class, 'upload']);
 
 
 //View Medical Officer
-$app->router->get('/manager/mngMedicalOfficer/view', [managerController::class, 'ViewMedicalOfficer']);
-$app->router->post('/manager/mngMedicalOfficer/view', [managerController::class, 'ViewMedicalOfficer']);
+//$app->router->get('/manager/mngMedicalOfficer/view', [managerController::class, 'ViewMedicalOfficer']);
+$app->router->post('/manager/mngMedicalOfficer/get', [managerController::class, 'ViewMedicalOfficer']);
+$app->router->post('/manager/mngMedicalOfficer/update', [managerController::class, 'UpdateMedicalOfficer']);
+$app->router->post('/manager/mngMedicalOfficer/sendEmail', [managerController::class, 'SendEmail']);
+$app->router->get('/manager/mngMedicalOfficer/sendEmail', [managerController::class, 'SendEmail']);
 
 //Manage Donors
 
 //Find Donor
 $app->router->get('/manager/mngDonors/find', [managerController::class, 'FindDonor']);
+$app->router->post('/manager/mngDonors/Search', [managerController::class, 'SearchDonor']);
 $app->router->post('/manager/mngDonors/find', [managerController::class, 'FindDonor']);
 $app->router->post('/manager/mngDonors/isExist', [managerController::class, 'IsDonorExist']);
 $app->router->get('/manager/mngDonors/reportedDonor', [managerController::class, 'ReportedDonor']);
 $app->router->get('/manager/mngDonors/informDonor', [managerController::class, 'InformDonor']);
 $app->router->post('/manager/mngDonors/informDonor', [managerController::class, 'InformDonor']);
 //$app->router->post('/manager/mngDonors/find', [managerController::class, 'FindDonor']);
-
+$app->router->get('/manager/mngRequests/emergency', [managerController::class, 'ManageEmergencyRequests']);
 
 //Medical Officer
 $app->router->get('/medicalofficer/dashboard', [medicalOfficerController::class, 'Dashboard']);
+$app->router->get('/medicalofficer/notification', [medicalOfficerController::class, 'getNotification']);
 
 //Manage Requests
-$app->router->get('/manager/mngRequests/emergency', [managerController::class, 'ManageEmergencyRequests']);
-$app->router->get('/medicalofficer/assignedCampaign', [medicalOfficerController::class, 'CampaignAssignment']);
-$app->router->get('/medicalofficer/verifyDonor', [medicalOfficerController::class, 'VerifyDonor']);
+
+$app->router->get('/mofficer/campaigns', [medicalOfficerController::class, 'ManageCampaigns']);
+$app->router->post('/mofficer/changepassword', [medicalOfficerController::class, 'ChangePassword']);
+$app->router->post('/mofficer/stat', [medicalOfficerController::class, 'GetStatistics']);
+$app->router->post('/mofficer/changeProfile', [medicalOfficerController::class, 'ChangeProfileImage']);
+$app->router->get('/mofficer/history', [medicalOfficerController::class, 'ManageHistory']);
+$app->router->get('/mofficer/donors', [medicalOfficerController::class, 'ManageDonors']);
+$app->router->get('/mofficer/take-donation', [medicalOfficerController::class, 'ManageDonation']);
+$app->router->post('/mofficer/take-donation', [medicalOfficerController::class, 'ManageDonation']);
+$app->router->get('/mofficer/donation', [medicalOfficerController::class, 'ManageDonation']);
+$app->router->post('/mofficer/startBloodDonation', [medicalOfficerController::class, 'StartDonation']);
+$app->router->post('/mofficer/medicalteam/allocateTask', [medicalOfficerController::class, 'AssignTasks']);
+$app->router->post('/mofficer/CompleteDonation', [medicalOfficerController::class, 'CompleteDonation']);
+$app->router->get('/mofficer/AbortDonation', [medicalOfficerController::class, 'AbortDonation']);
+$app->router->get('/mofficer/searchdonor', [medicalOfficerController::class, 'SearchDonor']);
+$app->router->post('/mofficer/registerDonor', [medicalOfficerController::class, 'RegisterDonor']);
+$app->router->post('/mofficer/registerDonorForCampaign', [medicalOfficerController::class, 'RegisterDonorForCampaign']);
+//$app->router->get('/mofficer/campaigns', [medicalOfficerController::class, 'VerifyDonor']);
 $app->router->post('/medicalofficer/get-donor', [medicalOfficerController::class, 'FindDonor']);
 //$app->router->post('/manager/mngRequests/emergency', [managerController::class, 'FindRequests']);
 
 
 $app->router->get('/api/bbank/getall', [apiController::class, 'getBloodBanks']);
+
+//Hospital login
+$app->router->get('/hospital/login', [hospitalController::class, 'login']);
+$app->router->post('/hospital/login', [hospitalController::class, 'login']);
+$app->router->get('/hospital/dashboard', [hospitalController::class, 'dashboard']);
+$app->router->post('/hospital/dashboard', [hospitalController::class, 'dashboard']);
+$app->router->get('/hospital/emergencyRequest', [hospitalController::class, 'emergencyRequest']);
+$app->router->post('/hospital/emergencyRequest', [hospitalController::class, 'emergencyRequest']);
+$app->router->get('/hospital/bloodRequest', [hospitalController::class, 'bloodRequest']);
+$app->router->post('/hospital/bloodRequest', [hospitalController::class, 'bloodRequest']);
+
+$app->router->get('/hospital/donors', [hospitalController::class, 'donors']);
+$app->router->post('/hospital/donors', [hospitalController::class, 'donors']);
+$app->router->get('/hospital/donors/find', [hospitalController::class, 'FindDonor']);
+
+$app->router->get('/hospital/emergencyRequest/addRequest', [hospitalController::class, 'addEmergencyRequest']);
+$app->router->post('/hospital/emergencyRequest/addRequest', [hospitalController::class, 'addEmergencyRequest']);
+$app->router->get('/hospital/emergencyRequest/history', [hospitalController::class, 'emergencyRequestHistory']);
+$app->router->post('/hospital/emergencyRequest/history', [hospitalController::class, 'emergencyRequestHistory']);
+// Donor
+$app->router->get('/donor/dashboard', [donorController::class, 'dashboard']);
+$app->router->get('/about', [siteController::class, 'about']);
+$app->router->get('/donor', [donorController::class, 'home']);
+$app->router->get('/donor/login', [donorController::class, 'login']);
+$app->router->post('/donor/login', [donorController::class, 'login']);
+$app->router->get('/donor/signup', [donorController::class, 'signup']);
+$app->router->post('/donor/signup', [donorController::class, 'signup']);
+$app->router->get('/donor/profile', [donorController::class, 'profile']);
+$app->router->get('/donor/register',[donorController::class, 'register']);
+$app->router->post('/donor/register', [donorController::class, 'register']);
+$app->router->get('/donor/guideline', [donorController::class, 'guideline']);
+$app->router->get('/donor/history', [donorController::class, 'history']);
+$app->router->get('/donor/nearby', [donorController::class, 'nearby']);
+
+
+$app->router->get('/hospital/bloodRequest/addRequest', [hospitalController::class, 'addBloodRequest']);
+$app->router->post('/hospital/bloodRequest/addRequest', [hospitalController::class, 'addBloodRequest']);
+$app->router->get('/hospital/bloodRequest/history', [hospitalController::class, 'bloodRequestHistory']);
+$app->router->post('/hospital/bloodRequest/history', [hospitalController::class, 'bloodRequestHistory']);
 
 
 //Blogs
@@ -205,5 +284,4 @@ $app->router->post('/blog/delete', [blogController::class, 'DeleteBlog']);
 $app->router->post('/blog/update', [blogController::class, 'UpdateBlog']);
 
 
-//print_r($_SESSION);
 $app->run();

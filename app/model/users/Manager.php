@@ -9,6 +9,8 @@ class Manager extends Person
 {
 
     protected string $Manager_ID='';
+    protected string $Joined_At='';
+    protected string $BloodBank_ID='';
 
     public function getID():string
     {

@@ -20,3 +20,7 @@ if (mediaQuery.matches)
         window.location.href = '/manager/mngMedicalOfficer/add';
     })
 }
+
+const RedirectSponsor = (is)=>{
+    window.location.href = "/manager/mngSponsors/find?id="+id;
+}

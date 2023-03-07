@@ -17,30 +17,37 @@ class FlashMessage
         return <<<HTML
             <div class="alert alert-success alert-white rounded">
                 <button type="button" class="close" data-dismiss="alert" aria-hidden="true" onclick="closeAlert()">×</button>
-                <div class="icon"><i class="fa fa-check"></i></div>
-                <strong>Success!</strong> $message
+                <div class="d-flex flex-row gap-1">
+                    <div class="icon"><i class="fa fa-check"></i></div>
+                    <strong>Success!</strong> 
+                    <span>$message</span>
+                </div>
             </div>
         HTML;
     }
 
-    public static function InfoAlert()
+    public static function InfoAlert(): string
     {
         return <<<HTML
             <div class="alert alert-info rounded">
                 <button type="button" class="close" data-dismiss="alert" aria-hidden="true" onclick="closeAlert()">×</button>
-                <div class="icon"><i class="fa fa-info-circle"></i></div>
-                <strong>Info!</strong> You have 3 new messages in your inbox.
+                <div class="d-flex flex-row gap-1">
+                    <div class="icon"><i class="fa fa-info-circle"></i></div>
+                    <strong>Info!</strong> You have 3 new messages in your inbox.
+                </div>
             </div>
         HTML;
     }
 
-    public static function ErrorAlert(string $errMsg)
+    public static function ErrorAlert(string $errMsg): string
     {
         return <<<HTML
             <div class="alert alert-danger rounded">
                 <button type="button" class="close" data-dismiss="alert" aria-hidden="true" onclick="closeAlert()">×</button>
-                <div class="icon"><i class="fa fa-times-circle"></i></div>
-                <strong>Error!</strong> $errMsg
+                <div class="d-flex flex-row gap-1">
+                    <div class="icon"><i class="fa fa-times-circle"></i></div>
+                    <span>$errMsg</span>
+                </div>
             </div>
         HTML;
     }
@@ -50,6 +57,7 @@ class FlashMessage
         $output = '';
         if (self::IsAlerted()) {
             foreach ($_SESSION['flash_messages'] as $key=>$message) {
+
                 switch ($key){
                     case 'success':
                         $output.= self::SuccessAlert($message['value']);
@@ -62,25 +70,29 @@ class FlashMessage
                         break;
                 }
             }
-           $js=self::DestroyAlert();
+            $js=self::DestroyAlert();
             unset($_SESSION['flash_messages']);
             $output.= "<script>{$js}</script>";
-              echo $output;
+            echo $output;
+
         }
     }
 
-    public static function DestroyAlert(){
+    public static function DestroyAlert(): string
+    {
         return <<<JS
             const alert=document.getElementsByClassName('alert')[0]
             alert.classList.add('fade-in')
             setTimeout(()=>{
                 alert.classList.remove('fade-in')
                 alert.classList.add('fade-out')
+                alert.remove() ;
             },5000)
-            
+
             const closeAlert=()=>{
                 alert.classList.remove('fade-in')
                 alert.classList.add('fade-out')
+                alert.remove() 
             }
         JS;
 

@@ -1,5 +1,4 @@
-<link rel="stylesheet" href="/public/css/home.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
 <div class="dark-bg"></div>
 <?php
 
@@ -10,7 +9,7 @@ $navbar= new Navbar([
     'Home'=>'/home',
     'Services'=>'#service-panel',
     'Contact'=>'#contact-us-panel',
-    'Register'=>'/user/register'
+    'Register'=>'/register'
 ],'#','/public/images/icons/user.png','');
 echo $navbar;
 echo AuthNavbar::getNavbarJS();
@@ -30,10 +29,10 @@ echo AuthNavbar::getNavbarJS();
                     <img src="/public/images/bd-home.png" alt="">
                 </div>
             </div>
-            <div class="nav-card">
-                <a href="#intro-panel" class="card btn btn-primary">Why Donation</a>
-                <a href="#organize-camp-panel" class="card btn btn-primary">Organize Blood Camp</a>
-                <a href="#service-panel" class="card btn btn-primary">Our Services</a>
+            <div class="d-flex">
+                <a href="#intro-panel" class="nav-card n-card btn btn-primary">Why Donation</a>
+                <a href="#organize-camp-panel" class="nav-card n-card btn btn-primary">Organize<br> Blood Camp</a>
+                <a href="#service-panel" class="nav-card n-card btn btn-primary">Our Services</a>
             </div>
 
         </div>
@@ -62,7 +61,7 @@ echo AuthNavbar::getNavbarJS();
                 <div id="caption">
                     <div class="tagline">Organize Blood Campaign</div>
                     <span class="desc">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Error ex optio qui ratione ullam. Adipisci amet architecto aut culpa cum delectus dicta dolorem, enim impedit iste itaque placeat possimus quasi qui quidem quod quos rem tempora, unde veniam. Debitis molestias nisi vel? Asperiores, optio, quaerat!</span>
-                    <a id="donate-btn" href="#donate-panel" class="btn btn-primary">Organize Camp </a>
+                    <a id="donate-btn" href="/register?role=organization" class="btn btn-primary">Organize Blood Campaign </a>
                 </div>
                 <div class="desc-image">
                     <img src="/public/images/bd-home.png" alt="">
@@ -78,7 +77,11 @@ echo AuthNavbar::getNavbarJS();
                 </div>
                 <div id="caption">
                     <div class="tagline">Importance Of Blood</div>
-                    <span class="desc">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Error ex optio qui ratione ullam. Adipisci amet architecto aut culpa cum delectus dicta dolorem, enim impedit iste itaque placeat possimus quasi qui quidem quod quos rem tempora, unde veniam. Debitis molestias nisi vel? Asperiores, optio, quaerat!</span>
+                    <span class="desc">
+                        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Error ex optio qui ratione ullam.
+                        Adipisci amet architecto aut culpa cum delectus dicta dolorem, enim impedit iste itaque placeat
+                        possimus quasi qui quidem quod quos rem tempora, unde veniam. Debitis molestias nisi vel? Asperiores, optio, quaerat!
+                    </span>
                 </div>
             </div>
         </div>
@@ -181,25 +184,48 @@ echo AuthNavbar::getNavbarJS();
 
     <section id="service-panel" class="panel">
         <div class="sub-panel d-flex-row">
-            <div class="intro">
-                <div id="caption">
-                    <div class="tagline">Our Services</div>
-                    <div class="serv-list">
-<!--                        <div class="service">-->
-<!--                            <div class="srv-img"><img src="/public/images/campaign.png" alt="" width="200px"></div>-->
-<!--                            <div class="srv-desc">Manage Campaign</div>-->
-<!--                        </div>-->
-                        <div class="service">
-                            <div class="srv-img"><img src="/public/images/realtime.png" alt="" width="200px"></div>
-                            <div class="srv-desc">Manage Campaign</div>
+            <div class="d-flex flex-column align-items-center w-100 justify-content-center gap-1">
+                    <div class="text-xl font-bold p-3 bg-white border-radius-10">Our Major Services</div>
+                    <div class="d-flex flex-wrap align-items-center justify-content-center text-dark">
+                        <div class="card">
+                            <div class="card-header flex-column">
+                                <img src="/public/images/realtime.png" alt="" width="200px">
+                                <div class="text-xl">Donor Management</div>
+                            </div>
                         </div>
-                        <div class="service">
-                            <div class="srv-img"><img src="/public/images/24hour.png" alt="" width="200px"></div>
-                            <div class="srv-desc">Manage Campaign</div>
+                        <div class="card">
+                            <div class="card-header flex-column">
+                                    <img src="/public/images/24hour.png" alt="" width="200px">
+                                <div class="text-xl">Blood transfusion management</div>
+                            </div>
                         </div>
+                        <div class="card">
+                            <div class="card-header flex-column">
+                                    <img src="/public/images/24hour.png" alt="" width="200px">
+                                <div class="text-xl">Reporting and analytics</div>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-header flex-column">
+                                    <img src="/public/images/24hour.png" alt="" width="200px">
+                                <div class="text-xl">Mobile and web access</div>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-header flex-column">
+                                    <img src="/public/images/24hour.png" alt="" width="200px">
+                                <div class="text-xl">Communication and notification</div>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-header flex-column">
+                                    <img src="/public/images/24hour.png" alt="" width="200px">
+                                <div class="text-xl">Compliance and regulatory support</div>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
-            </div>
         </div>
     </section>
     <section id="contact-us-panel" class="panel">

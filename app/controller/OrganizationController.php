@@ -2,6 +2,7 @@
 
 namespace App\controller;
 
+use App\middleware\organizationMiddleware;
 use App\model\Authentication\Login;
 use App\model\BloodBankBranch\BloodBank;
 use App\model\database\dbModel;
@@ -31,6 +32,8 @@ class OrganizationController extends Controller
     public function __construct()
     {
         $this->setLayout('Organization');
+        $this->registerMiddleware(new organizationMiddleware(['dashboard'], BaseMiddleware::FORBIDDEN_ROUTES));
+
 //        $this->registerMiddleware(new AuthenticationMiddleware(['login','register'], BaseMiddleware::ALLOWED_ROUTES));
 //        $this->registerMiddleware(new ManagerMiddleware());
     }
@@ -188,6 +191,7 @@ class OrganizationController extends Controller
             $inform->setMessageID($id);
             $inform->setCampaignID($_GET['id']);
             $inform->setStatus($inform::PENDING);
+
             if($inform->validate()) {
                 if($inform->save()) {
                     $response->redirect('/organization/inform?id=' . $_GET['id']);

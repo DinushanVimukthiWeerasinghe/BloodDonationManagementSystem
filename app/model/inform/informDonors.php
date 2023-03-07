@@ -47,7 +47,7 @@ class informDonors extends dbModel
     public static function tableName(): string
     {
         // TODO: Implement tableName() method.
-        return 'inform_donors';
+        return 'Inform_Donors';
     }
 
     /**

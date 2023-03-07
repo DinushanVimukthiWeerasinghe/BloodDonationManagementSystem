@@ -3,11 +3,14 @@
 namespace App\model\Campaigns;
 
 use App\model\database\dbModel;
+use App\model\MedicalTeam\MedicalTeam;
 
 class Campaign extends dbModel
 {
     public const PENDING = 1;
     public const APPROVED = 2;
+    public const REJECTED = 3;
+    public const VERIFIED = 1;
     protected string $Campaign_ID='';
     protected string $Organization_ID='';
     protected string $Expected_Amount='';
@@ -19,13 +22,15 @@ class Campaign extends dbModel
     protected string $Nearest_City='';
     protected int $Status=1;
     protected string $Nearest_BloodBank='';
-    protected int $Verified=0;
+    protected int $Verified=1;
     protected ?string $Verified_By=null;
     protected ?string $Verified_At=null;
-    protected ?string $Assigned_Team=null;
     protected ?string $Remarks=null;
     protected string $Created_At='';
     protected ?string $Updated_At=null;
+    protected ?string $Longitude=null;
+    protected ?string $Latitude=null;
+
 
     /**
      * @return string
@@ -50,6 +55,39 @@ class Campaign extends dbModel
     {
         $this->Organization_ID = $Organization_ID;
     }
+
+    /**
+     * @return string|null
+     */
+    public function getLongitude(): ?string
+    {
+        return $this->Longitude;
+    }
+
+    /**
+     * @param string|null $Longitude
+     */
+    public function setLongitude(?string $Longitude): void
+    {
+        $this->Longitude = $Longitude;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getLatitude(): ?string
+    {
+        return $this->Latitude;
+    }
+
+    /**
+     * @param string|null $Latitude
+     */
+    public function setLatitude(?string $Latitude): void
+    {
+        $this->Latitude = $Latitude;
+    }
+
 
     /**
      * @param string $Campaign_ID
@@ -107,6 +145,11 @@ class Campaign extends dbModel
         $this->Campaign_Date = $Campaign_Date;
     }
 
+    public function IsVerified()
+    {
+        return $this->Verified;
+    }
+
     /**
      * @return string
      */
@@ -149,7 +192,7 @@ class Campaign extends dbModel
 
     public function getCampaignStatus():string
     {
-        return match ($this->Status){
+        return match ($this->Verified){
             self::PENDING =>' Pending Approval',
             self::APPROVED => 'Campaign Approved',
             default => 'Unknown'
@@ -231,18 +274,19 @@ class Campaign extends dbModel
     /**
      * @return string
      */
-    public function getAssignedTeam(): string
+    public function getAssignedTeam(): MedicalTeam | string
     {
-        return $this->Assigned_Team;
+        /** @var MedicalTeam $MedicalTeam */
+        $MedicalTeam=MedicalTeam::findOne(['Campaign_ID'=>$this->Campaign_ID]);
+        if ($MedicalTeam)
+            return $MedicalTeam;
+        else
+            return 'Not Assigned';
     }
 
     /**
      * @param string $Assigned_Team
      */
-    public function setAssignedTeam(string $Assigned_Team): void
-    {
-        $this->Assigned_Team = $Assigned_Team;
-    }
 
     /**
      * @return string
@@ -336,7 +380,7 @@ class Campaign extends dbModel
         return [
             'Campaign_ID' => [self::RULE_REQUIRED],
             'Campaign_Name' => [self::RULE_REQUIRED],
-//            'Campaign_Description' => [self::RULE_REQUIRED],
+            'Campaign_Description' => [self::RULE_REQUIRED],
             'Campaign_Date' => [self::RULE_REQUIRED],
             'Venue' => [self::RULE_REQUIRED],
             'Nearest_City' => [self::RULE_REQUIRED],
@@ -347,12 +391,12 @@ class Campaign extends dbModel
 
     public static function getTableShort(): string
     {
-        return 'campaign';
+        return 'Campaign';
     }
 
     public static function tableName(): string
     {
-        return 'campaign';
+        return 'Campaign';
     }
 
     public static function PrimaryKey(): string
@@ -367,7 +411,7 @@ class Campaign extends dbModel
             'Package_ID',
             'Organization_ID',
             'Campaign_Name',
-//            'Campaign_Description',
+            'Campaign_Description',
             'Campaign_Date',
             'Venue',
             'Nearest_City',
@@ -381,6 +425,8 @@ class Campaign extends dbModel
             'Created_At',
             'Updated_At',
             'Expected_Amount',
+            'Latitude',
+            'Longitude'
         ];
     }
 

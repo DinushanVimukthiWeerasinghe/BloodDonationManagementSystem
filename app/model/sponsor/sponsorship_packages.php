@@ -31,7 +31,7 @@ class sponsorship_packages extends \App\model\database\dbModel
     public static function tableName(): string
     {
         // TODO: Implement tableName() method.
-        return 'sponsorship_packages';
+        return 'Sponsorship_Packages';
     }
 
     public static function PrimaryKey(): string

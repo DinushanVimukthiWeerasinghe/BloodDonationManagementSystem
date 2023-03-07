@@ -31,16 +31,19 @@
     padding: 1rem;
     text-align: center;
 }
-.dialog-box-outer .dialog-box .dialog-box-content select {
-    padding: 1rem;
-    border: 1px solid #000000;
-}
 
 .dialog-box-outer .dialog-box .dialog-box-action {
     display: flex;
     justify-content: center;
     align-items: center;
     gap: 1rem;
+}
+.dialog-box-outer .dialog-box .dialog-box-footer{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
 }
 
 @media screen and (max-width: 768px) {

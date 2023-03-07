@@ -16,6 +16,7 @@ class authController extends Controller
 
     public function __construct()
     {
+        $this->setLayout('auth');
         if (Application::$app->getUser()) {
 
             $role = Application::$app->getUser()->getRole();
@@ -96,19 +97,19 @@ class authController extends Controller
         if ($request->isPost()) {
             $login->loadData($request->getBody());
             if ($login->validate()) {
-                if(!$login->SecurityCheck()){
-                    $this->setFlashMessage('error',$login->errors['account'][0]);
-                    return $this->render('Authentication/UserLogin',['model'=>$login]);
-                }
-                $user = $login->ValidateOTP();
-                if (!$user) {
-                    print_r("Not Login");
-                }
-                if ($user===true){
 
-                    Application::Redirect('/organization/dashboard');
+
+                $user = $login->login();
+//                var_dump($user);
+//                exit();
+                if (!$user) {
+                    $this->setFlashMessage('error', 'Invalid Credentials');
+                    Application::Redirect('/login');
                 }
-                return $this->render('Authentication/OTPAuthentication');
+                if ($user === true){
+                    Application::Redirect('/' . strtolower(Application::$app->getUser()->getRole()) . '/dashboard');
+                }
+//                return $this->render('Authentication/OTPAuthentication');
 
             } else {
                 print_r("Not Login");
@@ -141,12 +142,14 @@ class authController extends Controller
             }
         }
         else{
-            $Role= $request->getBody()['type'] ?? 'Donor';
-            $ValidRole= match ($Role) {
-                'Organization' => User::ORGANIZATION,
-                'Sponsor' => User::SPONSOR,
-                default => User::DONOR
+            $Role= $request->getBody()['role'] ?? 'Donor';
+
+            $ValidRole= match (strtolower($Role)) {
+                'organization' => strtolower(User::ORGANIZATION),
+                'sponsor' => strtolower(User::SPONSOR),
+                default => strtolower(User::DONOR)
             };
+            $ValidRole = ucfirst($ValidRole);
             return $this->render('Authentication/UserRegister',[
                 'model'=>$user,
                 'role'=>$ValidRole

@@ -1,3 +1,14 @@
+.w-inherit{
+    width: inherit;
+}
+.w-auto{
+    width: auto;
+}
+.w-100vw{
+    width: 100vw;
+}
+
+
 .w-100{
     width: 100%;
 }
@@ -55,8 +66,14 @@
 .w-10{
     width: 10%;
 }
+.w-12vw{
+    width: 12vw;
+}
 .w-5{
     width: 5%;
+}
+.w-200px{
+    width: 200px;
 }
 
 
@@ -249,6 +266,9 @@
 .max-h-80{
     max-height: 80%;
 }
+.max-h-80vh{
+    max-height: 80vh;
+}
 .max-h-75{
     max-height: 75%;
 }
@@ -358,6 +378,12 @@
 }
 
 /*Min Height*/
+.min-h-92vh{
+    min-height: 92vh;
+}
+.min-h-100vh{
+    min-height: 100vh;
+}
 .min-h-100{
     min-height: 100%;
 }

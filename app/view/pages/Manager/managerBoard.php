@@ -1,47 +1,59 @@
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w==" crossorigin="anonymous" referrerpolicy="no-referrer" /> <?php
-/* @var string $firstName */
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
-/* @var string $lastName */
-
-use App\view\components\ResponsiveComponent\Alert\FlashMessage;
-use App\view\components\ResponsiveComponent\CardGroup\CardGroup;
-use App\view\components\ResponsiveComponent\ImageComponent\BackGroundImage;
-use App\view\components\ResponsiveComponent\NavbarComponent\AuthNavbar;
-
-$navbar = new AuthNavbar('Manager Board', '/manager', '/public/images/icons/user.png', true,false );
-echo $navbar;
-
-use App\view\components\WebComponent\Card\Card;
-
-echo Card::ImportJS();
-//echo Card::ImportCSS();
-
-/* @var Manager $user */
-
-use App\model\users\Manager;
-
-use App\view\components\WebComponent\Card\NavigationCard;
-
-$ManageRequestCard = new NavigationCard('/manager/mngRequests', '/public/images/icons/manager/dashboard/requests.png', 'Manage Request');
-$ManageDonorsCard = new NavigationCard('/manager/mngDonors', '/public/images/icons/manager/dashboard/donor.png', 'Manage Donors');
-$ManageSponsorshipCard = new NavigationCard('/manager/mngSponsorship', '/public/images/icons/manager/dashboard/sponsors.png', 'Manage Sponsors');
-$ManageMedicalOfficerCard = new NavigationCard('/manager/mngMedicalOfficer', '/public/images/icons/manager/dashboard/MedicalOfficer.png', 'Manage Medical Officer');
-$ManageCampaignCard = new NavigationCard('/manager/mngCampaigns', '/public/images/icons/manager/dashboard/camp.png', 'Manage Campaigns');
-$ManageReportCard = new NavigationCard('/manager/mngReport', '/public/images/icons/manager/dashboard/report.png', 'Manage Report');
-$background = new BackGroundImage();
-
-echo $background;
-FlashMessage::RenderFlashMessages();
-echo CardGroup::CardPanel();
-echo $ManageRequestCard;
-echo $ManageDonorsCard;
-echo $ManageSponsorshipCard;
-echo $ManageMedicalOfficerCard;
-echo $ManageCampaignCard;
-echo $ManageReportCard;
-echo CardGroup::CloseCardPanel();
+<?php
 
 ?>
+<div class="w-95 h-95 mt-2 d-flex">
+    <div class="w-65 bg-white">
+        <div id="stat" class="d-flex flex-column justify-content-center align-items-center">
+            <div class="text-2xl font-bold">Statistics</div>
+            <div class="d-flex justify-content-center align-items-center">
+                <div class="card card-xs gap-1">
+                    <div class="card-header">
+                        <div class="text-2xl font-bold">1000</div>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex justify-content-center align-items-center">
+                            <div class=""> Donors</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card card-xs gap-1">
+                    <div class="card-header">
+                        <div class="text-2xl font-bold">1000</div>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex justify-content-center align-items-center">
+                            <div class=""> Donations</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card card-xs gap-1">
+                    <div class="card-header">
+                        <div class="text-2xl font-bold">1000</div>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex justify-content-center align-items-center">
+                            <div class=""> Campaigns</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card card-xs gap-1">
+                    <div class="card-header">
+                        <div class="text-2xl font-bold">1000</div>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex justify-content-center align-items-center">
+                            <div class=""> Blood Bags</div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
 
 
 

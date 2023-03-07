@@ -78,6 +78,15 @@ abstract class Email
         $this->body = $body;
     }
 
+    /**
+     * @throws Exception
+     */
+    public function AddAttachment($file)
+    {
+        $this->mailer->addAttachment($file);
+
+    }
+
 
     /**
      * @throws Exception
