@@ -2,6 +2,7 @@ const OpenDialogBox= (props) => {
     const {
         id,
         title,
+        titleClass,
         content,
         closeDialog,
         successBtnText,
@@ -32,6 +33,9 @@ const OpenDialogBox= (props) => {
     }
     const dialogBoxTitle = document.createElement('div');
     dialogBoxTitle.className = 'dialog-box-title';
+    if (titleClass){
+        dialogBoxTitle.className += ' '+titleClass;
+    }
     if (title) {
         dialogBoxTitle.innerHTML = title;
     } else {

@@ -1,3 +1,14 @@
+.w-inherit{
+    width: inherit;
+}
+.w-auto{
+    width: auto;
+}
+.w-100vw{
+    width: 100vw;
+}
+
+
 .w-100{
     width: 100%;
 }

@@ -7,6 +7,7 @@ use App\model\database\dbModel;
 class ApprovedCampaigns extends dbModel
 {
     protected string $Campaign_ID='';
+    protected string $Approved_By='';
     public function labels(): array
     {
         // TODO: Implement labels() method.

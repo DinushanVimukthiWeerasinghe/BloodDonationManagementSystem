@@ -180,6 +180,7 @@ class OrganizationController extends Controller
             $inform->setMessageID($id);
             $inform->setCampaignID($_GET['id']);
             $inform->setStatus($inform::PENDING);
+
             if($inform->validate()) {
                 if($inform->save()) {
                     $response->redirect('/organization/inform?id=' . $_GET['id']);

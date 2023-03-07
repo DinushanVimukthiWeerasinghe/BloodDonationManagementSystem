@@ -379,6 +379,7 @@ class medicalOfficerController extends \Core\Controller
                 }
             }
             else if ($type===TeamMembers::TASK_BLOOD_RETRIEVAL){
+                var_dump("Blood Retrieval");
 
 
             }

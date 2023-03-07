@@ -61,7 +61,7 @@ FlashMessage::RenderFlashMessages();
             </div>
         </div>
     </div>
-    <div class="d-flex w-100 overflow-y-scroll">
+    <div class="d-flex w-100 overflow-y-scroll" style="margin-left: 50px">
         <table class="w-100 ">
 
             <thead class="sticky top-0">

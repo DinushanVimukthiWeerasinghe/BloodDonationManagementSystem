@@ -123,12 +123,12 @@ $app->router->get('/organization/campaign/view', [OrganizationController::class,
 
 //sponsor
 
-$app->router->get('/sponsors/dashboard', [sponsorController::class, 'dashboard']);
-$app->router->get('/sponsors/history', [sponsorController::class, 'history']);
-$app->router->get('/sponsors/manage', [sponsorController::class, 'manage']);
-$app->router->get('/sponsors/donation', [sponsorController::class, 'donation']);
-$app->router->get('/sponsors/campDetails', [sponsorController::class, 'campDetails']);
-$app->router->get('/sponsors/guideline', [sponsorController::class, 'guideline']);
+$app->router->get('/sponsor/dashboard', [sponsorController::class, 'dashboard']);
+$app->router->get('/sponsor/history', [sponsorController::class, 'history']);
+$app->router->get('/sponsor/manage', [sponsorController::class, 'manage']);
+$app->router->get('/sponsor/donation', [sponsorController::class, 'donation']);
+$app->router->get('/sponsor/campDetails', [sponsorController::class, 'campDetails']);
+$app->router->get('/sponsor/guideline', [sponsorController::class, 'guideline']);
 
 $app->router->get('/gmp', [siteController::class, 'gmap']);
 
@@ -162,14 +162,18 @@ $app->router->get('/manager/mngRequests/er', [managerController::class, 'ManageE
 
 $app->router->post('/manager/mngCampaign/view', [managerController::class, 'ViewCampaign']);
 $app->router->post('/manager/mngCampaign/reject', [managerController::class, 'RejectCampaign']);
-$app->router->post('/manager/mngCampaign/view', [managerController::class, 'ViewCampaign']);
+$app->router->post('/manager/mngCampaign/accept', [managerController::class, 'AcceptCampaign']);
 $app->router->get('/manager/mngCampaign/assign-team', [managerController::class, 'AssignTeam']);
 $app->router->post('/manager/mngCampaign/assignTeam/assign', [managerController::class, 'AssignTeamMember']);
 $app->router->post('/manager/mngCampaign/assignTeam/remove', [managerController::class, 'RemoveTeamMember']);
 
 
-$app->router->get('/manager/mngSponsorship', [managerController::class, 'ManageSponsors']);
-$app->router->post('/manager/mngSponsorship', [managerController::class, 'ManageSponsors']);
+$app->router->get('/manager/mngSponsors', [managerController::class, 'ManageSponsors']);
+$app->router->post('/manager/mngSponsors', [managerController::class, 'ManageSponsors']);
+
+$app->router->get('/manager/mngSponsorship', [managerController::class, 'ManageSponsorship']);
+$app->router->post('/manager/mngSponsorship', [managerController::class, 'ManageSponsorship']);
+
 
 $app->router->get('/manager/mngDonors', [managerController::class, 'ManageDonors']);
 $app->router->post('/manager/mngDonors', [managerController::class, 'ManageDonors']);
@@ -196,6 +200,7 @@ $app->router->get('/manager/mngMedicalOfficer/sendEmail', [managerController::cl
 
 //Find Donor
 $app->router->get('/manager/mngDonors/find', [managerController::class, 'FindDonor']);
+$app->router->post('/manager/mngDonors/Search', [managerController::class, 'SearchDonor']);
 $app->router->post('/manager/mngDonors/find', [managerController::class, 'FindDonor']);
 $app->router->post('/manager/mngDonors/isExist', [managerController::class, 'IsDonorExist']);
 $app->router->get('/manager/mngDonors/reportedDonor', [managerController::class, 'ReportedDonor']);

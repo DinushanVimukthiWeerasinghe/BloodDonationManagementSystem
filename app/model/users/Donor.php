@@ -30,6 +30,7 @@ class Donor extends Person
     protected ?string $NIC_Back=null;
     protected ?string $BloodDonation_Book_1=null;
     protected ?string $BloodDonation_Book_2=null;
+    protected ?string $BloodGroup = null;
 
 
     public static function ReportedDonors($q=''): bool|array
@@ -59,7 +60,14 @@ class Donor extends Person
         $notification->setNotificationState(DonorNotification::NOTIFICATION_STATE_UNREAD);
         $notification->save();
         return true;
+    }
 
+    /**
+     * @param string|null $BloodGroup
+     */
+    public function setBloodGroup(?string $BloodGroup): void
+    {
+        $this->BloodGroup = $BloodGroup;
     }
 
     public function getID(): string
@@ -373,7 +381,8 @@ class Donor extends Person
             'NIC_Front',
             'NIC_Back',
             'BloodDonation_Book_1',
-            'BloodDonation_Book_2'
+            'BloodDonation_Book_2',
+            'BloodGroup'
         ];
     }
 
@@ -382,8 +391,13 @@ class Donor extends Person
         $this->Donor_ID = $ID;
     }
 
-    public function getBloodGroup()
+    public function getBloodGroup(): ?string
     {
-        return "A+";
+        return $this->BloodGroup ?? "Unknown";
+    }
+
+    public function getVerificationStatus()
+    {
+        return $this->Verified ? "Verified" : "Not Verified";
     }
 }

@@ -61,7 +61,7 @@ abstract class dbModel extends Model
         if (!empty($condition)) {
             $attributes = array_keys($condition);
             if ($like){
-                $sql= implode("OR ",array_map(fn($attr)=>"$attr LIKE :$attr",$attributes));
+                $sql= implode(" OR ",array_map(fn($attr)=>"$attr LIKE :$attr",$attributes));
                 $statement = self::prepare("SELECT * FROM $tableName WHERE $sql");
                 foreach ($condition as $key => $value) {
                     $statement->bindValue(":$key","%".$value."%");

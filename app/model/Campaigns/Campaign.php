@@ -10,6 +10,7 @@ class Campaign extends dbModel
     public const PENDING = 1;
     public const APPROVED = 2;
     public const REJECTED = 3;
+    public const VERIFIED = 1;
     protected string $Campaign_ID='';
     protected string $Organization_ID='';
     protected string $Expected_Amount='';

@@ -2,7 +2,9 @@
 
 namespace App\model\Blood;
 
-class BloodGroup extends \App\model\database\dbModel
+use App\model\database\dbModel;
+
+class BloodGroup extends dbModel
 {
     protected string $BloodGroup_ID='';
     protected string $BloodGroup_Name='';
@@ -13,6 +15,11 @@ class BloodGroup extends \App\model\database\dbModel
     public function getBloodGroupID(): string
     {
         return $this->BloodGroup_ID;
+    }
+
+    public function getBloodGroupIDForGET()
+    {
+        return urlencode($this->BloodGroup_ID);
     }
 
     /**

@@ -1,9 +1,19 @@
 <?php
 
-/* @var Campaign $value*/
+/* @var Campaign $value */
 
 use App\model\Campaigns\Campaign;
 use App\model\Utils\Date;
+
+
+$getParams = function ($params) {
+    $str = '?';
+    if (empty($params)) return $str;
+    foreach ($params as $key => $value) {
+        $str .= $key . '=' . $value . '&';
+    }
+    return $str;
+};
 
 ?>
 <div class="d-flex w-100 flex-column align-items-center bg-white p-1 border-radius-10 m-1">
@@ -106,24 +116,39 @@ use App\model\Utils\Date;
             <div class="d-flex align-items-center justify-content-center">
                 <div class="d-flex gap-1 align-items-center">
                     <label for="page" class="search">Record Per Page</label>
-                    <select class="px-2 py-0-5" name="page" id="page">
+                    <select class="px-2 py-0-5" name="page" id="rpp" onchange="ChangeRecordsPerPage()">
                         <?php
-                        for ($i = 1; $i <= $total_pages; $i++) {
-                            if ($i == $current_page) {
-                                echo "<option value='$i' selected>$i</option>";
-                            } else {
-                                echo "<option value='$i'>$i</option>";
-                            }
-                        }
+                        $i = 5;
+                        while ($i < 20):
+                            /** @var int $rpp */
+                            if ((int)$rpp === $i):
+                                ?>
+                                <option selected value="<?= $i ?>"><?= $i ?></option>
+                            <?php
+                            else :
+                                ?>
+                                <option value="<?= $i ?>"><?= $i ?></option>
+                            <?php
+                            endif;
+                            ?>
+                            <?php
+                            $i = $i + 5;
+                        endwhile;
                         ?>
                     </select>
                 </div>
             </div>
-            <div class="d-flex align-items-center justify-content-center bg-white border-radius-10 " style="padding: 0.3rem 0.6rem">
-                <img src="/public/icons/chevron-left.svg" width="20rem">
+            <div class="d-flex align-items-center justify-content-center bg-white border-radius-10 "
+                 style="padding: 0.3rem 0.6rem">
+                <a href="<?= $getParams($_GET) ?>page=<?= $current_page - 1 ?>">
+                    <img src="/public/icons/chevron-left.svg" width="20rem">
+                </a>
             </div>
-            <div class="d-flex align-items-center justify-content-center bg-white-0-5 border-radius-10 " style="padding: 0.3rem 0.6rem">
-                <img src="/public/icons/chevron-right.svg" width="20rem">
+            <div class="d-flex align-items-center justify-content-center bg-white-0-5 border-radius-10 "
+                 style="padding: 0.3rem 0.6rem">
+                <a href="<?= $getParams($_GET) ?>page=<?= $current_page + 1 ?>">
+                    <img src="/public/icons/chevron-right.svg" width="20rem">
+                </a>
             </div>
         </div>
     </div>
