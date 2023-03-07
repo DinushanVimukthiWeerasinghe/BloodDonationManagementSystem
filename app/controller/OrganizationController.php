@@ -160,13 +160,24 @@ class OrganizationController extends Controller
         /* @var Campaign $campaign */
         $ID = Application::$app->getUser()->getID();
         $result = Campaign::RetrieveAll(false, [], true, ['Organization_ID' => $ID]);
+        $expired = 0;
+        foreach ($result as $res){
+            if($res->getCampaignDate() < date("Y-m-d")){
+                $params[] = [
+                    'Campaign_Name' => $res->getCampaignName(),
+                    'Campaign_Date' => $res->getCampaignDate(),
+                    'Status' => $res->getCampaignStatus(),
+                    'Campaign_ID' => $res->getCampaignID(),
+                ];
+            }
+        }
 //        $campaign = Campaign::findOne(['Organization_ID' => $_SESSION['Email']]);
 //        $params=[
 //            'Campaign_Name'=> $campaign->getName(),
 //            'Campaign_Date' => $campaign->getDate(),
 //
 //        ];
-        return $this->render('Organization/history',['data'=>$result]);
+        return $this->render('Organization/history',$params);
     }
     public function inform(Request $request, Response $response)
     {
@@ -259,17 +270,35 @@ class OrganizationController extends Controller
         /* @var Campaign $campaign */
         $ID = Application::$app->getUser()->getID();
         $result = Campaign::RetrieveAll(false, [], true, ['Organization_ID' => $ID]);
+        foreach ($result as $res){
+            if($res->getCampaignDate() >= date("Y-m-d")){
+                $params[] = [
+                    'Campaign_Name' => $res->getCampaignName(),
+                    'Campaign_Date' => $res->getCampaignDate(),
+                    'Status' => $res->getCampaignStatus(),
+                    'Campaign_ID' => $res->getCampaignID(),
+                ];
+            }
+        }
 
-        return $this->render('Organization/campaign/view',['data'=>$result]);
+        return $this->render('Organization/campaign/view',$params);
     }
     public function campDetails()
     {
         /* @var Campaign $campaign */
-        $Campaign = Campaign::findOne(['Organization_ID' => Application::$app->getUser()->getID()]);
+        $id = $_GET['id'];
+        $disable = 0;
+        $expired = 0;
+        $Campaign = Campaign::findOne(['Campaign_ID' => $id]);
         if ($Campaign){
-            $id=$Campaign->getCampaignID();
-            $campaign = Campaign::findOne(['Campaign_ID'=> $id]);
-            return $this->render('Organization/campDetails',['campaign'=>$campaign]);
+            if($Campaign->getStatus() == Campaign::PENDING){
+                $disable = 1;
+            }
+            if($Campaign->getCampaignDate() < date("Y-m-d")){
+                $expired = 1;
+            }
+
+            return $this->render('Organization/campDetails',['campaign'=>$Campaign, 'disable' => $disable, 'expired' => $expired]);
         }
 
         $params=[];

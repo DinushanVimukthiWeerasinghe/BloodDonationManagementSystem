@@ -41,6 +41,7 @@ FlashMessage::RenderFlashMessages();
         }
     }
 </style>
+
 <div class="d-flex flex-column w-80 p-5 scroll">
         <div class="d-flex bg-white-0-3 p-3 flex-column details">
             <div class="text-xl bg-white border-radius-10 p-3" id="Campaign_Detail">
@@ -60,8 +61,20 @@ FlashMessage::RenderFlashMessages();
                     <div class="">Status </div>
                     <div class="font-bold bg-green-4" style="padding: 0 5px "><?=$campaign->getCampaignStatus(); ?></div>
                 </div>
+                <?php if($expired == 1) { ?>
+                <div class="d-flex gap-6" id="Campaign_Status">
+                    <div class="">Received Income</div>
+                    <div class="font-bold" style="padding: 0 5px "></div>
+                </div>
+                <div class="d-flex gap-6" id="Campaign_Status">
+                    <div class="">Donor Participation</div>
+                    <div class="font-bold" style="padding: 0 5px "></div>
+                </div>
+                <?php } ?>
             </div>
         </div>
+    <?php if(!$disable == 1) {?>
+       <?php if(!$expired == 1) { ?>
         <div class="d-flex cards mt-2">
             <div class="card nav-card bg-white text-dark" onclick="Redirect('request?id=<?php echo $_GET['id'] ?>')">
                 <div class="card-header">
@@ -104,4 +117,7 @@ FlashMessage::RenderFlashMessages();
                 </div>
             </div>
         </div>
+           <?php } ?>
+
+    <?php } ?>
 </div>
