@@ -4,6 +4,7 @@ namespace App\model\Campaigns;
 
 use App\model\database\dbModel;
 use App\model\MedicalTeam\MedicalTeam;
+use App\model\users\Organization;
 
 class Campaign extends dbModel
 {
@@ -46,6 +47,14 @@ class Campaign extends dbModel
     public function getOrganizationID(): string
     {
         return $this->Organization_ID;
+    }
+
+    public function getOrganizationName()
+    {
+        $Organization = Organization::findOne(['Organization_ID'=>$this->Organization_ID]);
+        if ($Organization){
+            return $Organization->getOrganizationName();
+        }
     }
 
     /**

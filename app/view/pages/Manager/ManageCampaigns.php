@@ -78,7 +78,7 @@ $getParams = function ($params) {
                     <td data-label="Campaign Name"><?php echo $value->getCampaignName()?></td>
                     <td data-label="Campaign Date"><?php echo Date::GetProperDate($value->getCampaignDate())?></td>
                     <td data-label="Venue"><?php echo $value->getVenue()?></td>
-                    <td data-label="Organization"><?php echo $value->getOrganizationID()?></td>
+                    <td data-label="Organization Name"><?php echo $value->getOrganizationName()?></td>
                     <td data-label="Campaign Status"><?php echo $value->getCampaignStatus()?></td>
                     <td><?php echo $value->getCampaignStatus()?></td>
                     <td><?php echo $value->getCampaignStatus()?></td>
