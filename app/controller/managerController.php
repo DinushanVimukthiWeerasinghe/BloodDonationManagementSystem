@@ -6,6 +6,7 @@ use App\middleware\managerMiddleware;
 use App\model\Authentication\Login;
 use App\model\Blood\BloodGroup;
 use App\model\BloodBankBranch\BloodBank;
+use App\model\Campaigns\ApprovedCampaigns;
 use App\model\Campaigns\Campaign;
 use App\model\Email\Email;
 use App\model\MedicalTeam\MedicalTeam;
@@ -86,6 +87,7 @@ class managerController extends Controller
                 $total_pages = ceil ($total_rows / $limit);
                 $BloodBanks=BloodBank::RetrieveAll();
                 $Campaign=Campaign::findOne(['Campaign_ID' => $campaignID]);
+
 //                $Date=date('Y-m-d',strtotime($Campaign->getCampaignDate().'+1 day'));
                 $Date=$Campaign->getCampaignDate();
                 $Campaigns_On_Same_Date = Campaign::RetrieveAll(false, [], true, ['Campaign_Date' => $Date]);
@@ -97,6 +99,7 @@ class managerController extends Controller
                     }
                 }
                 $AssignedOfficersOnSameDate=[];
+
                 if (count($Teams)>0){
                     foreach ($Teams as $team){
                         $members=TeamMembers::RetrieveAll(false,[],true,['Team_ID'=>$team->getTeamID()]);
@@ -109,12 +112,13 @@ class managerController extends Controller
                         }
                     }
                 }
+
                 $MedicalOfiicers=[];
                 if ($AssignedOfficersOnSameDate) {
                     $MedicalOfiicers = MedicalOfficer::RetrieveAvailableMedicalOfficer(false, [$initial, $limit], $AssignedOfficersOnSameDate);
                 }
                 else{
-                    $MedicalOfiicers = MedicalOfficer::RetrieveAll(false, [$initial, $limit], true, ['Status' => MedicalOfficer::AVAILABLE_MEDICAL_OFFICER]);
+                    $MedicalOfiicers = MedicalOfficer::RetrieveAll(true, [$initial, $limit], true, ['Status' => MedicalOfficer::AVAILABLE_MEDICAL_OFFICER]);
                 }
                 /* @var $AssignedMedicalTeam MedicalTeam*/
                 /* @var $members array*/
@@ -130,6 +134,7 @@ class managerController extends Controller
                     }
                 }
                 $params=[
+                    'Campaign_ID'=>$campaignID,
                     'rpp'=>$limit,
                     'firstName'=>$manager->getFirstName(),
                     'lastName'=>$manager->getLastName(),
@@ -141,9 +146,70 @@ class managerController extends Controller
                 ];
                 return $this->render('Manager/ManageCampaign/AssignMedicalTeam',$params);
             }
+            else{
+                Application::Redirect('/manager/mngCampaigns');
+            }
 
         }
 
+    }
+
+    public function AssignTeamLeader(Request $request,Response $response)
+    {
+        if ($request->isPost()){
+            $CampaignID=$request->getBody()['campId'];
+            $TeamLeaderID=$request->getBody()['teamLeaderId'];
+            if ($CampaignID && $TeamLeaderID){
+                /** @var MedicalTeam $MedicalTeam*/
+                /** @var TeamMembers $TeamMember*/
+                $MedicalTeam=MedicalTeam::findOne(['Campaign_ID'=>$CampaignID]);
+                if ($MedicalTeam){
+                    $TeamMember = TeamMembers::findOne(['Team_ID' => $MedicalTeam->getTeamID(), 'Member_ID' => $TeamLeaderID],false);
+                    if ($TeamMember){
+                        if ($TeamMember->getPosition() == MedicalTeam::TEAM_LEADER){
+                            return json_encode(['status'=>false,'message'=>'This Officer is already Team Leader !']);
+                        }
+                        if (!$MedicalTeam->getTeamLeader()){
+                            $PreviousLeader=TeamMembers::findOne(['Team_ID'=>$MedicalTeam->getTeamID(),'Member_ID'=>$MedicalTeam->getTeamLeader()],false);
+                            $PreviousLeader->setPosition(MedicalTeam::TEAM_MEMBER);
+                            $PreviousLeader->update($PreviousLeader->getTeamID(),[],['Position'],['Member_ID'=>$PreviousLeader->getMemberID()]);
+                        }
+                        $TeamMember->setPosition(MedicalTeam::TEAM_LEADER);
+                        $TeamMember->update($TeamMember->getTeamID(),[],['Position'],['Member_ID'=>$TeamLeaderID]);
+                        $MedicalTeam->setTeamLeader($TeamLeaderID);
+                        $MedicalTeam->update($MedicalTeam->getTeamID(),[],['Team_Leader']);
+                        return json_encode(['status'=>true,'message'=>'Team Leader Assigned Successfully !']);
+                    }
+
+                }
+                else{
+                    return json_encode(['status'=>false,'message'=>'No Team Found !']);
+                }
+            }
+            else{
+                return json_encode(['status'=>false,'message'=>'Invalid Request !']);
+            }
+        }
+    }
+
+    public function getTeamMembers(Request $request,Response $response)
+    {
+        if ($request->isPost()){
+            $CampaignID=$request->getBody()['campId'];
+            $MedicalTeam = MedicalTeam::findOne(['Campaign_ID' => $CampaignID]);
+            if ($MedicalTeam){
+                $TeamMembers=TeamMembers::RetrieveAll(false,[],true,['Team_ID'=>$MedicalTeam->getTeamID()]);
+                $TeamMembers=array_map(function ($object){
+                    $object->Name=$object->getMember()->getFirstName().' '.$object->getMember()->getLastName();
+                    $object->NIC=$object->getMember()->getNIC();
+                    return $object->toArray();
+                },$TeamMembers);
+                return json_encode(['status'=>true,'data'=>$TeamMembers]);
+            }
+            else{
+                return json_encode(['status'=>false,'message'=>'No Team Members Found !']);
+            }
+        }
     }
 
     public function AssignTeamMember(Request $request,Response $response)
@@ -265,14 +331,31 @@ class managerController extends Controller
     {
         if ($request->isPost()){
             $id=$request->getBody()['id'];
+            $remarks=$request->getBody()['remarks'] ?? 'No remarks';
             /* @var $campaign Campaign*/
             $campaign = Campaign::findOne(['Campaign_ID' => $id]);
             if ($campaign){
-                $campaign->setVerifiedBy(Application::$app->getUser()->getID());
-                $campaign->setVerifiedAt(date('Y-m-d H:i:s'));
-                $campaign->setVerified(Campaign::VERIFIED);
-                $campaign->update($campaign->getCampaignID(),['Verified','Verified_By','Verified_At']);
-                return json_encode(['status'=>true]);
+                $ApprovedCampaign = new ApprovedCampaigns();
+                $ApprovedCampaign->setCampaignID($campaign->getCampaignID());
+                $ApprovedCampaign->setApprovedBy(Application::$app->getUser()->getID());
+                $ApprovedCampaign->setApprovedAt(date('Y-m-d H:i:s'));
+                $ApprovedCampaign->setRemarks($remarks);
+                if ($ApprovedCampaign->validate() && $ApprovedCampaign->save()){
+                    $campaign->setVerified(Campaign::VERIFIED);
+                    $MedicalTeam = new MedicalTeam();
+                    $MedicalTeam->generateTeamID();
+                    $MedicalTeam->setCampaignID($campaign->getCampaignID());
+                    $MedicalTeam->setNoOfMembers(0);
+                    $MedicalTeam->setAssignedBy(Application::$app->getUser()->getID());
+                    $MedicalTeam->save();
+                    if($campaign->update($campaign->getCampaignID(),[],['Verified'])){
+                        return json_encode(['status'=>true,'message'=>'Campaign Accepted Successfully !']);
+                    }else{
+                        return json_encode(['status'=>false,'message'=>'Error on Server','data'=>$campaign->errors]);
+                    }
+                }else{
+                    return json_encode(['status'=>false,'message'=>'Error on Server','data'=>$ApprovedCampaign->errors]);
+                }
             }
         }
     }
@@ -284,11 +367,41 @@ class managerController extends Controller
             /* @var $campaign Campaign*/
             $campaign = Campaign::findOne(['Campaign_ID' => $id]);
             if ($campaign){
-                $campaign->setVerifiedBy(Application::$app->getUser()->getID());
-                $campaign->setVerifiedAt(date('Y-m-d H:i:s'));
                 $campaign->setStatus(Campaign::REJECTED);
-                $campaign->update($campaign->getCampaignID(),['Assigned_Team']);
-                return json_encode(['status'=>true]);
+                $campaign->update($campaign->getCampaignID(),[],['Status']);
+                return json_encode(['status'=>true,'message'=>'Campaign Rejected Successfully !']);
+            }
+        }
+    }
+
+    public function GetStatistics(Request $request,Response $response)
+    {
+        if ($request->isPost()){
+            $ID=$request->getBody()['ID'];
+            if ($ID){
+
+                $IsOfficerExist=Manager::findOne(['Manager_ID'=>$ID]);
+                if ($IsOfficerExist){
+                    $TotalAssignmentsInMonth = ['January' => 0, 'February' => 0, 'March' => 0, 'April' => 0, 'May' => 0, 'June' => 0, 'July' => 0, 'August' => 0, 'September' => 0, 'October' => 0, 'November' => 0, 'December' => 0];
+//                    Dummy Data
+                    foreach ($TotalAssignmentsInMonth as $key => $value){
+                        $TotalAssignmentsInMonth[$key]=rand(0,10);
+                    }
+
+                    return json_encode([
+                        'status'=>true,
+                        'data'=>[
+                            'TotalAssignmentsInMonth'=>$TotalAssignmentsInMonth
+                        ]
+                    ]);
+
+
+                }else{
+                    return json_encode([
+                        'status'=>false,
+                        'message'=>'Medical Officer Not Found!'
+                    ]);
+                }
             }
         }
     }
@@ -564,6 +677,13 @@ class managerController extends Controller
         $id=Application::$app->getUser()->getID();
         $total_rows = Donor::getCount();
         $total_pages = ceil ($total_rows / $limit);
+        if ($total_pages<$page){
+            $page=1;
+            $initial = ($page - 1) * $limit;
+            $id=Application::$app->getUser()->getID();
+            $total_rows = Donor::getCount();
+            $total_pages = ceil ($total_rows / $limit);
+        }
         $data= Donor::RetrieveAll(true,[$initial,$limit]);
         $BloodTypes =BloodGroup::RetrieveAll();
         $BGroup='All';

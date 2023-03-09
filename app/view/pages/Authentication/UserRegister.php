@@ -2,6 +2,7 @@
 /* @var $role string*/
 
 use App\model\users\User;
+use App\view\components\ResponsiveComponent\Alert\FlashMessage;
 use App\view\components\ResponsiveComponent\ImageComponent\BackGroundImage;
 use App\view\components\ResponsiveComponent\NavbarComponent\AuthNavbar;
 use App\view\components\ResponsiveComponent\NavbarComponent\Navbar;
@@ -15,27 +16,29 @@ $navbar= new Navbar([
 echo $navbar;
 $background=new BackGroundImage();
 echo $background;
+FlashMessage::RenderFlashMessages();
 ?>
 <div class="d-flex bg-white-0-3 border-radius-10 gap-1 p-2">
     <div class="d-flex ">
         <img src="/public/images/RegisterImage/<?= $role?>RegImg.jpg" class="border-radius-10" alt="" width="500rem">
     </div>
     <div class="d-flex bg-white border-radius-10 p-2" >
-        <form action="" method="post">
+        <div>
             <div class="text-2xl mb-1 font-bold text-dark w-100 text-center">
                 <?= $role ?> Registration
             </div>
+            <input type="hidden" name="role" value="<?=$role?>">
             <div class="form-group">
                 <label for="email" class="w-30">Email</label>
-                <input type="email" name="email" id="email" class="form-control border-1 w-60">
+                <input type="email" name="Email" id="email" class="form-control border-1 w-60">
             </div>
             <div class="form-group">
                 <label for="password" class="w-30">Password</label>
-                <input type="password" name="password" id="password" class="form-control w-60">
+                <input type="password" name="Password" id="password" class="form-control w-60">
             </div>
             <div class="form-group">
                 <label for="confirmPassword" class="w-30">Confirm Password</label>
-                <input type="password" name="confirmPassword" id="confirmPassword" class="form-control w-60">
+                <input type="password" name="ConfirmPassword" id="confirmPassword" class="form-control w-60">
             </div>
             <div class="form-group flex-column">
                 <?php
@@ -43,7 +46,7 @@ echo $background;
                     ?>
                 <div class="d-flex justify-content-center w-100 mt-1">
                     <?php
-                    if ($role=== User::DONOR) :
+                    if ($role === User::DONOR) :
                     ?>
                     <span class="font-bold">Want to Host a campaign?</span> &nbsp;<a href="/register?role=organization" class="text-primary">Campaign Registration</a>
                     <?php
@@ -66,11 +69,92 @@ echo $background;
             </div>
 
             <div class="form-group" style="justify-content:center;">
-                <input class="btn btn-success w-40" type="submit" value="Register" name="register">
-                <input class="btn btn-danger w-40" type="reset" value="Reset" name="register">
+                <button class="btn btn-success w-40" type="submit"name="register" onclick="Register();">Register</button>
+<!--                <button class="btn btn-danger w-40" type="reset" value="Reset" name="register">Reset</button>-->
             </div>
 
 
-        </form>
+        </div>
     </div>
 </div>
+<script>
+    const Register = ()=>{
+        const Email = document.getElementById('email').value;
+        const Password = document.getElementById('password').value;
+        const ConfirmPassword = document.getElementById('confirmPassword').value;
+        const Role = document.getElementsByName('role')[0].value;
+        if (Email.trim() === '' || Password.trim() === '' || ConfirmPassword.trim() === ''){
+            ShowToast({
+                message: 'Please fill all the fields',
+                type: 'error'
+            });
+            return;
+        }
+        // Check if the password has at least 8 characters
+        if (Password.length < 8){
+            ShowToast({
+                message: 'Password must be at least 8 characters',
+                type: 'error'
+            });
+            return;
+        }
+        // Check if the password has at least 1 number
+        if (!Password.match(/\d/)){
+            ShowToast({
+                message: 'Password must contain at least 1 number',
+                type: 'error'
+            });
+            return;
+        }
+        // Check if the password has at least 1 uppercase letter
+        if (!Password.match(/[A-Z]/)){
+            ShowToast({
+                message: 'Password must contain at least 1 uppercase letter',
+                type: 'error'
+            });
+            return;
+        }
+        // Check if the password has at least 1 lowercase letter
+        if (!Password.match(/[a-z]/)){
+            ShowToast({
+                message: 'Password must contain at least 1 lowercase letter',
+                type: 'error'
+            });
+            return;
+        }
+        // Check if the password has at least 1 special character
+        if (!Password.match(/[!@#$%^&*(),.?":{}|<>]/)){
+            ShowToast({
+                message: 'Password must contain at least 1 special character',
+                type: 'error'
+            });
+            return;
+        }
+        // Check if the password and confirm password match
+        if (Password !== ConfirmPassword){
+            ShowToast({
+                message: 'Password and Confirm Password does not match',
+                type: 'error'
+            });
+            return;
+        }
+        // Check if the email is valid
+        if (!Email.match(/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/)){
+            ShowToast({
+                message: 'Please enter a valid email',
+                type: 'error'
+            });
+            return;
+        }
+        const url = '/register/send-otp';
+        const formData = new FormData();
+        formData.append('Email', Email);
+        fetch(url, {
+            method: 'POST',
+            body: formData
+        }).then(response => response.json())
+            .then(data => {
+                console.log(data);
+            }
+    }
+</script>

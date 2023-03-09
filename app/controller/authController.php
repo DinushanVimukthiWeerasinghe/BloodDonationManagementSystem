@@ -123,6 +123,7 @@ class authController extends Controller
         $user = new User();
         if ($request->isPost()){
             $Role = $request->getBody()['role'];
+
             if (trim($Role) == '' || !$user->IsValidRole($Role)) {
                 $this->setFlashMessage('error', 'Please Select Role');
             }
@@ -130,15 +131,47 @@ class authController extends Controller
                 $user->setRole(match ($Role) {
                     'Donor' => User::DONOR,
                     'Organization' => User::ORGANIZATION,
-                    'Sponsor' => User::SPONSOR
+                    'Sponsor' => User::SPONSOR,
                 });
-                $user->loadData($request->getBody());
-                if ($user->validate()) {
-                    $user->setPassword(password_hash($user->getPassword(), PASSWORD_DEFAULT));
-                    $user->save();
-                    $this->setFlashMessage('success', 'User Registered Successfully');
-                    Application::$app->response->redirect('/auth/login');
+                $user->generateUID();
+                $Password=trim($request->getBody()['Password']);
+                $ConfirmPassword=trim($request->getBody()['ConfirmPassword']);
+                // Password must be 8 characters long
+                if (strlen($Password) < 8) {
+                    $this->setFlashMessage('error', 'Password must be 8 characters long');
+                    Application::$app->response->redirect('/register');
                 }
+                // Password must contain at least one uppercase letter
+                else if (!preg_match('/[A-Z]/', $Password)) {
+                    $this->setFlashMessage('error', 'Password must contain at least one uppercase letter');
+                    Application::$app->response->redirect('/register');
+                }
+                // Password must contain at least one number
+                else if (!preg_match('/\d/', $Password)) {
+                    $this->setFlashMessage('error', 'Password must contain at least one number');
+                    Application::$app->response->redirect('/register');
+                }
+                // Password must contain at least one special character
+                else if (!preg_match('/[^a-zA-Z\d]/', $Password)) {
+                    $this->setFlashMessage('error', 'Password must contain at least one special character');
+                    Application::$app->response->redirect('/register');
+                }
+                else if ($Password != $ConfirmPassword){
+                    $this->setFlashMessage('error', 'Password and Confirm Password Not Match');
+                    Application::$app->response->redirect('/register');
+                }
+                else {
+                    $hash = password_hash($Password, PASSWORD_DEFAULT);
+                    $user->loadData($request->getBody());
+                    $user->setPassword($hash);
+                    if ($user->validate()) {
+                        $user->setPassword(password_hash($user->getPassword(), PASSWORD_DEFAULT));
+                        $user->save();
+                        $this->setFlashMessage('success', 'User Registered Successfully');
+                        Application::$app->response->redirect('/auth/login');
+                    }
+                }
+
             }
         }
         else{
@@ -159,7 +192,15 @@ class authController extends Controller
 
     }
 
+    public function SendRegistrationOTP(Request $request,Response $response)
+    {
+        if ($request->isPost()){
+            $Email = $request->getBody()['Email'];
+            $ApplicationEmail = Application::$app->email;
+            $OTP = new OTPCode();
+        }
 
+    }
     public function ResetPassword(Request $request,Response $response)
     {
         $errors = [];

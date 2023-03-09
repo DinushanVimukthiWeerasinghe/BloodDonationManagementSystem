@@ -59,6 +59,7 @@ $app->router->get('/contact', [siteController::class, 'contact']);
 $app->router->post('/contact', [siteController::class, 'contact']);
 $app->router->get('/register', [authController::class, 'UserRegister']);
 $app->router->post('/register', [authController::class, 'UserRegister']);
+$app->router->post('/register/send-otp', [authController::class, 'SendRegistrationOTP']);
 
 //Logout
 $app->router->get('/logout', [authController::class, 'logout']);
@@ -124,6 +125,8 @@ $app->router->get('/organization/campaign/view', [OrganizationController::class,
 //sponsor
 
 $app->router->get('/sponsor/dashboard', [sponsorController::class, 'dashboard']);
+$app->router->get('/sponsor/test', [sponsorController::class, 'Test']);
+$app->router->post('/sponsor/makePayment', [sponsorController::class, 'MakePayment']);
 $app->router->get('/sponsor/history', [sponsorController::class, 'history']);
 $app->router->get('/sponsor/manage', [sponsorController::class, 'manage']);
 $app->router->get('/sponsor/donation', [sponsorController::class, 'donation']);
@@ -159,11 +162,14 @@ $app->router->get('/manager/mngRequests', [managerController::class, 'ManageRequ
 $app->router->post('/manager/mngRequests', [managerController::class, 'ManageRequests']);
 $app->router->post('/manager/mngRequests/find', [managerController::class, 'FindRequest']);
 $app->router->get('/manager/mngRequests/er', [managerController::class, 'ManageEmergencyRequests']);
+$app->router->get('/manager/mngRequests/er', [managerController::class, 'ManageEmergencyRequests']);
 
 $app->router->post('/manager/mngCampaign/view', [managerController::class, 'ViewCampaign']);
 $app->router->post('/manager/mngCampaign/reject', [managerController::class, 'RejectCampaign']);
 $app->router->post('/manager/mngCampaign/accept', [managerController::class, 'AcceptCampaign']);
 $app->router->get('/manager/mngCampaign/assign-team', [managerController::class, 'AssignTeam']);
+$app->router->post('/manager/mngCampaign/assign-team/get-members', [managerController::class, 'getTeamMembers']);
+$app->router->post('/manager/mngCampaign/assign-team/assign-leader', [managerController::class, 'AssignTeamLeader']);
 $app->router->post('/manager/mngCampaign/assignTeam/assign', [managerController::class, 'AssignTeamMember']);
 $app->router->post('/manager/mngCampaign/assignTeam/remove', [managerController::class, 'RemoveTeamMember']);
 
@@ -208,6 +214,9 @@ $app->router->get('/manager/mngDonors/informDonor', [managerController::class, '
 $app->router->post('/manager/mngDonors/informDonor', [managerController::class, 'InformDonor']);
 //$app->router->post('/manager/mngDonors/find', [managerController::class, 'FindDonor']);
 $app->router->get('/manager/mngRequests/emergency', [managerController::class, 'ManageEmergencyRequests']);
+$app->router->post('/manager/stat', [managerController::class, 'GetStatistics']);
+$app->router->post('/mofficer/stat', [medicalOfficerController::class, 'GetStatistics']);
+
 
 //Medical Officer
 $app->router->get('/medicalofficer/dashboard', [medicalOfficerController::class, 'Dashboard']);
@@ -217,7 +226,6 @@ $app->router->get('/medicalofficer/notification', [medicalOfficerController::cla
 
 $app->router->get('/mofficer/campaigns', [medicalOfficerController::class, 'ManageCampaigns']);
 $app->router->post('/mofficer/changepassword', [medicalOfficerController::class, 'ChangePassword']);
-$app->router->post('/mofficer/stat', [medicalOfficerController::class, 'GetStatistics']);
 $app->router->post('/mofficer/changeProfile', [medicalOfficerController::class, 'ChangeProfileImage']);
 $app->router->get('/mofficer/history', [medicalOfficerController::class, 'ManageHistory']);
 $app->router->get('/mofficer/donors', [medicalOfficerController::class, 'ManageDonors']);
