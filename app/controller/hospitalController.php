@@ -9,6 +9,7 @@
  use App\model\users\Manager;
  use App\model\users\MedicalOfficer;
  use App\model\users\User;
+ use App\model\Utils\Date;
  use App\model\Utils\Notification;
  use Core\Application;
  use Core\BaseMiddleware;
@@ -46,7 +47,7 @@
             $reqData[]=[
                 'Request ID'=>$request->getRequestID(),
                 'Blood Group'=>$request->getBloodGroup(),
-                'Requested At'=>$request->getRequestedAt(),
+                'Requested At'=>Date::GetProperDateTime($request->getRequestedAt()),
                 'Type'=>$request->getType(),
                 'Status'=>$request->getStatus(),
                 'Quantity'=>$request->getQuantity(),

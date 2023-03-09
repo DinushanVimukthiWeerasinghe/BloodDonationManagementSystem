@@ -422,7 +422,6 @@ CREATE TABLE IF NOT EXISTS Attendance_Accepted_Requests
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8;
 
-
 DROP TABLE IF EXISTS Blood_Requests;
 CREATE TABLE IF NOT EXISTS Blood_Requests (
     Request_ID VARCHAR(20) NOT NULL  PRIMARY KEY,
@@ -431,6 +430,8 @@ CREATE TABLE IF NOT EXISTS Blood_Requests (
     Requested_At TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     Type INT NOT NULL DEFAULT 1,
     Status INT NOT NULL DEFAULT 1,
+    Quantity INT NOT NULL DEFAULT 1,
+    Remark VARCHAR(100) NOT NULL,
     FOREIGN KEY (Requested_By) REFERENCES Hospitals(Hospital_ID),
     FOREIGN KEY (BloodGroup) REFERENCES BloodGroups(BloodGroup_ID)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
