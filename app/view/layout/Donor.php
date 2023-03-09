@@ -14,6 +14,7 @@
 <!--    <link rel="stylesheet" href="/public/css/components/navbar/navbar.css">-->
     <link rel="stylesheet" href="/public/css/framework/utils.css">
     <link rel="stylesheet" href="/public/css/components/cardPane/index.css">
+    <link rel="stylesheet" href="/public/css/fontawesome/fa.css">
     <script src="/public/scripts/index.js"></script>
 </head>
 <body>

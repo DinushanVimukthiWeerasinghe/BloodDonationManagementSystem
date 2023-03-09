@@ -7,15 +7,26 @@ class donationCard
     protected string $title = '';
     protected string $subtitle = '';
     protected string $description = '';
+    protected string $longDescription  = '';
+
+//    protected array $allData;
 //    protected string $organization;
-    public function __construct(array $params){
+    public function __construct(array $params, string $longDesc){
         foreach($params as $key => $value){
             $this->{$key} = $value;
         }
+        //echo $longDesc;
+        $this->longDescription = $longDesc;
     }
     public function render():string {
-            return <<<HTML
-        <a href="#" class="data-card">
+
+            //$names = implode(',', $this->allData);
+            //print_r( $names );
+        //echo $this->longDescription;
+
+        return <<<HTML
+        <!--        <link rel="stylesheet" href="public/css/framework/components/dialog-box/dialog-box.css">-->
+        <a href="#" class="data-card" onclick="OpenDialogBoxtrigger('$this->longDescription')">
             <h3>$this->title</h3>
             <h4>$this->subtitle</h4>
             <p>$this->description</p>
@@ -26,8 +37,23 @@ class donationCard
                 </svg>
             </span>
         </a>
+
+        
+        <script>
+        function OpenDialogBoxtrigger(text){
+            console.log(text);
+                console.log(text);
+                //var data  = text.split(",");
+                //console.log(data);
+                OpenDialogBox({
+                                title: '<div style="color:black">Details</div>',
+                                content : text,
+                                showCancelButton: false
+                            })
+        }
+        </script>
+
         HTML;
         }
-
 }
 

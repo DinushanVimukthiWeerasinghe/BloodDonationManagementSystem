@@ -256,10 +256,7 @@ FlashMessage::RenderFlashMessages();
                                     <option value="Assistant">Assistant</option>
                                 </select>
                             </div>
-
                         </div>
-
-
                 </div>
 
             `,

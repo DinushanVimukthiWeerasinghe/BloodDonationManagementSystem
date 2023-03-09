@@ -9,6 +9,7 @@
  use App\model\users\Manager;
  use App\model\users\MedicalOfficer;
  use App\model\users\User;
+ use App\model\Utils\Date;
  use App\model\Utils\Notification;
  use Core\Application;
  use Core\BaseMiddleware;
@@ -18,10 +19,12 @@
  use Core\Request;
  use Core\Response;
  use Core\SessionObject;
+ use http\Message;
 
-class hospitalController extends Controller{
+ class hospitalController extends Controller{
     public function __construct()
     {
+         date_default_timezone_set('Asia/Colombo');
         $this->setLayout('hospital');
         $this->registerMiddleware(new hospitalMiddleware(['dashboard'], BaseMiddleware::FORBIDDEN_ROUTES));
 
@@ -34,11 +37,25 @@ class hospitalController extends Controller{
     public function dashboard():string
     {
      /* @var Hospital $hospital */
-     $hospital = Hospital::findOne(['Hospital_ID'=>Application::$app->getUser()->getID()]);
-     $params=[
-         'Hospital_Name'=>$hospital->getHospitalName(),
-     ];
-     return $this->render('Hospital/dashboard',$params);
+     $requests=BloodRequest::RetrieveAll(false,[],true,['Requested_By'=>Application::$app->getUser()->getID()]);
+//     print_r($requests);
+//     exit();
+        $reqData=array();
+        foreach ($requests as $request){
+            //echo $request->getRequestedBy();
+            //request->getRequestedAt();
+            $reqData[]=[
+                'Request ID'=>$request->getRequestID(),
+                'Blood Group'=>$request->getBloodGroup(),
+                'Requested At'=>Date::GetProperDateTime($request->getRequestedAt()),
+                'Type'=>$request->getType(),
+                'Status'=>$request->getStatus(),
+                'Quantity'=>$request->getQuantity(),
+                'Remarks'=>$request->getRemarks(),
+            ];
+        }
+        //print_r($reqData);
+     return $this->render('Hospital/dashboard',['data'=>$reqData]);
     }
 
     public function notification(Request $request, Response $response): string
@@ -58,46 +75,54 @@ class hospitalController extends Controller{
         return $this->render('Hospital/notification', $params);
     }
 
-    public function emergencyRequest(): string
+    public function addRequest(Request $request, Response $response)
     {
-        $requests=BloodRequest::RetrieveAll();
-        return $this->render('Hospital/emergencyRequest',['$data'=>$requests]);
-    }
+        $hospital = Hospital::findOne(['Hospital_ID' => Application::$app->getUser()->getID()]);
+        $BloodRequest = new BloodRequest();
+        $data =$request->getBody();
+//        print_r($data);
+//        exit();
 
-    public function bloodRequest(): string
-    {
-        $requests=BloodRequest::RetrieveAll();
-        return $this->render('Hospital/bloodRequest',['$data'=>$requests]);
+        if ($request->isPost()){
+//            print_r($request->getBody());
+            $BloodRequest->loadData($request->getBody());
+//            print_r($request->getBody());
+//            exit();
+//            $newBloodGroup = $data['bloodGroup'];
+//            $newType = $data['type'];
+//            $newQuantity = $data['quantity'];
+//            $newRemarks = $data['remarks'];
+            $newRequestedAt = date('Y-m-d H:i:s');
+            $newRequestedBy =  Application::$app->getUser()->getID();
+            $newStatus = 1;
+            $newRequestID = $BloodRequest->getNewPrimaryKey($BloodRequest->getType());
+            $BloodRequest->setRequestID($newRequestID);
+//            $BloodRequest->setBloodGroup($newBloodGroup);
+//            $BloodRequest->setType($newType);
+//            $BloodRequest->setQuantity($newQuantity);
+//            $BloodRequest->setRemarks($newRemarks);
+            $BloodRequest->setRequestedAt($newRequestedAt);
+            $BloodRequest->setRequestedBy($newRequestedBy);
+            $BloodRequest->setStatus($newStatus);
+//            $BloodRequest->save();
+            if($BloodRequest->getQuantity()<1){
+                $this->setFlashMessage('error','Please Enter Valid Quantity');
+                Application::Redirect('/hospital/dashboard');
+            }else if (trim($BloodRequest->getRemark())==""){
+                $this->setFlashMessage('error','Please Enter Remarks');
+                Application::Redirect('/hospital/dashboard');
+            }else if(strlen($BloodRequest->getRemarks())>100){
+                $this->setFlashMessage('error','Remarks should be less than 100 characters');
+                Application::Redirect('/hospital/dashboard');
+            }else{
+                if ($BloodRequest->validate() && $BloodRequest->save()){
+                    $this->setFlashMessage('success','Request sent Successfully');
+                }
+                else{
+                    $this->setFlashMessage('error','Request sending failed');
+                }
+            }
+            $response->redirect('/hospital/dashboard');
+        }
     }
-
-    public function donors(): string
-    {
-        $donors=Donor::RetrieveAll();
-        return $this->render('Hospital/donors',['$data'=>$donors]);
-    }
-
-    public function FindDonor(Request $request,Response $response): string
-    {
-        $NIC=$request->getBody()['nic'];
-        return $this->render('Hospital/donors/findDonor');
-    }
-    public function addEmergencyRequest(Request $request, Response $response): string
-    {
-        return $this->render('Hospital/addEmergencyRequest');
-    }
-    public function addBloodRequest(Request $request, Response $response): string
-    {
-        return $this->render('Hospital/addRequest');
-    }
-
-    public function emergencyRequestHistory(): string
-    {
-        $donor=Donor::RetrieveAll();
-        return $this->render('Hospital/emergencyRequestHistory',['$data'=>$donor]);
-    }
-    public function bloodRequestHistory(): string
-    {
-        return $this->render('Hospital/bloodRequestHistory');
-    }
-
 }

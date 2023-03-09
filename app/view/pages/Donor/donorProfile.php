@@ -74,13 +74,13 @@ echo $navbar;
                 <div class="d-flex ">
                     Name : <?php echo $First_Name . " " . $Last_Name ?>
                 </div>
-                <div class="d-flex">
+                <div class="d-flex" id="email">
                     Email : <?php echo $Email ?>
                 </div>
                 <div class="d-flex">
                     NIC : <?php echo $NIC ?>
                 </div>
-                <div class="d-flex">
+                <div class="d-flex" id="number">
                     Contact Number : <?php echo $Contact_No ?>
                 </div>
                 <div class="d-flex">
@@ -88,6 +88,7 @@ echo $navbar;
                 </div>
                 <div class="button">
                     <button type="button" class="btn btn-success">Change Password</button>
+                    <button type="button" class="btn btn-success" onclick="editData('<?php echo $Donor_ID;?>')">Edit Data</button>
                 </div>
             </div>
         </div>
@@ -98,12 +99,37 @@ echo $navbar;
             <p>Weight(Kg): <?php echo $weight ?> </p>
             <p>Chronic Diseases: <?php echo $remark ?></p>
         </div>
-        <div class="bg-white d-flex flex-column gap-1 p-3 border-radius-10">
-            <p> Blood Type: <?php echo $bloodGroup ?></p>
-            <p>Weight(Kg): <?php echo $weight ?> </p>
-            <p>Chronic Diseases: <?php echo $remark ?></p>
-        </div>
 
     </div>
 
 </div>
+
+<script>
+
+        const editData = (id) => {
+
+            let email = document.getElementById('email').innerHTML.split(':')[1];
+            let number = document.getElementById('number').innerHTML.split(':')[1];
+
+            OpenDialogBox({
+                title: 'Edit Details',
+                content: `<form action="/donor/profile/edit" method="post" id='editForm'>
+                            <label for='email'>Email</label><input class='text-center border-radius-6' id='newEmail' type='email' name='Email' value=${email}>
+                            <label for='number'> Number </label><input class='text-center border-radius-6' id='newNumber' type='tel' name='Contact_No' value=${number}>
+                          </form>`,
+                successBtnText: 'Change',
+                successBtnAction: () => {
+                    // let newMail = document.getElementById('newEmail').value;
+                    // let newNumber = document.getElementById('newNumber').value;
+                    // const url = '/donor/profile/edit';
+                    // const form = new FormData();
+                    // form.append('Donor_ID', id);
+                    // form.append('Email', newMail);
+                    // form.append('Contact_No', newNumber);
+                    // form.submit();
+                    //console.log(document.getElementById('editForm'));
+                    document.getElementById('editForm').submit();
+                }
+            })
+        }
+</script>

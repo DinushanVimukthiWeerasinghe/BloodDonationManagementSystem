@@ -14,7 +14,6 @@ use App\controller\siteController;
 use App\controller\sponsorController;
 use Core\Application;
 
-
 require_once __DIR__ . '/../vendor/autoload.php';
 $dotenv = Dotenv\Dotenv::createImmutable(dirname(__DIR__));
 $dotenv->load();
@@ -243,6 +242,7 @@ $app->router->get('/hospital/login', [hospitalController::class, 'login']);
 $app->router->post('/hospital/login', [hospitalController::class, 'login']);
 $app->router->get('/hospital/dashboard', [hospitalController::class, 'dashboard']);
 $app->router->post('/hospital/dashboard', [hospitalController::class, 'dashboard']);
+$app->router->post('/hospital/addRequest', [hospitalController::class, 'AddRequest']);
 $app->router->get('/hospital/emergencyRequest', [hospitalController::class, 'emergencyRequest']);
 $app->router->post('/hospital/emergencyRequest', [hospitalController::class, 'emergencyRequest']);
 $app->router->get('/hospital/bloodRequest', [hospitalController::class, 'bloodRequest']);
@@ -256,6 +256,7 @@ $app->router->get('/hospital/emergencyRequest/addRequest', [hospitalController::
 $app->router->post('/hospital/emergencyRequest/addRequest', [hospitalController::class, 'addEmergencyRequest']);
 $app->router->get('/hospital/emergencyRequest/history', [hospitalController::class, 'emergencyRequestHistory']);
 $app->router->post('/hospital/emergencyRequest/history', [hospitalController::class, 'emergencyRequestHistory']);
+$app->router->post('/hospital/request', [hospitalController::class, 'addRequest']);
 // Donor
 $app->router->get('/donor/dashboard', [donorController::class, 'dashboard']);
 $app->router->get('/about', [siteController::class, 'about']);
@@ -270,6 +271,7 @@ $app->router->post('/donor/register', [donorController::class, 'register']);
 $app->router->get('/donor/guideline', [donorController::class, 'guideline']);
 $app->router->get('/donor/history', [donorController::class, 'history']);
 $app->router->get('/donor/nearby', [donorController::class, 'nearby']);
+$app->router->post('/donor/profile/edit', [donorController::class, 'editDetails']);
 
 
 $app->router->get('/hospital/bloodRequest/addRequest', [hospitalController::class, 'addBloodRequest']);

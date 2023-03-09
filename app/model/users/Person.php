@@ -47,7 +47,6 @@ abstract class Person extends dbModel
     }
 
 
-
     /**
      * @return string
      */
