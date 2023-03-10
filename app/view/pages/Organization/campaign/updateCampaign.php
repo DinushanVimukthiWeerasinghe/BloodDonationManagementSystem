@@ -97,7 +97,7 @@ echo $background;
         <br>
 
         <div class="d-flex align-items-center justify-content-center gap-2">
-            <input type="submit" class="btn btn-primary w-30" id="button" value="Update">
+            <input type="submit" class="btn btn-primary w-30" id="button" value="Update" onclick="update()">
             <input type="reset" class="btn btn-secondary w-30">
         </div>
     </form>
@@ -135,72 +135,20 @@ echo $background;
             document.getElementById('expec').style.visibility = 'hidden';
         }
     }
-    const SendEmail = (id)=>{
+    const update = (event)=>{
+        event.preventDefault();
         OpenDialogBox({
-            id:'sendEmail',
-            title:'Send Email',
-            content :`
-                <div class="d-flex gap-1 flex-column">
-                    <div class="form-group">
-                        <label for="Subject" class="w-40">Subject</label>
-                        <div class="d-flex flex-column w-100 gap-0-5">
-                            <input type="text" class="w-60 form-control" id="Subject" placeholder="Enter Subject">
-                            <span class="text-danger none" id="Subject-error"></span>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="Body" class="w-40">Message</label>
-                        <div class="d-flex flex-column w-100 gap-0-5">
-                            <textarea class="border-radius-5" id="Body" rows="3"></textarea>
-                            <span class="text-danger none" id="Body-error"></span>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="attachment" class="w-40">Attachment</label>
-                        <input type="file" class="w-60 form-control" id="attachment">
-                </div>
-            `,
-            successBtnText:'Send',
+            // id:'sendEmail',
+             title:'Update Confirmation',
+            content :`Are You Sure You Want to Update Details?`,
+            successBtnText:'Yes',
             successBtnAction : ()=>{
-                const form = new FormData();
-                form.append('Officer_ID',id);
-                form.append('subject',document.getElementById('Subject').value);
-                form.append('message',document.getElementById('Body').value);
-                const Attachment = document.getElementById('attachment').files[0];
-                if (Attachment){
-                    form.append('attachment',Attachment);
-                }
-                fetch('/manager/mngMedicalOfficer/sendEmail',{
-                    method:'POST',
-                    body:form
-                }).then(res=>res.json())
-                    .then((data)=>{
-                        if (data.status) {
-                            CloseDialogBox();
-                            ShowToast({
-                                title:'Success',
-                                message:data.message,
-                                type:'success'
-                            })
-                        }else{
-                            if (data.errors){
-                                for (const [key, value] of Object.entries(data.errors)) {
-                                    console.log(key,value)
-                                    const element = document.getElementById(key+'-error');
-                                    element.innerText=value;
-                                    element.classList.remove('none');
+                document.querySelector('form').submit();
+            },
 
-                                }
-                            }
-                            ShowToast({
-                                title:'Error',
-                                message:data.message,
-                                type:'danger'
-                            })
-                        }
-                    })
-            }
-        })
-    }
+        });
+        SendEmail.preventDefault();
+    };
+     document.querySelector('form').addEventListener('submit', update);
 </script>
 

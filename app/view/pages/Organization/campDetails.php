@@ -42,7 +42,7 @@ FlashMessage::RenderFlashMessages();
     }
 </style>
 
-<div class="d-flex flex-column w-80 p-5 scroll">
+<div class="d-flex flex-column w-80 p-5 scroll" style="margin-top: 10vh;">
         <div class="d-flex bg-white-0-3 p-3 flex-column details">
             <div class="text-xl bg-white border-radius-10 p-3" id="Campaign_Detail">
                 <div class="d-flex gap-1" id="Campaign_Name">
@@ -71,10 +71,12 @@ FlashMessage::RenderFlashMessages();
                     <div class="font-bold" style="padding: 0 5px "></div>
                 </div>
                 <?php } ?><br><br>
-                <div style="text-align: center;display: flex;flex-direction: row;gap: 20px;margin-left: 30vh;">
-                    <a href="/organization/campaign/updateCampaign?id=<?php echo $_GET['id']?>"><button class="btn btn-success w-100">Update Campaign</button></a>
-                    <a href="/organization/campaign/deleteCampaign?id=<?php echo $_GET['id']?>"><button class="btn btn-danger w-100">Delete Campaign</button></a>
-                </div>
+                <?php if($disable == 1) {?>
+                    <div style="text-align: center;display: flex;flex-direction: row;gap: 20px;margin-left: 30vh;">
+                        <a href="/organization/campaign/updateCampaign?id=<?php echo $_GET['id']?>"><button class="btn btn-success w-100">Update Campaign</button></a>
+                        <a href="" id="delete"><button class="btn btn-danger w-100" onclick="del()">Delete Campaign</button></a>
+                    </div>
+                <?php } ?>
             </div>
         </div>
     <?php if(!$disable == 1) {?>
@@ -125,3 +127,19 @@ FlashMessage::RenderFlashMessages();
 
     <?php } ?>
 </div>
+<script>
+    const del = (event)=>{
+     event.preventDefault();
+    OpenDialogBox({
+    // id:'sendEmail',
+    title:'Delete Confirmation',
+    content :`Are You Sure You Want to Delete Details? This Action Cannot be Undone.`,
+    successBtnText:'Yes',
+    successBtnAction : ()=>{
+        window.location.href = "/organization/campaign/deleteCampaign?id=<?php echo $_GET['id']?>"
+    },
+
+    });
+    }
+    document.getElementById('delete').addEventListener('click', del);
+</script>

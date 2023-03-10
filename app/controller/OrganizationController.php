@@ -361,21 +361,11 @@ class OrganizationController extends Controller
         $campaign = Campaign::findOne(['Campaign_ID' => $id]);
         if($request->isPost()){
             $campaign->loadData($request->getBody());
-            $campaign->setVerifiedBy(' ');
-
-//            $campaign->setOrganizationID(Application::$app->getUser()->getID());
-////            $campaign->setCampaignDate(date("Y-m-d H:i:s"));
-//            $campaign->setStatus(Campaign::PENDING);
-//            $campaign->setVerified(Campaign::PENDING);
-//            $campaign->setCreatedAt(date("Y-m-d H:i:s"));
-//            $id = uniqid("Camp_");
-//            $campaign->setCampaignID($id);
-
-
-            if($campaign->validate() && $campaign->update($id)) {
+            if($campaign->validate() && $campaign->update($id,['Verified_By'])) {
                 $succeed = 1;
 //                print_r($succeed);
 //                exit();
+                Application::$app->session->setFlash('success','Your Campaign Details Updated Successfully!');
                 $response->redirect('/organization/campDetails?id='.$id);
             }else{
                 print_r($campaign->errors);
@@ -387,8 +377,10 @@ class OrganizationController extends Controller
     public function delete(Request $request,Response $response){
         $id = $_GET['id'];
         $campaign = Campaign::findOne(['Campaign_ID' => $id]);
-        $campaign->delete(['Campaign_ID' => $id]);
-        $response->redirect('/organization/campDetails?id='.$id);
+        if($campaign->delete()) {
+            $response->redirect('/organization/campDetails?id=' . $id);
+        }
+
     }
     public function Notification(Request $request, Response $response): string
     {
