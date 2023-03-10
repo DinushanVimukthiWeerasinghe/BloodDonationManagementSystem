@@ -70,7 +70,11 @@ FlashMessage::RenderFlashMessages();
                     <div class="">Donor Participation</div>
                     <div class="font-bold" style="padding: 0 5px "></div>
                 </div>
-                <?php } ?>
+                <?php } ?><br><br>
+                <div style="text-align: center;display: flex;flex-direction: row;gap: 20px;margin-left: 30vh;">
+                    <a href="/organization/campaign/updateCampaign?id=<?php echo $_GET['id']?>"><button class="btn btn-success w-100">Update Campaign</button></a>
+                    <a href="/organization/campaign/deleteCampaign?id=<?php echo $_GET['id']?>"><button class="btn btn-danger w-100">Delete Campaign</button></a>
+                </div>
             </div>
         </div>
     <?php if(!$disable == 1) {?>

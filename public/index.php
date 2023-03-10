@@ -120,6 +120,9 @@ $app->router->get('/organization/received', [OrganizationController::class, 'rec
 $app->router->get('/organization/accepted', [OrganizationController::class, 'accepted']);
 $app->router->get('/organization/profile', [OrganizationController::class, 'profile']);
 $app->router->get('/organization/campaign/view', [OrganizationController::class, 'view']);
+$app->router->get('/organization/campaign/updateCampaign', [OrganizationController::class, 'update']);
+$app->router->post('/organization/campaign/updateCampaign', [OrganizationController::class, 'update']);
+$app->router->get('/organization/campaign/deleteCampaign', [OrganizationController::class, 'delete']);
 
 //sponsor
 

@@ -7,7 +7,7 @@ use App\model\MedicalTeam\MedicalTeam;
 
 class Campaign extends dbModel
 {
-    public const PENDING = 1;
+    public const  PENDING = 1;
     public const APPROVED = 2;
     public const REJECTED = 3;
     public const VERIFIED = 1;
@@ -20,9 +20,9 @@ class Campaign extends dbModel
     protected string $Venue='';
     protected string $Package_ID='';
     protected string $Nearest_City='';
-    protected int $Status=1;
+    protected int $Status;
     protected string $Nearest_BloodBank='';
-    protected int $Verified=1;
+    protected int $Verified;
     protected ?string $Verified_By=null;
     protected ?string $Verified_At=null;
     protected ?string $Remarks=null;
@@ -193,9 +193,10 @@ class Campaign extends dbModel
     public function getCampaignStatus():string
     {
         return match ($this->Verified){
-            self::PENDING =>' Pending Approval',
+            self::PENDING =>'Pending Approval',
             self::APPROVED => 'Campaign Approved',
-            default => 'Unknown'
+            self::REJECTED => 'Campaign Rejected',
+            default => 'Unknown',
         };
     }
 
@@ -380,7 +381,7 @@ class Campaign extends dbModel
         return [
             'Campaign_ID' => [self::RULE_REQUIRED],
             'Campaign_Name' => [self::RULE_REQUIRED],
-            'Campaign_Description' => [self::RULE_REQUIRED],
+//            'Campaign_Description' => [self::RULE_REQUIRED],
             'Campaign_Date' => [self::RULE_REQUIRED],
             'Venue' => [self::RULE_REQUIRED],
             'Nearest_City' => [self::RULE_REQUIRED],
@@ -396,7 +397,7 @@ class Campaign extends dbModel
 
     public static function tableName(): string
     {
-        return 'Campaign';
+        return 'campaign';
     }
 
     public static function PrimaryKey(): string
@@ -408,7 +409,7 @@ class Campaign extends dbModel
     {
         return [
             'Campaign_ID',
-            'Package_ID',
+//            'Package_ID',
             'Organization_ID',
             'Campaign_Name',
             'Campaign_Description',
@@ -420,13 +421,13 @@ class Campaign extends dbModel
             'Verified',
             'Verified_By',
             'Verified_At',
-            'Assigned_Team',
+//            'Assigned_Team',
             'Remarks',
             'Created_At',
             'Updated_At',
             'Expected_Amount',
-            'Latitude',
-            'Longitude'
+//            'Latitude',
+//            'Longitude'
         ];
     }
 

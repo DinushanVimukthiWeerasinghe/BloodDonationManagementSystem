@@ -293,6 +293,7 @@ abstract class dbModel extends Model
         $demo=substr($demo,0,-2);
         $demo.=' WHERE '.static::PrimaryKey().'="'.$id.'"';
         $statement=self::prepare($demo);
+
         $statement->execute();
         return true;
     }
