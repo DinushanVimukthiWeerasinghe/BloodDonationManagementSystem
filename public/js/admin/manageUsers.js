@@ -262,7 +262,7 @@ const SearchUser = (role)=>{
     })
         .then(res => res.text())
         .then(data => {
-            console.log(data)
+            //console.log(data)
             document.getElementById('userTable').innerHTML = data;
         })
 }

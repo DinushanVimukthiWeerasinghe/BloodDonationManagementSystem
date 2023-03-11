@@ -17,6 +17,7 @@ use Core\middleware\AuthenticationMiddleware;
 use Core\Request;
 use Core\Response;
 use PHPMailer\PHPMailer\Exception;
+use PHPUnit\Util\Json;
 
 class adminController extends \Core\Controller
 {
@@ -280,19 +281,55 @@ class adminController extends \Core\Controller
     }
 
     public function deleteBank(Request $request, Response $response){
-        $data = $request->getBody();
-        $BID = $data['BloodBank_ID'];
-        BloodBank::deleteOne(['BloodBank_ID' => $BID]);
-        //Application::Redirect('/admin/dashboard');
+        if ($request->isPost()){
+            $data = $request->getBody();
+            $BID = $data['BloodBank_ID'];
+            BloodBank::deleteOne(['BloodBank_ID' => $BID]);
+            Application::Redirect('/admin/dashboard');
+        }
     }
 
     public function addNewBank(Request $request, Response $response){
-        $data = $request->getBody();
+        if ($request->isPost()){
+            $data = $request->getBody();
         $newBank = new BloodBank;
         $newBank->loadData($data);
         $newBank->setBloodBankID('BNK'.rand());
         if($newBank->validate() && $newBank->save()){
             Application::Redirect('/admin/dashboard');
+        }else{
+            print_r($newBank->errors);
         }
+        }
+    }
+
+    public function searchBank(Request $request, Response $response): bool|string
+    {
+        if ($request->isPost()){
+            $keyword = $request->getBody()['Search'];
+            $results = BloodBank::Search(['BloodBank_ID' => $keyword,
+                'BankName' => $keyword,
+                'Address1' => $keyword,
+                'Address2' => $keyword,
+                'City' => $keyword,
+                'Telephone_No' => $keyword]);
+            $data = array();
+            foreach($results as $bank){
+                $data[] = [
+                    'id' => $bank->getBloodBankID(),
+                    'name' => $bank->getBankName(),
+                    'address' => $bank->getAddress1() . ', ' . $bank->getAddress2(),
+                    'city' => $bank->getCity(),
+                    'telephone' => $bank->getTelephoneNo(),
+                    'numberOfDoctors' => $bank->getNoOfDoctors(),
+                    'numberOfNurses' => $bank->getNoOfNurses(),
+                    'numberOfBeds' => $bank->getNoOfBeds(),
+                    'numberOfStorages' => $bank->getNoOfStorages(),
+                    'type' => $bank->getType()
+                ];
+            }
+            return json_encode($data);
+        }
+        return false;
     }
 }

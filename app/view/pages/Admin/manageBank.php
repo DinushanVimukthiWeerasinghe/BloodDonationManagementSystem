@@ -7,18 +7,17 @@
     <div class="d-flex w-100">
         <div class="d-flex bg-white-0-7 p-1 text-dark justify-content-between align-items-center w-100 ">
             <div id="Search" class="d-flex gap-0-5 align-items-center">
-                <label for="search" class="search">Search </label>
-                <input class="form-control" name="search" id="search" onkeyup="SearchFunction()">
+                <label for="Search" class="text-dark text-xl font-bold">Search</label>
+                <input class="form-control" name="Search" id="search" onkeyup="SearchBank()">
             </div>
             </div>
 <!--a-->
         </div>
     </div>
-    <button class="" onclick="addNewBank()">Add New Bank</button>
-    <div class="d-flex justify-content-center align-items-center">
+    <button class="btn btn-success" onclick="addNewBank()">Add New Bank</button>
+    <div id="div1" class="d-flex justify-content-center align-items-center">
         <table class="" id="bankTable">
             <tr>
-                <th></th>
                 <th>Blood Bank ID</th>
                 <th>Blood Bank Name</th>
                 <th>Address</th>
@@ -30,10 +29,8 @@
                 <th>Number Of Storages</th>
                 <th>Type</th>
                 <th>Edit Bank</th>
-
             </tr>
             <?php
-            $i=1;
             foreach ($BloodBanks as $BloodBank) {
             $id=$BloodBank->getBloodBankID();
             $name = $BloodBank->getBankName();
@@ -46,9 +43,8 @@
             $numberOfStorages = $BloodBank->getNoOfStorages();
             $type = $BloodBank->getType();
             ?>
-                <tr class="bg-white-0-7" id="<?php echo $id ?>">
+                <tr class="bg-white-0-7 tableRows" id="<?php echo $id ?>">
 
-                    <td><?php echo $i++ ?>.</td>
                     <td><?php echo $id ?></td>
                     <td><?php echo $name ?></td>
                     <td><?php echo $address ?></td>
@@ -59,12 +55,10 @@
                     <td><?php echo $numberOfBeds ?></td>
                     <td><?php echo $numberOfStorages ?></td>
                     <td><?php echo $type ?></td>
-
                     <td>
                         <button type="button" class="btn btn-success" onclick="editBnkData('<?php echo $id; ?>')">
                             <img src="/public/icons/edit.png" width="24px" alt="">
                         </button>
-
                     </td>
                 </tr>
             <?php } ?>

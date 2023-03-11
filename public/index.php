@@ -82,6 +82,8 @@ $app->router->get('/admin/dashboard/manageBanks', [adminController::class, 'mana
 $app->router->post('/admin/dashboard/manageBanks/edit', [adminController::class, 'editBank']);
 $app->router->post('/admin/dashboard/manageBanks/delete', [adminController::class, 'deleteBank']);
 $app->router->post('/admin/dashboard/manageBanks/add', [adminController::class, 'addNewBank']);
+$app->router->post('/admin/dashboard/manageBanks/search', [adminController::class, 'searchBank']);
+
 
 $app->router->post('/user/resetPassword', [adminController::class, 'ResetPassword']);
 $app->router->post('/user/removeUser', [adminController::class, 'RemoveUser']);

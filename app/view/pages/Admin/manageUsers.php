@@ -28,23 +28,23 @@ use App\model\users\User;
         </div>
         <div class="d-flex flex-column w-95 justify-content-center align-items-center bg-white border-radius-5" id="Organization"  onclick="ViewUser('Organization')" >
             <img src="/public/images/icons/user/organization.png" class="w-90 bg-accent border-radius-50" id="OrganizationIcon" alt="" style="padding: 8px;" width="64px">
-                        <span class="text-black mt-1">Officer</span>
+                        <span class="text-black mt-1">Organization</span>
         </div>
         <div class="d-flex flex-column w-95 justify-content-center align-items-center bg-white border-radius-5"  id="MedicalOfficer" onclick="ViewUser('MedicalOfficer')" >
             <img src="/public/images/icons/user/medicalOfficer.png" class="w-90 bg-accent border-radius-50" id="MedicalOfficerIcon" alt="" style="padding: 8px;" width="64px">
-                        <span class="text-black mt-1">Organization</span>
+                        <span class="text-black mt-1">Medical Officer</span>
         </div>
         <div class="d-flex flex-column w-95 justify-content-center align-items-center bg-white border-radius-5" id="Hospital" onclick="ViewUser('Hospital')" >
             <img src="/public/images/icons/user/hospital.png" class="w-90 bg-accent border-radius-50" id="HospitalIcon" alt="" style="padding: 8px;" width="64px">
-                        <span class="text-black mt-1">Sponsors</span>
+                        <span class="text-black mt-1">Hospital</span>
         </div>
         <div class="d-flex flex-column w-95 justify-content-center align-items-center bg-white border-radius-5" id="Sponsor" onclick="ViewUser('Sponsor')" >
             <img src="/public/images/icons/user/sponsor.png" class="w-90 bg-accent border-radius-50" id="SponsorIcon" alt="" style="padding: 8px;" width="64px">
-                        <span class="text-black mt-1">Hospital</span>
+                        <span class="text-black mt-1">Sponsor</span>
         </div>
         <div class="d-flex flex-column w-95 justify-content-center align-items-center bg-white border-radius-5" id="Manager" onclick="ViewUser('Manager')" >
             <img src="/public/images/icons/user/manager.png" class="w-90 bg-accent border-radius-50" id="ManagerIcon" alt="" style="padding: 8px;" width="64px">
-                        <span class="text-black mt-1">Hospital</span>
+                        <span class="text-black mt-1">Manager</span>
         </div>
     </div>
 
