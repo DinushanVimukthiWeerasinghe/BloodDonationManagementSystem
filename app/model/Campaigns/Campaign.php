@@ -13,7 +13,7 @@ class Campaign extends dbModel
     public const VERIFIED = 1;
     protected string $Campaign_ID='';
     protected string $Organization_ID='';
-    protected string $Expected_Amount='';
+    protected ?string $Expected_Amount=null;
     protected string $Campaign_Name='';
     protected string $Campaign_Description='';
     protected string $Campaign_Date='';
@@ -397,7 +397,7 @@ class Campaign extends dbModel
 
     public static function tableName(): string
     {
-        return 'campaign';
+        return 'Campaign';
     }
 
     public static function PrimaryKey(): string
@@ -436,7 +436,7 @@ class Campaign extends dbModel
      */
     public function getExpectedAmount(): string
     {
-        return $this->Expected_Amount;
+        return $this->Expected_Amount ?? '0';
     }
 
     /**
