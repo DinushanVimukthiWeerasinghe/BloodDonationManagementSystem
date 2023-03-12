@@ -60,6 +60,7 @@ $app->router->post('/contact', [siteController::class, 'contact']);
 $app->router->get('/register', [authController::class, 'UserRegister']);
 $app->router->post('/register', [authController::class, 'UserRegister']);
 $app->router->post('/register/send-otp', [authController::class, 'SendRegistrationOTP']);
+$app->router->post('/register/validate-otp', [authController::class, 'ValidateOTP']);
 
 //Logout
 $app->router->get('/logout', [authController::class, 'logout']);
@@ -121,6 +122,7 @@ $app->router->get('/organization/received', [OrganizationController::class, 'rec
 $app->router->get('/organization/accepted', [OrganizationController::class, 'accepted']);
 $app->router->get('/organization/profile', [OrganizationController::class, 'profile']);
 $app->router->get('/organization/campaign/view', [OrganizationController::class, 'view']);
+$app->router->post('/organization/getCampaignCoordinate', [OrganizationController::class, 'GetCampaignCoordinate']);
 
 //sponsor
 

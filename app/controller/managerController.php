@@ -455,7 +455,7 @@ class managerController extends Controller
         $medicalOfficer=new MedicalOfficer();
         if (Application::$app->request->isPost()){
             $medicalOfficer->loadData($request->getBody());
-            $medicalOfficer->setID('MO_' . rand(1000, 999999));
+            $medicalOfficer->setID(uniqid('MO_'));
             $medicalOfficer->setStatus(1);
             $medicalOfficer->setGenderFromNIC();
             $medicalOfficer->setJoinedAt(date('Y-m-d H:i:s'));

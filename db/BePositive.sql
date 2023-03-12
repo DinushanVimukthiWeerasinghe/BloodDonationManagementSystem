@@ -199,7 +199,7 @@ CREATE TABLE IF NOT EXISTS Campaign
     Campaign_ID          VARCHAR(20)  NOT NULL PRIMARY KEY,
     Campaign_Name        VARCHAR(100) NOT NULL,
     Organization_ID      VARCHAR(20)  NOT NULL,
-    Campaign_Description VARCHAR(100) NOT NULL,
+    Campaign_Description VARCHAR(300) NOT NULL,
     Campaign_Date        DATE         NOT NULL,
     Venue                VARCHAR(100) NOT NULL,
     Nearest_City         VARCHAR(100) NOT NULL,
@@ -207,8 +207,8 @@ CREATE TABLE IF NOT EXISTS Campaign
     Latitude             VARCHAR(100) NOT NULL,
     Longitude            VARCHAR(100) NOT NULL,
     Nearest_BloodBank    VARCHAR(20)  NOT NULL,
-    Verified             INT          NOT NULL DEFAULT 1 CHECK ( Verified BETWEEN 1 AND 2),
-    Expected_Amount      VARCHAR(20)  NOT NULL,
+    Verified             INT          NOT NULL DEFAULT 1 CHECK ( Verified BETWEEN 1 AND 3),
+    Expected_Amount      VARCHAR(20)  NULL,
     Created_At           TIMESTAMP             DEFAULT CURRENT_TIMESTAMP,
     Updated_At           TIMESTAMP             DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (Nearest_BloodBank) REFERENCES BloodBanks (BloodBank_ID),
@@ -801,6 +801,17 @@ CREATE TABLE Blogs (
                        Blog_Status INT NOT NULL ,
                        Blog_Image VARCHAR(100) NOT NULL
 ) engine=innodb default charset=utf8;
+
+DROP TABLE IF EXISTS Register_OTP;
+CREATE TABLE IF NOT EXISTS Register_OTP
+(
+    Email      VARCHAR(100) PRIMARY KEY,
+    OTP        VARCHAR(20) NOT NULL,
+    Created_At TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    Updated_At TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NULL,
+    No_Of_Attempts INT DEFAULT 0 NOT NULL
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8;
 
 
 

@@ -5,11 +5,13 @@ namespace App\controller;
 use App\model\Authentication\Login;
 use App\model\Authentication\OTPCode;
 use App\model\Authentication\PasswordReset;
+use App\model\Email\RegisterOTP;
 use App\model\users\User;
 use Core\Application;
 use Core\Controller;
 use Core\Request;
 use Core\Response;
+use PHPMailer\PHPMailer\Exception;
 
 class authController extends Controller
 {
@@ -30,6 +32,23 @@ class authController extends Controller
     public function OTP(Request $request, Response $response)
     {
         $response->redirect('/' . strtolower(Application::$app->getUser()->getRole()) . '/dashboard');
+    }
+
+    public function ValidateOTP(Request $request,Response $response)
+    {
+        if ($request->isPost()){
+            $Email = $request->getBody()['Email'];
+            $OTP = $request->getBody()['OTP'];
+            if (trim($Email) == '' || trim($OTP) == ''){
+                return json_encode(['status'=>false,'message'=>'Please fill the OTP']);
+            }
+            $OTP = RegisterOTP::findOne(['Email'=>$Email,'OTP'=>$OTP],false);
+            if ($OTP){
+                return json_encode(['status'=>true,'message'=>'OTP Verified']);
+            }else{
+                return json_encode(['status'=>false,'message'=>'Invalid OTP']);
+            }
+        }
     }
 
     public function OTPValidation(Request $request, Response $response): bool|string
@@ -95,11 +114,11 @@ class authController extends Controller
         $login = new Login();
 
         if ($request->isPost()) {
+//            echo "<pre>";
             $login->loadData($request->getBody());
             if ($login->validate()) {
-
-
                 $user = $login->login();
+
 //                var_dump($user);
 //                exit();
                 if (!$user) {
@@ -122,7 +141,7 @@ class authController extends Controller
     {
         $user = new User();
         if ($request->isPost()){
-            $Role = $request->getBody()['role'];
+            $Role = $request->getBody()['Role'];
 
             if (trim($Role) == '' || !$user->IsValidRole($Role)) {
                 $this->setFlashMessage('error', 'Please Select Role');
@@ -139,36 +158,38 @@ class authController extends Controller
                 // Password must be 8 characters long
                 if (strlen($Password) < 8) {
                     $this->setFlashMessage('error', 'Password must be 8 characters long');
-                    Application::$app->response->redirect('/register');
+                    return json_encode(['status'=>false,'message'=>'Password must be 8 characters long']);
                 }
                 // Password must contain at least one uppercase letter
                 else if (!preg_match('/[A-Z]/', $Password)) {
                     $this->setFlashMessage('error', 'Password must contain at least one uppercase letter');
-                    Application::$app->response->redirect('/register');
+                    return json_encode(['status'=>false,'message'=>'Password must contain at least one uppercase letter']);
                 }
                 // Password must contain at least one number
                 else if (!preg_match('/\d/', $Password)) {
                     $this->setFlashMessage('error', 'Password must contain at least one number');
-                    Application::$app->response->redirect('/register');
+                    return json_encode(['status'=>false,'message'=>'Password must contain at least one number']);
                 }
                 // Password must contain at least one special character
                 else if (!preg_match('/[^a-zA-Z\d]/', $Password)) {
                     $this->setFlashMessage('error', 'Password must contain at least one special character');
-                    Application::$app->response->redirect('/register');
+                    return json_encode(['status'=>false,'message'=>'Password must contain at least one special character']);
                 }
                 else if ($Password != $ConfirmPassword){
                     $this->setFlashMessage('error', 'Password and Confirm Password Not Match');
-                    Application::$app->response->redirect('/register');
+                    return json_encode(['status'=>false,'message'=>'Password and Confirm Password Not Match']);
                 }
                 else {
                     $hash = password_hash($Password, PASSWORD_DEFAULT);
                     $user->loadData($request->getBody());
                     $user->setPassword($hash);
                     if ($user->validate()) {
-                        $user->setPassword(password_hash($user->getPassword(), PASSWORD_DEFAULT));
                         $user->save();
                         $this->setFlashMessage('success', 'User Registered Successfully');
-                        Application::$app->response->redirect('/auth/login');
+                        return json_encode(['status'=>true,'message'=>'User Registered Successfully']);
+                    }else{
+                        $this->setFlashMessage('error', 'User Registration Failed');
+                        return json_encode(['status'=>false,'message'=>'User Registration Failed']);
                     }
                 }
 
@@ -192,12 +213,26 @@ class authController extends Controller
 
     }
 
-    public function SendRegistrationOTP(Request $request,Response $response)
+    /**
+     * @throws Exception
+     */
+    public function SendRegistrationOTP(Request $request, Response $response)
     {
         if ($request->isPost()){
             $Email = $request->getBody()['Email'];
             $ApplicationEmail = Application::$app->email;
-            $OTP = new OTPCode();
+            /** @var RegisterOTP $RegisterOTP */
+
+            if(!$RegisterOTP){
+                $RegisterOTP = new RegisterOTP();
+            }
+            try {
+                $RegisterOTP->SendOTP($Email);
+                return json_encode(['status' => true, 'message' => 'OTP Sent Successfully']);
+            }catch (Exception $e){
+                return json_encode(['status' => false, 'message' => $e->getMessage()]);
+            }
+
         }
 
     }

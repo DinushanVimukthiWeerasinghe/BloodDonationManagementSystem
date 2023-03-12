@@ -15,7 +15,7 @@ class Campaign extends dbModel
     public const VERIFIED = 2;
     protected string $Campaign_ID='';
     protected string $Organization_ID='';
-    protected string $Expected_Amount='';
+    protected ?string $Expected_Amount=null;
     protected string $Campaign_Name='';
     protected string $Campaign_Description='';
     protected string $Campaign_Date='';
@@ -202,8 +202,9 @@ class Campaign extends dbModel
     public function getCampaignStatus():string
     {
         return match ($this->Verified){
-            self::PENDING =>' Pending Approval',
-            self::APPROVED => 'Campaign Approved',
+            self::PENDING =>'Pending',
+            self::APPROVED => 'Approved',
+            self::REJECTED => 'Rejected',
             default => 'Unknown'
         };
     }
