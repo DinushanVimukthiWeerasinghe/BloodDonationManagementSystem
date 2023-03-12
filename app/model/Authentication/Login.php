@@ -236,6 +236,7 @@ class Login extends dbModel
 
 //            Hashing Algorithm PASSWORD_BCRYPT
         $user= Login::findOne(['Email' => $this->Email]);
+
         if(!$user)
         {
             $this->addError('email','Invalid User Credential!');
@@ -247,16 +248,22 @@ class Login extends dbModel
             $this->addError('password','Incorrect Password!');
             return false;
         }
-        else if ($user->IsAccountTemporaryBanned()) {
+
+        if ($user->IsAccountTemporaryBanned()) {
             $this->addError('email', 'Your Account is temporarily disabled!');
             return false;
         }
-        else if ($user->IsAccountPermanentlyBanned()) {
+        if ($user->IsAccountPermanentlyBanned()) {
             $this->addError('email', 'Your Account is permanently disabled!');
             return false;
         }
 
-        Application::$app->login($user);
+
+        try {
+            Application::$app->login($user);
+        } catch (\Exception $e) {
+            Application::$app->session->setFlash('error', $e->getMessage());
+        }
 
         Application::$app->session->setFlash('success', 'Login Successful!');
         return true;

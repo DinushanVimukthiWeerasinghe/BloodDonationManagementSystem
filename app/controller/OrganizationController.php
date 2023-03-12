@@ -102,19 +102,10 @@ class OrganizationController extends Controller
     {
         /* @var Campaign $campaign */
         $ID=Application::$app->getUser()->getID();
-        $Camp=Campaign::RetrieveAll(false,[],true,['Organization_ID'=>$ID]);
-//        $AlreadyCreatedCampaign = $Camp::findOne(['Status' => Campaign::PENDING]);
+        $AlreadyCreatedCampaign=Campaign::findOne(['Organization_ID'=>$ID,'Status'=> Campaign::PENDING],false);
         $Exist=false;
-        $id = 0;
-
-        if ($Camp){
-            foreach ($Camp as $cam) {
-                if ($cam->getCampaignDate() >= date("Y-m-d")) {
-                    Application::$app->session->setFlash('error', 'Previously Created Campaign is in Progress.');
-                    $id = $cam->getCampaignID();
-                    $Exist = true;
-                }
-            }
+        if ($AlreadyCreatedCampaign){
+            $Exist=true;
         }
 
         return $this->render('Organization/manage',[
@@ -122,36 +113,30 @@ class OrganizationController extends Controller
         ]);
     }
 
-    public function CreateCampaign(Request $request,Response $response)
+    public function CreateCampaign(Request $request,Response $response): string
     {
         $campaign = new Campaign();
         $bank = BloodBank::RetrieveAll(false,[],false);
         $packages = sponsorship_packages::RetrieveAll(false,[],false);
-        $succeed = 0;
 
         if($request->isPost()){
             $campaign->loadData($request->getBody());
             $campaign->setOrganizationID(Application::$app->getUser()->getID());
-//            $campaign->setCampaignDate(date("Y-m-d H:i:s"));
+            $campaign->setCampaignDate(date("Y-m-d H:i:s"));
             $campaign->setStatus(Campaign::PENDING);
-            $campaign->setVerified(Campaign::PENDING);
             $campaign->setCreatedAt(date("Y-m-d H:i:s"));
             $id = uniqid("Camp_");
             $campaign->setCampaignID($id);
 
             if($campaign->validate() && $campaign->save()) {
-                $succeed = 1;
-//                print_r($succeed);
-//                exit();
-                $response->redirect('/organization/campDetails?id='.$id);
+                    $response->redirect('/organization/history');
             }else{
                 print_r($campaign->errors);
+                exit();
             }
 
         }
-        if($succeed == 1) {
-            Application::$app->session->setFlash('success', 'You Successfully Created a Campaign! Please Wait for the Admin Approval.');
-        }
+        Application::$app->session->setFlash('success','You Successfully Created a Campaign! Please Wait for the Admin Approval.');
         return $this->render('Organization/create',['banks'=> $bank,'package' => $packages]);
     }
 
@@ -163,11 +148,13 @@ class OrganizationController extends Controller
     public function near()
     {
         /* @var Campaign $campaign */
-        $result = Campaign::RetrieveAll(false, [], true,['Nearest_City'=>Application::$app->getUser()->getCity()]);
-        $result =array_filter($result,function ($campaign){
-            return $campaign->getStatus() === Campaign::APPROVED;
-        });
-        return $this->render('Organization/near',['data'=>$result]);
+        $city = Application::$app->getUser()->getCity();
+        $result = Campaign::RetrieveAll(false, []);
+//        $result =array_filter($result,function ($campaign){
+//            return $campaign->getStatus() === Campaign::APPROVED;
+//        });
+//        return $this->render('Organization/near',['data'=>$result]);
+        return $this->render('Organization/campaign/NearByCampaigns',['data'=>$result,'city'=>$city]);
     }
     public function report()
     {
@@ -289,21 +276,16 @@ class OrganizationController extends Controller
     {
         /* @var Campaign $campaign */
         $ID = Application::$app->getUser()->getID();
-        $result = Campaign::RetrieveAll(false, [], true, ['Organization_ID' => $ID]);
-        $params = [];
-
-        foreach ($result as $res){
-            if($res->getCampaignDate() >= date("Y-m-d")){
-                $params[] = [
-                    'Campaign_Name' => $res->getCampaignName(),
-                    'Campaign_Date' => $res->getCampaignDate(),
-                    'Status' => $res->getCampaignStatus(),
-                    'Campaign_ID' => $res->getCampaignID(),
-                ];
-            }
+        $result = Campaign::findOne(['Organization_ID' => $ID, 'Status' => Campaign::PENDING],false);
+        if ($result){
+            $id=$result->getCampaignID();
+            $campaign = Campaign::findOne(['Campaign_ID'=> $id]);
+            return $this->render('Organization/campDetails',['campaign'=>$campaign]);
         }
-
-        return $this->render('Organization/campaign/view',$params);
+        else{
+            Application::$app->session->setFlash('success','You have not created a Campaign yet!');
+            return $this->render('Organization/campDetails',['campaign'=>$campaign]);
+        }
     }
     public function campDetails(Request $request,Response $response)
     {
@@ -356,32 +338,6 @@ class OrganizationController extends Controller
 
 //        return $this->render('Organization/campDetails',$params);
     }
-    public function update(Request $request,Response $response){
-        $id = $_GET['id'];
-        $campaign = Campaign::findOne(['Campaign_ID' => $id]);
-        if($request->isPost()){
-            $campaign->loadData($request->getBody());
-            if($campaign->validate() && $campaign->update($id,['Verified_By'])) {
-                $succeed = 1;
-//                print_r($succeed);
-//                exit();
-                Application::$app->session->setFlash('success','Your Campaign Details Updated Successfully!');
-                $response->redirect('/organization/campDetails?id='.$id);
-            }else{
-                print_r($campaign->errors);
-            }
-        }
-
-        return $this->render('organization/campaign/updateCampaign',['camp'=>$campaign]);
-    }
-    public function delete(Request $request,Response $response){
-        $id = $_GET['id'];
-        $campaign = Campaign::findOne(['Campaign_ID' => $id]);
-        if($campaign->delete()) {
-            $response->redirect('/organization/campDetails?id=' . $id);
-        }
-
-    }
     public function Notification(Request $request, Response $response): string
     {
         $limit = 10;
@@ -405,6 +361,41 @@ class OrganizationController extends Controller
         $file = $folderPath . $fileName;
         file_put_contents($file, $image_base64);
         return json_encode($file);
+    }
+
+    public function GetCampaignCoordinate(Request $request, Response $response)
+    {
+        if ($request->isPost()){
+            $CampaignID = $request->getBody()['CampaignID'] ?? null;
+            $CampaignDateFrom = $request->getBody()['CampaignDateFrom'] ?? null;
+            $CampaignDateTo = $request->getBody()['CampaignDateTo'] ?? null;
+
+            if ($CampaignDateFrom && $CampaignDateTo) {
+                $Campaigns= Campaign::RetrieveAll();
+                $CampaignsArray = [];
+                foreach ($Campaigns as $Campaign) {
+                    if ($Campaign->getCampaignDate() >= $CampaignDateFrom && $Campaign->getCampaignDate() <= $CampaignDateTo) {
+                        $CampaignsArray[] = $Campaign->toArray();
+                    }
+                }
+                return json_encode(['status' => true, 'Campaigns' => $CampaignsArray]);
+            }
+            if ($CampaignID) {
+                $Campaign = Campaign::findOne(['Campaign_ID' => $CampaignID]);
+                if ($Campaign) {
+                    return json_encode(['status' => true, 'lat' => $Campaign->getLatitude(), 'lng' => $Campaign->getLongitude()]);
+                } else {
+                    return json_encode(['status' => false, 'message' => 'Campaign Not Found']);
+                }
+            } else {
+                $Campaigns= Campaign::RetrieveAll(false, [], );
+                $CampaignsArray = [];
+                foreach ($Campaigns as $Campaign) {
+                    $CampaignsArray[] = $Campaign->toArray();
+                }
+                return json_encode(['status' => true, 'Campaigns' => $CampaignsArray]);
+            }
+        }
     }
 
 }

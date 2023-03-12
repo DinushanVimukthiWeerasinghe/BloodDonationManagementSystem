@@ -25,24 +25,7 @@ $background = new BackGroundImage();
 echo $background;
 FlashMessage::RenderFlashMessages();
 ?>
-<link rel="stylesheet" href="/public/css/components/flexbox/flex-box.css">
-<style>
-    @media only screen and (max-width: 1263px) {
-        .cards{
-            flex-direction: column;
-            justify-content: center;
-            /*margin-top: 50vh;*/
-        }
-        .scroll{
-            overflow-y: scroll;
-        }
-        .details{
-            margin-top: 10vh;
-        }
-    }
-</style>
-
-<div class="d-flex flex-column w-80 p-5 scroll" style="margin-top: 10vh;">
+<div class="d-flex flex-column w-80 p-5 scroll">
         <div class="d-flex bg-white-0-3 p-3 flex-column details">
             <div class="text-xl bg-white border-radius-10 p-3" id="Campaign_Detail">
                 <div class="d-flex gap-1" id="Campaign_Name">
@@ -59,7 +42,16 @@ FlashMessage::RenderFlashMessages();
                 </div>
                 <div class="d-flex gap-6" id="Campaign_Status">
                     <div class="">Status </div>
-                    <div class="font-bold bg-green-4" style="padding: 0 5px "><?=$campaign->getCampaignStatus(); ?></div>
+                    <?php
+                    $CampaignStatus =$campaign->getCampaignStatus();
+                    if($CampaignStatus === "Pending"): ?>
+                        <div class="font-bold bg-yellow-10 py-0-5 px-1 border-radius-10 text-white" >Pending Approval</div>
+                    <?php elseif($CampaignStatus === 'Approved'): ?>
+                        <div class="font-bold bg-green-6 py-0-5 px-1 border-radius-10 text-white">Campaign Approved</div>
+                    <?php elseif($CampaignStatus === 'Rejected'): ?>
+                        <div class="font-bold bg-red-6 py-0-5 px-1 border-radius-10 text-white">Campaign Rejected</div>
+                    <?php endif;
+                    ?>
                 </div>
                 <?php if($expired == 1) { ?>
                 <div class="d-flex gap-6" id="Campaign_Status">

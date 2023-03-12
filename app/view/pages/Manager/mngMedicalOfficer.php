@@ -13,10 +13,13 @@ use App\view\components\ResponsiveComponent\Alert\FlashMessage;
 //echo new primaryTitle('Manage Medical Officers');
 /* @var array $data */
 /* @var MedicalOfficer $value */
+
 $getParams = function ($params) {
     $str = '?';
     if (empty($params)) return $str;
     foreach ($params as $key => $value) {
+        if ($key == 'page')
+            continue;
         $str .= $key . '=' . $value . '&';
     }
     return $str;

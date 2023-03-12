@@ -29,8 +29,7 @@ $navbar = new AuthNavbar('Medical Officer Dashboard', '/mofficer', '/public/imag
     ></script>
     <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
     <script src="https://kit.fontawesome.com/185eb0391e.js" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">></script>
-
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.2.1/dist/chart.umd.min.js"></script>
 </head>
 <body class="d-flex">
 <?= $navbar;?>

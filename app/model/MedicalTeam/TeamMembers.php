@@ -4,6 +4,7 @@ namespace App\model\MedicalTeam;
 
 use App\model\Campaigns\Campaign;
 use App\model\database\dbModel;
+use App\model\users\MedicalOfficer;
 
 class TeamMembers extends dbModel
 {
@@ -103,6 +104,11 @@ class TeamMembers extends dbModel
             self::TASK_BLOOD_RETRIEVAL => 'Blood Retrieval',
             default => 'Not Assigned',
         };
+    }
+
+    public function getMember()
+    {
+        return MedicalOfficer::findOne(['Officer_ID' => $this->Member_ID]);
     }
 
 

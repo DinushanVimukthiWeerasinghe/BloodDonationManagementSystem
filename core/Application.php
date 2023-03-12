@@ -153,11 +153,15 @@ class Application
         }
     }
 
+    /**
+     * @throws Exception
+     */
     public function login(Login $user): bool
     {
         $Role=$user->getRole();
         $ID = $user->getID();
         $AuthCode = new OTPCode();
+//        Role == 'Manager
         if ($Role === User::MANAGER)
         {
             $this->user = Manager::findOne(['Manager_ID' => $ID]);
@@ -179,7 +183,7 @@ class Application
         } else if ($Role === User::SPONSOR) {
             $this->user = Sponsor::findOne(['Sponsor_ID' => $ID]);
         } else {
-            return false;
+            throw new Exception('Invalid Role');
         }
         if ($this->user === null) {
             return false;
