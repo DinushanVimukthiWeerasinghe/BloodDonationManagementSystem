@@ -25,34 +25,49 @@ $background = new BackGroundImage();
 echo $background;
 FlashMessage::RenderFlashMessages();
 ?>
-<div class="d-flex flex-column w-80 p-5 scroll">
-        <div class="d-flex bg-white-0-3 p-3 flex-column details">
-            <div class="text-xl bg-white border-radius-10 p-3" id="Campaign_Detail">
-                <div class="d-flex gap-1" id="Campaign_Name">
-                    <div class="">Campaign Name </div>
-                    <div class="font-bold"><?=$campaign->getCampaignName(); ?></div>
+<div class="d-flex flex-column w-90  mt-3 p-5 scroll">
+    <div class="d-flex text-xl w-100 align-items-center justify-content-center bg-dark px-2 py-0-5 text-white font-bold" style="font-size: 1.8rem"><?=$campaign->getCampaignName(); ?></div>
+        <div class="d-flex bg-white-0-3 p-2 gap-2 details w-100 justify-content-between">
+            <div class="text-xl d-flex flex-column justify-content-center align-items-center w-100 bg-white border-radius-10 gap-1 p-3" id="Campaign_Detail">
+                <div class="d-flex justify-content-between w-100" id="Campaign_Name">
+                    <div class="w-40">Campaign Name </div>
+                    <div class="font-bold w-60 d-flex align-items-center justify-content-start text-right"><?=$campaign->getCampaignName(); ?></div>
                 </div>
-                <div class="d-flex gap-8" id="Campaign_Venue">
-                    <div class="">Venue </div>
-                    <div class="font-bold"><?=$campaign->getVenue(); ?></div>
+                <div class="d-flex w-100 justify-content-between" id="Campaign_Venue">
+                    <div class="w-40">Venue </div>
+                    <div class="font-bold w-60 d-flex align-items-center justify-content-start text-right"><?=$campaign->getVenue(); ?></div>
                 </div>
-                <div class="d-flex gap-8" id="Campaign_Date">
-                    <div class="">Date </div>
-                    <div class="font-bold"><?=$campaign->getCampaignDate(); ?></div>
+                <div class="d-flex w-100 justify-content-between" id="Campaign_Date">
+                    <div class="w-40">Date </div>
+                    <div class="font-bold w-60 d-flex align-items-center justify-content-start text-right"><?=$campaign->getCampaignDate(); ?></div>
                 </div>
-                <div class="d-flex gap-6" id="Campaign_Status">
-                    <div class="">Status </div>
+                <div class="d-flex w-100 justify-content-between" id="Campaign_Status">
+                    <div class="w-40">Status </div>
+                    <div class="font-bold w-60 d-flex align-items-center justify-content-start text-right">
                     <?php
                     $CampaignStatus =$campaign->getCampaignStatus();
                     if($CampaignStatus === "Pending"): ?>
-                        <div class="font-bold bg-yellow-10 py-0-5 px-1 border-radius-10 text-white" >Pending Approval</div>
+                        <div class="font-bold bg-yellow-10 py-0-5 px-1 border-radius-10 text-white " >Pending Approval</div>
                     <?php elseif($CampaignStatus === 'Approved'): ?>
                         <div class="font-bold bg-green-6 py-0-5 px-1 border-radius-10 text-white">Campaign Approved</div>
                     <?php elseif($CampaignStatus === 'Rejected'): ?>
                         <div class="font-bold bg-red-6 py-0-5 px-1 border-radius-10 text-white">Campaign Rejected</div>
                     <?php endif;
                     ?>
+                    </div>
                 </div>
+                <div class="d-flex flex-column w-100 justify-content-between gap-1" id="Campaign_Date">
+                    <div class="">Description </div>
+                    <div class="font-bold px-1 ">
+                        <?=$campaign->getCampaignDescription(); ?>
+                        <?=$campaign->getCampaignDescription(); ?>
+                        <?=$campaign->getCampaignDescription(); ?>
+                        <?=$campaign->getCampaignDescription(); ?>
+                        <?=$campaign->getCampaignDescription(); ?>
+                            <?=$campaign->getCampaignDescription(); ?>
+                    </div>
+                </div>
+
                 <?php if($expired == 1) { ?>
                 <div class="d-flex gap-6" id="Campaign_Status">
                     <div class="">Received Income</div>
@@ -62,7 +77,7 @@ FlashMessage::RenderFlashMessages();
                     <div class="">Donor Participation</div>
                     <div class="font-bold" style="padding: 0 5px "></div>
                 </div>
-                <?php } ?><br><br>
+                <?php } ?>
                 <?php if($disable == 1) {?>
                     <div style="text-align: center;display: flex;flex-direction: row;gap: 20px;margin-left: 30vh;">
                         <a href="/organization/campaign/updateCampaign?id=<?php echo $_GET['id']?>"><button class="btn btn-success w-100">Update Campaign</button></a>
@@ -70,11 +85,11 @@ FlashMessage::RenderFlashMessages();
                     </div>
                 <?php } ?>
             </div>
+            <div id="Map" class="bg-red-1" style="width: 500px;height: 400px;"></div>
         </div>
-    <?php if(!$disable == 1) {?>
-       <?php if(!$expired == 1) { ?>
-        <div class="d-flex cards mt-2">
-            <div class="card nav-card bg-white text-dark" onclick="Redirect('request?id=<?php echo $_GET['id'] ?>')">
+    <?php if($campaign->getVerified()===Campaign::VERIFIED) { ?>
+        <div class="d-flex cards justify-content-center bg-white-0-5 py-1 border-radius-10 mt-1">
+            <div class="card nav-card bg-white text-dark" onclick="RequestSponsorship()">
                 <div class="card-header">
                     <div class="card-header-img">
                         <img src="/public/images/icons/organization/campaignDetails/request.png" alt="Request" width="100px">
@@ -115,11 +130,78 @@ FlashMessage::RenderFlashMessages();
                 </div>
             </div>
         </div>
-           <?php } ?>
-
+    <?php }
+    else{?>
+        <div class="d-flex justify-content-center cards mt-2">
+            <div class="card nav-card bg-white card-disabled text-dark">
+                <div class="disable-text bg-white-0-7 py-2 px-1 font-bold absolute" >
+                    Sponsorship Request is not available until the campaign is approved
+                </div>
+                <div class="card-header">
+                    <div class="card-header-img">
+                        <img src="/public/images/icons/organization/campaignDetails/request.png" alt="Request" width="100px">
+                    </div>
+                    <div class="card-title">
+                        <h3>Request Sponsorship</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="card nav-card bg-white card-disabled text-dark">
+            <div class="disable-text bg-white-0-7 py-2 px-1 font-bold absolute" >
+                Inform Donors is not available until the campaign is approved
+            </div>
+            <div class="card-header">
+                <div class="card-header-img">
+                    <img src="/public/images/icons/organization/campaignDetails/inform.png" alt="Inform" width="100px">
+                </div>
+                <div class="card-title">
+                    <h3>Inform Donors</h3>
+                </div>
+            </div>
+        </div>
+        </div>
     <?php } ?>
 </div>
 <script>
+    const RequestSponsorship = ()=>{
+        OpenDialogBox({
+            id:'RequestSponsorship',
+            title:'Request Sponsorship',
+            titleClass:'text-center bg-dark text-white px-2 py-1',
+            content :`<div class="d-flex flex-column gap-1">
+                        <div class="d-flex flex-column gap-0-5">
+                            <label for="SponsorshipAmount" class="form-label">Expected Amount</label>
+                            <input type="number" class="form-control" id="SponsorshipAmount" placeholder="Sponsorship Amount">
+                        </div>
+                        <div class="d-flex flex-column gap-1">
+                            <label for="SponsorshipDescription" class="form-label">Description</label>
+                            <textarea class="form-control" id="SponsorshipDescription" placeholder="Description" style="height: 150px"></textarea>
+                        </div>
+                    </div>
+            `,
+            successBtnText:'Request',
+            successBtnAction:()=>{
+                console.log('Requesting Sponsorship');
+            }
+        })
+    }
+    function initMap(){
+        const Campaign = {lat: <?php echo $campaign->getLatitude()?>, lng: <?php echo $campaign->getLongitude()?>};
+        const map = new google.maps.Map(document.getElementById("Map"), {
+            zoom: 13,
+            center: Campaign,
+        });
+        const marker = new google.maps.Marker({
+            position: Campaign,
+            map: map,
+        });
+        marker.addListener("click", () => {
+            map.setZoom(16);
+            map.setCenter(marker.getPosition());
+        });
+    }
+    window.addEventListener('load', initMap);
+
     const del = (event)=>{
      event.preventDefault();
     OpenDialogBox({
@@ -134,4 +216,6 @@ FlashMessage::RenderFlashMessages();
     });
     }
     document.getElementById('delete').addEventListener('click', del);
+
+
 </script>

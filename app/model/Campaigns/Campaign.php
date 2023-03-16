@@ -392,6 +392,8 @@ class Campaign extends dbModel
             'Nearest_City' => [self::RULE_REQUIRED],
             'Status' => [self::RULE_REQUIRED],
             'Nearest_BloodBank' => [self::RULE_REQUIRED],
+            'Latitude' => [self::RULE_REQUIRED],
+            'Longitude' => [self::RULE_REQUIRED],
         ];
     }
 

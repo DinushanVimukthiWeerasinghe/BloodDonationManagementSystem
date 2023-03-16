@@ -103,12 +103,13 @@ class OrganizationController extends Controller
         /* @var Campaign $campaign */
         $ID=Application::$app->getUser()->getID();
         $AlreadyCreatedCampaign=Campaign::findOne(['Organization_ID'=>$ID,'Status'=> Campaign::PENDING],false);
+
         $Exist=false;
         if ($AlreadyCreatedCampaign){
             $Exist=true;
         }
 
-        return $this->render('Organization/manage',[
+        return $this->render('Organization/manageCampaign',[
             'campaign_exist'=>$Exist,'id' => $id
         ]);
     }
@@ -129,7 +130,8 @@ class OrganizationController extends Controller
             $campaign->setCampaignID($id);
 
             if($campaign->validate() && $campaign->save()) {
-                    $response->redirect('/organization/history');
+                $this->setFlashMessage('success', 'You Successfully Created a Campaign! Please Wait for the Admin Approval.');
+                $response->redirect('/organization/view');
             }else{
                 print_r($campaign->errors);
                 exit();
@@ -137,7 +139,7 @@ class OrganizationController extends Controller
 
         }
         Application::$app->session->setFlash('success','You Successfully Created a Campaign! Please Wait for the Admin Approval.');
-        return $this->render('Organization/create',['banks'=> $bank,'package' => $packages]);
+        return $this->render('Organization/createCampaign',['banks'=> $bank,'package' => $packages]);
     }
 
     public function ViewCampaign(Request $request,Response $response)
@@ -289,21 +291,18 @@ class OrganizationController extends Controller
     }
     public function campDetails(Request $request,Response $response)
     {
-        /* @var Campaign $campaign */
-        $id = $_GET['id'];
+        /* @var Campaign $Campaign */
+        $Organization_ID = Application::$app->getUser()->getID();
         $disable = 0;
         $expired = 0;
-        $Campaign = Campaign::findOne(['Campaign_ID' => $id]);
+        $Campaign = Campaign::findOne(['Organization_ID' => $Organization_ID]);
         if ($Campaign){
-
-            if($Campaign->getCampaignStatus() === 'Pending Approval'){
-
+            if($Campaign->getCampaignStatus() === Campaign::PENDING){
                 $disable = 1;
             }
             if($Campaign->getCampaignDate() < date("Y-m-d")){
                 $expired = 1;
             }
-
             return $this->render('Organization/campDetails',['campaign'=>$Campaign, 'disable' => $disable, 'expired' => $expired]);
         }else{
             /* @var Campaign $campaign */
@@ -322,7 +321,7 @@ class OrganizationController extends Controller
                     }
                 }
             }
-            $response->redirect('/organization/manage',['campaign_exist'=>$Exist,'id' => $id]);
+            $response->redirect('/organization/manageCampaign',['campaign_exist'=>$Exist,'id' => $id]);
 
         }
 
