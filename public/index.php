@@ -1,15 +1,16 @@
 <?php
 ;
+
 use App\controller\adminController;
 use App\controller\apiController;
 use App\controller\authController;
 use App\controller\blogController;
 use App\controller\donorController;
 use App\controller\fileController;
-use App\controller\OrganizationController;
 use App\controller\hospitalController;
 use App\controller\managerController;
 use App\controller\medicalOfficerController;
+use App\controller\OrganizationController;
 use App\controller\siteController;
 use App\controller\sponsorController;
 use Core\Application;
@@ -98,7 +99,7 @@ $app->router->get('/user/searchUser', [adminController::class, 'SearchUser']);
 
 $app->router->post('/upload', [fileController::class, 'upload']);
 
-$app->router->get('/test',[siteController::class,'test']);
+$app->router->get('/test',[siteController::class,'Test']);
 
 $app->router->get('/organization/register', [OrganizationController::class, 'register']);
 $app->router->post('/organization/register', [OrganizationController::class, 'register']);
