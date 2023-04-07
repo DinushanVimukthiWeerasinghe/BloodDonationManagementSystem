@@ -21,7 +21,7 @@ use App\model\users\organization;
 
 use App\view\components\WebComponent\Card\NavigationCard;
 
-$CampaignGuidelines = new NavigationCard('/sponsors/donation', '/public/images/icons/organization/manage/nearby.png', 'Donation Campaigns');
+$CampaignGuidelines = new NavigationCard('/sponsor/donation', '/public/images/icons/organization/manage/nearby.png', 'Donation Campaigns');
 //$History = new NavigationCard('/organization/report', '/public/images/icons/Organization/dashboard/history.png', 'Donor Attendance');
 $background = new BackGroundImage();
 

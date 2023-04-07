@@ -60,3 +60,8 @@
     padding-top: 5rem;
     padding-bottom: 5rem;
 }
+@media screen and (max-width: 500px) {
+    .p-1{
+        padding: 0.6rem;
+    }
+}

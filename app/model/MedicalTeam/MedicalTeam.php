@@ -2,13 +2,20 @@
 
 namespace App\model\MedicalTeam;
 
+use App\model\Campaigns\Campaign;
+use App\model\users\MedicalOfficer;
+
 class MedicalTeam extends \App\model\database\dbModel
 {
+    const TEAM_LEADER = 'Team Leader';
+    const TEAM_MEMBER = 'Team Member';
+
     protected string $Team_ID='';
     protected string $Campaign_ID='';
-    protected string $Team_Leader_ID='';
-    protected string $Assigned_At='';
-    protected string $Assigned_Date='';
+    protected ?string $Team_Leader=null;
+    protected string $Assigned_By='';
+    protected int $No_Of_Member=0;
+
 
     /**
      * @return string
@@ -19,11 +26,48 @@ class MedicalTeam extends \App\model\database\dbModel
     }
 
     /**
+     * @return int
+     */
+    public function getNoOfMembers(): int
+    {
+        return $this->No_Of_Member;
+    }
+
+    public function getTeamMembers()
+    {
+        $TeamMembers= TeamMembers::RetrieveAll(false,[],true,['Team_ID' => $this->Team_ID]);
+        $MedicalOfficers=[];
+        /* @var $TeamMember TeamMembers*/
+        if ($TeamMembers){
+            foreach ($TeamMembers as $TeamMember){
+                $MedicalOfficers[]=MedicalOfficer::findOne(['Officer_ID' => $TeamMember->getMemberID()]);
+            }
+        }
+        return $MedicalOfficers;
+
+    }
+
+    /**
+     * @param int $No_Of_Members
+     */
+    public function setNoOfMembers(int $No_Of_Members): void
+    {
+        $this->No_Of_Member = $No_Of_Members;
+    }
+
+
+
+    /**
      * @param string $Team_ID
      */
     public function setTeamID(string $Team_ID): void
     {
         $this->Team_ID = $Team_ID;
+    }
+
+    public function generateTeamID()
+    {
+        $this->Team_ID=uniqid("MT_");
     }
 
     /**
@@ -32,6 +76,11 @@ class MedicalTeam extends \App\model\database\dbModel
     public function getCampaignID(): string
     {
         return $this->Campaign_ID;
+    }
+
+    public function getCampaign(): ?Campaign
+    {
+        return Campaign::findOne(['Campaign_ID' => $this->Campaign_ID]);
     }
 
     /**
@@ -47,48 +96,51 @@ class MedicalTeam extends \App\model\database\dbModel
      */
     public function getTeamLeaderID(): string
     {
-        return $this->Team_Leader_ID;
+        return $this->Team_Leader;
     }
 
     /**
-     * @param string $Team_Leader_ID
+     * @param string $Team_Leader
      */
-    public function setTeamLeaderID(string $Team_Leader_ID): void
+    public function setTeamLeaderID(string $Team_Leader): void
     {
-        $this->Team_Leader_ID = $Team_Leader_ID;
-    }
-
-    /**
-     * @return string
-     */
-    public function getAssignedAt(): string
-    {
-        return $this->Assigned_At;
-    }
-
-    /**
-     * @param string $Assigned_At
-     */
-    public function setAssignedAt(string $Assigned_At): void
-    {
-        $this->Assigned_At = $Assigned_At;
+        $this->Team_Leader = $Team_Leader;
     }
 
     /**
      * @return string
      */
-    public function getAssignedDate(): string
+    public function getTeamLeader(): string
     {
-        return $this->Assigned_Date;
+        return $this->Team_Leader;
     }
 
     /**
-     * @param string $Assigned_Date
+     * @param string $Team_Leader
      */
-    public function setAssignedDate(string $Assigned_Date): void
+    public function setTeamLeader(string $Team_Leader): void
     {
-        $this->Assigned_Date = $Assigned_Date;
+        $this->Team_Leader = $Team_Leader;
     }
+
+    /**
+     * @return string
+     */
+    public function getAssignedBy(): string
+    {
+        return $this->Assigned_By;
+    }
+
+    /**
+     * @param string $Assigned_By
+     */
+    public function setAssignedBy(string $Assigned_By): void
+    {
+        $this->Assigned_By = $Assigned_By;
+    }
+
+
+
 
 
 
@@ -97,9 +149,9 @@ class MedicalTeam extends \App\model\database\dbModel
         return [
             'Team_ID' => 'Team ID',
             'Campaign_ID' => 'Campaign ID',
-            'Team_Leader_ID' => 'Team Leader ID',
-            'Assigned_At' => 'Assigned At',
-            'Assigned_Date' => 'Assigned Date'
+            'Team_Leader' => 'Team Leader ID',
+            'Assigned_By' => 'Assigned Date',
+            'No_Of_Member' => 'No Of Members'
         ];
     }
 
@@ -108,9 +160,7 @@ class MedicalTeam extends \App\model\database\dbModel
         return [
             'Team_ID' => [self::RULE_REQUIRED],
             'Campaign_ID' => [self::RULE_REQUIRED],
-            'Team_Leader_ID' => [self::RULE_REQUIRED],
-            'Assigned_At' => [self::RULE_REQUIRED],
-            'Assigned_Date' => [self::RULE_REQUIRED]
+            'Assigned_By' => [self::RULE_REQUIRED],
         ];
     }
 
@@ -131,6 +181,6 @@ class MedicalTeam extends \App\model\database\dbModel
 
     public function attributes(): array
     {
-        return ['Team_ID', 'Campaign_ID', 'Team_Leader_ID', 'Assigned_At', 'Assigned_Date'];
+        return ['Team_ID', 'Campaign_ID', 'Team_Leader', 'Assigned_By', 'No_Of_Member'];
     }
 }

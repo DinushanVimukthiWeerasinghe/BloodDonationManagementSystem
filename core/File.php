@@ -22,6 +22,17 @@ class File
         $this->pathPrefix = $pathPrefix;
     }
 
+    public static function DeleteFileByPath($path): bool
+    {
+        $DeletePath=Application::$ROOT_DIR.'/'.$path;
+        $status=unlink($DeletePath);
+        if ($status){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
 
 
     /**
@@ -34,7 +45,11 @@ class File
         $this->error=$string['error'];
         $this->size=$string['size'];
         $this->pathPrefix=$prefix;
-        $this->path=Application::$ROOT_DIR.'/public/upload/'.$prefix.'/';
+        if ($prefix===''){
+            $this->path=Application::$ROOT_DIR.'/public/upload/';
+        }else{
+            $this->path=Application::$ROOT_DIR.'/public/upload/'.$prefix.'/';
+        }
         $this->extension=pathinfo($this->name,PATHINFO_EXTENSION);
         $this->file=$string;
     }
@@ -44,6 +59,17 @@ class File
         $this->name= $prefix.uniqid().'.'.$this->extension;
         return '/public/upload/'.$this->pathPrefix.'/'.$this->name;
     }
+
+    /**
+     * @param string $prefix
+     */
+    public function setPath(string $prefix): void
+    {
+        $this->path=Application::$ROOT_DIR.'/public/upload/'.$prefix.'/';
+        $this->pathPrefix=$prefix;
+    }
+
+
 
     public function saveFile(): bool
     {

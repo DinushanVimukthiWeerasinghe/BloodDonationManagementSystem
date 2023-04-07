@@ -136,6 +136,8 @@ class Application
         $this->session = new Session();
         $this->router = new Router($this->request, $this->response);
         $this->email = new BaseEmail($config['email']);
+//        Set Timezone to Asia/Colombo
+        date_default_timezone_set('Asia/Colombo');
 //        $this->db->applyMigrations();
 
         if(isset($_SESSION['user']))
@@ -208,8 +210,9 @@ class Application
         try {
             echo self::$app->router->resolve();
         }catch (Exception $e){
-            self::Redirect('/login');
-//            throw $e;
+//            self::Redirect('/login');
+            print_r($e->getMessage());
+            throw $e;
         }
     }
 

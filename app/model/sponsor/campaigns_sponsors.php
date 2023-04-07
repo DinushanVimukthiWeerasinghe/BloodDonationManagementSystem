@@ -32,7 +32,7 @@ class campaigns_sponsors extends \App\model\database\dbModel
     public static function tableName(): string
     {
         // TODO: Implement tableName() method.
-        return 'campaigns_sponsors';
+        return 'Campaigns_Sponsors';
     }
 
     public static function PrimaryKey(): string

@@ -3,27 +3,35 @@
 namespace App\model\Campaigns;
 
 use App\model\database\dbModel;
+use App\model\MedicalTeam\MedicalTeam;
+use App\model\users\Organization;
 
 class Campaign extends dbModel
 {
     public const PENDING = 1;
     public const APPROVED = 2;
+    public const REJECTED = 3;
+    public const VERIFIED = 1;
     protected string $Campaign_ID='';
     protected string $Organization_ID='';
+    protected string $Expected_Amount='';
     protected string $Campaign_Name='';
     protected string $Campaign_Description='';
     protected string $Campaign_Date='';
     protected string $Venue='';
+    protected string $Package_ID='';
     protected string $Nearest_City='';
     protected int $Status=1;
     protected string $Nearest_BloodBank='';
-    protected int $Verified=0;
+    protected int $Verified=1;
     protected ?string $Verified_By=null;
     protected ?string $Verified_At=null;
-    protected ?string $Assigned_Team=null;
     protected ?string $Remarks=null;
     protected string $Created_At='';
     protected ?string $Updated_At=null;
+    protected ?string $Longitude=null;
+    protected ?string $Latitude=null;
+
 
     /**
      * @return string
@@ -41,6 +49,14 @@ class Campaign extends dbModel
         return $this->Organization_ID;
     }
 
+    public function getOrganizationName()
+    {
+        $Organization = Organization::findOne(['Organization_ID'=>$this->Organization_ID]);
+        if ($Organization){
+            return $Organization->getOrganizationName();
+        }
+    }
+
     /**
      * @param string $Organization_ID
      */
@@ -48,6 +64,39 @@ class Campaign extends dbModel
     {
         $this->Organization_ID = $Organization_ID;
     }
+
+    /**
+     * @return string|null
+     */
+    public function getLongitude(): ?string
+    {
+        return $this->Longitude;
+    }
+
+    /**
+     * @param string|null $Longitude
+     */
+    public function setLongitude(?string $Longitude): void
+    {
+        $this->Longitude = $Longitude;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getLatitude(): ?string
+    {
+        return $this->Latitude;
+    }
+
+    /**
+     * @param string|null $Latitude
+     */
+    public function setLatitude(?string $Latitude): void
+    {
+        $this->Latitude = $Latitude;
+    }
+
 
     /**
      * @param string $Campaign_ID
@@ -105,6 +154,11 @@ class Campaign extends dbModel
         $this->Campaign_Date = $Campaign_Date;
     }
 
+    public function IsVerified()
+    {
+        return $this->Verified;
+    }
+
     /**
      * @return string
      */
@@ -147,7 +201,7 @@ class Campaign extends dbModel
 
     public function getCampaignStatus():string
     {
-        return match ($this->Status){
+        return match ($this->Verified){
             self::PENDING =>' Pending Approval',
             self::APPROVED => 'Campaign Approved',
             default => 'Unknown'
@@ -229,18 +283,19 @@ class Campaign extends dbModel
     /**
      * @return string
      */
-    public function getAssignedTeam(): string
+    public function getAssignedTeam(): MedicalTeam | string
     {
-        return $this->Assigned_Team;
+        /** @var MedicalTeam $MedicalTeam */
+        $MedicalTeam=MedicalTeam::findOne(['Campaign_ID'=>$this->Campaign_ID]);
+        if ($MedicalTeam)
+            return $MedicalTeam;
+        else
+            return 'Not Assigned';
     }
 
     /**
      * @param string $Assigned_Team
      */
-    public function setAssignedTeam(string $Assigned_Team): void
-    {
-        $this->Assigned_Team = $Assigned_Team;
-    }
 
     /**
      * @return string
@@ -277,6 +332,22 @@ class Campaign extends dbModel
     /**
      * @return string
      */
+    public function getPackageID(): string
+    {
+        return $this->Package_ID;
+    }
+
+    /**
+     * @param string $Package_ID
+     */
+    public function setPackageID(string $Package_ID): void
+    {
+        $this->Package_ID = $Package_ID;
+    }
+
+    /**
+     * @return string
+     */
     public function getUpdatedAt(): string
     {
         return $this->Updated_At;
@@ -298,6 +369,7 @@ class Campaign extends dbModel
             'Campaign_Name' => 'Campaign Name',
             'Campaign_Description' => 'Campaign Description',
             'Campaign_Date' => 'Campaign Date',
+            'Package_ID' => 'Package ID',
             'Venue' => 'Venue',
             'Nearest_City' => 'Nearest City',
             'Status' => 'Status',
@@ -328,7 +400,7 @@ class Campaign extends dbModel
 
     public static function getTableShort(): string
     {
-        return 'campaigns';
+        return 'Campaign';
     }
 
     public static function tableName(): string
@@ -345,6 +417,7 @@ class Campaign extends dbModel
     {
         return [
             'Campaign_ID',
+            'Package_ID',
             'Organization_ID',
             'Campaign_Name',
             'Campaign_Description',
@@ -360,6 +433,25 @@ class Campaign extends dbModel
             'Remarks',
             'Created_At',
             'Updated_At',
+            'Expected_Amount',
+            'Latitude',
+            'Longitude'
         ];
+    }
+
+    /**
+     * @return string
+     */
+    public function getExpectedAmount(): string
+    {
+        return $this->Expected_Amount;
+    }
+
+    /**
+     * @param string $Expected_Amount
+     */
+    public function setExpectedAmount(string $Expected_Amount): void
+    {
+        $this->Expected_Amount = $Expected_Amount;
     }
 }

@@ -16,8 +16,34 @@ class BloodRequest extends dbModel
     protected string $BloodGroup;
     protected string $Requested_By;
     protected string $Requested_At;
+
     protected int $Status=1;
+
     protected int $Type=1;
+    protected float $Volume = 0.0;
+
+    protected int $Quantity;
+
+    protected string $Remark;
+
+    /**
+     * @return string
+     */
+    public function getRemark(): string
+    {
+        return $this->Remark;
+    }
+
+    /**
+     * @param string $Remark
+     */
+    public function setRemark(string $Remark): void
+    {
+        $this->Remark = $Remark;
+    }
+
+
+
 
     /**
      * @return int
@@ -30,6 +56,8 @@ class BloodRequest extends dbModel
         };
     }
 
+
+
     /**
      * @param int $Type
      */
@@ -37,6 +65,24 @@ class BloodRequest extends dbModel
     {
         $this->Type = $Type;
     }
+
+    /**
+     * @return float
+     */
+    public function getVolume(): float
+    {
+        return $this->Volume;
+    }
+
+    /**
+     * @param float $Volume
+     */
+    public function setVolume(float $Volume): void
+    {
+        $this->Volume = $Volume;
+    }
+
+
 
     /**
      * @return string
@@ -106,7 +152,7 @@ class BloodRequest extends dbModel
      */
     public function setRequestedBy(string $RequestedBy): void
     {
-        $this->RequestedBy = $RequestedBy;
+        $this->Requested_By = $RequestedBy;
     }
 
     /**
@@ -133,12 +179,37 @@ class BloodRequest extends dbModel
         return $this->Status;
     }
 
+    public function getRequestStatus()
+    {
+        return match ($this->Status) {
+            self::REQUEST_STATUS_PENDING => 'Pending',
+            self::REQUEST_STATUS_FULFILLED => 'Fulfilled',
+        };
+    }
+
     /**
      * @param string $Status
      */
     public function setStatus(string $Status): void
     {
         $this->Status = $Status;
+    }
+    public function getQuantity(): int
+    {
+        return $this->Quantity;
+    }
+    public function setQuantity(int $Quantity): void
+    {
+        $this->Quantity = $Quantity;
+    }
+
+    public function getRemarks(): string
+    {
+        return $this->Remark;
+    }
+    public function setRemarks(string $Remarks): void
+    {
+        $this->Remark = $Remarks;
     }
 
 
@@ -149,9 +220,13 @@ class BloodRequest extends dbModel
         return [
             'Request_ID' => 'Request ID',
             'BloodGroup' => 'Blood Group',
-            'RequestedBy' => 'Requested By',
+            'Requested_By' => 'Requested By',
             'Requested_At' => 'Requested At',
-            'Status' => 'Status'
+            'Status' => 'Status',
+            'Quantity' => 'Quantity',
+            'Remark' => 'Remarks',
+            'Type' => 'Type',
+            'Volume' => 'Volume'
         ];
     }
 
@@ -163,7 +238,10 @@ class BloodRequest extends dbModel
             'RequestedBy' => [self::RULE_REQUIRED],
             'Requested_At' => [self::RULE_REQUIRED],
             'Status' => [self::RULE_REQUIRED],
-            'Type' => [self::RULE_REQUIRED]
+            'Type' => [self::RULE_REQUIRED],
+            'Quantity' => [self::RULE_REQUIRED],
+            'Remark' => [self::RULE_REQUIRED]
+
         ];
     }
 
@@ -187,11 +265,28 @@ class BloodRequest extends dbModel
         return [
             'Request_ID',
             'BloodGroup',
-            'RequestedBy',
+            'Requested_By',
             'Requested_At',
             'Status',
-            'Type'
+            'Type',
+            'Quantity',
+            'Remark',
+            'Volume'
         ];
+    }
+
+    public function getNewPrimaryKey($Type)
+    {
+        if($Type==2){
+            $newKey = 'Req_'.rand(0,999);
+        }else{
+            $newKey = 'Req_'.rand(1000,9999);
+        }
+     if (self::findOne(['Request_ID' => $newKey])){
+         return $newKey = $this->getNewPrimaryKey($Type);
+     }else{
+         return $newKey;
+     }
     }
 
 }
