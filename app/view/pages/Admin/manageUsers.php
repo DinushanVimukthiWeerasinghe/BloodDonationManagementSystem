@@ -53,6 +53,10 @@ use App\model\users\User;
 
 
 <div class="d-flex h-100 w-100 justify-content-between">
+<div class="">
+    <button class="btn btn-success" onclick="AddNewManager()"></button>
+</div>
+
 
 <div class="d-flex justify-content-center align-self-baseline flex-column " >
     <div class="d-flex justify-content-center align-items-center my-2">

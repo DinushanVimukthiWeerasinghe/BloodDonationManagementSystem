@@ -266,3 +266,10 @@ const SearchUser = (role)=>{
             document.getElementById('userTable').innerHTML = data;
         })
 }
+//
+// const AddNewUser = () => {
+//     OpenDialogBox(
+//         id = 'addNewUser',
+//
+//     )
+// }
