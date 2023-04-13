@@ -79,7 +79,6 @@ abstract class Person extends dbModel
                 }
             }
         }
-
     }
 
     public function getAccountStatus()

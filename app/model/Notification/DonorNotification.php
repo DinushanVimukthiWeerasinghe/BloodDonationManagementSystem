@@ -6,12 +6,13 @@ class DonorNotification extends \App\model\database\dbModel
 {
     public const INFORM_ALL_DONOR = 0;
     public const INFORM_GROUP_OF_DONOR = 2;
-    public const NOTIFICATION_STATE_UNREAD = 0;
+    public const NOTIFICATION_STATE_UNREAD = 1;
 
     protected string $Notification_ID='';
     protected int $Notification_Type=0;
     protected int $Notification_State=0;
     protected ?string $Target_ID=null;
+    protected ?string $Target_Group=null;
     protected string $Notification_Title='';
     protected string $Notification_Message='';
     protected string $Notification_Date='';
@@ -144,6 +145,23 @@ class DonorNotification extends \App\model\database\dbModel
     {
         $this->Valid_Until = $Valid_Until;
     }
+
+    /**
+     * @return string|null
+     */
+    public function getTargetGroup(): ?string
+    {
+        return $this->Target_Group;
+    }
+
+    /**
+     * @param string|null $Target_Group
+     */
+    public function setTargetGroup(?string $Target_Group): void
+    {
+        $this->Target_Group = $Target_Group;
+    }
+
     public function __construct()
     {
         $this->Notification_ID=uniqid('DN_');
@@ -160,7 +178,8 @@ class DonorNotification extends \App\model\database\dbModel
             'Notification_Title'=>'Notification Title',
             'Notification_Message'=>'Notification Message',
             'Notification_Date'=>'Notification Date',
-            'Valid_Until'=>'Valid Until'
+            'Valid_Until'=>'Valid Until',
+            'Target_Group'=>'Target Group'
         ];
     }
 
@@ -202,7 +221,8 @@ class DonorNotification extends \App\model\database\dbModel
             'Notification_Title',
             'Notification_Message',
             'Notification_Date',
-            'Valid_Until'
+            'Valid_Until',
+            'Target_Group'
         ];
     }
 }

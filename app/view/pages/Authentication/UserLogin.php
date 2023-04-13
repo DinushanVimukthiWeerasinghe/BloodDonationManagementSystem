@@ -32,13 +32,14 @@ FlashMessage::RenderFlashMessages();
                 <div class="form-title"><span class="lock-ico"> </span> Sign In</div>
             </div>
             <form autocomplete="off" action="/login" method="post">
-                <div class="error"><span><?php echo $model->hasError('Email')?$model->getFirstError('Email'):($model->hasError('Password')?$model->getFirstError('Password'):'')?></span>
+                <div class=""><span><?php echo $model->hasError('Email')?$model->getFirstError('Email'):($model->hasError('Password')?$model->getFirstError('Password'):'')?></span>
                 </div>
-                <label for="email"></label><input autocomplete="off" class="input bg-white p-1" id="email" name="Email"
-                                                  placeholder="Username | Email" type="text"/>
+                <label for="email"></label>
+                <input autocomplete="off" class="input bg-white p-1 validation " id="email" name="Email"
+                                                  placeholder="Username | Email" type="text" required oninvalid="this.setCustomValidity('Enter Valid Email')"/>
                 <label for="password"></label>
                 <span class="pass">
-                    <input id="password" name="Password" placeholder="Password" type="password"/>
+                    <input id="password" name="Password" placeholder="Password" type="password" required/>
                     <span class="show-password" id="pass_icon" onclick="showPassword()">Show</span>
                 </span>
 
@@ -48,7 +49,10 @@ FlashMessage::RenderFlashMessages();
                     <!--                    <input class="btn-hover color-9" type="reset" value="Reset"/>-->
                 </div>
                 <div class="form-footer">
-                    <div class="form-footer-text">
+                    <div class="form-footer-text d-flex flex-column gap-1">
+                        <div class="cursor">
+                            <div class="text-primary " onclick="ForgotPassword()">Forgot Password?</div>
+                        </div>
                         <p>Don't have an account? </p>
                         <div>
                             <input type="button" class="btn-hover color-9" value="Register" onclick="window.location.href='/register'">

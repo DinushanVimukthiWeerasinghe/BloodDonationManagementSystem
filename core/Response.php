@@ -43,9 +43,10 @@ class Response
 
     }
 
-    public function sendFile(string $string): bool|int
+    public function sendFile(string $string): string
     {
-        return readfile($string);
+        readfile($string);
+        return "";
     }
 
     public function setContentType(string $string): void
@@ -62,6 +63,5 @@ class Response
     {
         header('Content : ' . $json_encode);
     }
-
 
 }

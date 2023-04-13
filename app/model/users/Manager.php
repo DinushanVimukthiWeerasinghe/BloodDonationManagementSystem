@@ -32,6 +32,15 @@ class Manager extends Person
     }
 
     /**
+     * @return string
+     */
+    public function getBloodBankID(): string
+    {
+        return $this->BloodBank_ID;
+    }
+
+
+    /**
      * @param string $Branch_ID
      */
     public function setBranchID(string $Branch_ID): void

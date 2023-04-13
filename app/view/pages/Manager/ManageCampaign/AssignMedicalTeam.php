@@ -5,6 +5,7 @@
 /* @var string $lastName */
 /* @var array $bloodBanks */
 /* @var BloodBank $bloodBank */
+/* @var MedicalOfficer $AssignedMedicalOfficer */
 
 use App\model\BloodBankBranch\BloodBank;
 use App\model\users\MedicalOfficer;
@@ -67,15 +68,15 @@ FlashMessage::RenderFlashMessages();
         <table class="w-100 ">
             <thead class="sticky top-0">
             <tr>
-                <th>No</th>
-                <th>Full Name</th>
+                <th class=" bg-white  top-0 sticky left-0">No</th>
+                <th class=" bg-white sticky top-0 left-2" style="z-index: 2">Full Name</th>
                 <th>NIC</th>
                 <th>Email</th>
                 <th>Contact No</th>
 <!--                <th>Gender</th>-->
                 <th>Position</th>
                 <th>Nationality</th>
-                <th>Action</th>
+                <th class=" bg-white sticky right-0">Action</th>
             </tr>
             </thead>
             <tbody id="content" class="">
@@ -95,14 +96,14 @@ FlashMessage::RenderFlashMessages();
                     $nationality=$value->getNationality();
                     ?>
                     <tr class="bg-white-0-7" id="row-<?=$i?>">
-                        <td data-label="No "><?php echo $i ?>.</td>
-                        <td data-label="Name" id="name-<?=$id?>" class="font-bold"><?php echo $name ?></td>
+                        <td data-label="No " class="bg-white sticky left-0"><?php echo $i ?>.</td>
+                        <td data-label="Name" id="name-<?=$id?>" class="font-bold bg-white sticky left-2"><?php echo $name ?></td>
                         <td data-label="NIC" id="nic-<?=$id?>"><?php echo $NIC ?></td>
                         <td data-label="Email" id="email-<?=$id?>"><?php echo $email?></td>
                         <td data-label="Contact No" id="contact-no-<?=$id?>"><?php echo $contact?></td>
                         <td data-label="Position" id="position-<?=$id?>"><?php echo $position ?></td>
                         <td data-label="Nationality" id="nationality-<?=$id?>"><?php echo $nationality?></td>
-                        <td class="d-flex justify-content-center gap-1 align-items-center">
+                        <td class="d-flex justify-content-center gap-1 align-items-center  bg-white sticky right-0">
                             <button id="btn-<?= $id?>" class="text-dark btn gap-0-5 btn-outline-success d-flex align-items-center justify-content-center" onclick="AssignMedicalOfficer('<?php echo $id ?>','<?=$i++?>')" >
                                 <img src="/public/icons/checkCircle.svg" width="24px" alt="">
                                 <span>Assign</span>
@@ -160,14 +161,15 @@ FlashMessage::RenderFlashMessages();
 </div>
 <div id="AssignTeam-Content" class="d-flex w-40 flex-column align-items-center bg-white p-1 gap-1 border-radius-10 m-1">
     <div class="font-bold text-2xl">Assign Team</div>
-        <div class="d-flex flex-column overflow-y-scroll w-100">
+        <div class="d-flex flex-column overflow-y-overlay w-100">
             <table class="w-100">
                 <thead class="sticky top-0">
                     <tr>
+                        <th>Name</th>
                         <th>NIC</th>
-                        <th>Email</th>
                         <th>Position</th>
-                        <th>Action</th>
+
+                        <th class="sticky right-0 bg-white">Action</th>
                     </tr>
                 </thead>
                 <tbody id="AssignTeam-Content">
@@ -182,15 +184,19 @@ FlashMessage::RenderFlashMessages();
                     foreach ($AssignedMedicalOfficers as $AssignedMedicalOfficer):
                     $NIC=$AssignedMedicalOfficer->getNIC();
                     $email=$AssignedMedicalOfficer->getEmail();
-                    $position=$AssignedMedicalOfficer->getPosition();
+                    $position=$AssignedMedicalOfficer->getPositionOfTeamByCampaignID($Campaign_ID);
                     $Id=$AssignedMedicalOfficer->getID();
+                    $name=$AssignedMedicalOfficer->getFullName();
+
                 ?>
                     <tr>
 
+                        <td><?=$name?></td>
                         <td><?=$NIC?></td>
-                        <td><?=$email?></td>
                         <td><?=$position?></td>
-                        <td><button class="btn btn-danger d-flex align-items-center gap-1" onclick="RemoveAssignedMedicalOfficer('<?=$Id?>')"><img src="/public/icons/remove.svg" class="invert-100" width="24px"/><span>Remove</span> </button> </td>
+                        <td class="d-flex bg-white sticky right-0">
+                            <button class="border-radius-10 btn-outline-danger btn d-flex align-items-center gap-1" onclick="RemoveAssignedMedicalOfficer('<?=$Id?>')"><img src="/public/icons/remove.svg" class="invert-0" width="24px"/><span>Remove</span> </button>
+                        </td>
                     </tr>
                 <?php
                     endforeach;
@@ -199,9 +205,9 @@ FlashMessage::RenderFlashMessages();
                 </tbody>
             </table>
         </div>
-    <button class="btn btn-success d-flex align-items-center gap-1 align-self-center my-1" disabled onclick="AssignTeam()">
-        <img src="/public/icons/checkCircle.svg" class="invert-100 " width="24px"/>
-        <span>Assign Team</span>
+    <button class="btn btn-success d-flex align-items-center gap-1 align-self-center my-1" onclick="AssignTeamLeader('<?=$Campaign_ID?>')">
+        <img src="/public/icons/checkCircle.svg" class="invert-100 " width="24px" alt=""/>
+        <span>Assign Team Leader</span>
     </button>
     </div>
 
