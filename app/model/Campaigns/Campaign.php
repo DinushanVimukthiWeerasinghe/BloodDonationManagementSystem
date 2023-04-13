@@ -41,6 +41,11 @@ class Campaign extends dbModel
         return $this->Campaign_ID;
     }
 
+    public function IsApproved(): bool
+    {
+        return $this->Status == self::APPROVED;
+    }
+
     /**
      * @return string
      */
@@ -154,9 +159,14 @@ class Campaign extends dbModel
         $this->Campaign_Date = $Campaign_Date;
     }
 
-    public function IsVerified()
+    public function IsVerified(): bool
     {
         return $this->Verified == self::VERIFIED;
+    }
+
+    public function IsRejected(): bool
+    {
+        return $this->Status == self::REJECTED;
     }
 
     /**
@@ -199,9 +209,10 @@ class Campaign extends dbModel
         return $this->Status;
     }
 
+
     public function getCampaignStatus():string
     {
-        return match ($this->Verified){
+        return match ($this->Status){
             self::PENDING =>'Pending',
             self::APPROVED => 'Approved',
             self::REJECTED => 'Rejected',
@@ -445,5 +456,10 @@ class Campaign extends dbModel
     public function setExpectedAmount(string $Expected_Amount): void
     {
         $this->Expected_Amount = $Expected_Amount;
+    }
+
+    public function getNoOfDonors()
+    {
+        return '100';
     }
 }

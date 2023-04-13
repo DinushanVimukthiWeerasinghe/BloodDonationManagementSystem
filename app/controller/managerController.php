@@ -8,13 +8,18 @@ use App\model\Blood\BloodGroup;
 use App\model\BloodBankBranch\BloodBank;
 use App\model\Campaigns\ApprovedCampaigns;
 use App\model\Campaigns\Campaign;
+use App\model\Campaigns\RejectedCampaign;
 use App\model\Email\Email;
 use App\model\MedicalTeam\MedicalTeam;
 use App\model\MedicalTeam\TeamMembers;
+use App\model\Notification\DonorNotification;
 use App\model\Notification\ManagerNotification;
 use App\model\Notification\MedicalOfficerNotification;
 use App\model\Requests\BloodRequest;
+use App\model\Requests\FullFilledBloodRequest;
+use App\model\sponsor\SponsorshipPackages;
 use App\model\users\Donor;
+use App\model\users\Hospital;
 use App\model\users\Manager;
 use App\model\users\MedicalOfficer;
 use App\model\users\Organization;
@@ -41,7 +46,7 @@ class managerController extends Controller
 //        $this->registerMiddleware(new ManagerMiddleware());
     }
 
-    public function Profile()
+    public function Profile(): string
     {
         $user=Application::$app->getUser();
         return $this->render('Manager/profile',['user'=>$user]);
@@ -51,6 +56,7 @@ class managerController extends Controller
         /* @var Manager $manager*/
         $manager = Manager::findOne(['Manager_ID' => Application::$app->getUser()->getID()]);
         $params=[
+            'page'=>'dashboard',
             'firstName'=>$manager->getFirstName(),
             'lastName'=>$manager->getLastName()
         ];
@@ -76,14 +82,18 @@ class managerController extends Controller
         if ($request->isGet()){
             $campaignID=$request->getBody()['campId'];
             if ($campaignID){
+                $BranchID=Application::$app->getUser()->getBloodBankID();
                 $ID=Application::$app->getUser()->getID();
                 /* @var Manager $manager*/
                 $manager = Application::$app->getUser();
                 $page = $request->getBody()['page'] ?? 1;
                 $limit = $request->getBody()['rpp'] ?? 15;
                 $initial = ($page - 1) * $limit;
-                $id=Application::$app->getUser()->getID();
-                $total_rows = MedicalOfficer::getCount();
+                /* @var Manager $user*/
+                $user=Application::$app->getUser();
+                $id=$user->getID();
+//                $BranchID=$user->getBranchID();
+                $total_rows = MedicalOfficer::getCount(false,['Branch_ID'=>$BranchID]);
                 $total_pages = ceil ($total_rows / $limit);
                 $BloodBanks=BloodBank::RetrieveAll();
                 $Campaign=Campaign::findOne(['Campaign_ID' => $campaignID]);
@@ -118,7 +128,7 @@ class managerController extends Controller
                     $MedicalOfiicers = MedicalOfficer::RetrieveAvailableMedicalOfficer(false, [$initial, $limit], $AssignedOfficersOnSameDate);
                 }
                 else{
-                    $MedicalOfiicers = MedicalOfficer::RetrieveAll(true, [$initial, $limit], true, ['Status' => MedicalOfficer::AVAILABLE_MEDICAL_OFFICER]);
+                    $MedicalOfiicers = MedicalOfficer::RetrieveAll(true, [$initial, $limit], true, ['Status' => MedicalOfficer::AVAILABLE_MEDICAL_OFFICER,'Branch_ID'=>$BranchID]);
                 }
                 /* @var $AssignedMedicalTeam MedicalTeam*/
                 /* @var $members array*/
@@ -154,6 +164,28 @@ class managerController extends Controller
 
     }
 
+    public function SupplyBloodRequest(Request $request,Response $response)
+    {
+        if ($request->isPost()){
+            $Request_ID=$request->getBody()['Request_ID'];
+            $Remarks=$request->getBody()['Remarks'];
+            $BloodBankID=Application::$app->getUser()->getBloodBankID();
+            $BloodBank=BloodBank::findOne(['BloodBank_ID'=>$BloodBankID]);
+            /* @var $BloodBank BloodBank*/
+            $BloodBankName=$BloodBank->getBankName();
+            /* @var $Request BloodRequest*/
+            $Request = BloodRequest::findOne(['Request_ID' => $Request_ID]);
+            if($Request){
+                $Request->setAction(BloodRequest::REQUEST_STATUS_FULFILLED);
+                $Request->setRemarks($Remarks);
+                $Request->setFullFilledBy($BloodBankName);
+                $Request->update($Request_ID,[],['Action','Remarks','FullFilledBy']);
+                return json_encode(['status'=>true,'message'=>'Request Fulfilled Successfully !']);
+            }
+        }
+
+    }
+
     public function AssignTeamLeader(Request $request,Response $response)
     {
         if ($request->isPost()){
@@ -169,7 +201,7 @@ class managerController extends Controller
                         if ($TeamMember->getPosition() == MedicalTeam::TEAM_LEADER){
                             return json_encode(['status'=>false,'message'=>'This Officer is already Team Leader !']);
                         }
-                        if (!$MedicalTeam->getTeamLeader()){
+                        if ($MedicalTeam->getTeamLeader()){
                             $PreviousLeader=TeamMembers::findOne(['Team_ID'=>$MedicalTeam->getTeamID(),'Member_ID'=>$MedicalTeam->getTeamLeader()],false);
                             $PreviousLeader->setPosition(MedicalTeam::TEAM_MEMBER);
                             $PreviousLeader->update($PreviousLeader->getTeamID(),[],['Position'],['Member_ID'=>$PreviousLeader->getMemberID()]);
@@ -320,7 +352,16 @@ class managerController extends Controller
             $campaign = Campaign::findOne(['Campaign_ID' => $id]);
             $Org_ID=$campaign->getOrganizationID();
             $Org=Organization::findOne(['Organization_ID' => $Org_ID]);
+
             if ($campaign){
+                if ($campaign->IsVerified()){
+                    $ApprovedDetails = ApprovedCampaigns::findOne(['Campaign_ID' => $id]);
+                    return json_encode(['status'=>true,'data'=>$campaign->toArray(),'org'=>$Org->toArray(),'approved'=>$ApprovedDetails->toArray()]);
+                }
+                if ($campaign->IsRejected()){
+                    $RejectedDetails = RejectedCampaign::findOne(['Campaign_ID' => $id]);
+                    return json_encode(['status'=>true,'data'=>$campaign->toArray(),'org'=>$Org->toArray(),'rejected'=>$RejectedDetails->toArray()]);
+                }
                 return json_encode(['status'=>true,'data'=>$campaign->toArray(),'org'=>$Org->toArray()]);
             }
         }
@@ -342,13 +383,14 @@ class managerController extends Controller
                 $ApprovedCampaign->setRemarks($remarks);
                 if ($ApprovedCampaign->validate() && $ApprovedCampaign->save()){
                     $campaign->setVerified(Campaign::VERIFIED);
+                    $campaign->setStatus(Campaign::APPROVED);
                     $MedicalTeam = new MedicalTeam();
                     $MedicalTeam->generateTeamID();
                     $MedicalTeam->setCampaignID($campaign->getCampaignID());
                     $MedicalTeam->setNoOfMembers(0);
                     $MedicalTeam->setAssignedBy(Application::$app->getUser()->getID());
                     $MedicalTeam->save();
-                    if($campaign->update($campaign->getCampaignID(),[],['Verified'])){
+                    if($campaign->update($campaign->getCampaignID(),[],['Verified','Status'])){
                         return json_encode(['status'=>true,'message'=>'Campaign Accepted Successfully !']);
                     }else{
                         return json_encode(['status'=>false,'message'=>'Error on Server','data'=>$campaign->errors]);
@@ -367,6 +409,14 @@ class managerController extends Controller
             /* @var $campaign Campaign*/
             $campaign = Campaign::findOne(['Campaign_ID' => $id]);
             if ($campaign){
+                $RejectedCampaign = new RejectedCampaign();
+                $RejectedCampaign->setCampaignID($campaign->getCampaignID());
+                $RejectedCampaign->setRejectedBy(Application::$app->getUser()->getID());
+                $RejectedCampaign->setRejectedAt(date('Y-m-d H:i:s'));
+                $RejectedCampaign->setRemarks($request->getBody()['remarks'] ?? 'No remarks');
+                if (!$RejectedCampaign->validate())
+                    return json_encode(['status'=>false,'message'=>'Error on Server','data'=>$RejectedCampaign->errors]);
+                $RejectedCampaign->save();
                 $campaign->setStatus(Campaign::REJECTED);
                 $campaign->update($campaign->getCampaignID(),[],['Status']);
                 return json_encode(['status'=>true,'message'=>'Campaign Rejected Successfully !']);
@@ -433,12 +483,16 @@ class managerController extends Controller
         $limit = $request->getBody()['rpp'] ?? 15;
         $initial = ($page - 1) * $limit;
         $id=Application::$app->getUser()->getID();
-        $total_rows = MedicalOfficer::getCount();
+        $user=Application::$app->getUser();
+        $id=$user->getID();
+        $Branch_ID=$user->getBloodBankID();
+        $total_rows = MedicalOfficer::getCount(false,['Branch_ID' => $Branch_ID]);
         $total_pages = ceil ($total_rows / $limit);
         $BloodBanks=BloodBank::RetrieveAll();
 
-        $medicalOfficers=MedicalOfficer::RetrieveAll(true,[$initial,$limit]);
+        $medicalOfficers=MedicalOfficer::RetrieveAll(true,[$initial,$limit],true,['Branch_ID' => $Branch_ID]);
         $params=[
+            'page'=>'mngOfficer',
             'rpp'=>$limit,
             'firstName'=>$manager->getFirstName(),
             'lastName'=>$manager->getLastName(),
@@ -607,7 +661,10 @@ class managerController extends Controller
         $total_rows = Sponsor::getCount();
         $total_pages = ceil ($total_rows / $limit);
         $Sponsors=Sponsor::RetrieveAll(true,[$initial,$limit]);
+        $Packages=SponsorshipPackages::RetrieveAll();
         $params=[
+            'packages'=>$Packages,
+            'page'=>'mngSponsor',
             'rpp'=>$limit,
             'total_pages'=>$total_pages,
             'current_page'=>$page,
@@ -616,14 +673,43 @@ class managerController extends Controller
         return $this->render('Manager/ManageSponsors',$params);
     }
 
+    public function SearchSponsors(Request $request,Response $response): string
+    {
+        if ($request->isPost()){
+            $search=$request->getBody()['q'];
+            $search=str_replace(' ','%',$search);
+            $CampaignStatus = $request->getBody()['status'] ?? 1;
+            $CampaignStatus=intval($CampaignStatus);
+            $limit = 15;
+            $page = $request->getBody()['page'] ?? 1;
+            $initial = ($page - 1) * $limit;
+            $id=Application::$app->getUser()->getID();
+            $data=Sponsor::Search(['Sponsor_Name'=>$search,'City'=>$search]);
+            $total_rows = count($data);
+            $total_pages = ceil ($total_rows / $limit);
+            return $this->render('Manager/ManageSponsors',
+                [
+                    'page'=>'mngSponsor',
+                    'rpp'=>$limit,
+                    'total_pages'=>$total_pages,
+                    'current_page'=>$page,
+                    'data'=>$data
+                ]);
+        }
+
+    }
     public function ManageSponsorship(Request $request,Response $response)
     {
-        return $this->render('Manager/ManageSponsorship/ManageSponsorship');
+        return $this->render('Manager/ManageSponsorship/ManageSponsorship',[
+            'page'=>'mngSponsorship'
+        ]);
     }
     public function ManageRequests(Request $request,Response $response): string
     {
         $limit = 15;
         $page = $request->getBody()['page'] ?? 1;
+        $RequestStatus=$request->getBody()['status'] ?? 1;
+        $RequestStatus=intval($RequestStatus);
         if ($page < 1){
             $page=1;
         }
@@ -638,8 +724,23 @@ class managerController extends Controller
             $total_rows = MedicalOfficer::getCount();
             $total_pages = ceil ($total_rows / $limit);
         }
-        $requests=BloodRequest::RetrieveAll(true,[$initial,$limit]);
+        if ($RequestStatus===0){
+            $total_rows = BloodRequest::getCount(false);
+            $total_pages = ceil ($total_rows / $limit);
+            $requests=BloodRequest::RetrieveAll(true,[$initial,$limit]);
+        }else if ($RequestStatus===1){
+            $total_rows = BloodRequest::getCount(false);
+            $total_pages = ceil ($total_rows / $limit);
+            $requests=BloodRequest::RetrieveAll(true,[$initial,$limit],true,['Action'=>BloodRequest::REQUEST_STATUS_PENDING]);
+        }else if ($RequestStatus===2) {
+            $requests = BloodRequest::RetrieveAll(true, [$initial, $limit], true, ['Action' => BloodRequest::REQUEST_STATUS_FULFILLED]);
+        }else if ($RequestStatus===3) {
+            $requests = BloodRequest::RetrieveAll(true, [$initial, $limit], true, ['Action' => BloodRequest::REQUEST_STATUS_SENT_TO_DONOR]);
+        }else{
+            $requests=BloodRequest::RetrieveAll(true,[$initial,$limit],true,['Action'=>BloodRequest::REQUEST_STATUS_PENDING]);
+        }
         return $this->render('Manager/ManageRequests',[
+            'page'=>'mngRequest',
             'data'=>$requests,
             'total_pages'=>intval($total_pages),
             'current_page'=>intval($page),
@@ -656,7 +757,16 @@ class managerController extends Controller
 //                TODO ADD data to the array
                 $data=[
                     'success'=>true,
-                    'data'=>$BloodRequest->toArray()
+                    'data'=>[
+                        'Request_ID'=>$BloodRequest->getRequestID(),
+                        'Requested_By'=>$BloodRequest->getRequestedBy(),
+                        'BloodGroup'=>$BloodRequest->getBloodGroup(),
+                        'Requested_At'=>$BloodRequest->getRequestedAt(),
+                        'Status'=>$BloodRequest->getStatus(),
+                        'Type'=>$BloodRequest->getType(),
+                        'Volume'=>$BloodRequest->getVolume(),
+                        'Action'=>$BloodRequest->getAction(),
+                    ]
                 ];
                 return json_encode($data);
             }
@@ -664,6 +774,46 @@ class managerController extends Controller
             endif;
 
         }
+    }
+    public function SearchRequest(Request $request,Response $response)
+    {
+        if ($request->isPost()){
+                $search=$request->getBody()['q'];
+                $search=str_replace(' ','%',$search);
+                $CampaignStatus = $request->getBody()['status'] ?? 1;
+                $CampaignStatus=intval($CampaignStatus);
+                $limit = 14;
+                $page = $request->getBody()['page'] ?? 1;
+                $initial = ($page - 1) * $limit;
+                $id=Application::$app->getUser()->getID();
+                $total_rows = BloodRequest::getCount(false,['BloodGroup'=>$search]);
+                $Hospitals=Hospital::Search(['Hospital_Name'=>$search]);
+                if ($Hospitals){
+                    $Hos_Id=[];
+                    foreach ($Hospitals as $Hospital){
+                        $IsExist=BloodRequest::findOne(['Requested_By'=>$Hospital->getHospitalID()]);
+                        if ($IsExist){
+                            $Hos_Id[]=$IsExist;
+                        }
+                    }
+                    $data=$Hos_Id;
+                }else{
+                    $data= BloodRequest::Search(['BloodGroup'=>$search],[],[$initial,$limit]);
+                }
+                $bloodGroup=BloodRequest::Search(['BloodGroup'=>$search],[],[$initial,$limit]);
+                $data=array_merge($data,$bloodGroup);
+//                Remove Duplicates
+                $data=array_unique($data,SORT_REGULAR);
+                $total_pages = ceil ($total_rows / $limit);
+                return $this->render('Manager/ManageRequests',
+                    [
+                        'page'=>'mngRequest',
+                        'rpp'=>$limit,
+                        'total_pages'=>$total_pages,
+                        'current_page'=>$page,
+                        'data'=>$data
+                    ]);
+            }
     }
     public function ManageDonors(Request $request,Response $response): string
     {
@@ -705,6 +855,7 @@ class managerController extends Controller
         }
         return $this->render('Manager/ManageDonors',
         [
+            'page'=>'mngDonor',
             'BloodTypes'=>$BloodTypes,
             'BloodGroup'=>$BGroup,
             'rpp'=>$limit,
@@ -733,29 +884,78 @@ class managerController extends Controller
         if ($page < 1){
             $page=1;
         }
+        $CampaignStatus = $request->getBody()['status'] ?? 1;
         $limit = $request->getBody()['rpp'] ?? 15;
         $initial = ($page - 1) * $limit;
         $id=Application::$app->getUser()->getID();
         $total_rows = Campaign::getCount();
         $total_pages = ceil ($total_rows / $limit);
-        $data= Campaign::RetrieveAll(true,[$initial,$limit]);
+        $CampaignStatus=intval($CampaignStatus);
+        if ($CampaignStatus===0){
+            $total_rows = Campaign::getCount(false);
+            $total_pages = ceil ($total_rows / $limit);
+            $data= Campaign::RetrieveAll(true,[$initial,$limit]);
+        }else if ($CampaignStatus===1){
+            $total_rows = Campaign::getCount(false,['Status'=>Campaign::PENDING]);
+            $total_pages = ceil ($total_rows / $limit);
+            $data= Campaign::RetrieveAll(true,[$initial,$limit],true,['Status'=>Campaign::PENDING]);
+        }else if ($CampaignStatus===2){
+            $total_rows = Campaign::getCount();
+            $total_pages = ceil ($total_rows / $limit);
+            $data= Campaign::RetrieveAll(true,[$initial,$limit],true,['Status'=>Campaign::APPROVED]);
+        }
+        else if ($CampaignStatus===3){
+            $total_rows = Campaign::getCount(true);
+            $total_pages = ceil ($total_rows / $limit);
+            $data= Campaign::RetrieveAll(true,[$initial,$limit],true,['Status'=>Campaign::REJECTED]);
+        }
         return $this->render('Manager/ManageCampaigns',
             [
+                'page'=>'mngCampaign',
                 'rpp'=>$limit,
                 'total_pages'=>$total_pages,
                 'current_page'=>$page,
                 'data'=>$data
             ]);
     }
+
+    public function SearchCampaign(Request $request,Response $response)
+    {
+        if ($request->isPost()){
+            $search=$request->getBody()['q'];
+            $search=str_replace(' ','%',$search);
+            $CampaignStatus = $request->getBody()['status'] ?? 1;
+            $CampaignStatus=intval($CampaignStatus);
+            $limit = 14;
+            $page = $request->getBody()['page'] ?? 1;
+            $initial = ($page - 1) * $limit;
+            $id=Application::$app->getUser()->getID();
+            $total_rows = Campaign::getCount(false,['Campaign_Name'=>$search]);
+            $total_pages = ceil ($total_rows / $limit);
+            $data= Campaign::Search(['Campaign_Name'=>$search],[],[$initial,$limit]);
+            return $this->render('Manager/ManageCampaigns',
+                [
+                    'page'=>'mngCampaign',
+                    'rpp'=>$limit,
+                    'total_pages'=>$total_pages,
+                    'current_page'=>$page,
+                    'data'=>$data
+                ]);
+        }
+
+    }
     public function ManageReport(): string
     {
-        return $this->render('Manager/ManageReports');
+        return $this->render('Manager/ManageReports',[
+            'page'=>'mngReport'
+        ]);
     }
     public function SearchMedicalOfficer(Request $request, Response $response): string
     {
         $type = $request->getBody()['type'] ?? 'none';
         $search=$request->getBody()['q'];
         $search=str_replace(' ','%',$search);
+        $BranchID=Application::$app->getUser()->getBloodBankID();
 
         /* @var Manager $manager*/
         $manager = Application::$app->getUser();
@@ -766,8 +966,9 @@ class managerController extends Controller
 
         $total_rows = MedicalOfficer::getCount(true,['NIC'=>$search]);
         $total_pages = ceil ($total_rows / $limit);
-        $medicalOfficers=MedicalOfficer::Search(['NIC'=>$search,'First_Name'=>$search,'Last_Name'=>$search,'Position'=>$search,'Email'=>$search],[],[$initial,$limit]);
+        $medicalOfficers=MedicalOfficer::Search(['NIC'=>$search,'First_Name'=>$search,'Last_Name'=>$search,'Position'=>$search,'Email'=>$search],['Branch_ID'=>$BranchID],[$initial,$limit]);
         $params=[
+            'page'=>'mngOfficer',
             'type'=>$type,
             'firstName'=>$manager->getFirstName(),
             'lastName'=>$manager->getLastName(),
@@ -884,6 +1085,32 @@ class managerController extends Controller
         return $this->render('Manager/ManageDonor/findDonor', ['data' => $Donor]);
     }
 
+    public function SendBloodRequestToDonor(Request $request,Response $response)
+    {
+        if ($request->isPost()) {
+            /* @var $Request BloodRequest */
+            $Request_ID = $request->getBody()['Request_ID'];
+            $Request = BloodRequest::findOne(['Request_ID' => $Request_ID]);
+            $Request->setAction(BloodRequest::REQUEST_STATUS_SENT_TO_DONOR);
+            $Request->update($Request_ID, [], ['Action']);
+            $Donor_notification = new DonorNotification();
+            $Donor_notification->setTargetGroup($Request->getBloodGroup());
+            $Donor_notification->setNotificationState(DonorNotification::NOTIFICATION_STATE_UNREAD);
+            $Donor_notification->setNotificationTitle('Blood Request From ' . $Request->getRequestedBy());
+            $Donor_notification->setNotificationMessage('Blood Request From ' . $Request->getRequestedBy() . ' for ' . $Request->getBloodGroup() . ' Blood Group. Please Contact ' . $Request->getRequestedBy() . ' for more details.');
+            $Donor_notification->setValidUntil(date('Y-m-d H:i:s', strtotime('+2 day')));
+            $Donor_notification->setNotificationDate(date('Y-m-d H:i:s'));
+            $Donor_notification->setNotificationType(DonorNotification::INFORM_GROUP_OF_DONOR);
+            if ($Donor_notification->validate() && $Donor_notification->save()) {
+                return json_encode(['status' => true, 'message' => 'Request Sent']);
+            }else{
+                print_r($Donor_notification->getErrors());
+            }
+            return json_encode(['status' => false, 'message' => 'Request Not Sent']);
+        }
+        Application::Redirect('/manager/mngRequests');
+        exit();
+    }
     public function SearchDonor(Request $request,Response $response)
     {
         $type = $request->getBody()['type'] ?? 'none';
@@ -914,5 +1141,13 @@ class managerController extends Controller
     {
 //        $EmergencyRequests=EmergencyRequest::RetrieveAll();
         return $this->render('Manager/ManageRequest/EmergencyRequest');
+    }
+
+    public function DonationCampaignReport(Request $request,Response $response)
+    {
+        $Month=date('m');
+        $Year=date('Y');
+        $DonationCampaigns=Campaign::RetrieveAll();
+        
     }
 }

@@ -48,9 +48,9 @@ CREATE TABLE IF NOT EXISTS MedicalOfficers
     Nationality         VARCHAR(100) NOT NULL,
     NIC                 VARCHAR(12) UNIQUE,
     Position            VARCHAR(20)           DEFAULT 'Nurse',
-    Registration_Number VARCHAR(20) UNIQUE,
-    Registration_Date   TIMESTAMP             DEFAULT CURRENT_TIMESTAMP,
-    Status              INT          NOT NULL DEFAULT 0,
+    Registration_Number VARCHAR(20) UNIQUE NOT NULL ,
+    Registration_Date   TIMESTAMP  NOT NULL CHECK ( Registration_Date <= CURRENT_TIMESTAMP ) DEFAULT CURRENT_TIMESTAMP,
+    Status              INT          NOT NULL DEFAULT 1,
     Joined_At           TIMESTAMP             DEFAULT CURRENT_TIMESTAMP,
     Branch_ID           VARCHAR(20)  NOT NULL,
     Profile_Image       VARCHAR(100) NOT NULL DEFAULT '/public/upload/profile/medicalOfficerDefault.png',
@@ -106,6 +106,7 @@ CREATE TABLE IF NOT EXISTS Donors
     Gender                VARCHAR(1)   NOT NULL CHECK ( Gender IN ('F', 'M')),
     NIC_Front             VARCHAR(100) NULL,
     NIC_Back              VARCHAR(100) NULL,
+    BloodGroup            VARCHAR(7)   NOT NULL CHECK ( BloodGroup IN ('A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-','Unknown')),
     BloodDonation_Book_1  VARCHAR(100) NULL,
     BloodDonation_Book_2  VARCHAR(100) NULL,
     Status                VARCHAR(50)  NOT NULL,
@@ -224,7 +225,7 @@ CREATE TABLE IF NOT EXISTS Approved_Campaigns (
                                                   Approved_At TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                                                   Remarks VARCHAR(100) NOT NULL,
                                                   FOREIGN KEY (Campaign_ID) REFERENCES Campaign(Campaign_ID),
-                                                  FOREIGN KEY (Approved_By) REFERENCES MedicalOfficers(Officer_ID)
+                                                  FOREIGN KEY (Approved_By) REFERENCES Managers(Manager_ID)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 # Create Table for Rejected Campaigns
@@ -309,6 +310,8 @@ CREATE TABLE IF NOT EXISTS Password_Reset(
     Created_At     TIMESTAMP             DEFAULT CURRENT_TIMESTAMP,
     Status         INT          NOT NULL DEFAULT 0,
     Device_IP      VARCHAR(100) NOT NULL,
+    Lifetime       INT          NOT NULL DEFAULT 60,
+    Reset_At       TIMESTAMP        NULL DEFAULT NULL,
     FOREIGN KEY (UID) REFERENCES Users (UID)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -433,10 +436,11 @@ CREATE TABLE IF NOT EXISTS Blood_Requests (
     BloodGroup VARCHAR(3) NOT NULL,
     Requested_At TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     Type INT NOT NULL DEFAULT 1,
-    Volume DECIMAL(10,2) NOT NULL DEFAULT 0,
+    Volume DECIMAL(10,2) NOT NULL CHECK ( Volume BETWEEN 0 AND 1000),
     Status INT NOT NULL DEFAULT 1,
-    Action INT NOT NULL DEFAULT 0,
+    Action INT NOT NULL DEFAULT 1,
     Remarks VARCHAR(100) NULL,
+    FullFilled_By VARCHAR(20) NULL,
     FOREIGN KEY (Requested_By) REFERENCES Hospitals(Hospital_ID),
     FOREIGN KEY (BloodGroup) REFERENCES BloodGroups(BloodGroup_ID)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -463,6 +467,7 @@ CREATE TABLE IF NOT EXISTS Sponsorship_Packages (
     Package_Name VARCHAR(100) NOT NULL,
     Package_Description VARCHAR(100) NOT NULL,
     Package_Price VARCHAR(100) NOT NULL,
+    Package_Image VARCHAR(100) NOT NULL,
     Created_By VARCHAR(20) NOT NULL,
     Updated_By VARCHAR(20) NULL,
     Created_At TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -589,9 +594,6 @@ CREATE TABLE IF NOT EXISTS Campaign_Request (
     FOREIGN KEY (Campaign_ID) REFERENCES Campaign(Campaign_ID),
     FOREIGN KEY (Organization_ID) REFERENCES Organizations(Organization_ID)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-
-
 
 
 
@@ -873,16 +875,15 @@ INSERT INTO Admins (Admin_ID, UserName, Email) VALUES ('Adm_01', 'Admin', 'admin
 INSERT INTO Managers (Manager_ID, First_Name, Last_Name, Address1, Address2, City, Contact_No, Email, BloodBank_ID)
 VALUES ('Mng_01', 'Manager', 'Manager', 'Address1', 'Address2', 'Colombo', '0771234567', 'manager@test.com', 'BB_01');
 # Make Default Medical Officer for Testing
-INSERT INTO MedicalOfficers (Officer_ID, First_Name, Last_Name, Address1, Address2, City, Contact_No, Email,
-                             Branch_ID, NIC, Position, Gender, Nationality)
-VALUES ('Mof_01', 'Medical', 'Officer', 'Address1', 'Address2', 'Colombo', '0771234567', 'mofficer@test.com', 'BB_01',
+INSERT INTO MedicalOfficers (Officer_ID, First_Name, Last_Name, Address1, Address2, City, Contact_No, Email,Branch_ID,Registration_Number, NIC, Position, Gender, Nationality)
+VALUES ('Mof_01', 'Medical', 'Officer', 'Address1', 'Address2', 'Colombo', '0771234567', 'mofficer@test.com', 'BB_01','12344',
         '123456789104', 'Doctor', 'M', 'Sri Lankan');
 # Make Default Donor for Testing
 INSERT INTO Donors (DONOR_ID, FIRST_NAME, LAST_NAME, ADDRESS1, ADDRESS2, CITY, NEAREST_BANK, CONTACT_NO, EMAIL, NIC,
                     GENDER, STATUS,
-                    DONATION_AVAILABILITY, VERIFIED)
+                    DONATION_AVAILABILITY, VERIFIED,BloodGroup)
 VALUES ('Dnr_01', 'Donor', 'Donor', 'Address1', 'Address2', 'Colombo', 'BB_01', '0771234567', 'donor@test.com',
-        '200017800595', 'F', 0, 0, 0);
+        '200017800595', 'F', 0, 0, 0,"B+");
 
 # Make Default Organization for Testing
 INSERT INTO Organizations (Organization_ID, Organization_Name, Organization_Email, Contact_No, Address1, Address2, City,
@@ -903,8 +904,5 @@ INSERT INTO Organization_Members(Organization_ID, Name, Contact_No, NIC, Positio
 VALUES ('Org_01', 'Member2', '0772345671', '234567891V', 'President');
 INSERT INTO Organization_Members(Organization_ID, Name, Contact_No, NIC, Position)
 VALUES ('Org_01', 'Member3', '0773456712', '345678912V', 'Treasurer');
-
-# Make Default Campaign for Testing
-
 
 

@@ -14,6 +14,7 @@ class User extends dbModel
     public const MEDICAL_OFFICER='MedicalOfficer';
     public const MANAGER='Manager';
     public const HOSPITAL='Hospital';
+    public const ACCOUNT_NOT_VERIFIED=5;
 
     public const ACTIVE = 0;
     public const TEMPORARY_DEACTIVATED = 1;

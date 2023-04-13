@@ -124,6 +124,7 @@ class authController extends Controller
                 if (!$user) {
                     $this->setFlashMessage('error', 'Invalid Credentials');
                     Application::Redirect('/login');
+                    exit();
                 }
                 if ($user === true){
                     Application::Redirect('/' . strtolower(Application::$app->getUser()->getRole()) . '/dashboard');
@@ -131,7 +132,9 @@ class authController extends Controller
 //                return $this->render('Authentication/OTPAuthentication');
 
             } else {
-                print_r("Not Login");
+                $this->setFlashMessage('error', 'Invalid Credentials');
+                Application::Redirect('/login');
+                exit();
             }
         }
         return $this->render('Authentication/UserLogin',['model'=>$login]);
@@ -182,6 +185,7 @@ class authController extends Controller
                 else {
                     $hash = password_hash($Password, PASSWORD_DEFAULT);
                     $user->loadData($request->getBody());
+                    $user->setAccountStatus(User::ACCOUNT_NOT_VERIFIED);
                     $user->setPassword($hash);
                     if ($user->validate()) {
                         $user->save();
@@ -263,15 +267,25 @@ class authController extends Controller
 //            else if(trim($password) != trim($confirmPassword))
 //                $errors['error'] = 'Password and Confirm Password not match';
             else if ($password == $confirmPassword){
+                /* @var PasswordReset $Reset*/
                 $Reset = PasswordReset::findOne(['Token'=>$token],false);
                 if (!$Reset){
+                    Application::Redirect('/login');
+                }
+                if ($Reset->IsExpired()){
+                    Application::$app->session->setFlash('error','Token Expired! Please Reset Password Again');
+                    Application::Redirect('/login');
+                }
+                if (!$Reset->IsTokenValid()){
+                    Application::$app->session->setFlash('error','Password Already Reset! Please Login');
                     Application::Redirect('/login');
                 }
                 $user = Login::findOne(['UID'=>$Reset->getUID()],false);
                 $hash = password_hash($password,PASSWORD_DEFAULT);
                 $user->setPassword($hash);
-                $user->update(['UID'=>$user->getID()]);
-                $Reset->DeleteOne(['Token'=>$token]);
+                $Reset->setResetPasswordAt(date('Y-m-d H:i:s'));
+                $Reset->setStatus(PasswordReset::STATUS_RESET);
+                $Reset->update($Reset->getUID(),[],['Reset_At','Status']);
                 Application::$app->session->setFlash('success','Password Changed Successfully');
                 Application::Redirect('/login');
             }else{
@@ -281,11 +295,20 @@ class authController extends Controller
             return $this->render('Authentication/ChangePassword',['errors'=>$errors]);
         }else{
             $token = $request->getBody()['token'];
+            /* @var $userResetRequest PasswordReset*/
             $userResetRequest=PasswordReset::findOne(['Token'=>$token],false);
             if (!$userResetRequest){
                 Application::Redirect('/login');
             }else{
                 $this->layout = 'NonAuth';
+                if ($userResetRequest->IsExpired()){
+                    Application::$app->session->setFlash('error','Token Expired! Please Reset Password Again');
+                    Application::Redirect('/login');
+                }
+                if (!$userResetRequest->IsTokenValid()){
+                    Application::$app->session->setFlash('error','Password Already Reset! Please Login');
+                    Application::Redirect('/login');
+                }
                 return $this->render('Authentication/ChangePassword',['errors'=>$errors,'token'=>$token]);
             }
         }
@@ -293,7 +316,48 @@ class authController extends Controller
 
     }
 
+    /**
+     * @throws \Exception
+     */
+    public function ForgotPassword(Request $request, Response $response)
+    {
+        if ($request->isPost()){
+            $email = $request->getBody()['email'];
+            $user = Login::findOne(['Email'=>$email],false);
+            $IsAlreadySent = PasswordReset::findOne(['Email'=>$email],false);
+            if ($IsAlreadySent){
+                if ($IsAlreadySent->IsExpired()){
+                    $IsAlreadySent->DeleteOne(['Email'=>$email]);
+                }else{
+                    return json_encode(['status'=>false,'message'=>'Password Reset Link Already Sent to your Email']);
+                }
+            }
+            if (!$user){
+                return json_encode(['status'=>false,'message'=>'Email not found']);
+            }else{
+                $Reset = new PasswordReset();
+                $Reset->setUID($user->getID());
+                $Reset->GenerateToken();
+                $Reset->setCreatedAt(date('Y-m-d H:i:s'));
+                $Reset->setLifetime(60);
+                $Reset->setDeviceIP(Application::$app->request->getIP());
+                $users=User::findOne(['UID'=>$user->getID()],false);
+                $Reset->setEmail($users->getEmail());
+                $Reset->setName($users->getFullName());
+                if ($Reset->validate()){
+                    $Reset->SendPasswordResetEmail();
+                    $Reset->save();
+                }
+                else{
+                    print_r($Reset->getErrors());
+                }
 
+                return json_encode(['status'=>true,'message'=>'Password Reset Link Sent to your Email']);
+
+            }
+        }
+
+    }
 
     public function logout()
     {

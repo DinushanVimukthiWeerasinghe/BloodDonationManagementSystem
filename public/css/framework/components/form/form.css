@@ -36,6 +36,17 @@ input[type="text"]{
     box-sizing: border-box;
 }
 
+.validation{
+    transition: background-color 0.5s ease-out;
+}
+
+.validation:required{
+    border-color: black;
+}
+.validation:invalid{
+    border-color: red;
+}
+
 input[type="checkbox"] {
     transform: scale(2);
     /*margin: 0 2rem;*/

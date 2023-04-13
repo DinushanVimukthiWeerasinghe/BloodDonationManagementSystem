@@ -152,7 +152,6 @@ $getParams = function ($params) {
     const FilterFromBloodGroup = ()=>{
         const BloodGroup=document.getElementById('BloodFilter').value;
         window.location.href = "?BloodGroup="+BloodGroup
-
     }
 
     const ViewDonor = (id)=>{
