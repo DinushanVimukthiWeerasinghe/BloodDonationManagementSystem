@@ -10,7 +10,7 @@ use App\model\inform\informDonors;
 use App\model\Requests\additional_sponsorship_request;
 use App\model\Requests\AttendanceAcceptedRequest;
 use App\model\sponsor\campaigns_sponsors;
-use App\model\sponsor\sponsorship_packages;
+use App\model\sponsor\SponsorshipPackages;
 use App\model\users\organization;
 use App\model\Campaigns\Campaign;
 use App\model\users\Sponsor;
@@ -115,7 +115,7 @@ class OrganizationController extends Controller
     {
         $campaign = new Campaign();
         $bank = BloodBank::RetrieveAll(false,[],false);
-        $packages = sponsorship_packages::RetrieveAll(false,[],false);
+        $packages = SponsorshipPackages::RetrieveAll(false,[],false);
 
         if($request->isPost()){
 
@@ -128,10 +128,10 @@ class OrganizationController extends Controller
             $campaign->setCampaignID($id);
 
             if($campaign->validate() && $campaign->save()) {
-                    $response->redirect('/organization/history');
+                    $response->redirect('/organization/campaign/view');
             }else{
-                print_r($campaign->errors);
-                exit();
+                Application::$app->session->setFlash('error','Something Went Wrong!');
+                Application::Redirect('/organization/campaign/create');
             }
 
         }
@@ -223,7 +223,7 @@ class OrganizationController extends Controller
     public function received()
     {
         /* @var Sponsor $sponser */
-        /* @var sponsorship_packages $pack */
+        /* @var SponsorshipPackages $pack */
         $attendance = new campaigns_sponsors();
         $total = 0;
         $reached = 0;
@@ -235,7 +235,7 @@ class OrganizationController extends Controller
         $sponsor = $attendance::findOne(['Campaign_ID' => $id]);
         if($sponsor){
             $package_ID = $sponsor->getPackageID();
-            $package = sponsorship_packages::findOne(['Package_ID' => $package_ID]);
+            $package = SponsorshipPackages::findOne(['Package_ID' => $package_ID]);
             $price = $package->getPackagePrice();
             $total = $count * $price;
             $total = 25000;
@@ -268,7 +268,7 @@ class OrganizationController extends Controller
         if ($result){
             $id=$result->getCampaignID();
             $campaign = Campaign::findOne(['Campaign_ID'=> $id]);
-            return $this->render('Organization/campDetails',['campaign'=>$campaign]);
+            return $this->render('Organization/campDetails',['campaign'=>$campaign,'id'=>$id]);
         }
         else{
             Application::$app->session->setFlash('success','You have not created a Campaign yet!');
