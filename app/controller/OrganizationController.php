@@ -100,14 +100,16 @@ class OrganizationController extends Controller
 
     public function manage()
     {
+        /* @var Campaign $campaign */
         $ID=Application::$app->getUser()->getID();
         $AlreadyCreatedCampaign=Campaign::findOne(['Organization_ID'=>$ID,'Status'=> Campaign::PENDING],false);
         $Exist=false;
         if ($AlreadyCreatedCampaign){
             $Exist=true;
         }
-        return $this->render('Organization/manage',[
-            'campaign_exist'=>$Exist
+
+        return $this->render('Organization/manageCampaign',[
+            'campaign_exist'=>$Exist,'id' => $ID
         ]);
     }
 
@@ -118,7 +120,6 @@ class OrganizationController extends Controller
         $packages = SponsorshipPackages::RetrieveAll(false,[],false);
 
         if($request->isPost()){
-
             $campaign->loadData($request->getBody());
             $campaign->setOrganizationID(Application::$app->getUser()->getID());
             $campaign->setCampaignDate(date("Y-m-d H:i:s"));
@@ -128,7 +129,8 @@ class OrganizationController extends Controller
             $campaign->setCampaignID($id);
 
             if($campaign->validate() && $campaign->save()) {
-                    $response->redirect('/organization/campaign/view');
+                $this->setFlashMessage('success', 'You Successfully Created a Campaign! Please Wait for the Admin Approval.');
+                $response->redirect('/organization/campaign/view');
             }else{
                 Application::$app->session->setFlash('error','Something Went Wrong!');
                 Application::Redirect('/organization/campaign/create');
@@ -136,7 +138,7 @@ class OrganizationController extends Controller
 
         }
         Application::$app->session->setFlash('success','You Successfully Created a Campaign! Please Wait for the Admin Approval.');
-        return $this->render('Organization/create',['banks'=> $bank,'package' => $packages]);
+        return $this->render('Organization/createCampaign',['banks'=> $bank,'package' => $packages]);
     }
 
     public function ViewCampaign(Request $request,Response $response)
@@ -165,13 +167,24 @@ class OrganizationController extends Controller
         /* @var Campaign $campaign */
         $ID = Application::$app->getUser()->getID();
         $result = Campaign::RetrieveAll(false, [], true, ['Organization_ID' => $ID]);
+        $expired = 0;
+        foreach ($result as $res){
+            if($res->getCampaignDate() < date("Y-m-d")){
+                $params[] = [
+                    'Campaign_Name' => $res->getCampaignName(),
+                    'Campaign_Date' => $res->getCampaignDate(),
+                    'Status' => $res->getCampaignStatus(),
+                    'Campaign_ID' => $res->getCampaignID(),
+                ];
+            }
+        }
 //        $campaign = Campaign::findOne(['Organization_ID' => $_SESSION['Email']]);
 //        $params=[
 //            'Campaign_Name'=> $campaign->getName(),
 //            'Campaign_Date' => $campaign->getDate(),
 //
 //        ];
-        return $this->render('Organization/history',['data'=>$result]);
+        return $this->render('Organization/history',$params);
     }
     public function inform(Request $request, Response $response)
     {
@@ -268,21 +281,47 @@ class OrganizationController extends Controller
         if ($result){
             $id=$result->getCampaignID();
             $campaign = Campaign::findOne(['Campaign_ID'=> $id]);
-            return $this->render('Organization/campDetails',['campaign'=>$campaign,'id'=>$id]);
+            return $this->render('Organization/campDetails',['campaign'=>$campaign]);
         }
         else{
             Application::$app->session->setFlash('success','You have not created a Campaign yet!');
             return $this->render('Organization/campDetails',['campaign'=>$campaign]);
         }
     }
-    public function campDetails()
+    public function campDetails(Request $request,Response $response)
     {
-        /* @var Campaign $campaign */
-        $Campaign = Campaign::findOne(['Organization_ID' => Application::$app->getUser()->getID()]);
+        /* @var Campaign $Campaign */
+        $Organization_ID = Application::$app->getUser()->getID();
+        $disable = 0;
+        $expired = 0;
+        $Campaign = Campaign::findOne(['Organization_ID' => $Organization_ID]);
         if ($Campaign){
-            $id=$Campaign->getCampaignID();
-            $campaign = Campaign::findOne(['Campaign_ID'=> $id]);
-            return $this->render('Organization/campDetails',['campaign'=>$campaign]);
+            if($Campaign->getCampaignStatus() === Campaign::PENDING){
+                $disable = 1;
+            }
+            if($Campaign->getCampaignDate() < date("Y-m-d")){
+                $expired = 1;
+            }
+            return $this->render('Organization/campDetails',['campaign'=>$Campaign, 'disable' => $disable, 'expired' => $expired]);
+        }else{
+            /* @var Campaign $campaign */
+            $ID=Application::$app->getUser()->getID();
+            $Camp=Campaign::RetrieveAll(false,[],true,['Organization_ID'=>$ID]);
+//        $AlreadyCreatedCampaign = $Camp::findOne(['Status' => Campaign::PENDING]);
+            $Exist=false;
+            $id = 0;
+
+            if ($Camp){
+                foreach ($Camp as $cam) {
+                    if ($cam->getCampaignDate() >= date("Y-m-d")) {
+                        Application::$app->session->setFlash('error', 'Previously Created Campaign is in Progress.');
+                        $id = $cam->getCampaignID();
+                        $Exist = true;
+                    }
+                }
+            }
+            $response->redirect('/organization/manageCampaign',['campaign_exist'=>$Exist,'id' => $id]);
+
         }
 
         $params=[];

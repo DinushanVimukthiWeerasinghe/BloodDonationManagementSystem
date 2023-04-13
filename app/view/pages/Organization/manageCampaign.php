@@ -22,10 +22,11 @@ use App\model\users\Organization;
 
 use App\view\components\WebComponent\Card\NavigationCard;
 
+
 $NearByCampaigns = new NavigationCard('/organization/near', '/public/images/icons/organization/manage/nearby.png', 'Nearby Campaigns');
 $CreateCampaigns = new NavigationCard('/organization/create', '/public/images/icons/organization/manage/create.png', 'Create Campaign');
-$ViewPendingCampaign = new NavigationCard('/organization/campaign/view', '/public/images/icons/organization/manage/create.png', 'View Pending Campaign');
-$ViewApprovedCampaign = new NavigationCard('/organization/campaign/view', '/public/images/icons/organization/manage/create.png', 'View Campaign');
+$ViewCampaign = new NavigationCard('/organization/campDetails?id=' . $id, '/public/images/icons/organization/manage/donation.png', 'View Ongoing Campaigns');
+//$ViewApprovedCampaign = new NavigationCard('/organization/campaign/view', '/public/images/icons/organization/manage/create.png', 'View Campaign');
 //$History = new NavigationCard('/organization/report', '/public/images/icons/Organization/dashboard/history.png', 'Donor Attendance');
 $background = new BackGroundImage();
 
@@ -33,12 +34,12 @@ echo $background;
 FlashMessage::RenderFlashMessages();
 echo CardGroup::CardPanel();
 echo $NearByCampaigns;
-if ($campaign_exist){
-    echo $ViewPendingCampaign;
-}
-else{
+if (!$campaign_exist){
     echo $CreateCampaigns;
+}else{
+    echo $ViewCampaign;
 }
+
 //echo $History;
 echo CardGroup::CloseCardPanel();
 

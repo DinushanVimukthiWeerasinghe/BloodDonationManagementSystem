@@ -424,8 +424,10 @@ CREATE TABLE IF NOT EXISTS Attendance_Accepted_Requests
 (
     Request_ID  VARCHAR(20) NOT NULL PRIMARY KEY,
     Donor_ID    VARCHAR(20) NOT NULL,
+    Campaign_ID VARCHAR(20) NOT NULL,
     Accepted_At TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (Donor_ID) REFERENCES Donors (Donor_ID)
+    FOREIGN KEY (Donor_ID) REFERENCES Donors (Donor_ID),
+    FOREIGN KEY (Campaign_ID) REFERENCES Campaign (Campaign_ID)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8;
 

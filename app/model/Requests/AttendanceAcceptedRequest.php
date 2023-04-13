@@ -7,20 +7,31 @@ class AttendanceAcceptedRequest extends \App\model\database\dbModel
     protected string $Donor_ID='';
     protected string $Request_ID='';
     protected string $Campaign_ID='';
+    protected string $Accepted_At='';
 
     public function labels(): array
     {
-        // TODO: Implement labels() method.
+        return [
+            'Donor_ID'=>'Donor ID',
+            'Request_ID'=>'Request ID',
+            'Campaign_ID'=>'Campaign ID',
+            'Accepted_At'=>'Accepted At'
+        ];
     }
 
     public function rules(): array
     {
-        // TODO: Implement rules() method.
+        return [
+            'Donor_ID'=>[self::RULE_REQUIRED],
+            'Request_ID'=>[self::RULE_REQUIRED],
+            'Campaign_ID'=>[self::RULE_REQUIRED],
+            'Accepted_At'=>[self::RULE_REQUIRED]
+        ];
     }
 
     public static function getTableShort(): string
     {
-        // TODO: Implement getTableShort() method.
+        return 'Attendance_Accepted_Requests';
     }
 
     public function GetAttributesValue($attributes)
@@ -30,23 +41,21 @@ class AttendanceAcceptedRequest extends \App\model\database\dbModel
 
     public static function tableName(): string
     {
-        // TODO: Implement tableName() method.
-        return 'attendance_accepted_requests';
+        return 'Attendance_Accepted_Requests';
     }
 
     public static function PrimaryKey(): string
     {
-        // TODO: Implement PrimaryKey() method.
         return 'Request_ID';
     }
 
     public function attributes(): array
     {
-        // TODO: Implement attributes() method.
         return [
             'Request_ID',
             'Donor_ID',
             'Campaign_ID',
+            'Accepted_At'
         ];
     }
 }
