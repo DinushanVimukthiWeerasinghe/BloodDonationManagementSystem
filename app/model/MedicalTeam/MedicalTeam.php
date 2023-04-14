@@ -7,8 +7,8 @@ use App\model\users\MedicalOfficer;
 
 class MedicalTeam extends \App\model\database\dbModel
 {
-    const TEAM_LEADER = 'Team Leader';
-    const TEAM_MEMBER = 'Team Member';
+    const TEAM_LEADER = 'Leader';
+    const TEAM_MEMBER = 'Member';
 
     protected string $Team_ID='';
     protected string $Campaign_ID='';
@@ -112,7 +112,7 @@ class MedicalTeam extends \App\model\database\dbModel
      */
     public function getTeamLeader(): string
     {
-        return $this->Team_Leader;
+        return $this->Team_Leader ?? '';
     }
 
     /**

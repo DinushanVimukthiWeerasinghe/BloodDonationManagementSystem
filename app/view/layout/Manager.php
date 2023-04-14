@@ -44,7 +44,7 @@ $Sidelnk = function () {
             defer
     ></script>
     <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
-
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.2.1/dist/chart.umd.min.js"></script>
     <link rel="stylesheet" href="/public/css/framework/utils.css">
     <link rel="stylesheet" href="/public/css/fontawesome/fa.css">
     <script src="/public/scripts/index.js"></script>
@@ -64,39 +64,152 @@ $Sidelnk = function () {
         </div>
     </div>
     <div id="SideBarLinks" class="d-flex w-100 flex-column justify-content-center align-items-center gap-1" >
+        <?php
+        if ($page==='dashboard'):
+        ?>
+        <div class="d-flex p-1 w-100 align-items-center text-xl cursor bg-primary border-radius-10 text-white font-bold" id="dashboard" onclick="Redirect('/manager/dashboard')">
+            <img src="/public/icons/dashboard.svg" class="mr-1 invert-100" width="24px" alt="" data-tooltip="Dashboard" data-tooltip-position="top">
+            <span>Dashboard</span>
+        </div>
+        <?php
+            else :
+        ?>
         <div class="d-flex p-1 w-100 align-items-center text-xl cursor" id="dashboard" onclick="Redirect('/manager/dashboard')">
             <img src="/public/icons/dashboard.svg" class="mr-1" width="24px" alt="" data-tooltip="Dashboard" data-tooltip-position="top">
             <span>Dashboard</span>
         </div>
-        <div class="d-flex p-1 w-100 align-items-center text-xl cursor" id="mngCampaigns" onclick="Redirect('/manager/mngCampaigns')">
-            <img src="/public/icons/campaign.png" class="mr-1" width="24px" alt="">
+        <?php
+        endif;
+        ?>
+
+        <?php
+        if ($page==='mngCampaign'):
+        ?>
+        <div class="d-flex p-1 w-100 align-items-center text-xl cursor  bg-primary border-radius-10 text-white font-bold" id="mngCampaigns" onclick="Redirect('/manager/mngCampaigns')">
+            <img src="/public/icons/campaign.png" class="mr-1 invert-100" width="24px" alt="">
             <span>Campaigns</span>
         </div>
-        <div class="d-flex p-1 w-100 align-items-center text-xl cursor" id="mngSponsorship" onclick="Redirect('/manager/mngSponsorship')">
-            <img src="/public/icons/dollar-sign.svg" class="mr-1" width="24px" alt="">
+        <?php
+        else :
+        ?>
+        <div class="d-flex p-1 w-100 align-items-center text-xl cursor" id="mngCampaigns" onclick="Redirect('/manager/mngCampaigns')">
+            <img src="/public/icons/campaign.png" class="mr-1 " width="24px" alt="">
+            <span>Campaigns</span>
+        </div>
+        <?php
+        endif;
+        ?>
+
+
+        <?php
+        if ($page==='mngSponsorship'):
+        ?>
+        <div class="d-flex p-1 w-100 align-items-center text-xl cursor  bg-primary border-radius-10 text-white font-bold " id="mngSponsorship" onclick="Redirect('/manager/mngSponsorship')">
+            <img src="/public/icons/sponsorship.png" class="mr-1 invert-100" width="24px" alt="">
             <span>Sponsorship</span>
         </div>
+        <?php
+        else :
+        ?>
+        <div class="d-flex p-1 w-100 align-items-center text-xl cursor " id="mngSponsorship" onclick="Redirect('/manager/mngSponsorship')">
+            <img src="/public/icons/sponsorship.png" class="mr-1 " width="24px" alt="">
+            <span>Sponsorship</span>
+        </div>
+        <?php
+        endif;
+        ?>
+        <?php
+        if ($page==='mngRequest'):
+        ?>
+        <div class="d-flex w-100 p-1 align-items-center text-xl cursor bg-primary border-radius-10 text-white font-bold" id="mngRequests" onclick="Redirect('/manager/mngRequests')">
+            <img src="/public/icons/requests.png" class="mr-1 invert-100" width="24px" alt="">
+            <span>Requests</span>
+        </div>
+        <?php
+        else :
+        ?>
         <div class="d-flex w-100 p-1 align-items-center text-xl cursor" id="mngRequests" onclick="Redirect('/manager/mngRequests')">
             <img src="/public/icons/requests.png" class="mr-1" width="24px" alt="">
             <span>Requests</span>
         </div>
+        <?php
+        endif;
+        ?>
+        <?php
+        if ($page==='mngDonor'):
+        ?>
+        <div class="d-flex p-1 w-100 align-items-center text-xl cursor   bg-primary border-radius-10 text-white font-bold" id="mngDonors" onclick="Redirect('/manager/mngDonors')">
+            <img src="/public/icons/donor.png" class="mr-1 invert-100" width="24px" alt="">
+            <span>Donors</span>
+        </div>
+        <?php
+        else :
+        ?>
         <div class="d-flex p-1 w-100 align-items-center text-xl cursor" id="mngDonors" onclick="Redirect('/manager/mngDonors')">
             <img src="/public/icons/donor.png" class="mr-1" width="24px" alt="">
             <span>Donors</span>
         </div>
-        <div class="d-flex p-1 w-100  align-items-center text-xl cursor" id="mngSponsors" onclick="Redirect('/manager/mngSponsors')">
+        <?php
+        endif;
+        ?>
+
+        <?php
+        if ($page==='mngSponsor'):
+        ?>
+        <div class="d-flex p-1 w-100  align-items-center text-xl cursor   bg-primary border-radius-10 text-white font-bold" id="mngSponsors" onclick="Redirect('/manager/mngSponsors')">
+            <img src="/public/icons/sponsors.png" class="mr-1 invert-100" width="24px" alt="">
+            <span>Sponsors</span>
+        </div>
+        <?php
+        else :
+        ?>
+        <div class="d-flex p-1 w-100  align-items-center text-xl cursor " id="mngSponsors" onclick="Redirect('/manager/mngSponsors')">
             <img src="/public/icons/sponsors.png" class="mr-1" width="24px" alt="">
             <span>Sponsors</span>
         </div>
+        <?php
+        endif;
+        ?>
+
+        <?php
+        if ($page==='mngOfficer'):
+        ?>
+        <div class="d-flex p-1 w-100  align-items-center text-xl cursor  bg-primary border-radius-10 text-white font-bold" id="mngMedicalOfficer" onclick="Redirect('/manager/mngMedicalOfficer')">
+            <img src="/public/icons/MedicalOfficer.png" class="mr-1 invert-100" width="24px" alt="">
+            <span>Officers</span>
+        </div>
+        <?php
+        else :
+        ?>
         <div class="d-flex p-1 w-100  align-items-center text-xl cursor" id="mngMedicalOfficer" onclick="Redirect('/manager/mngMedicalOfficer')">
             <img src="/public/icons/MedicalOfficer.png" class="mr-1" width="24px" alt="">
             <span>Officers</span>
         </div>
+        <?php
+        endif;
+        ?>
 
+
+        <?php
+        if ($page==='mngReport'):
+        ?>
+        <div class="d-flex p-1 w-100 align-items-center text-xl cursor  bg-primary border-radius-10 text-white font-bold" id="mngReport" onclick="Redirect('/manager/mngReport')">
+            <img src="/public/icons/file-text.svg" class="mr-1 invert-100" width="24px" alt="">
+            <span>Reports</span>
+        </div>
+        <?php
+        else :
+        ?>
         <div class="d-flex p-1 w-100 align-items-center text-xl cursor" id="mngReport" onclick="Redirect('/manager/mngReport')">
             <img src="/public/icons/file-text.svg" class="mr-1" width="24px" alt="">
             <span>Reports</span>
         </div>
+        <?php
+        endif;
+        ?>
+
+
+
 
 
     </div>
@@ -113,20 +226,13 @@ $Sidelnk = function () {
 <script src="/public/js/components/accordion/accordion.js"></script>
 <script src="/public/js/manager.js"></script>
 <script>
-    window.addEventListener('load',()=>{
-        const path=window.location.href.toString();
-        const action = '<?=$Sidelnk();?>';
-        const element =document.getElementById(action);
-        element.classList.add('bg-primary','border-radius-10','text-white','font-bold','justify-content-center')
-        element.getElementsByTagName('img')[0].classList.add('invert-100')
-    })
     const getNotification = ()=>{
         const url = '/manager/notification';
         fetch(url,{
             method: 'GET',
         }).then(res=>res.json())
             .then(data=>{
-                    if(data.status){
+                if(data.status){
                         OpenDialogBox({
                             id: 'notification',
                             title: 'Notification',

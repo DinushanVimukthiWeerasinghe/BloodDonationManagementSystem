@@ -129,7 +129,6 @@ class Application
         $this->view = new View();
         $this->db = new Database($config['db']);
         $this->forbiddenRoute = new forbiddenRoute();
-
         self::$ROOT_DIR = $path;
         $this->request = new Request();
         $this->response = new Response();
@@ -139,11 +138,10 @@ class Application
 //        Set Timezone to Asia/Colombo
         date_default_timezone_set('Asia/Colombo');
 //        $this->db->applyMigrations();
-
         if(isset($_SESSION['user']))
         {
+//            unset($_SESSION['user']);
             $UserClass=$_SESSION['user']->getSessionData()['UserClass'];
-
             $UserID=$_SESSION['user']->getSessionData()['UID'];
             $this->user = $UserClass::findOne([$UserClass::PrimaryKey()=>$UserID]);
         }
@@ -153,37 +151,46 @@ class Application
         }
     }
 
+    /**
+     * @throws Exception
+     */
     public function login(Login $user): bool
     {
         $Role=$user->getRole();
         $ID = $user->getID();
         $AuthCode = new OTPCode();
-        if ($Role === User::MANAGER)
-        {
-            $this->user = Manager::findOne(['Manager_ID' => $ID]);
+//        print_r($user);
+//        exit();
+//        Role == 'Manager
+            if ($Role === User::MANAGER)
+            {
+                $this->user = Manager::findOne(['Manager_ID' => $ID]);
 
-        }else if ($Role === User::MEDICAL_OFFICER)
-        {
-            $this->user = MedicalOfficer::findOne(['Officer_ID' => $ID]);
-        }else if ($Role === User::ADMIN)
-        {
-            $this->user = Admin::findOne(['Admin_ID' => $ID]);
-        }else if ($Role === User::DONOR)
-        {
-            $this->user = Donor::findOne(['Donor_ID' => $ID]);
-        }else if ($Role === User::HOSPITAL)
-        {
-            $this->user = Hospital::findOne(['Hospital_ID' => $ID]);
-        } else if ($Role === User::ORGANIZATION) {
-            $this->user = Organization::findOne(['Organization_ID' => $ID]);
-        } else if ($Role === User::SPONSOR) {
-            $this->user = Sponsor::findOne(['Sponsor_ID' => $ID]);
-        } else {
-            return false;
-        }
-        if ($this->user === null) {
-            return false;
-        }
+            }else if ($Role === User::MEDICAL_OFFICER)
+            {
+                $this->user = MedicalOfficer::findOne(['Officer_ID' => $ID]);
+            }else if ($Role === User::ADMIN)
+            {
+                $this->user = Admin::findOne(['Admin_ID' => $ID]);
+            }else if ($Role === User::DONOR)
+            {
+                $this->user = Donor::findOne(['Donor_ID' => $ID]);
+                if ($this->user === null) {
+                    $this->user = new Donor();
+                }
+            }else if ($Role === User::HOSPITAL)
+            {
+                $this->user = Hospital::findOne(['Hospital_ID' => $ID]);
+            } else if ($Role === User::ORGANIZATION) {
+                $this->user = Organization::findOne(['Organization_ID' => $ID]);
+            } else if ($Role === User::SPONSOR) {
+                $this->user = Sponsor::findOne(['Sponsor_ID' => $ID]);
+            } else {
+                throw new Exception('Invalid Role');
+            }
+            if ($this->user === null) {
+                return false;
+            }
 
         $primaryKey = $user->primaryKey();
 

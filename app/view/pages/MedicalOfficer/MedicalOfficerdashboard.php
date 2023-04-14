@@ -114,7 +114,8 @@ use App\model\users\User;
                 const TotalAssignmentsInMonth = data.data.TotalAssignmentsInMonth;
                 const Months = Object.keys(TotalAssignmentsInMonth);
                 const Values = Object.values(TotalAssignmentsInMonth);
-                const chart = new Chart("myChart", {
+                const ctx = document.getElementById("myChart").getContext("2d");
+                const chart = new Chart(ctx, {
                     type: "bar",
                     options: {
                         scales: {
@@ -155,13 +156,8 @@ use App\model\users\User;
         {x:150, y:15}
     ];
     const Months= ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-
     var xValues = ["Italy", "France", "Spain", "USA", "Argentina"];
     var yValues = [12, 10, 15, 11, 18];
-
-
-
-
     const chart2 =new Chart("myChart2", {
         type: "scatter",
         data: {
@@ -179,7 +175,6 @@ use App\model\users\User;
             }
         }
     });
-
 </script>
 
 

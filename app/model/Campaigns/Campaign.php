@@ -11,15 +11,15 @@ class Campaign extends dbModel
     public const PENDING = 1;
     public const APPROVED = 2;
     public const REJECTED = 3;
-    public const VERIFIED = 1;
+    public const NOT_VERIFIED = 1;
+    public const VERIFIED = 2;
     protected string $Campaign_ID='';
     protected string $Organization_ID='';
-    protected string $Expected_Amount='';
+    protected ?string $Expected_Amount=null;
     protected string $Campaign_Name='';
     protected string $Campaign_Description='';
     protected string $Campaign_Date='';
     protected string $Venue='';
-    protected string $Package_ID='';
     protected string $Nearest_City='';
     protected int $Status=1;
     protected string $Nearest_BloodBank='';
@@ -39,6 +39,11 @@ class Campaign extends dbModel
     public function getCampaignID(): string
     {
         return $this->Campaign_ID;
+    }
+
+    public function IsApproved(): bool
+    {
+        return $this->Status == self::APPROVED;
     }
 
     /**
@@ -154,9 +159,14 @@ class Campaign extends dbModel
         $this->Campaign_Date = $Campaign_Date;
     }
 
-    public function IsVerified()
+    public function IsVerified(): bool
     {
-        return $this->Verified;
+        return $this->Verified == self::VERIFIED;
+    }
+
+    public function IsRejected(): bool
+    {
+        return $this->Status == self::REJECTED;
     }
 
     /**
@@ -199,11 +209,13 @@ class Campaign extends dbModel
         return $this->Status;
     }
 
+
     public function getCampaignStatus():string
     {
-        return match ($this->Verified){
-            self::PENDING =>' Pending Approval',
-            self::APPROVED => 'Campaign Approved',
+        return match ($this->Status){
+            self::PENDING =>'Pending',
+            self::APPROVED => 'Approved',
+            self::REJECTED => 'Rejected',
             default => 'Unknown'
         };
     }
@@ -375,10 +387,6 @@ class Campaign extends dbModel
             'Status' => 'Status',
             'Nearest_BloodBank' => 'Nearest Blood Bank',
             'Verified' => 'Verified',
-            'Verified_By' => 'Verified By',
-            'Verified_At' => 'Verified At',
-            'Assigned_Team' => 'Assigned Team',
-            'Remarks' => 'Remarks',
             'Created_At' => 'Created At',
             'Updated_At' => 'Updated At',
         ];
@@ -417,7 +425,6 @@ class Campaign extends dbModel
     {
         return [
             'Campaign_ID',
-            'Package_ID',
             'Organization_ID',
             'Campaign_Name',
             'Campaign_Description',
@@ -427,10 +434,6 @@ class Campaign extends dbModel
             'Status',
             'Nearest_BloodBank',
             'Verified',
-            'Verified_By',
-            'Verified_At',
-            'Assigned_Team',
-            'Remarks',
             'Created_At',
             'Updated_At',
             'Expected_Amount',
@@ -453,5 +456,10 @@ class Campaign extends dbModel
     public function setExpectedAmount(string $Expected_Amount): void
     {
         $this->Expected_Amount = $Expected_Amount;
+    }
+
+    public function getNoOfDonors()
+    {
+        return '100';
     }
 }

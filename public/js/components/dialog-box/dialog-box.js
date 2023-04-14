@@ -10,13 +10,16 @@ const OpenDialogBox= (props) => {
         closeDialogBtn,
         successBtnAction,
         secondaryBtnText,
+        secondaryBtnColor,
         secondaryBtnAction,
         cancelBtnAction,
         popupOrder,
         showCancelButton,
         showSuccessButton,
         footer,
-        contentSize
+        contentSize,
+        minWidth,
+        maxWidth,
     } = props;
     const dialogBoxOuter = document.createElement('div');
     dialogBoxOuter.id = id;
@@ -28,6 +31,12 @@ const OpenDialogBox= (props) => {
     dialogBoxOuter.className = 'dialog-box-outer';
     const dialogBoxInner = document.createElement('div');
     dialogBoxInner.className = 'dialog-box';
+    if (minWidth) {
+        dialogBoxInner.style.minWidth = minWidth;
+    }
+    if (maxWidth) {
+        dialogBoxInner.style.maxWidth = maxWidth;
+    }
     if (contentSize){
         dialogBoxInner.style.minWidth=contentSize+'%';
     }
@@ -76,8 +85,13 @@ const OpenDialogBox= (props) => {
     }
     if (secondaryBtnText) {
         const secondaryBtnElement= document.createElement('button');
-        secondaryBtnElement.className= 'btn btn-outline-secondary';
+        secondaryBtnElement.className= 'btn ';
         secondaryBtnElement.innerHTML= secondaryBtnText;
+        if (secondaryBtnColor) {
+            secondaryBtnElement.classList.add(secondaryBtnColor);
+        }else{
+            secondaryBtnElement.classList.add('btn-outline-secondary');
+        }
         if (secondaryBtnAction) {
             secondaryBtnElement.addEventListener('click', secondaryBtnAction);
         }else{

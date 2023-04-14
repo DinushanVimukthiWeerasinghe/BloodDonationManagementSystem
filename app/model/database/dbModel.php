@@ -16,6 +16,11 @@ abstract class dbModel extends Model
 //    abstract public function relations(): array;
     private string $WherePrimaryKey='';
 
+    public function getErrors(): array
+    {
+        return $this->errors;
+    }
+
 //    abstract public function getPrimaryKey(): string;
     /**
      * @param string $id
@@ -233,7 +238,6 @@ abstract class dbModel extends Model
         foreach ($attributes as $attribute) {
             $statement->bindValue(":$attribute", $this->{$attribute});
         }
-
         $statement->execute();
 
 
@@ -263,12 +267,11 @@ abstract class dbModel extends Model
     }
 
 
-    public function update($id, $Exclude = [],$Include=[]): bool
+    public function update($id, $Exclude = [],$Include=[],$where=[]): bool
     {
         $tableName = static::tableName();
         $attributes = $this->attributes();
         $params = array_map(fn($attr) => ":$attr", $attributes);
-
         $demo = 'UPDATE ' . $tableName . ' SET ';
         if (!empty($Include)){
             foreach ($attributes as $attribute) {
@@ -292,10 +295,18 @@ abstract class dbModel extends Model
         }
         $demo=substr($demo,0,-2);
         $demo.=' WHERE '.static::PrimaryKey().'="'.$id.'"';
+        if (!empty($where)){
+            $demo.=' AND ';
+            foreach ($where as $key=>$item){
+                $demo.=$key.'="'.$item.'" AND ';
+            }
+            $demo=substr($demo,0,-4);
+        }
         $statement=self::prepare($demo);
         $statement->execute();
         return true;
     }
+
 
     public static function InnerJoinFindOne(string $JoinTableName,array $where,string $inner_ID = 'ID')
     {

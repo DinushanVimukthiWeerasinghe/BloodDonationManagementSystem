@@ -7,7 +7,7 @@ const ShowToast = (props) => {
     if (AlreadyToast) {
     //     Get the Position of the toast
         const toastPosition = AlreadyToast.getBoundingClientRect();
-        console.log(toastPosition)
+        console.log(toastPosition.top)
         newToastPosition = toastPosition.top + 40;
     }
     const toast = document.createElement("div");
@@ -44,7 +44,7 @@ const CloseToast = (id = '') => {
         MoreToast.forEach((toast) => {
             if (toast.id !== id) {
                 const toastPosition = toast.getBoundingClientRect();
-                const newToastPosition = toastPosition.top - 70;
+                const newToastPosition = (toastPosition.top - 56)+"px";
                 toast.style.top = newToastPosition + "px";
             }
         });

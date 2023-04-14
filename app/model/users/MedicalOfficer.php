@@ -62,6 +62,25 @@ class MedicalOfficer extends Person
         return $this->Position;
     }
 
+    public function getPositionOfTeamByCampaignID($campaignID)
+    {
+        /** @var MedicalTeam $Team*/
+        $Team = MedicalTeam::findOne(['Campaign_ID' => $campaignID, 'Team_Leader' => $this->Officer_ID],false);
+        if ($Team) {
+            return 'Team Leader';
+        }else{
+            /** @var MedicalTeam $Team*/
+            $Team= MedicalTeam::findOne(['Campaign_ID' => $campaignID],false);
+            if ($Team) {
+                /** @var TeamMembers $TeamMember*/
+                $TeamMember = TeamMembers::findOne(['Team_ID' => $Team->getTeamID(), 'Member_ID' => $this->Officer_ID],false);
+                return $TeamMember?->getPosition();
+            }else{
+                return null;
+            }
+        }
+    }
+
     /**
      * @param string $Position
      */
@@ -247,6 +266,7 @@ class MedicalOfficer extends Person
     public static function RetrieveAvailableMedicalOfficer(bool $pagination, array $paginationParams,array $Exclude): array
     {
         $tableName = static::tableName();
+        $BranchID = Application::$app->getUser()->getBloodBankID();
         $sql = "SELECT * FROM $tableName WHERE Officer_ID NOT IN (";
         foreach ($Exclude as $key => $value) {
             $sql .= "'$value',";
@@ -254,6 +274,7 @@ class MedicalOfficer extends Person
         $sql = rtrim($sql, ',');
         $sql .= ')';
         $sql .= " AND Status = '".self::AVAILABLE_MEDICAL_OFFICER."'";
+        $sql .= "AND Branch_ID = '$BranchID'";
         $sql .= " ORDER BY First_Name ASC";
         $sql .= " LIMIT {$paginationParams[0]},{$paginationParams[1]}";
         if ($pagination) {

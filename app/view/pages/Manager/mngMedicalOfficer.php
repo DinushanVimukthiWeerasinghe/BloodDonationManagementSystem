@@ -13,10 +13,13 @@ use App\view\components\ResponsiveComponent\Alert\FlashMessage;
 //echo new primaryTitle('Manage Medical Officers');
 /* @var array $data */
 /* @var MedicalOfficer $value */
+
 $getParams = function ($params) {
     $str = '?';
     if (empty($params)) return $str;
     foreach ($params as $key => $value) {
+        if ($key == 'page')
+            continue;
         $str .= $key . '=' . $value . '&';
     }
     return $str;
@@ -122,6 +125,10 @@ FlashMessage::RenderFlashMessages();
         <div class="d-flex">
             <div class="d-flex align-items-center justify-content-center">
                 <div class="d-flex gap-1 align-items-center">
+                    <div class="none">
+                        <span id="total_pages"><?=$total_pages?></span>
+                        <span id="current_page"><?=$current_page?></span>
+                    </div>
                     <label for="page" class="search">Record Per Page</label>
                     <select class="px-2 py-0-5" name="page" id="rpp" onchange="ChangeRecordsPerPage()">
                         <?php
@@ -145,15 +152,17 @@ FlashMessage::RenderFlashMessages();
                     </select>
                 </div>
             </div>
-            <div class="d-flex align-items-center justify-content-center bg-white border-radius-10 " style="padding: 0.3rem 0.6rem">
-                <a href="<?=$getParams($_GET)?>page=<?=$current_page-1?>">
+            <div id="paginationleft" class="d-flex align-items-center justify-content-center bg-white border-radius-10 " onclick="prevData()"
+                 style="padding: 0.3rem 0.6rem">
+                <span>
                     <img src="/public/icons/chevron-left.svg" width="20rem">
-                </a>
+                </span>
             </div>
-            <div class="d-flex align-items-center justify-content-center bg-white-0-5 border-radius-10 " style="padding: 0.3rem 0.6rem">
-                <a href="<?=$getParams($_GET)?>page=<?=$current_page+1?>">
+            <div id="paginationright" class="d-flex align-items-center justify-content-center bg-white-0-5 border-radius-10 " onclick="nextData()"
+                 style="padding: 0.3rem 0.6rem">
+                <span>
                     <img src="/public/icons/chevron-right.svg" width="20rem">
-                </a>
+                </span>
             </div>
         </div>
     </div>
@@ -161,7 +170,117 @@ FlashMessage::RenderFlashMessages();
 <script>
     const ChangeRecordsPerPage = ()=>{
         const RecordsPerPage=document.getElementById('rpp').value;
-        window.location.href="?rpp="+RecordsPerPage
+        // window.location.href="?rpp="+RecordsPerPage
+        const status = document.getElementById('FilterByStatus').value;
+        const url = '/manager/mngMedicalOfficer?status='+status+'&rpp='+RecordsPerPage;
+        const loader = document.getElementById('loader');
+        loader.classList.remove('none');
+        fetch(url,{
+            method: 'GET',
+        })
+            .then(response => response.text())
+            .then(data => {
+                const content = document.getElementById('content');
+                const Tpaginationleft = document.getElementById('paginationleft');
+                const Tpaginationright = document.getElementById('paginationright');
+                const tf = document.getElementById('tableFooter');
+                const DParser = new DOMParser();
+                const DHTML = DParser.parseFromString(data, 'text/html');
+                const table = DHTML.getElementById('content');
+                const tableFooter = DHTML.getElementById('tableFooter');
+                const paginationl = DHTML.getElementById('paginationleft');
+                const paginationr = DHTML.getElementById('paginationright');
+                content.innerHTML = table.innerHTML;
+                tf.innerHTML = tableFooter.innerHTML;
+                Tpaginationleft.innerHTML = paginationl.innerHTML;
+                Tpaginationright.innerHTML = paginationr.innerHTML;
+                setTimeout(()=>{
+                    loader.classList.add('none');
+                },1000)
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    }
+    const nextData=()=>{
+        const current_page = parseInt(document.getElementById('current_page').innerText)
+        const total_pages = parseInt(document.getElementById('total_pages').innerText)
+        const current_get = <?php echo json_encode($_GET)?>;
+        if (current_page>=total_pages){
+            ShowToast({
+                message: 'No More Data',
+                type: 'danger',
+            })
+            return;
+        }
+
+        const RecordsPerPage=document.getElementById('rpp').value;
+        const status = document.getElementById('FilterByStatus').value;
+        const url = '/manager/mngMedicalOfficer?status='+status+'&rpp='+RecordsPerPage+'&page='+(current_page+1);
+        const loader = document.getElementById('loader');
+        loader.classList.remove('none');
+        fetch(url).then(res=>res.text())
+            .then((data)=>{
+                const content = document.getElementById('content');
+                const Tpaginationleft = document.getElementById('paginationleft');
+                const Tpaginationright = document.getElementById('paginationright');
+                const tf = document.getElementById('tableFooter');
+                const DParser = new DOMParser();
+                const DHTML = DParser.parseFromString(data, 'text/html');
+                const table = DHTML.getElementById('content');
+                const tableFooter = DHTML.getElementById('tableFooter');
+                const paginationl = DHTML.getElementById('paginationleft');
+                const paginationr = DHTML.getElementById('paginationright');
+                content.innerHTML = table.innerHTML;
+                tf.innerHTML = tableFooter.innerHTML;
+                Tpaginationleft.innerHTML = paginationl.innerHTML;
+                Tpaginationright.innerHTML = paginationr.innerHTML;
+                setTimeout(()=>{
+                    loader.classList.add('none');
+                },1000)
+            })
+
+
+    }
+    const prevData=()=>{
+        const current_page = parseInt(document.getElementById('current_page').innerText)
+        const total_pages = parseInt(document.getElementById('total_pages').innerText)
+        const current_get = <?php echo json_encode($_GET)?>;
+        if (current_page<=1){
+            ShowToast({
+                type: 'error',
+                message: 'You are on the first page'
+            })
+            return;
+        }
+
+        const RecordsPerPage=document.getElementById('rpp').value;
+        const status = document.getElementById('FilterByStatus').value;
+        const url = '/manager/mngMedicalOfficer?status='+status+'&rpp='+RecordsPerPage+'&page='+(current_page-1);
+        const loader = document.getElementById('loader');
+        loader.classList.remove('none');
+        fetch(url).then(res=>res.text())
+            .then((data)=>{
+                const content = document.getElementById('content');
+                const Tpaginationleft = document.getElementById('paginationleft');
+                const Tpaginationright = document.getElementById('paginationright');
+                const tf = document.getElementById('tableFooter');
+                const DParser = new DOMParser();
+                const DHTML = DParser.parseFromString(data, 'text/html');
+                const table = DHTML.getElementById('content');
+                const tableFooter = DHTML.getElementById('tableFooter');
+                const paginationl = DHTML.getElementById('paginationleft');
+                const paginationr = DHTML.getElementById('paginationright');
+                content.innerHTML = table.innerHTML;
+                tf.innerHTML = tableFooter.innerHTML;
+                Tpaginationleft.innerHTML = paginationl.innerHTML;
+                Tpaginationright.innerHTML = paginationr.innerHTML;
+                setTimeout(()=>{
+                    loader.classList.add('none');
+                },1000)
+            })
+
+
     }
     const AddMedicalOfficer = ()=>{
         OpenDialogBox({
@@ -321,6 +440,11 @@ FlashMessage::RenderFlashMessages();
             const res = await response.json();
             if (res){
                 if (res.status){
+                    const RegistrationDate = new Date(res.data.Registration_Date);
+                    const RD_Y = RegistrationDate.getFullYear();
+                    const RD_M = (RegistrationDate.getMonth()+1).toString().padStart(2,'0');
+                    const RD_D = RegistrationDate.getDate().toString().padStart(2,'0');
+                    const RegistrationDateStr = RD_Y+'-'+RD_M+'-'+RD_D;
                     const data =res.data;
                     OpenDialogBox({
                         id:'AddMedicalOfficer',
@@ -370,7 +494,7 @@ FlashMessage::RenderFlashMessages();
                             </div>
                             <div class="form-group">
                                 <label for="nic" class="w-40">Registration Date</label>
-                                <input type="date" class="form-control w-60" name="Registration_Date"  value="`+data.Registration_Date+`" id="RegDate" placeholder="Enter Registration Date">
+                                <input type="date" class="form-control w-60" name="Registration_Date"  value="`+RegistrationDateStr+`" id="RegDate" placeholder="Enter Registration Date">
                             </div>
                     </div>
                         <div class="d-flex gap-1">

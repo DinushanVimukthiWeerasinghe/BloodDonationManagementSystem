@@ -132,13 +132,14 @@ $getParams = function ($params) {
                     </select>
                 </div>
             </div>
-            <div class="d-flex align-items-center justify-content-center bg-white border-radius-10 " style="padding: 0.3rem 0.6rem">
+            <div class="d-flex align-items-center justify-content-center bg-white border-radius-10 <?= ($current_page <= 1)? 'disabled':''?>" style="padding: 0.3rem 0.6rem">
                 <a href="<?=$getParams($_GET)?>page=<?=$current_page-1?>">
                     <img src="/public/icons/chevron-left.svg" width="20rem">
                 </a>
             </div>
-            <div class="d-flex align-items-center justify-content-center bg-white-0-5 border-radius-10 " style="padding: 0.3rem 0.6rem">
+            <div class="d-flex align-items-center justify-content-center bg-white-0-5 border-radius-10 <?= ($total_pages<=$current_page)? 'disabled':''?>" style="padding: 0.3rem 0.6rem">
                 <a href="<?=$getParams($_GET)?>page=<?=$current_page+1?>">
+
                     <img src="/public/icons/chevron-right.svg" width="20rem">
                 </a>
             </div>
@@ -151,7 +152,6 @@ $getParams = function ($params) {
     const FilterFromBloodGroup = ()=>{
         const BloodGroup=document.getElementById('BloodFilter').value;
         window.location.href = "?BloodGroup="+BloodGroup
-
     }
 
     const ViewDonor = (id)=>{
