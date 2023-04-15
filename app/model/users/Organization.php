@@ -45,7 +45,10 @@ class Organization extends Person
     {
         $this->Type = $Type;
     }
-
+    public function setEmail(string $email):void
+    {
+        $this->Organization_Email = $email;
+    }
     public function getEmail():string
     {
         return $this->Organization_Email;
