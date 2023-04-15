@@ -460,4 +460,19 @@ class User extends dbModel
         ];
     }
 
+    public function generateUID()
+    {
+        $Abbreviation = match ($this->Role) {
+            'Admin' => 'ADM',
+            'Manager' => 'MGR',
+            'MedicalOfficer' => 'MDO',
+            'Donor' => 'DNR',
+            'Organization' => 'ORG',
+            'Sponsor' => 'SPN',
+            'Hospital' => 'HOS',
+            default => 'USR',
+        };
+        $this->UID = uniqid($Abbreviation.'_');
+    }
+
 }

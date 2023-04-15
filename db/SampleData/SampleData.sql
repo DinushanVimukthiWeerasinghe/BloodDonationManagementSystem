@@ -54,6 +54,27 @@ VALUES
     ('Org_24', 'Organization', 'org24@test.com', '0770000024', 'Address1', 'Address2', 'Kandy', 0),
     ('Org_25', 'Organization', 'org25@test.com', '0770000025', 'Address1', 'Address2', 'Colombo', 0);
 
+# Add Blood Banks
+INSERT INTO BloodBanks (BloodBank_ID, BankName, Address1, Address2, City, Telephone_No)
+VALUES
+    ('BB_03', 'Blood Bank 3', 'No 3', 'Colombo 03', 'Colombo', '0110000001'),
+    ('BB_04', 'Blood Bank 4', 'No 4', 'Colombo 04', 'Colombo', '0110000002'),
+    ('BB_05', 'Blood Bank 5', 'No 5', 'Colombo 05', 'Colombo', '0110000003'),
+    ('BB_06', 'Blood Bank 6', 'No 6', 'Colombo 06', 'Colombo', '0110000004'),
+    ('BB_07', 'Blood Bank 7', 'No 7', 'Colombo 07', 'Colombo', '0110000005'),
+    ('BB_08', 'Blood Bank 8', 'No 8', 'Colombo 08', 'Colombo', '0110000006'),
+    ('BB_09', 'Blood Bank 9', 'No 9', 'Colombo 09', 'Colombo', '0110000007'),
+    ('BB_10', 'Blood Bank 10', 'No 10', 'Colombo 10', 'Colombo', '0110000008'),
+    ('BB_11', 'Blood Bank 11', 'No 11', 'Colombo 11', 'Colombo', '0110000009'),
+    ('BB_12', 'Blood Bank 12', 'No 12', 'Colombo 12', 'Colombo', '0110000010'),
+    ('BB_13', 'Blood Bank 13', 'No 13', 'Colombo 13', 'Colombo', '0110000011'),
+    ('BB_14', 'Blood Bank 14', 'No 14', 'Colombo 14', 'Colombo', '0110000012'),
+    ('BB_15', 'Blood Bank 15', 'No 15', 'Colombo 15', 'Colombo', '0110000013'),
+    ('BB_16', 'Blood Bank 16', 'No 16', 'Colombo 16', 'Colombo', '0110000014'),
+    ('BB_17', 'Blood Bank 17', 'No 17', 'Colombo 17', 'Colombo', '0110000015'),
+    ('BB_18', 'Blood Bank 18', 'No 18', 'Colombo 18', 'Colombo', '0110000016'),
+    ('BB_19', 'Blood Bank 19', 'No 19', 'Colombo 19', 'Colombo', '0110000017'),
+    ('BB_20', 'Blood Bank 20', 'No 20', 'Colombo 20', 'Colombo', '0110000018');
 # Create Medical Officers
 INSERT INTO Users (UID, Email, Password, Account_Status, Role)
 VALUES
@@ -185,95 +206,27 @@ VALUES
     ('Spn_33', 'Singer Sri Lanka PLC', 'sponsor33@test.com', 'No. 80, Nawam Mawatha', 'Colombo 02', 'Colombo', 0),
     ('Spn_34', 'Sampath Bank PLC', 'sponsor34@test.com', 'No. 110, Sir James Pieris Mawatha', 'Colombo 02', 'Colombo', 1);
 
+
+
 # Create Campaigns
-INSERT INTO Campaign (Campaign_ID, Campaign_Name, Organization_ID, Campaign_Description, Campaign_Date, Venue,
-                          Nearest_City, Status, Latitude, Longitude, Nearest_BloodBank, Verified_By, Verified_At,
-                          Assigned_Team, Remarks, Expected_Amount)
-VALUES ('Cmp_01', 'Sahana Campaign', 'Org_01', 'Description', '2023-03-05', 'Nugegoda', 'Colombo', 1, 0, 0, 'BB_01',
-    'Mng_01', '2021-03-05', NULL, NULL, 10000),
-    ('Cmp_02', 'Suwasetha Campaign', 'Org_01', 'Description', '2023-03-06', 'Maharagama', 'Colombo', 1, 0, 0,
-     'BB_01', 'Mng_01', '2023-02-15', NULL, NULL, 10000),
-    ('Cmp_03', 'Sahana Campaign 2', 'Org_01', 'Description', '2023-03-07', 'Nugegoda', 'Colombo', 1, 0, 0, 'BB_02',
-     'Mng_01', '2023-02-15', NULL, NULL, 10000),
-    ('Cmp_04', 'Suwasetha Campaign 2', 'Org_01', 'Description', '2023-03-08', 'Maharagama', 'Colombo', 1, 0, 0,
-     'BB_01', 'Mng_01', '2023-02-15', NULL, NULL, 10000),
-    ('Cmp_05', 'Sahana Campaign 3', 'Org_01', 'Description', '2023-03-09', 'Nugegoda', 'Colombo', 1, 0, 0, 'BB_03',
-     'Mng_01', '2023-02-15', NULL, NULL, 10000),
-    ('Cmp_06', 'Suwasetha Campaign 3', 'Org_01', 'Description', '2023-03-10', 'Maharagama', 'Colombo', 1, 0, 0,
-     'BB_01', 'Mng_01', '2023-02-15', NULL, NULL, 10000),
-    ('Cmp_07', 'Sahana Campaign 4', 'Org_01', 'Description', '2023-03-11', 'Nugegoda', 'Colombo', 1, 0, 0, 'BB_04',
-     'Mng_01', '2023-02-15', NULL, NULL, 10000),
-    ('Cmp_08', 'Suwasetha Campaign 4', 'Org_01', 'Description', '2023-03-12', 'Maharagama', 'Colombo', 1, 0, 0,
-     'BB_01', 'Mng_01', '2023-02-15', NULL, NULL, 10000),
-    ('Cmp_09', 'Sahana Campaign 5', 'Org_01', 'Description', '2023-03-13', 'Nugegoda', 'Colombo', 1, 0, 0, 'BB_05',
-     'Mng_01', '2023-02-15', NULL, NULL, 10000),
-    ('Cmp_10', 'Suwasetha Campaign 5', 'Org_01', 'Description', '2023-03-14', 'Maharagama', 'Colombo', 1, 0, 0,
-     'BB_01', 'Mng_01', '2023-02-15', NULL, NULL, 10000),
-    ('Cmp_11', 'Sahana Campaign 6', 'Org_01', 'Description', '2023-03-15', 'Nugegoda', 'Colombo', 1, 0, 0, 'BB_06',
-     'Mng_01', '2023-02-15', NULL, NULL, 10000),
-    ('Cmp_12', 'Suwasetha Campaign 6', 'Org_01', 'Description', '2023-03-16', 'Maharagama', 'Colombo', 1, 0, 0,
-     'BB_01', 'Mng_01', '2023-02-15', NULL, NULL, 10000),
-    ('Cmp_13', 'Sahana Campaign 7', 'Org_01', 'Description', '2023-03-17', 'Nugegoda', 'Colombo', 1, 0, 0, 'BB_07',
-     'Mng_01', '2023-02-15', NULL, NULL, 10000),
-    ('Cmp_14', 'Suwasetha Campaign 7', 'Org_01', 'Description', '2023-03-18', 'Maharagama', 'Colombo', 1, 0, 0,
-     'BB_01', 'Mng_01', '2023-02-15', NULL, NULL, 10000),
-    ('Cmp_15', 'Sahana Campaign 8', 'Org_01', 'Description', '2023-03-19', 'Nugegoda', 'Colombo', 1, 0, 0, 'BB_01',
-     'Mng_01', '2023-02-15', NULL, NULL, 10000),
-    ('Cmp_16', 'Suwasetha Campaign 8', 'Org_01', 'Description', '2023-03-20', 'Maharagama', 'Colombo', 1, 0, 0,
-     'BB_01', 'Mng_01', '2023-02-15', NULL, NULL, 10000),
-    ('Cmp_17', 'Sahana Campaign 9', 'Org_01', 'Description', '2023-03-21', 'Nugegoda', 'Colombo', 1, 0, 0, 'BB_02',
-     'Mng_01', '2023-02-15', NULL, NULL, 10000),
-    ('Cmp_18', 'Suwasetha Campaign 9', 'Org_01', 'Description', '2023-03-22', 'Maharagama', 'Colombo', 1, 0, 0,
-     'BB_01', 'Mng_01', '2023-02-15', NULL, NULL, 10000),
-    ('Cmp_19', 'Sahana Campaign 10', 'Org_01', 'Description', '2023-03-23', 'Nugegoda', 'Colombo', 1, 0, 0, 'BB_03',
-     'Mng_01', '2023-02-15', NULL, NULL, 10000),
-    ('Cmp_20', 'Suwasetha Campaign 10', 'Org_01', 'Description', '2023-03-24', 'Maharama', 'Colombo', 1, 0, 0,
-     'BB_01', 'Mng_01', '2023-02-15', NULL, NULL, 10000),
-    ('Cmp_21', 'Save Lives Campaign', 'Org_01', 'Blood donation campaign to help save lives', '2023-04-02', 'Nugegoda', 'Colombo', 1, 6.8697, 79.8987,
-     'BB_02', 'Mng_01', '2023-03-02', NULL, 'Donors needed', 15000),
-    ('Cmp_22', 'Blood Donation Drive 2023', 'Org_03', 'Annual blood donation drive', '2023-06-15', 'Kandy City Center', 'Kandy', 1, 7.2906, 80.6360,
-     'BB_03', 'Mng_01', '2023-05-01', NULL, 'All blood types needed', 20000),
-    ('Cmp_23', 'Donor Day 2023', 'Org_04', 'Annual event to celebrate blood donors', '2023-06-14', 'BMICH', 'Colombo', 1, 6.9106, 79.8862,
-     'BB_04', 'Mng_01', '2023-05-15', NULL, 'Special recognition for regular donors', 25000),
-    ('Cmp_24', 'Give Life Give Blood', 'Org_05', 'Blood donation campaign to help save lives', '2023-08-08', 'Liberty Plaza', 'Colombo', 1, 6.9152, 79.8488,
-     'BB_05', 'Mng_01', '2023-07-01', NULL, 'Donors of all blood types needed', 15000),
-    ('Cmp_25', 'Blood Drive 6', 'Org_01', 'Description', '2023-03-31', 'Galle Face Green', 'Colombo', 1, 6.9214, 79.8465,
-     'BB_02', 'Mng_01', '2023-03-02', NULL, 'Bring your ID', 15000),
-    ('Cmp_26', 'Blood Donation 4', 'Org_03', 'Description', '2023-04-01', 'Viharamahadevi Park', 'Colombo', 1, 6.9064, 79.8650,
-     'BB_03', 'Mng_01', '2023-03-03', NULL, 'Wear a mask', 12000),
-    ('Cmp_27', 'Blood for Life 2', 'Org_04', 'Description', '2023-04-03', 'McCallum Road', 'Jaffna', 1, 9.6691, 80.0218,
-     'BB_04', 'Mng_01', '2023-03-05', NULL, 'Free snacks', 10000),
-    ('Cmp_28', 'Give Blood 3', 'Org_05', 'Description', '2023-04-05', 'Viharamahadevi Park', 'Colombo', 1, 6.9064, 79.8650,
-     'BB_05', 'Mng_01', '2023-03-07', NULL, 'Bring your own water bottle', 8000),
-    ('Cmp_29', 'Blood Donation Drive 1', 'Org_06', 'Description', '2023-04-07', 'Lipton Circus', 'Colombo', 1, 6.8915, 79.8573,
-     'BB_06', 'Mng_01', '2023-03-09', NULL, 'Don\'t come on an empty stomach', 20000),
-    ('Cmp_30', 'Blood for All 1', 'Org_07', 'Description', '2023-04-10', 'Public Library Grounds', 'Jaffna', 1, 9.6635, 80.0255,
-     'BB_07', 'Mng_01', '2023-03-12', NULL, 'Free T-shirt for donors', 15000),
-    ('Cmp_31', 'Blood Drive 7', 'Org_08', 'Description', '2023-04-12', 'Independence Square', 'Colombo', 1, 6.9087, 79.8648,
-     'BB_08', 'Mng_01', '2023-03-14', NULL, 'Bring your friends', 10000),
-    ('Cmp_32', 'Donate Blood 2', 'Org_09', 'Description', '2023-04-15', 'Queen\'s Hotel', 'Kandy', 1, 7.2936, 80.6363,
-     'BB_09', 'Mng_01', '2023-03-17', NULL, 'Free lunch for donors', 20000);
-# Add Blood Banks
-INSERT INTO BloodBanks (BloodBank_ID, BankName, Address1, Address2, City, Telephone_No)
+INSERT INTO Campaign (Campaign_ID, Campaign_Name, Organization_ID, Campaign_Description, Campaign_Date, Venue, Nearest_City, Status, Latitude, Longitude, Nearest_BloodBank, Expected_Amount)
 VALUES
-('BB_03', 'Blood Bank 3', 'No 3', 'Colombo 03', 'Colombo', '0110000001'),
-('BB_04', 'Blood Bank 4', 'No 4', 'Colombo 04', 'Colombo', '0110000002'),
-('BB_05', 'Blood Bank 5', 'No 5', 'Colombo 05', 'Colombo', '0110000003'),
-('BB_06', 'Blood Bank 6', 'No 6', 'Colombo 06', 'Colombo', '0110000004'),
-('BB_07', 'Blood Bank 7', 'No 7', 'Colombo 07', 'Colombo', '0110000005'),
-('BB_08', 'Blood Bank 8', 'No 8', 'Colombo 08', 'Colombo', '0110000006'),
-('BB_09', 'Blood Bank 9', 'No 9', 'Colombo 09', 'Colombo', '0110000007'),
-('BB_10', 'Blood Bank 10', 'No 10', 'Colombo 10', 'Colombo', '0110000008'),
-('BB_11', 'Blood Bank 11', 'No 11', 'Colombo 11', 'Colombo', '0110000009'),
-('BB_12', 'Blood Bank 12', 'No 12', 'Colombo 12', 'Colombo', '0110000010'),
-('BB_13', 'Blood Bank 13', 'No 13', 'Colombo 13', 'Colombo', '0110000011'),
-('BB_14', 'Blood Bank 14', 'No 14', 'Colombo 14', 'Colombo', '0110000012'),
-('BB_15', 'Blood Bank 15', 'No 15', 'Colombo 15', 'Colombo', '0110000013'),
-('BB_16', 'Blood Bank 16', 'No 16', 'Colombo 16', 'Colombo', '0110000014'),
-('BB_17', 'Blood Bank 17', 'No 17', 'Colombo 17', 'Colombo', '0110000015'),
-('BB_18', 'Blood Bank 18', 'No 18', 'Colombo 18', 'Colombo', '0110000016'),
-('BB_19', 'Blood Bank 19', 'No 19', 'Colombo 19', 'Colombo', '0110000017'),
-('BB_20', 'Blood Bank 20', 'No 20', 'Colombo 20', 'Colombo', '0110000018');
+    ('Cmp_02', 'Hope Blood Drive', 'Org_02', 'Help us save lives by donating blood!', '2023-03-10', 'Kandy Road', 'Kegalle', 1, 7.2518, 80.3467, 'BB_02', 8000),
+    ('Cmp_03', 'Blood for All', 'Org_03', 'Join us in our mission to provide blood to those in need.', '2023-03-12', 'Galle Road', 'Hikkaduwa', 1, 6.1381, 80.1032, 'BB_03', 5000),
+    ('Cmp_04', 'Life Saver Campaign', 'Org_04', 'Be a hero and donate blood!', '2023-03-15', 'Dharmapala Mawatha', 'Kandy', 1, 7.2906, 80.6337, 'BB_04', 12000),
+    ('Cmp_05', 'Blood Drive Colombo', 'Org_05', 'Help us meet the urgent demand for blood in Colombo.', '2023-03-18', 'Bauddhaloka Mawatha', 'Colombo 07', 1, 6.9018, 79.8578, 'BB_05', 9000),
+    ('Cmp_06', 'Together for Life', 'Org_06', 'Let us come together to save lives through blood donation.', '2023-03-20', 'Temple Road', 'Anuradhapura', 1, 8.3526, 80.4018, 'BB_06', 6000),
+    ('Cmp_07', 'Give the Gift of Life', 'Org_07', 'Donate blood today and help save a life tomorrow.', '2023-03-22', 'Mahiyangana Road', 'Badulla', 1, 6.9923, 81.0552, 'BB_07', 4000),
+    ('Cmp_08', 'Blood Donation Drive', 'Org_08', 'Join us in this noble cause and donate blood to save lives.', '2023-03-25', 'Matale Road', 'Gampola', 1, 7.1777, 80.5722, 'BB_08', 10000),
+    ('Cmp_09', 'Blood for Life', 'Org_09', 'Help us reach our goal of collecting 5000 pints of blood.', '2023-03-28', 'Kalmunai Road', 'Ampara', 1, 7.2962, 81.6743, 'BB_09', 5000),
+    ('Cmp_10', 'Be a Life Saver', 'Org_10', 'Your blood donation can make a big difference in someone\'s life.', '2023-03-30', 'Nawala Road', 'Nugegoda', 1, 6.8731, 79.8906, 'BB_10', 7000),
+    ('Cmp_11', 'Save a Life Today', 'Org_11', 'Join us in our mission to save lives through blood donation.', '2023-04-01', 'Kandy Road', 'Kandy', 1, 7.2906, 80.6337, 'BB_11', 8000),
+    ('Cmp_12', 'Blood Donation Camp', 'Org_12', 'Donate blood and become a life saver.', '2023-04-02', 'Negombo Road', 'Kurunegala', 1, 7.4915, 80.3631, 'BB_11', 8000),
+    ('Cmp_13', 'Blood Bank Drive', 'Org_13', 'Help us collect blood for our blood bank.', '2023-04-05', 'Kandy-Jaffna Highway', 'Vavuniya', 1, 8.7519, 80.4989, 'BB_12', 4000),
+    ('Cmp_14', 'Donate Blood, Save Lives', 'Org_14', 'Your blood can be the difference between life and death.', '2023-04-08', 'Habarana Road', 'Polonnaruwa', 1, 7.9406, 81.0187, 'BB_13', 10000),
+    ('Cmp_15', 'Be a Blood Donor', 'Org_15', 'Join us in this life saving cause by donating blood.', '2023-04-10', 'Kotte Road', 'Rajagiriya', 1, 6.9025, 79.8936, 'BB_14', 5000),
+    ('Cmp_16', 'Save Lives with Blood Donation', 'Org_16', 'Make a difference in someone\'s life by donating blood today.', '2023-04-12', 'Havelock Road', 'Colombo 05', 1, 6.8949, 79.8665, 'BB_15', 7000);
+
 
 # Add Sample Data to the Donor TABLE
 INSERT INTO Donors (DONOR_ID, FIRST_NAME, LAST_NAME, ADDRESS1, ADDRESS2, CITY, NEAREST_BANK, CONTACT_NO, EMAIL, NIC,
@@ -308,6 +261,7 @@ VALUES ('Dnr_02', 'John','Fernando','No 15','Colombo 05','Colombo','BB_01','0771
 # Create Hospitals
 INSERT INTO Users (UID, Email, Password, Account_Status, Role)
 VALUES
+    ('Hos_02', 'hos2@test.com', '$2y$10$yjcyB1lr8V/nVciydOYedu0Rnedd9JHZ3d6PqPMqM4yNJoPmltlZS', 0, 'Hospital'),
     ('Hos_03', 'hos3@test.com', '$2y$10$yjcyB1lr8V/nVciydOYedu0Rnedd9JHZ3d6PqPMqM4yNJoPmltlZS', 0, 'Hospital'),
     ('Hos_04', 'hos4@test.com', '$2y$10$yjcyB1lr8V/nVciydOYedu0Rnedd9JHZ3d6PqPMqM4yNJoPmltlZS', 0, 'Hospital'),
     ('Hos_05', 'hos5@test.com', '$2y$10$yjcyB1lr8V/nVciydOYedu0Rnedd9JHZ3d6PqPMqM4yNJoPmltlZS', 0, 'Hospital'),

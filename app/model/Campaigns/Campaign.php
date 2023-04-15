@@ -4,25 +4,26 @@ namespace App\model\Campaigns;
 
 use App\model\database\dbModel;
 use App\model\MedicalTeam\MedicalTeam;
+use App\model\users\Organization;
 
 class Campaign extends dbModel
 {
-    public const  PENDING = 1;
+    public const PENDING = 1;
     public const APPROVED = 2;
     public const REJECTED = 3;
-    public const VERIFIED = 1;
+    public const NOT_VERIFIED = 1;
+    public const VERIFIED = 2;
     protected string $Campaign_ID='';
     protected string $Organization_ID='';
-    protected string $Expected_Amount='';
+    protected ?string $Expected_Amount=null;
     protected string $Campaign_Name='';
     protected string $Campaign_Description='';
     protected string $Campaign_Date='';
     protected string $Venue='';
-    protected string $Package_ID='';
     protected string $Nearest_City='';
-    protected int $Status;
+    protected int $Status=1;
     protected string $Nearest_BloodBank='';
-    protected int $Verified;
+    protected int $Verified=1;
     protected ?string $Verified_By=null;
     protected ?string $Verified_At=null;
     protected ?string $Remarks=null;
@@ -46,6 +47,14 @@ class Campaign extends dbModel
     public function getOrganizationID(): string
     {
         return $this->Organization_ID;
+    }
+
+    public function getOrganizationName()
+    {
+        $Organization = Organization::findOne(['Organization_ID'=>$this->Organization_ID]);
+        if ($Organization){
+            return $Organization->getOrganizationName();
+        }
     }
 
     /**
@@ -147,7 +156,7 @@ class Campaign extends dbModel
 
     public function IsVerified()
     {
-        return $this->Verified;
+        return $this->Verified == self::VERIFIED;
     }
 
     /**
@@ -193,10 +202,10 @@ class Campaign extends dbModel
     public function getCampaignStatus():string
     {
         return match ($this->Verified){
-            self::PENDING =>'Pending Approval',
-            self::APPROVED => 'Campaign Approved',
-            self::REJECTED => 'Campaign Rejected',
-            default => 'Unknown',
+            self::PENDING =>'Pending',
+            self::APPROVED => 'Approved',
+            self::REJECTED => 'Rejected',
+            default => 'Unknown'
         };
     }
 
@@ -367,10 +376,6 @@ class Campaign extends dbModel
             'Status' => 'Status',
             'Nearest_BloodBank' => 'Nearest Blood Bank',
             'Verified' => 'Verified',
-            'Verified_By' => 'Verified By',
-            'Verified_At' => 'Verified At',
-            'Assigned_Team' => 'Assigned Team',
-            'Remarks' => 'Remarks',
             'Created_At' => 'Created At',
             'Updated_At' => 'Updated At',
         ];
@@ -381,12 +386,14 @@ class Campaign extends dbModel
         return [
             'Campaign_ID' => [self::RULE_REQUIRED],
             'Campaign_Name' => [self::RULE_REQUIRED],
-//            'Campaign_Description' => [self::RULE_REQUIRED],
+            'Campaign_Description' => [self::RULE_REQUIRED],
             'Campaign_Date' => [self::RULE_REQUIRED],
             'Venue' => [self::RULE_REQUIRED],
             'Nearest_City' => [self::RULE_REQUIRED],
             'Status' => [self::RULE_REQUIRED],
             'Nearest_BloodBank' => [self::RULE_REQUIRED],
+            'Latitude' => [self::RULE_REQUIRED],
+            'Longitude' => [self::RULE_REQUIRED],
         ];
     }
 
@@ -397,7 +404,7 @@ class Campaign extends dbModel
 
     public static function tableName(): string
     {
-        return 'campaign';
+        return 'Campaign';
     }
 
     public static function PrimaryKey(): string
@@ -409,7 +416,6 @@ class Campaign extends dbModel
     {
         return [
             'Campaign_ID',
-//            'Package_ID',
             'Organization_ID',
             'Campaign_Name',
             'Campaign_Description',
@@ -419,15 +425,11 @@ class Campaign extends dbModel
             'Status',
             'Nearest_BloodBank',
             'Verified',
-            'Verified_By',
-            'Verified_At',
-//            'Assigned_Team',
-            'Remarks',
             'Created_At',
             'Updated_At',
             'Expected_Amount',
-//            'Latitude',
-//            'Longitude'
+            'Latitude',
+            'Longitude'
         ];
     }
 
@@ -436,7 +438,7 @@ class Campaign extends dbModel
      */
     public function getExpectedAmount(): string
     {
-        return $this->Expected_Amount;
+        return $this->Expected_Amount ?? '0';
     }
 
     /**

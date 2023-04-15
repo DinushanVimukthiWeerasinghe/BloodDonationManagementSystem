@@ -62,6 +62,25 @@ class MedicalOfficer extends Person
         return $this->Position;
     }
 
+    public function getPositionOfTeamByCampaignID($campaignID)
+    {
+        /** @var MedicalTeam $Team*/
+        $Team = MedicalTeam::findOne(['Campaign_ID' => $campaignID, 'Team_Leader' => $this->Officer_ID],false);
+        if ($Team) {
+            return 'Team Leader';
+        }else{
+            /** @var MedicalTeam $Team*/
+            $Team= MedicalTeam::findOne(['Campaign_ID' => $campaignID],false);
+            if ($Team) {
+                /** @var TeamMembers $TeamMember*/
+                $TeamMember = TeamMembers::findOne(['Team_ID' => $Team->getTeamID(), 'Member_ID' => $this->Officer_ID],false);
+                return $TeamMember?->getPosition();
+            }else{
+                return null;
+            }
+        }
+    }
+
     /**
      * @param string $Position
      */

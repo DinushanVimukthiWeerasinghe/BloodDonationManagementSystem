@@ -44,7 +44,7 @@ $Sidelnk = function () {
             defer
     ></script>
     <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
-
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.2.1/dist/chart.umd.min.js"></script>
     <link rel="stylesheet" href="/public/css/framework/utils.css">
     <link rel="stylesheet" href="/public/css/fontawesome/fa.css">
     <script src="/public/scripts/index.js"></script>
@@ -126,7 +126,7 @@ $Sidelnk = function () {
             method: 'GET',
         }).then(res=>res.json())
             .then(data=>{
-                    if(data.status){
+                if(data.status){
                         OpenDialogBox({
                             id: 'notification',
                             title: 'Notification',

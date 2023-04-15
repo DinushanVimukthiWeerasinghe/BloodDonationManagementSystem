@@ -76,9 +76,10 @@ const ViewCampaignRequest = (id) =>{
                                 <div class="d-flex flex-column w-50 flex-center gap-0-5 bg-dark text-white border-radius-10">
                                     <div class="d-flex gap-0-5"><span class="font-bold">Campaign Name </span>: <span>${data.data.Campaign_Name}</span></div>
                                     <div class="d-flex gap-0-5"><span class="font-bold"> </span> Campaign Date: <span>${data.data.Campaign_Date}</div>
-                                    <div class="d-flex gap-0-5"><span class="font-bold"> </span> Description: <span>${data.data.Campaign_Description}</div>
                                     <div class="d-flex gap-0-5"><span class="font-bold"> </span>Venue : <span>${data.data.Venue}</div>
-                                    <div class="d-flex gap-0-5"><span class="font-bold"> </span>Description : <span>${data.data.Campaign_Description}</div>
+                                    <div class="d-flex flex-column gap-0-5">
+                                        <div class="font-bold">Description  </div> <div class="px-1" style="max-width: 400px">${data.data.Campaign_Description} Lorem ipsum dolor sit amet, consectetur adipisicing elit. Labore, non.</div>
+                                    </div>
                                 </div>
                                 <div class="d-flex w-50 flex-center">
                                     <div id="map" style="height: 300px;width: 300px"></div>
@@ -164,9 +165,68 @@ function initMap(latitude,longitude) {
         map
     });
 }
+const AssignTeam=(id) =>{
+    window.location.href = "/manager/mngCampaign/assign-team?campId="+id;
+}
 
-const AssignTeam = (id) =>{
-    window.location.href = '/manager/mngCampaign/assignTeam?campId='+id;
+const AssignTeamLeader = (id) =>{
+    const url = "/manager/mngCampaign/assign-team/get-members";
+    const formData = new FormData();
+    formData.append('campId', id);
+    fetch(url, {
+        method: 'POST',
+        body: formData
+    }).then(response => response.json())
+        .then(data => {
+            if (data.status) {
+                console.log(data)
+                let options = '';
+                data.data.forEach((member) => {
+                    options += `<option value="${member.Member_ID}">${member.Name} - ${member.NIC}</option>`
+                })
+                OpenDialogBox({
+                    id: 'assignTeamLeader',
+                    title: 'Assign Team Leader',
+                    titleClass: 'bg-dark text-white',
+                    content: `
+            <div class="d-flex flex-column justify-content-center align-items-center">
+            <div class="form-group">
+                <label for="teamLeader" class="w-40">Team Leader</label>
+                <select class="form-control w-60" id="teamLeader">
+                    ${options}
+                </select>
+            </div>
+            `,
+                    successBtnText: 'Assign',
+                    successBtnClass: 'btn-success',
+                    successBtnAction: () => {
+                        const url = '/manager/mngCampaign/assign-team/assign-leader';
+                        const form = new FormData();
+                        form.append('campId', id);
+                        form.append('teamLeaderId', document.getElementById('teamLeader').value);
+                        fetch(url, {
+                            method: 'POST',
+                            body: form
+                        }).then(response => response.json())
+                            .then(data => {
+                                CloseDialogBox('assignTeamLeader');
+                                if (data.status){
+                                    ShowToast({
+                                        type: 'success',
+                                        message: data.message
+                                    })
+                                }else{
+                                    ShowToast({
+                                        type: 'error',
+                                        message: data.message
+                                    })
+                                }
+                            })
+                    }
+                })
+            }
+        })
+
 }
 
 const AcceptCampaignRequest = (id) =>{
@@ -194,28 +254,29 @@ const AcceptCampaignRequest = (id) =>{
             })
                 .then((res)=>res.json())
                 .then((data)=>{
-                    if (data.status === 200){
-                        OpenDialogBox({
-                            id: 'success',
-                            title: 'Success',
-                            content: data.message,
-                            successBtnText: 'Close',
-                            successBtnAction: () => {
-                                window.location.reload();
-                            }
+                    if (data.status){
+                        CloseDialogBox('acceptCampaignRequest');
+                        ShowToast({
+                            title: 'success',
+                            message: data.message,
                         })
+                        setTimeout(()=>{
+                            window.location.reload();
+                        },2000)
                     }else{
-                        OpenDialogBox({
-                            id: 'error',
-                            title: 'Error',
-                            content: data.message,
-                            successBtnText: 'Close',
-                        })
+                        CloseDialogBox('acceptCampaignRequest');
+                        ShowToast({
+                            title: 'error',
+                            message: data.message,
+                        });
                     }
                 })
         }
     })
 }
+
+
+
 
 const RejectCampaignRequest = (id) =>{
     OpenDialogBox({
@@ -243,7 +304,10 @@ const RejectCampaignRequest = (id) =>{
                 .then((data)=>{
                     if (data.status) {
                         CloseDialogBox('rejectCampaignRequest');
-                        window.location.reload();
+                        ShowToast({
+                            title: 'success',
+                            message: data.message,
+                        })
                     }
                 })
         }

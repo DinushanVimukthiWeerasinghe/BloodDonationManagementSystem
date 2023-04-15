@@ -164,8 +164,8 @@ class medicalOfficerController extends \Core\Controller
                 }
             }
         }
-
     }
+
     public function ManageDonation(Request $request, Response $response)
     {
         if ($request->isGet())

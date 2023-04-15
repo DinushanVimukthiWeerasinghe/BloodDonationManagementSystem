@@ -20,6 +20,9 @@ use Core\middleware\ManagerMiddleware;
 use Core\Request;
 use Core\Response;
 use Core\SessionObject;
+use Stripe\Checkout\Session;
+use Stripe\Exception\ApiErrorException;
+use Stripe\Stripe;
 
 
 class sponsorController extends Controller
@@ -37,6 +40,38 @@ class sponsorController extends Controller
     {
         $user=Application::$app->getUser();
         return $this->render('organization/profile',['user'=>$user]);
+    }
+
+    /**
+     * @throws ApiErrorException
+     */
+    public function MakePayment(Request $request, Response $response)
+    {
+        if ($request->isPost()){
+            Stripe::setApiKey($_ENV['STRIPE_SECRET_KEY']);
+            $domain = $_SERVER['HTTP_HOST'];
+            $checkout_session = Session::create([
+                'payment_method_types' => ['card'],
+                'line_items' => [[
+                    'price'=>'price_1MjRgaISR8yk3NdDF25nU94T',
+                    'quantity' => 1,
+                ]],
+                'mode' => 'payment',
+                'success_url' => 'http://' . $domain . '/test?success=true',
+                'cancel_url' => 'http://' . $domain . '/test?success=false',
+            ]);
+            Application::Redirect($checkout_session->url);
+        }
+        
+    }
+
+    public function Test(Request $request, Response $response)
+    {
+        $user = Application::$app->getUser();
+        $params = [
+            'user' => $user,
+        ];
+        return $this->render('sponsors/test', $params);
     }
 
 
