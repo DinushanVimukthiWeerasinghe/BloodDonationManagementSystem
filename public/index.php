@@ -133,7 +133,6 @@ $app->router->get('/sponsor/dashboard', [sponsorController::class, 'dashboard'])
 $app->router->get('/sponsor/test', [sponsorController::class, 'Test']);
 $app->router->post('/sponsor/makePayment', [sponsorController::class, 'MakePayment']);
 $app->router->get('/sponsor/history', [sponsorController::class, 'history']);
-$app->router->get('/sponsor/manage', [sponsorController::class, 'manage']);
 $app->router->get('/sponsor/donation', [sponsorController::class, 'donation']);
 $app->router->get('/sponsor/campDetails', [sponsorController::class, 'campDetails']);
 $app->router->get('/sponsor/guideline', [sponsorController::class, 'guideline']);
