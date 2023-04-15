@@ -1,4 +1,5 @@
 const Loader=document.getElementById('loader');
+const Months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 const Search = (path,type='')=>{
     const url=path;
     const q=document.getElementById('search').value;
@@ -12,6 +13,7 @@ const Search = (path,type='')=>{
     })
         .then((res)=>res.text())
         .then((data)=>{
+            console.log(data)
             Loader.classList.remove('none');
             const DP = new DOMParser();
             const Doc = DP.parseFromString(data,'text/html');
@@ -52,14 +54,42 @@ const ViewCampaignRequest = (id) =>{
 
             if (data.status) {
                 let VerificationDetails = 'Not Verified';
-                if (data.data.Verified == 1) {
+                console.log(data.data)
+                if (data.approved) {
+                    const date = new Date(data.approved.Approved_At);
+                    const year = date.getFullYear();
+                    const month = Months[date.getMonth()];
+                    const day = date.getDate();
+                    const hours = date.getHours();
+                    const minutes = date.getMinutes();
+                    data.approved.Approved_At = `${year} - ${month} - ${day} ${hours}:${minutes}`;
+
                     VerificationDetails = `
                         <div class="d-flex flex-column justify-content-center align-items-center">
                             <div class="d-flex">
-                                Verified At : ${data.data.Verified_At}
+                                Verified At : ${data.approved.Approved_At}
                             </div>
                             <div class="d-flex">
-                                Remarks : ${data.data.Remarks}
+                                Remarks : ${data.approved.Remarks}
+                            </div>
+                        </div>
+                    `
+                }else if (data.rejected){
+                    const date = new Date(data.rejected.Rejected_At);
+                    const year = date.getFullYear();
+                    const month = Months[date.getMonth()];
+                    const day = date.getDate();
+                    const hours = date.getHours();
+                    const minutes = date.getMinutes();
+                    data.rejected.Rejected_At = `${year} - ${month} - ${day} ${hours}:${minutes}`;
+
+                    VerificationDetails = `
+                        <div class="d-flex flex-column justify-content-center align-items-center">
+                            <div class="d-flex">
+                                Rejected At : ${data.rejected.Rejected_At}
+                            </div>
+                            <div class="d-flex">
+                                Remarks : ${data.rejected.Remarks}
                             </div>
                         </div>
                     `
@@ -274,19 +304,16 @@ const AcceptCampaignRequest = (id) =>{
         }
     })
 }
-
-
-
-
 const RejectCampaignRequest = (id) =>{
     OpenDialogBox({
         id: 'rejectCampaignRequest',
         title: 'Reject Campaign Request',
         content: `
             <div class="d-flex flex-column justify-content-center align-items-center">
-            <div class="form-group">
-                <label for="remarks">Remarks</label>
-                <textarea style="height: 150px" class="form-control" id="remarks" rows="3"></textarea>
+                <div class="form-group">
+                    <label for="remarks">Remarks</label>
+                    <textarea style="height: 150px" class="form-control" id="remarks" rows="3"></textarea>
+                </div>
             </div>
             `,
         successBtnText: 'Reject',
@@ -308,6 +335,9 @@ const RejectCampaignRequest = (id) =>{
                             title: 'success',
                             message: data.message,
                         })
+                        setTimeout(()=>{
+                            window.location.reload();
+                        },2000)
                     }
                 })
         }

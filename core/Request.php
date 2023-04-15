@@ -1,6 +1,6 @@
 <?php
 namespace Core;
-class Request
+class   Request
 {
     public function getPath()
     {
@@ -30,6 +30,12 @@ class Request
     {
         return $this->method() === 'post';
     }
+
+    public function getIP()
+    {
+        return $_SERVER['REMOTE_ADDR'];
+    }
+
     private function is_Json($string) {
         json_decode($string);
         return json_last_error() === JSON_ERROR_NONE;

@@ -82,7 +82,7 @@
                 const myChart = new Chart(ctx, {
                     type: "bar",
                     options: {
-                        indexAxis: 'y',
+                        indexAxis: 'x',
                         scales:{
                             y:{
                                 beginAtZero:true,

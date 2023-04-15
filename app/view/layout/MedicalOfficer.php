@@ -106,6 +106,7 @@ $navbar = new AuthNavbar('Medical Officer Dashboard', '/mofficer', '/public/imag
                         OpenDialogBox({
                             id: 'notification',
                             title: 'Notification',
+                            titleClass:'bg-dark text-white px-1 py-0-5',
                             content: `
                             <div class="d-flex flex-column gap-1">
                                    <div id="notification" class="d-flex flex-column gap-1">
@@ -123,6 +124,14 @@ $navbar = new AuthNavbar('Medical Officer Dashboard', '/mofficer', '/public/imag
                                                         </div>
 
                                             `).join('')}
+                                            <!--If data.notification is empty - Show no Notification-->
+                                            ${data.notifications.length === 0 ? `
+                                                <div class="d-flex flex-column px-1 py-0-5">
+                                                    <div class="d-flex flex-center text-center   ">
+                                                        <div class="text-sm font-bold">No Notification to Show!</div>
+                                                    </div>
+                                                </div>
+                                            ` : ''}
                                         </div>
                                    </div>
                             </div>
@@ -200,6 +209,10 @@ $navbar = new AuthNavbar('Medical Officer Dashboard', '/mofficer', '/public/imag
             `,
             showSuccessButton: false,
             cancelBtnText: 'Close',
+            cancelBtnAction: () => {
+                window.location.reload();
+                CloseDialogBox('profile');
+            }
         })
     }
 

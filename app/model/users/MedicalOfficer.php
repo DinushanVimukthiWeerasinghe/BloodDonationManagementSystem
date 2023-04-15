@@ -266,6 +266,7 @@ class MedicalOfficer extends Person
     public static function RetrieveAvailableMedicalOfficer(bool $pagination, array $paginationParams,array $Exclude): array
     {
         $tableName = static::tableName();
+        $BranchID = Application::$app->getUser()->getBloodBankID();
         $sql = "SELECT * FROM $tableName WHERE Officer_ID NOT IN (";
         foreach ($Exclude as $key => $value) {
             $sql .= "'$value',";
@@ -273,6 +274,7 @@ class MedicalOfficer extends Person
         $sql = rtrim($sql, ',');
         $sql .= ')';
         $sql .= " AND Status = '".self::AVAILABLE_MEDICAL_OFFICER."'";
+        $sql .= "AND Branch_ID = '$BranchID'";
         $sql .= " ORDER BY First_Name ASC";
         $sql .= " LIMIT {$paginationParams[0]},{$paginationParams[1]}";
         if ($pagination) {

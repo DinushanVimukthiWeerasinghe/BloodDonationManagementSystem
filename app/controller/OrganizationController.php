@@ -4,13 +4,16 @@ namespace App\controller;
 
 use App\middleware\organizationMiddleware;
 use App\model\Authentication\Login;
+use App\model\Authentication\OrganizationBankAccount;
 use App\model\BloodBankBranch\BloodBank;
 use App\model\database\dbModel;
 use App\model\inform\informDonors;
+use App\model\Notification\OrganizationNotification;
 use App\model\Requests\additional_sponsorship_request;
 use App\model\Requests\AttendanceAcceptedRequest;
+use App\model\Requests\SponsorshipRequest;
 use App\model\sponsor\campaigns_sponsors;
-use App\model\sponsor\sponsorship_packages;
+use App\model\sponsor\SponsorshipPackages;
 use App\model\users\organization;
 use App\model\Campaigns\Campaign;
 use App\model\users\Sponsor;
@@ -93,8 +96,6 @@ class OrganizationController extends Controller
        $params=[
             'organization_Name'=> $organization->getOrganizationName()
         ];
-
-       Application::$app->session->setFlash('success','Welcome Back!'.' '.$organization->getOrganizationName().' '.'Organization');
         return $this->render('Organization/organizationBoard',$params);
     }
 
@@ -103,6 +104,7 @@ class OrganizationController extends Controller
         /* @var Campaign $campaign */
         $ID=Application::$app->getUser()->getID();
         $AlreadyCreatedCampaign=Campaign::findOne(['Organization_ID'=>$ID,'Status'=> Campaign::PENDING],false);
+        $AlreadyCreatedCampaign=Campaign::findOne(['Organization_ID'=>$ID,'Status'=> Campaign::APPROVED],false);
 
         $Exist=false;
         if ($AlreadyCreatedCampaign){
@@ -110,7 +112,7 @@ class OrganizationController extends Controller
         }
 
         return $this->render('Organization/manageCampaign',[
-            'campaign_exist'=>$Exist,'id' => $id
+            'campaign_exist'=>$Exist,'id' => $ID
         ]);
     }
 
@@ -118,7 +120,7 @@ class OrganizationController extends Controller
     {
         $campaign = new Campaign();
         $bank = BloodBank::RetrieveAll(false,[],false);
-        $packages = sponsorship_packages::RetrieveAll(false,[],false);
+        $packages = SponsorshipPackages::RetrieveAll(false,[],false);
 
         if($request->isPost()){
             $campaign->loadData($request->getBody());
@@ -131,10 +133,10 @@ class OrganizationController extends Controller
 
             if($campaign->validate() && $campaign->save()) {
                 $this->setFlashMessage('success', 'You Successfully Created a Campaign! Please Wait for the Admin Approval.');
-                $response->redirect('/organization/view');
+                $response->redirect('/organization/campaign/view');
             }else{
-                print_r($campaign->errors);
-                exit();
+                Application::$app->session->setFlash('error','Something Went Wrong!');
+                Application::Redirect('/organization/campaign/create');
             }
 
         }
@@ -187,6 +189,24 @@ class OrganizationController extends Controller
 //        ];
         return $this->render('Organization/history',$params);
     }
+
+    public function GetNotification(Request $request,Response $response): string
+    {
+        if ($request->isPost()){
+            $Notifications=OrganizationNotification::RetrieveAll(false,[],true,['Target_ID'=>Application::$app->getUser()->getId()],['Notification_Date'=>'ASC']);
+            if ($Notifications){
+                $Notifications = array_map(function ($object) {
+                    return $object->toArray();
+                }, $Notifications);
+            }
+            return json_encode([
+                'status'=>true,
+                'notifications'=>$Notifications
+            ]);
+        }
+    }
+
+
     public function inform(Request $request, Response $response)
     {
         $inform = new informDonors();
@@ -234,10 +254,143 @@ class OrganizationController extends Controller
 
         return $this->render('Organization/request',['req'=>$req]);
     }
+
+    public function ChangeProfileImage(Request $request,Response $response)
+    {
+        if($request->isPost()){
+            /* @var $Organization Organization*/
+            $UserID= Application::$app->getUser()->getId();
+            $Organization = Organization::findOne(['Organization_ID'=>$UserID]);
+            $ExistingFile = $Organization->getProfileImage();
+            $File=$request->getBody()['profileImage'];
+            if($File) {
+                $File->setPath('Profile/Organization');
+                $filename = $File->GenerateFileName('ORG_');
+                $Organization->setProfileImage($filename);
+                if ($Organization->update($Organization->getID(), [], ['Profile_Image'])){
+                    $File->saveFile();
+                    File::DeleteFileByPath($ExistingFile);
+                    return json_encode([
+                        'status' => true,
+                        'filename' => $filename,
+                        'data' => $File,
+                        'message' => 'File Selected!'
+                    ]);
+                }else{
+                    return json_encode([
+                        'status'=>false,
+                        'message'=>'File Not Selected!'
+                    ]);
+                }
+            }else{
+                return json_encode([
+                    'status'=>false,
+                    'message'=>'No File Selected!'
+                ]);
+            }
+        }
+
+    }
+
+    public function GetOrganizationBankAccountDetails(Request $request,Response $response)
+    {
+        if ($request->isPost()){
+            /** @var $BankAccount OrganizationBankAccount*/
+            $UserID = Application::$app->getUser()->getID();
+            $BankAccount = OrganizationBankAccount::findOne(['Organization_ID' => $UserID]);
+            if ($BankAccount){
+                $BankAccountNumber = $BankAccount->getAccountNumber();
+                $BankAccountName = $BankAccount->getAccountName();
+                $BankName = $BankAccount->getBankName();
+                $BankBranch = $BankAccount->getBranchName();
+                return json_encode(['status'=>true,"data"=>[
+                        'BankAccountNumber' => $BankAccountNumber,
+                        'BankAccountName' => $BankAccountName,
+                        'BankName' => $BankName,
+                        'BankBranch' => $BankBranch
+                ]]);
+            }else{
+                return json_encode(['status'=>true,'data'=>[]]);
+            }
+        }
+
+    }
+
+    public function AddOrganizationBankAccountDetails(Request $request,Response $response)
+    {
+        /** @var $BankAccount OrganizationBankAccount*/
+        if ($request->isPost()){
+            $BankName = $request->getBody()['bankName'];
+            $BankBranch = $request->getBody()['branchName'];
+            $BankAccountNumber = $request->getBody()['bankAccountNo'];
+            $BankAccountName = $request->getBody()['bankAccountName'];
+            $UserID = Application::$app->getUser()->getID();
+            $BankAccount = OrganizationBankAccount::findOne(['Organization_ID' => $UserID]);
+            if ($BankAccount){
+                $BankAccount->setBankName($BankName);
+                $BankAccount->setBranchName($BankBranch);
+                $BankAccount->setAccountNumber($BankAccountNumber);
+                $BankAccount->setAccountName($BankAccountName);
+                if ($BankAccount->update($BankAccount->getOrganizationID(),[],['Bank_Name','Branch_Name','Account_Number','Account_Name'])){
+                    return json_encode(['status'=>true]);
+                }else{
+                    return json_encode(['status'=>false,'errors'=>$BankAccount->errors]);
+                }
+            }else{
+                $BankAccount = new OrganizationBankAccount();
+                $BankAccount->setBankName($BankName);
+                $BankAccount->setBranchName($BankBranch);
+                $BankAccount->setAccountNumber($BankAccountNumber);
+                $BankAccount->setAccountName($BankAccountName);
+                $BankAccount->setOrganizationID($UserID);
+                if ($BankAccount->validate() && $BankAccount->save()){
+                    return json_encode(['status'=>true]);
+                }else{
+                    return json_encode(['status'=>false]);
+                }
+            }
+        }
+    }
+
+    public function RequestSponsorship(Request $request,Response $response)
+    {
+        if ($request->isPost()){
+            $SponsorshipRequest = new SponsorshipRequest();
+            $SponsorshipRequest->loadData($request->getBody());
+            $Report = $request->getBody()['BudgetReport'];
+            /** @var File $Report*/
+            $Report->setPath('SponsorshipRequest/BudgetReport');
+            $Report->GenerateFileName('SR_');
+            $Campaign = Campaign::findOne(['Organization_ID'=>Application::$app->getUser()->getID(),'Verified'=>Campaign::APPROVED],false);
+                if ($Campaign){
+                    if (SponsorshipRequest::findOne(['Campaign_ID'=>$Campaign->getCampaignID()]))
+                        return json_encode(['status'=>false,'message'=>'You have already requested sponsorship for this campaign!']);
+                    $SponsorshipRequest->setCampaignID($Campaign->getCampaignID());
+                }else{
+                    return json_encode(['status'=>false,'message'=>'You have not created any Campaigns!']);
+                }
+            $SponsorshipRequest->setSponsorshipID(uniqid('SR_'));
+            $SponsorshipRequest->setReport($Report->getFileName());
+            $SponsorshipRequest->setSponsorshipDate(date('Y-m-d H:i:s'));
+            $SponsorshipRequest->setSponsorshipStatus(SponsorshipRequest::STATUS_PENDING);
+
+            if ($SponsorshipRequest->validate()){
+                if ($Report->saveFile()){
+                    $SponsorshipRequest->save();
+                    return json_encode(['status'=>true]);
+                }else{
+                    return json_encode(['status'=>false,'message'=>'Something went wrong!']);
+                }
+            }else{
+                return json_encode(['status'=>false,'errors'=>$SponsorshipRequest->errors,'message'=>'Something went wrong!']);
+            }
+        }
+
+    }
     public function received()
     {
         /* @var Sponsor $sponser */
-        /* @var sponsorship_packages $pack */
+        /* @var SponsorshipPackages $pack */
         $attendance = new campaigns_sponsors();
         $total = 0;
         $reached = 0;
@@ -249,7 +402,7 @@ class OrganizationController extends Controller
         $sponsor = $attendance::findOne(['Campaign_ID' => $id]);
         if($sponsor){
             $package_ID = $sponsor->getPackageID();
-            $package = sponsorship_packages::findOne(['Package_ID' => $package_ID]);
+            $package = SponsorshipPackages::findOne(['Package_ID' => $package_ID]);
             $price = $package->getPackagePrice();
             $total = $count * $price;
             $total = 25000;
@@ -279,10 +432,13 @@ class OrganizationController extends Controller
         /* @var Campaign $campaign */
         $ID = Application::$app->getUser()->getID();
         $result = Campaign::findOne(['Organization_ID' => $ID, 'Status' => Campaign::PENDING],false);
+        if (!$result){
+            $result = Campaign::findOne(['Organization_ID' => $ID, 'Status' => Campaign::APPROVED],false);
+        }
         if ($result){
             $id=$result->getCampaignID();
             $campaign = Campaign::findOne(['Campaign_ID'=> $id]);
-            return $this->render('Organization/campDetails',['campaign'=>$campaign]);
+            return $this->render('Organization/campDetails',['campaign'=>$campaign,'id'=>$id]);
         }
         else{
             Application::$app->session->setFlash('success','You have not created a Campaign yet!');

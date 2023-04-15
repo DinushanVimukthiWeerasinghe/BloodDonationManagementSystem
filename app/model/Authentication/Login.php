@@ -40,6 +40,20 @@ class Login extends dbModel
     protected int $Account_Status = 0;
 
     /**
+     * @return int
+     */
+    public function getAccountStatus(): int
+    {
+        return $this->Account_Status;
+    }
+
+    public function IsAccountVerified(): bool
+    {
+        return $this->Account_Status !== 5;
+    }
+
+
+    /**
      * @return string
      */
     public function getEmail(): string

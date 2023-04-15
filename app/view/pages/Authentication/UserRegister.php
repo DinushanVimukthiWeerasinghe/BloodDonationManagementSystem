@@ -63,9 +63,6 @@ FlashMessage::RenderFlashMessages();
                 <div class="d-flex justify-content-center w-100">
                     Already have an account? &nbsp;<a href="/login" class="text-primary">Log In</a>
                 </div>
-                <div class="d-flex justify-content-center w-100">
-                    <a href="/user/forgot-password" class="text-primary">Forgot Password?</a>
-                </div>
             </div>
 
             <div class="form-group" style="justify-content:center;">
@@ -231,32 +228,39 @@ FlashMessage::RenderFlashMessages();
                     .then(data => {
                         console.log(data)
                         if (data.status){
-                            const formData = new FormData();
-                            formData.append('Email', Email);
-                            formData.append('Password', Password);
-                            formData.append('ConfirmPassword',ConfirmPassword);
-                            formData.append('Role', Role);
-                            const RegisterUrl = '/register';
-                            fetch(RegisterUrl, {
-                                method: 'POST',
-                                body: formData
-                            }).then(response => response.json())
-                                .then(data => {
-                                    if (data.status){
-                                        ShowToast({
-                                            message: data.message,
-                                            type: 'success'
-                                        });
-                                        setTimeout(()=>{
-                                            window.location.href = '/login';
-                                        }, 3000)
-                                    }else{
-                                        ShowToast({
-                                            message: data.message,
-                                            type: 'danger'
-                                        });
-                                    }
-                                })
+                            OpenDialogBox({
+                                id: 'register',
+                                popupOrder: 2,
+                                title: 'Add User Details',
+                                content: `
+                                    <div class="d-flex flex-column justify-content-center align-items-center gap-1">
+                                        <div class="d-flex">Email: ${Email}</div>
+                                        <div class="d-flex">Password: ${Password}</div>
+                                        <div class="d-flex">Confirm Password: ${ConfirmPassword}</div>
+                                        <div class="d-flex">Role: ${Role}</div>
+                                    </div>
+                                `
+                            })
+                            // const formData = new FormData();
+                            // formData.append('Email', Email);
+                            // formData.append('Password', Password);
+                            // formData.append('ConfirmPassword',ConfirmPassword);
+                            // formData.append('Role', Role);
+                            // const RegisterUrl = '/register';
+                            // fetch(RegisterUrl, {
+                            //     method: 'POST',
+                            //     body: formData
+                            // }).then(response => response.json())
+                            //     .then(data => {
+                            //         if (data.status){
+                            //
+                            //         }else{
+                            //             ShowToast({
+                            //                 message: data.message,
+                            //                 type: 'danger'
+                            //             });
+                            //         }
+                            //     })
                         }else{
                             ShowToast({
                                 message: data.message,

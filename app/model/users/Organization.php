@@ -2,6 +2,8 @@
 
 namespace App\model\users;
 
+use App\model\Authentication\OrganizationBankAccount;
+
 class Organization extends Person
 {
     protected string $Organization_ID='';
@@ -53,6 +55,45 @@ class Organization extends Person
     {
         return $this->Organization_Email;
     }
+
+    public function getBankAccountNo(): bool|string
+    {
+        /** @var OrganizationBankAccount $BankAccount */
+        $BankAccount=OrganizationBankAccount::findOne(['Organization_ID'=>$this->Organization_ID]);
+        return $BankAccount->getAccountNumber();
+    }
+
+    public function getBankAccountName(): bool|string
+    {
+        /** @var OrganizationBankAccount $BankAccount */
+        $BankAccount=OrganizationBankAccount::findOne(['Organization_ID'=>$this->Organization_ID]);
+        return $BankAccount->getAccountName();
+    }
+
+    public function getBankName(): bool|string
+    {
+        /** @var OrganizationBankAccount $BankAccount */
+        $BankAccount=OrganizationBankAccount::findOne(['Organization_ID'=>$this->Organization_ID]);
+        return $BankAccount->getBankName();
+    }
+
+    public function getBranchName(): bool|string
+    {
+        /** @var OrganizationBankAccount $BankAccount */
+        $BankAccount=OrganizationBankAccount::findOne(['Organization_ID'=>$this->Organization_ID]);
+        return $BankAccount->getBranchName();
+    }
+
+    public function getBankAccount(): OrganizationBankAccount | bool
+    {
+        /** @var OrganizationBankAccount $BankAccount */
+        $BankAccount=OrganizationBankAccount::findOne(['Organization_ID'=>$this->Organization_ID]);
+        if (!$BankAccount){
+            return false;
+        }
+        return $BankAccount;
+    }
+
 
 
 
