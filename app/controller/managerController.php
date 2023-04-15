@@ -15,8 +15,9 @@ use App\model\MedicalTeam\TeamMembers;
 use App\model\Notification\DonorNotification;
 use App\model\Notification\ManagerNotification;
 use App\model\Notification\MedicalOfficerNotification;
+use App\model\Notification\OrganizationNotification;
 use App\model\Requests\BloodRequest;
-use App\model\Requests\FullFilledBloodRequest;
+use App\model\Requests\SponsorshipRequest;
 use App\model\sponsor\SponsorshipPackages;
 use App\model\users\Donor;
 use App\model\users\Hospital;
@@ -65,19 +66,22 @@ class managerController extends Controller
 
     public function ManageNotification(Request $request,Response $response): bool|string
     {
-        $Notifications=ManagerNotification::RetrieveAll(false,[],true,['Target_ID'=>Application::$app->getUser()->getId()],['Notification_Date'=>'ASC']);
-        if ($Notifications){
-            $Notifications = array_map(function ($object) {
-                return $object->toArray();
-            }, $Notifications);
+        if ($request->isPost()){
+            $Notifications=ManagerNotification::RetrieveAll(false,[],true,['Target_ID'=>Application::$app->getUser()->getId()],['Notification_Date'=>'ASC']);
+            if ($Notifications){
+                $Notifications = array_map(function ($object) {
+                    return $object->toArray();
+                }, $Notifications);
+            }
+            return json_encode([
+                'status'=>true,
+                'notifications'=>$Notifications
+            ]);
         }
-        return json_encode([
-            'status'=>true,
-            'notifications'=>$Notifications
-        ]);
+        return "";
     }
 
-    public function AssignTeam(Request $request,Response $response): string
+    public function AssignTeam(Request $request,Response $response)
     {
         if ($request->isGet()){
             $campaignID=$request->getBody()['campId'];
@@ -344,7 +348,7 @@ class managerController extends Controller
         }
     }
 
-    public function ViewCampaign(Request $request, Response $response): string
+    public function ViewCampaign(Request $request, Response $response)
     {
         if ($request->isPost()){
             $id=$request->getBody()['id'];
@@ -368,7 +372,7 @@ class managerController extends Controller
 //        return $this->render('Manager/viewCampaign');
     }
 
-    public function AcceptCampaign(Request $request, Response $response): string
+    public function AcceptCampaign(Request $request, Response $response)
     {
         if ($request->isPost()){
             $id=$request->getBody()['id'];
@@ -391,6 +395,7 @@ class managerController extends Controller
                     $MedicalTeam->setAssignedBy(Application::$app->getUser()->getID());
                     $MedicalTeam->save();
                     if($campaign->update($campaign->getCampaignID(),[],['Verified','Status'])){
+                        OrganizationNotification::AddCampaignAcceptedNotification($campaign->getCampaignID());
                         return json_encode(['status'=>true,'message'=>'Campaign Accepted Successfully !']);
                     }else{
                         return json_encode(['status'=>false,'message'=>'Error on Server','data'=>$campaign->errors]);
@@ -402,7 +407,7 @@ class managerController extends Controller
         }
     }
 
-    public function RejectCampaign(Request $request, Response $response): string
+    public function RejectCampaign(Request $request, Response $response)
     {
         if ($request->isPost()){
             $id=$request->getBody()['id'];
@@ -504,7 +509,7 @@ class managerController extends Controller
         return $this->render('Manager/mngMedicalOfficer',$params);
     }
 
-    public function AddMedicalOfficer(Request $request, Response $response):string
+    public function AddMedicalOfficer(Request $request, Response $response)
     {
         $medicalOfficer=new MedicalOfficer();
         if (Application::$app->request->isPost()){
@@ -604,7 +609,7 @@ class managerController extends Controller
         }
         return json_encode(['status' => false, 'message' => 'Failed to Send Emails!']);
     }
-    public function UpdateMedicalOfficer(Request $request, Response $response):string
+    public function UpdateMedicalOfficer(Request $request, Response $response)
     {
         if (Application::$app->request->isPost()){
             $id=$request->getBody()['Officer_ID'];
@@ -673,7 +678,7 @@ class managerController extends Controller
         return $this->render('Manager/ManageSponsors',$params);
     }
 
-    public function SearchSponsors(Request $request,Response $response): string
+    public function SearchSponsors(Request $request,Response $response)
     {
         if ($request->isPost()){
             $search=$request->getBody()['q'];
@@ -700,9 +705,212 @@ class managerController extends Controller
     }
     public function ManageSponsorship(Request $request,Response $response)
     {
+        $Status = $request->getBody()['status'] ?? 1;
+        $Status=intval($Status);
+        $limit = $request->getBody()['rpp'] ?? 15;
+        $page = $request->getBody()['page'] ?? 1;
+        $initial = ($page - 1) * $limit;
+        $id=Application::$app->getUser()->getID();
+        if ($Status==0){
+            $total_rows = SponsorshipRequest::getCount();
+            $total_pages = ceil ($total_rows / $limit);
+            $SponsorshipRequest = SponsorshipRequest::RetrieveAll(true,[$initial,$limit]);
+        }else if ($Status==1){
+            $total_rows = SponsorshipRequest::getCount(false,['Sponsorship_Status'=>1]);
+            $total_pages = ceil ($total_rows / $limit);
+            $SponsorshipRequest = SponsorshipRequest::RetrieveAll(true,[$initial,$limit],true,['Sponsorship_Status'=>1]);
+        }else if ($Status==2){
+            $total_rows = SponsorshipRequest::getCount(false,['Sponsorship_Status'=>2]);
+            $total_pages = ceil ($total_rows / $limit);
+            $SponsorshipRequest = SponsorshipRequest::RetrieveAll(true,[$initial,$limit],true,['Sponsorship_Status'=>2]);
+        }else if ($Status==3){
+            $total_rows = SponsorshipRequest::getCount(false,['Sponsorship_Status'=>3]);
+            $total_pages = ceil ($total_rows / $limit);
+            $SponsorshipRequest = SponsorshipRequest::RetrieveAll(true,[$initial,$limit],true,['Sponsorship_Status'=>3]);
+        }else{
+            $total_rows = SponsorshipRequest::getCount();
+            $total_pages = ceil ($total_rows / $limit);
+            $SponsorshipRequest = SponsorshipRequest::RetrieveAll(true,[$initial,$limit]);
+        }
         return $this->render('Manager/ManageSponsorship/ManageSponsorship',[
-            'page'=>'mngSponsorship'
+            'page'=>'mngSponsorship',
+            'data'=>$SponsorshipRequest,
+            'total_pages'=>intval($total_pages),
+            'current_page'=>intval($page),
+            'rpp'=>$limit,
         ]);
+    }
+
+    public function GetSponsorshipRequest(Request $request,Response $response)
+    {
+        if ($request->isPost()){
+            /** @var SponsorshipRequest $Request*/
+            $Req_ID = $request->getBody()['id'];
+            $Request= SponsorshipRequest::findOne(['Sponsorship_ID'=>$Req_ID]);
+            if ($Request){
+                $Amount = $Request->getSponsorshipAmount();
+                $SuggestedPackage = SponsorshipRequest::getSuggestedPackage($Amount);
+                $suggest = [];
+                if ($SuggestedPackage){
+                    $suggest=[
+                        'Package_ID'=>$SuggestedPackage[0]->getPackageID(),
+                        'Package_Name'=>$SuggestedPackage[0]->getPackageName(),
+                        'Package_Price'=>$SuggestedPackage[0]->getPackagePrice(),
+                        'Package_Description'=>$SuggestedPackage[0]->getPackageDescription(),
+                        'Package_Image'=>$SuggestedPackage[0]->getPackageImage(),
+                    ];
+                }
+                return json_encode(['status'=>true,"data"=>[
+                    'campaignName'=> $Request->getCampaignName(),
+                    'campaignDate'=>$Request->getCampaignDate(),
+                    'organizationName'=>$Request->getOrganizationName(),
+                    'date'=>$Request->getSponsorshipDate(),
+                    'amount'=>$Request->getSponsorshipAmount(),
+                    'description'=>$Request->getDescription(),
+                    'report'=>$Request->getReport(),
+                    'suggest'=>$suggest
+                ]]);
+                            }else{
+                return json_encode(['status'=>false,'message'=>"No Request Found"]);
+            }
+        }
+    }
+
+    public function ApproveSponsorshipRequest(Request $request,Response $response)
+    {
+        /** @var SponsorshipRequest $Request*/
+        if ($request->isPost()){
+            $Req_ID = $request->getBody()['id'];
+            $Request= SponsorshipRequest::findOne(['Sponsorship_ID'=>$Req_ID]);
+            if ($Request){
+                $Request->setSponsorshipStatus(SponsorshipRequest::STATUS_APPROVED);
+                $Request->update($Request->getSponsorshipID(),[],['Sponsorship_Status']);
+                $OrgNotification = new OrganizationNotification();
+                $OrgNotification->setTargetID($Request->getOrganizationID());
+                $OrgNotification->setNotificationType(OrganizationNotification::TYPE_SPONSORSHIP_REQUEST);
+                $OrgNotification->setNotificationState(OrganizationNotification::STATE_PENDING);
+                $OrgNotification->setNotificationMessage("Your Sponsorship Request for ".$Request->getCampaignName()." has been Approved");
+                $OrgNotification->setNotificationDate(date('Y-m-d'));
+                $OrgNotification->setNotificationTitle("Sponsorship Request Approved");
+                $OrgNotification->setValidUntil(date('Y-m-d',strtotime("+1 month")));
+                $OrgNotification->setNotificationID(uniqid("OrgNot__"));
+                if ($OrgNotification->validate() && $OrgNotification->save()){
+                    return json_encode(['status'=>true,'message'=>"Request Approved"]);
+                }else{
+                    return json_encode(['status'=>false,'message'=>"Error Occurred"]);
+                }
+            }else{
+                return json_encode(['status'=>false,'message'=>"No Request Found"]);
+            }
+        }
+    }
+
+    public function RejectSponsorshipRequest(Request $request,Response $response)
+    {
+        /** @var SponsorshipRequest $Request*/
+        /** @var OrganizationNotification $OrgNotification*/
+        if ($request->isPost()){
+            $Req_ID = $request->getBody()['id'];
+            $Request= SponsorshipRequest::findOne(['Sponsorship_ID'=>$Req_ID]);
+            if ($Request){
+                $Request->setSponsorshipStatus(SponsorshipRequest::STATUS_REJECTED);
+                $Request->update($Request->getSponsorshipID(),[],['Sponsorship_Status']);
+                $OrgNotification = new OrganizationNotification();
+                $OrgNotification->setTargetID($Request->getOrganizationID());
+                $OrgNotification->setNotificationType(OrganizationNotification::TYPE_SPONSORSHIP_REQUEST);
+                $OrgNotification->setNotificationState(OrganizationNotification::STATE_PENDING);
+                $OrgNotification->setNotificationMessage("Your Sponsorship Request for ".$Request->getCampaignName()." has been rejected");
+                $OrgNotification->setNotificationDate(date('Y-m-d'));
+                $OrgNotification->setNotificationTitle("Sponsorship Request Rejected");
+                $OrgNotification->setValidUntil(date('Y-m-d',strtotime("+1 month")));
+                $OrgNotification->setNotificationID(uniqid("OrgNot__"));
+                if ($OrgNotification->validate() && $OrgNotification->save()){
+                    return json_encode(['status'=>true,'message'=>"Request Rejected"]);
+                }else{
+                    return json_encode(['status'=>false,'message'=>"Error Occurred"]);
+                }
+            }else{
+                return json_encode(['status'=>false,'message'=>"No Request Found"]);
+            }
+        }
+    }
+
+    public function SendEmailToOrganization(Request $request,Response $response)
+    {
+        if ($request->isPost()) {
+            $Sp_ID = $request->getBody()['Sponsorship_ID'];
+            $Sponsorship = SponsorshipRequest::findOne(['Sponsorship_ID' => $Sp_ID]);
+            if (!$Sponsorship) {
+                return json_encode(['status' => false, 'message' => "No User Found"]);
+            }
+            $Campaign = Campaign::findOne(['Campaign_ID' => $Sponsorship->getCampaignID()]);
+            if (!$Campaign) {
+                return json_encode(['status' => false, 'message' => "No User Found"]);
+            }
+
+            $Organization = Organization::findOne(['Organization_ID' => $Sponsorship->getOrganizationID()]);
+            if (!$Organization) {
+                return json_encode(['status' => false, 'message' => "No User Found"]);
+            }
+            $id = $Organization->getID();
+
+            $email = $Organization->getEmail();
+
+            $subject = $request->getBody()['subject'];
+            $message = $request->getBody()['message'];
+            /* @var $attachment File*/
+            $attachment = $request->getBody()['attachment'] ?? null;
+//            TODO : Attachment Thing
+
+
+            //        $file=new File($attachment,'Emails');
+            $mail = Application::$app->email;
+            $mail->setTo($email);
+            $mail->setSubject($subject);
+            $mail->setBody($message);
+            $mail->setFrom($_ENV['EMAIL_USERNAME']);
+            $EmailRecord=new Email();
+            $EmailRecord->setReceiver($email);
+            $EmailRecord->setSender($id);
+            $EmailRecord->setSubject($subject);
+            $EmailRecord->setBody($message);
+            $EmailRecord->setEmailType(EMAIL::NORMAL_EMAIL);
+            $EmailRecord->setEmailStatus(Email::EMAIL_PENDING);
+            $EmailRecordId=uniqid('EA_');
+            $EmailRecord->setEmailID($EmailRecordId);
+            if ($EmailRecord->validate()) {
+                if ($attachment && $attachment->getFileName() != '') {
+                    $attachment->GenerateFileName('Email/' . $EmailRecordId);
+                    $attachment->saveFile();
+                    $AttachmentName =Application::$ROOT_DIR . $attachment->getFileName();
+                    $mail->addAttachment($AttachmentName);
+                    $EmailRecord->setAttachment($AttachmentName);
+                }
+                try {
+//                    $mail->send();
+                    $EmailRecord->setEmailStatus(Email::EMAIL_SENT);
+                    if ($mail->send()):
+                        if ($EmailRecord->save()):
+//                        Application::$app->session->setFlash('success', 'Successfully Sent Email!');
+                            return json_encode(['status' => true, 'message' => 'Successfully Sent Email!']);
+                        else:
+//                        Application::$app->session->setFlash('error', 'Failed to Send Email!');
+                            return json_encode(['status' => false, 'message' => 'Failed to Send Email!']);
+                        endif;
+                    else:
+//                        Application::$app->session->setFlash('error', 'Failed to Send Email!');
+                        return json_encode(['status' => false, 'message' => 'Failed to Send Email!']);
+                    endif;
+
+                } catch (Exception $e) {
+                    Application::$app->session->setFlash('error', 'Failed to Send Email!');
+                    return json_encode(['status' => false, 'message' => 'Failed to Send Email!']);
+                }
+            }else{
+                return json_encode(['status' => false, 'message' => 'Please Fill Required Information', 'errors' => $EmailRecord->errors]);
+            }
+        }
+
     }
     public function ManageRequests(Request $request,Response $response): string
     {

@@ -240,6 +240,126 @@ class authController extends Controller
         }
 
     }
+
+    public function ChangePassword(Request $request,Response $response): string
+    {
+        if ($request->isPost()){
+            $CurrentPassword = $request->getBody()['CurrentPassword'];
+            $NewPassword = $request->getBody()['NewPassword'];
+            $ConfirmPassword = $request->getBody()['ConfirmPassword'];
+            if (empty($CurrentPassword) || empty($NewPassword) || empty($ConfirmPassword)){
+                if (empty($CurrentPassword)){
+                    return json_encode([
+                        'status'=>false,
+                        'message'=>'Current Password is required!',
+                        'field'=>'CurrentPassword'
+                    ]);
+                }
+                if (empty($NewPassword)){
+                    return json_encode([
+                        'status'=>false,
+                        'message'=>'New Password is required!',
+                        'field'=>'NewPassword'
+                    ]);
+                }
+                if (empty($ConfirmPassword)){
+                    return json_encode([
+                        'status'=>false,
+                        'message'=>'Confirm Password is required!',
+                        'field'=>'ConfirmPassword'
+                    ]);
+                }
+            }
+            if (strlen($NewPassword)<8){
+                return json_encode([
+                    'status'=>false,
+                    'message'=>'Password must be at least 8 characters long!',
+                    'field'=>'NewPassword'
+                ]);
+            }
+
+//            if (preg_match('/[A-Z]/', $NewPassword)===0){
+//                return json_encode([
+//                    'status'=>false,
+//                    'message'=>'Password must contain at least one uppercase letter!'
+//                ]);
+//            }
+//
+//            if (preg_match('/[a-z]/', $NewPassword)===0){
+//                return json_encode([
+//                    'status'=>false,
+//                    'message'=>'Password must contain at least one lowercase letter!'
+//                ]);
+//            }
+//
+//            if (preg_match('/[0-9]/', $NewPassword)===0){
+//                return json_encode([
+//                    'status'=>false,
+//                    'message'=>'Password must contain at least one number!'
+//                ]);
+//            }
+//
+//            if (preg_match('/[^a-zA-Z\d]/', $NewPassword)===0){
+//                return json_encode([
+//                    'status'=>false,
+//                    'message'=>'Password must contain at least one special character!'
+//                ]);
+//            }
+//
+//            if (preg_match('/\s/', $NewPassword)===1){
+//                return json_encode([
+//                    'status'=>false,
+//                    'message'=>'Password must not contain any whitespace!'
+//                ]);
+//            }
+
+            if ($ConfirmPassword!==$NewPassword){
+                return json_encode([
+                    'status'=>false,
+                    'message'=>'New Password and Confirm Password does not match!',
+                    'field'=>'ConfirmPassword'
+                ]);
+            }
+
+            if ($CurrentPassword===$NewPassword){
+                return json_encode([
+                    'status'=>false,
+                    'message'=>'New Password and Current Password cannot be same!',
+                    'field'=>'NewPassword'
+                ]);
+            }
+
+
+            $User = User::findOne(['UID'=>Application::$app->getUser()->getId()]);
+            if (password_verify($CurrentPassword,$User->getPassword())){
+                if ($NewPassword===$ConfirmPassword){
+                    $User->setPassword(password_hash($NewPassword,PASSWORD_DEFAULT));
+                    if ($User->update($User->getID(),[],['Password'])){
+                        return json_encode([
+                            'status'=>true,
+                            'message'=>'Password Changed Successfully!'
+                        ]);
+                    }else{
+                        return json_encode([
+                            'status'=>false,
+                            'message'=>'Password Not Changed!'
+                        ]);
+                    }
+                }else{
+                    return json_encode([
+                        'status'=>false,
+                        'message'=>'New Password and Confirm Password does not match!'
+                    ]);
+                }
+            }else{
+                return json_encode([
+                    'status'=>false,
+                    'message'=>'Current Password is incorrect!'
+                ]);
+            }
+        }
+
+    }
     public function ResetPassword(Request $request,Response $response)
     {
         $errors = [];

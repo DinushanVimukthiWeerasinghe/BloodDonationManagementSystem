@@ -1,6 +1,6 @@
 <?php
 namespace Core;
-class Request
+class   Request
 {
     public function getPath()
     {

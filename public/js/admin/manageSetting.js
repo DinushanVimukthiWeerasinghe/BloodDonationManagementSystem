@@ -39,7 +39,7 @@ const AddNewBlog = ()=>{
                     }else{
                         ShowToast({
                             message:data.message || 'Something Went Wrong',
-                            type:'error'
+                            type:'danger'
                         });
                     }
                 })
@@ -96,7 +96,7 @@ const EditBlog = (blogId)=>{
                     }else{
                         ShowToast({
                             message:data.message || 'Something Went Wrong',
-                            type:'error'
+                            type:'danger'
                         });
                     }
                 })

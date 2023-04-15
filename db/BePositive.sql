@@ -236,7 +236,7 @@ CREATE TABLE IF NOT EXISTS Rejected_Campaigns (
                                                   Rejected_At TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                                                   Remarks VARCHAR(100) NOT NULL,
                                                   FOREIGN KEY (Campaign_ID) REFERENCES Campaign(Campaign_ID),
-                                                  FOREIGN KEY (Rejected_By) REFERENCES MedicalOfficers(Officer_ID)
+                                                  FOREIGN KEY (Rejected_By) REFERENCES Managers(Manager_ID)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS Campaign_Donation_Queue;
@@ -816,6 +816,35 @@ CREATE TABLE IF NOT EXISTS Register_OTP
     No_Of_Attempts INT DEFAULT 0 NOT NULL
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8;
+
+DROP TABLE IF EXISTS Organization_Bank_Accounts;
+CREATE TABLE IF NOT EXISTS Organization_Bank_Accounts
+(
+    Organization_ID VARCHAR(20) NOT NULL,
+    Account_Name    VARCHAR(100) NOT NULL,
+    Account_Number  VARCHAR(100) NOT NULL UNIQUE ,
+    Bank_Name       VARCHAR(100) NOT NULL,
+    Branch_Name     VARCHAR(100) NOT NULL,
+    PRIMARY KEY (Organization_ID),
+    FOREIGN KEY (Organization_ID) REFERENCES Organizations (Organization_ID)
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8;
+
+DROP TABLE IF EXISTS Sponsorship_Requests;
+CREATE TABLE IF NOT EXISTS Sponsorship_Requests
+(
+    Sponsorship_ID VARCHAR(20) PRIMARY KEY,
+    Campaign_ID VARCHAR(20) NOT NULL UNIQUE ,
+    Sponsorship_Amount INT NOT NULL,
+    Sponsorship_Status INT NOT NULL DEFAULT 1,
+    Report VARCHAR(100) NOT NULL,
+    Sponsorship_Date DATE NOT NULL DEFAULT CURRENT_DATE,
+    Description VARCHAR(100) NOT NULL,
+    FOREIGN KEY (Campaign_ID) REFERENCES Campaign (Campaign_ID)
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8;
+
+
 
 
 

@@ -124,6 +124,13 @@ $app->router->get('/organization/campaign/updateCampaign', [OrganizationControll
 $app->router->post('/organization/campaign/updateCampaign', [OrganizationController::class, 'update']);
 $app->router->get('/organization/campaign/deleteCampaign', [OrganizationController::class, 'delete']);
 $app->router->post('/organization/getCampaignCoordinate', [OrganizationController::class, 'GetCampaignCoordinate']);
+$app->router->post('/organization/getBankDetails', [OrganizationController::class, 'GetOrganizationBankAccountDetails']);
+$app->router->post('/organization/addBankDetails', [OrganizationController::class, 'AddOrganizationBankAccountDetails']);
+$app->router->post('/organization/changeProfile', [OrganizationController::class, 'ChangeProfileImage']);
+$app->router->post('/organization/notification', [OrganizationController::class, 'GetNotification']);
+$app->router->post('/organization/requestSponsorship', [OrganizationController::class, 'RequestSponsorship']);
+
+$app->router->post('/user/change-password', [authController::class, 'ChangePassword']);
 
 //sponsor
 
@@ -186,6 +193,10 @@ $app->router->post('/organization/getCampaignCoordinate', [OrganizationControlle
 
     $app->router->get('/manager/mngSponsorship', [managerController::class, 'ManageSponsorship']);
     $app->router->post('/manager/mngSponsorship', [managerController::class, 'ManageSponsorship']);
+    $app->router->post('/manager/mngSponsorship/viewRequest', [managerController::class, 'GetSponsorshipRequest']);
+    $app->router->post('/manager/mngSponsorship/approveRequest', [managerController::class, 'ApproveSponsorshipRequest']);
+    $app->router->post('/manager/mngSponsorship/rejectRequest', [managerController::class, 'RejectSponsorshipRequest']);
+    $app->router->post('/manager/mngSponsorship/sendEmail', [managerController::class, 'SendEmailToOrganization']);
 
 
     $app->router->get('/manager/mngDonors', [managerController::class, 'ManageDonors']);

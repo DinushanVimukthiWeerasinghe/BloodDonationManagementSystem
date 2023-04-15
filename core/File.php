@@ -25,6 +25,9 @@ class File
     public static function DeleteFileByPath($path): bool
     {
         $DeletePath=Application::$ROOT_DIR.'/'.$path;
+        if (!file_exists($DeletePath)){
+            return true;
+        }
         $status=unlink($DeletePath);
         if ($status){
             return true;

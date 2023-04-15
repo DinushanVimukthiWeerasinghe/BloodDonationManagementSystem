@@ -24,6 +24,9 @@ class ManagerNotification extends dbModel
         return $this->Notification_ID;
     }
 
+
+
+
     /**
      * @param string $Notification_ID
      */
