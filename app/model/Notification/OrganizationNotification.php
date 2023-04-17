@@ -197,12 +197,14 @@ class OrganizationNotification extends \App\model\database\dbModel
         $CampaignName = $Campaign->getCampaignName();
         $OrganizationID = $Campaign->getOrganizationID();
         $Notification = new self();
+        $Notification->setNotificationID(uniqid("OrgNot_"));
         $Notification->setNotificationTitle("Campaign Accepted ".$CampaignName);
         $Notification->setNotificationMessage("Your Campaign ".$CampaignName." has been accepted");
         $Notification->setNotificationDate(date('Y-m-d H:i:s'));
         $Notification->setNotificationState(self::STATE_PENDING);
         $Notification->setNotificationType(self::TYPE_CAMPAIGN);
         $Notification->setTargetID($OrganizationID);
+        $Notification->validate();
         $Notification->save();
     }
 

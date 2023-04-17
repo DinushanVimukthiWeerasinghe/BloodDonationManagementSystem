@@ -54,12 +54,19 @@ class medicalOfficerController extends \Core\Controller
         $Campaign=MedicalOfficer::getAssignedCampaign();
         $User = Application::$app->getUser();
 //        $Campaign = Campaign::RetrieveAll(false,[],false,[],['Campaign_Date'=>'ASC']);
-        return $this->render('/MedicalOfficer/MedicalOfficerdashboard',['Campaigns'=>$Campaign,'User'=>$User]);
+        return $this->render('/MedicalOfficer/MedicalOfficerdashboard',
+            [
+                'page'=>'dashboard',
+                'Campaigns'=>$Campaign,
+                'User'=>$User
+            ]);
     }
 
     public function ManageHistory()
     {
-        return $this->render('/MedicalOfficer/OfficerHistory');
+        return $this->render('/MedicalOfficer/OfficerHistory',[
+            'page'=>'history'
+        ]);
     }
 
     public function CampaignAssignment(Request $request, Response $response)
@@ -114,12 +121,14 @@ class medicalOfficerController extends \Core\Controller
 
         if (!$Campaign){
             $this->setFlashMessage('error','No Campaign Assigned!');
-            return $this->render('/MedicalOfficer/ManageCampaigns');
+            return $this->render('/MedicalOfficer/ManageCampaigns',['page'=>'campaigns']);
         }
         $MedicalTeam = MedicalTeam::findOne(['Campaign_ID' => $Campaign->getCampaignID()]);
         $Organization = Organization::findOne(['Organization_ID' => $Campaign->getOrganizationID()]);
 
-        $model=[];
+        $model=[
+            'page'=>'campaigns',
+        ];
         if ($Campaign){
             $Position = MedicalTeam::findOne(['Campaign_ID' => $Campaign->getCampaignID(), 'Team_Leader' => $UserID],false) ? MedicalTeam::TEAM_LEADER : MedicalTeam::TEAM_MEMBER;
             $model=[
@@ -176,7 +185,9 @@ class medicalOfficerController extends \Core\Controller
             $Campaign=MedicalOfficer::getAssignedCampaign($Date);
             if (!$Campaign){
                 $this->setFlashMessage('error','No Campaign Assigned!');
-                return $this->render('/MedicalOfficer/ManageDonation');
+                return $this->render('/MedicalOfficer/ManageDonation',[
+                    'page'=>'donations'
+                ]);
             }
 
 
@@ -184,6 +195,7 @@ class medicalOfficerController extends \Core\Controller
             $Organization = Organization::findOne(['Organization_ID' => $Campaign->getOrganizationID()]);
             $model=[
                 'Campaign'=>$Campaign,
+                'page'=>'donations',
             ];
 
             if ($MedicalTeam){

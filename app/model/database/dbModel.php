@@ -281,6 +281,7 @@ abstract class dbModel extends Model
                 if (in_array($attribute, $Include)) {
                     $demo .= $attribute . '="' . $this->{$attribute} . '", ';
                 }
+
             }
         }else {
             foreach ($attributes as $attribute) {
@@ -302,6 +303,7 @@ abstract class dbModel extends Model
             }
             $demo=substr($demo,0,-4);
         }
+
         $statement=self::prepare($demo);
 
         $statement->execute();

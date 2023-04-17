@@ -19,6 +19,12 @@ use Core\Application;
 require_once __DIR__ . '/../vendor/autoload.php';
 $dotenv = Dotenv\Dotenv::createImmutable(dirname(__DIR__));
 $dotenv->load();
+
+
+
+require_once __DIR__ . '/../public/config.php';
+
+
 $config=[
     'db'=>[
         'dsn'=>$_ENV['DB_DSN'],
@@ -37,6 +43,7 @@ $config=[
         'key'=>$_ENV['MAP_API_KEY']
     ],
 ];
+
 //Set Env Variables
 $MAP_API_KEY=$_ENV['MAP_API_KEY'];
 
@@ -58,6 +65,8 @@ try {
     $app->router->post('/register', [authController::class, 'UserRegister']);
     $app->router->post('/register/send-otp', [authController::class, 'SendRegistrationOTP']);
     $app->router->post('/register/validate-otp', [authController::class, 'ValidateOTP']);
+    $app->router->get('/organization/register', [authController::class, 'OrganizationRegister']);
+    $app->router->post('/organization/register', [authController::class, 'OrganizationRegister']);
 
 //Logout
     $app->router->get('/logout', [authController::class, 'logout']);
@@ -98,8 +107,6 @@ try {
 
     $app->router->get('/test',[siteController::class,'Test']);
 
-$app->router->get('/organization/register', [OrganizationController::class, 'register']);
-$app->router->post('/organization/register', [OrganizationController::class, 'register']);
 $app->router->get('/organization/dashboard', [OrganizationController::class, 'dashboard']);
 $app->router->get('/organization/create', [OrganizationController::class, 'CreateCampaign']);
 $app->router->get('/organization/history', [OrganizationController::class, 'history']);
@@ -139,7 +146,7 @@ $app->router->post('/user/change-password', [authController::class, 'ChangePassw
     $app->router->post('/sponsor/makePayment', [sponsorController::class, 'MakePayment']);
     $app->router->get('/sponsor/history', [sponsorController::class, 'history']);
     $app->router->get('/sponsor/manage', [sponsorController::class, 'manage']);
-    $app->router->get('/sponsor/donation', [sponsorController::class, 'donation']);
+    $app->router->get('/sponsor/donation', [sponsorController::class, 'MakeDonation']);
     $app->router->get('/sponsor/campDetails', [sponsorController::class, 'campDetails']);
     $app->router->get('/sponsor/guideline', [sponsorController::class, 'guideline']);
 
@@ -347,3 +354,7 @@ $app->router->post('/donor/profile/edit', [donorController::class, 'editDetails'
     echo $e->getMessage();
 }
 //Application::CreateDirectories(['public/upload/Profile/Donors','public/upload/Profile/Managers','public/upload/Profile/MedicalOfficers','public/upload/Profile/Receivers']);
+
+?>
+
+

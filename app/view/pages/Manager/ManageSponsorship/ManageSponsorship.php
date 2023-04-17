@@ -55,7 +55,7 @@ $getParams = function ($params) {
             </tr>
             </thead>
             <tbody id="content">
-            <div id="loader" class="none bg-white absolute w-100 h-100 d-flex justify-content-center align-items-center" style="z-index: 999;height: 90%;margin-top: 35px;">
+            <div id="loader" class="bg-white absolute w-100 h-100 d-flex justify-content-center align-items-center" style="z-index: 999;height: 90%;margin-top: 35px;">
                 <img src="/public/loading2.svg" alt="" width="100px">
             </div>
             <?php

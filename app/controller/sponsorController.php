@@ -4,8 +4,10 @@ namespace App\controller;
 use App\middleware\sponsorMiddleware;
 use App\model\Authentication\Login;
 use App\model\Requests\AttendanceAcceptedRequest;
+use App\model\Requests\SponsorshipRequest;
 use App\model\sponsor\campaigns_sponsors;
 use App\model\sponsor\sponsorship_packages;
+use App\model\sponsor\SponsorshipPackages;
 use App\model\users\organization;
 use App\model\Campaigns\Campaign;
 use App\model\users\Sponsor;
@@ -152,49 +154,31 @@ class sponsorController extends Controller
         Application::$app->session->setFlash('success','You Successfully Created a Campaign! Please Wait for the Admin Approval.');
         return $this->render('Organization/create');
     }
-    public function donation()
+    public function MakeDonation(Request $request,Response $response)
     {
         /* @var Campaign $campaign */
-        $today = date("Y-m-d");
-//        $conditions = ['Package_ID'];
-        /* @var Sponsor $sponsor*/
-        $sponsor = sponsor::findOne(['Sponsor_ID' => Application::$app->getUser()->getID()]);
-        $sponPack = sponsorship_packages::findOne(['Package_ID' => $sponsor->getPackageID()]);
-        $pri = $sponPack->getPackagePrice();
-        $result = Campaign::RetrieveAll(false, [], false);
-        //check sponsored Campaigns
-        $confirmsponse = campaigns_sponsors::RetrieveAll(false,[],true,['Sponsor_ID' => Application::$app->getUser()->getID()]);
-        $par = [];
-        //initialize sponsored state
-        $paid = 0;
-        $params = [];
-        foreach ($result as $campaign) {
-            $packid = $campaign->getPackageID();
-            $pack = sponsorship_packages::findOne(['Package_ID' => $packid]);
-            $price = $pack->getPackagePrice();
-            foreach ($confirmsponse as $con) {
-                if ($con->getID() === $campaign->getCampaignID()) {
-                    $paid = 1;
+        /* @var SponsorshipRequest $SponsorshipRequest */
+        if ($request->isPost()){
+            $UserID = Application::$app->getUser()->getID();
+            $CampaignID = $request->getBody()['cid'];
+            if (isset($CampaignID)){
+                $campaign = Campaign::findOne(['Campaign_ID' => $CampaignID]);
+                if ($campaign){
+                    $SponsorshipRequest = SponsorshipRequest::findOne(['Campaign_ID' => $CampaignID, 'Sponsorship_Status' => 2]);
+                    if ($SponsorshipRequest){
+                        $SuggestedPackage = SponsorshipRequest::getSuggestedPackage($SponsorshipRequest->getSponsorshipAmount());
+                        return json_encode(['status' => true, 'suggestedPackage' => $SuggestedPackage, 'campaign' => $campaign]);
+                    }else{
+                        return json_encode(['status' => false, 'message' => 'No Sponsorship Request Found']);
+                    }
+                }else{
+                    return json_encode(['status' => false, 'message' => 'No Campaign Found']);
                 }
             }
-                if ($price <= $pri && $paid == 0 && $campaign->getCampaignDate() >= date("Y-m-d")) {
-                    $params[] = [
-                        'Campaign_Name' => $campaign->getCampaignName(),
-                        'Campaign_Date' => $campaign->getCampaignDate(),
-                        'Venue' => $campaign->getVenue(),
-                        'Status' => $campaign->getStatus(),
-                        'Campaign_ID' => $campaign->getCampaignID(),
-                        'Package_Name' => $pack->getPackageName(),
-                    ];
-                } else {
-                    $params = [];
-                }
-
         }
-        print_r($params);
-        exit();
-        return $this->render('sponsors/donation',$params);
     }
+
+
     public function report()
     {
 
@@ -258,19 +242,17 @@ class sponsorController extends Controller
     public function campDetails()
     {
         /* @var Campaign $campaign */
-        /* @var sponsorship_packages $para */
+        /* @var SponsorshipPackages $para */
         $id = $_GET['id'];
         $campaign = Campaign::findOne(['Campaign_ID'=> $id]);
-        $para = sponsorship_packages::findOne(['Package_ID'=>$campaign->getPackageID()]);
-
         $params= [
-            'Campaign_Name'=> $campaign->getName(),
-            'Campaign_Date' => $campaign->getDate(),
+            'Campaign_Name'=> $campaign->getCampaignName(),
+            'Campaign_Date' => $campaign->getCampaignDate(),
             'Venue'=> $campaign->getVenue(),
             'Status'=> $campaign->getStatus(),
-            'Campaign_ID'=> $campaign->getID(),
+            'Campaign_ID'=> $campaign->getCampaignID(),
             'id' => $id,
-            'Package_Name' => $para->getPackageName(),
+            'Package_Name' => $para?->getPackageName(),
         ];
         return $this->render('sponsors/campDetails',$params);
     }

@@ -3,9 +3,12 @@
 namespace App\controller;
 
 use App\model\Authentication\Login;
+use App\model\Authentication\OrganizationBankAccount;
 use App\model\Authentication\OTPCode;
 use App\model\Authentication\PasswordReset;
 use App\model\Email\RegisterOTP;
+use App\model\OrganizationMembers\Organization_Members;
+use App\model\users\Organization;
 use App\model\users\User;
 use Core\Application;
 use Core\Controller;
@@ -118,9 +121,6 @@ class authController extends Controller
             $login->loadData($request->getBody());
             if ($login->validate()) {
                 $user = $login->login();
-
-//                var_dump($user);
-//                exit();
                 if (!$user) {
                     $this->setFlashMessage('error', 'Invalid Credentials');
                     Application::Redirect('/login');
@@ -138,6 +138,127 @@ class authController extends Controller
             }
         }
         return $this->render('Authentication/UserLogin',['model'=>$login]);
+    }
+
+    public function OrganizationRegister(Request $request,Response $response): string
+    {
+        if ($request->isPost()){
+            $OrganizationID = $request->getBody()['OrganizationID'];
+            $OrganizationID=openssl_decrypt($OrganizationID,$_ENV['ENCRYPTION_METHOD'],$_ENV['ENCRYPTION_KEY']);
+//            exit();
+            if ($OrganizationID===false){
+                $this->setFlashMessage('error','Invalid Data');
+                Application::Redirect('/register');
+                exit();
+            }
+            if (empty($OrganizationID)){
+                $this->setFlashMessage('error','Organization ID is required');
+                return json_encode(['status'=>false,'message'=>'Organization ID is required']);
+//                Application::Redirect('/register');
+//                exit();
+            }
+            $Organization = new Organization();
+            $Organization->setID($OrganizationID);
+            $Organization->loadData($request->getBody());
+            $Organization->setOrganizationName($request->getBody()['OrganizationName']);
+            $Organization->setEmail($request->getBody()['OrganizationEmail']);
+            $Organization->setOrganizationEmail($request->getBody()['OrganizationEmail']);
+            $Organization->setContactNo($request->getBody()['OrganizationPhone']);
+            $Organization->setAddress1($request->getBody()['OrganizationAddress1']);
+            $Organization->setAddress2($request->getBody()['OrganizationAddress2']);
+            $Organization->setCity($request->getBody()['OrganizationAddress3']);
+            $Organization->setStatus(1);
+            $Organization->setProfileImage(Organization::getDefaultProfilePicture());
+            $Organization->validate();
+
+            //Register President
+            $PresidentNIC = $request->getBody()['PresidentNIC'];
+            $PresidentName = $request->getBody()['PresidentName'];
+            $PresidentEmail = $request->getBody()['PresidentEmail'];
+            $PresidentPhone = $request->getBody()['PresidentPhone'];
+            $President=Organization_Members::CreateMember($OrganizationID,$PresidentNIC,"President",$PresidentPhone,$PresidentEmail,$PresidentName);
+
+            //Register Secretary
+            $SecretaryNIC = $request->getBody()['SecretaryNIC'];
+            $SecretaryName = $request->getBody()['SecretaryName'];
+            $SecretaryEmail = $request->getBody()['SecretaryEmail'];
+            $SecretaryPhone = $request->getBody()['SecretaryPhone'];
+            $Secretary=Organization_Members::CreateMember($OrganizationID,$SecretaryNIC,"Secretary",$SecretaryPhone,$SecretaryEmail,$SecretaryName);
+
+            //Register Treasurer
+            $TreasurerNIC = $request->getBody()['TreasurerNIC'];
+            $TreasurerName = $request->getBody()['TreasurerName'];
+            $TreasurerEmail = $request->getBody()['TreasurerEmail'];
+            $TreasurerPhone = $request->getBody()['TreasurerPhone'];
+            $Treasurer=Organization_Members::CreateMember($OrganizationID,$TreasurerNIC,"Treasurer",$TreasurerPhone,$TreasurerEmail,$TreasurerName);
+
+            //Check whether Bank Account Details are provided
+            $BankName = $request->getBody()['BankName'];
+            $BankBranch = $request->getBody()['BankBranch'];
+            $BankAccountNo = $request->getBody()['BankAccountNumber'];
+            $BankAccountName = $request->getBody()['BankAccountName'];
+            $BankAccount = null;
+            if (!empty($BankName) && !empty($BankBranch) && !empty($BankAccountNo) && !empty($BankAccountName)){
+                $BankAccount = new OrganizationBankAccount();
+                $BankAccount->setOrganizationID($OrganizationID);
+                $BankAccount->setBankName($BankName);
+                $BankAccount->setBranchName($BankBranch);
+                $BankAccount->setAccountNumber($BankAccountNo);
+                $BankAccount->setAccountName($BankAccountName);
+            }
+
+            if ($Organization->validate()){
+                /** @var $User User*/
+                $User= User::findOne(['UID'=>$OrganizationID]);
+                $User->setAccountStatus(User::ACTIVE);
+                $User->update($User->getID(),[],['Account_Status']);
+                $Organization->save();
+                $BankAccount?->save();
+                $President->save();
+                $Secretary->save();
+                $Treasurer->save();
+                return json_encode(['status'=>true,'message'=>'User Registered Successfully','redirect'=>'/login']);
+            }else{
+                return json_encode(['status'=>false,'message'=>'Invalid Data','errors'=>$Organization->getErrors()]);
+            }
+        }else{
+            $OrganizationID = $request->getBody()['uid'];
+            $OrganizationID=openssl_decrypt($OrganizationID,$_ENV['ENCRYPTION_METHOD'],$_ENV['ENCRYPTION_KEY']);
+
+            if ($OrganizationID===false){
+                $this->setFlashMessage('error','Invalid Data');
+                Application::Redirect('/register');
+                exit();
+            }
+
+            $User = User::findOne(['UID'=>$OrganizationID]);
+            if (!$User){
+                Application::Redirect('/register');
+            }else{
+                $Organization = Organization::findOne(['Organization_ID'=>$User->getID()]);
+
+                if ($Organization){
+                    $this->setFlashMessage('error','Organization Already Registered');
+                    Application::Redirect('/login');
+                }
+                if ($User->getRole() != User::ORGANIZATION){
+                    $this->setFlashMessage('error','Invalid User Role');
+                    Application::Redirect('/login');
+                }
+
+
+                if ($User->getAccountStatus() !== User::ACCOUNT_NOT_VERIFIED){
+                    var_dump($Organization);
+                    exit();
+                    $this->setFlashMessage('error','User Already Registered');
+                    Application::Redirect('/login');
+                }
+            }
+            return $this->render('Authentication/Registration/OrganizationRegistration',[
+                'uid'=>$OrganizationID,
+            ]);
+        }
+
     }
 
     public function UserRegister(Request $request,Response $response)
@@ -189,8 +310,16 @@ class authController extends Controller
                     $user->setPassword($hash);
                     if ($user->validate()) {
                         $user->save();
-                        $this->setFlashMessage('success', 'User Registered Successfully');
-                        return json_encode(['status'=>true,'message'=>'User Registered Successfully']);
+                        $UserID = $user->getID();
+                        $EncryptedUserID = openssl_encrypt($UserID,$_ENV['ENCRYPTION_METHOD'],$_ENV['ENCRYPTION_KEY']);
+                        $this->setFlashMessage('success', 'Please Complete Your Registration');
+                        if ($user->getRole() == User::ORGANIZATION)
+                            return json_encode(['status'=>true,'message'=>'User Registered Successfully','redirect'=>'/organization/register?uid='.$EncryptedUserID]);
+                        else if ($user->getRole() == User::SPONSOR)
+                            return json_encode(['status'=>true,'message'=>'User Registered Successfully','redirect'=>'/sponsor/register?uid='.$EncryptedUserID]);
+                        else
+                            return json_encode(['status'=>true,'message'=>'User Registered Successfully','redirect'=>'/donor/register?uid='.$EncryptedUserID]);
+
                     }else{
                         $this->setFlashMessage('error', 'User Registration Failed');
                         return json_encode(['status'=>false,'message'=>'User Registration Failed']);

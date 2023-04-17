@@ -162,24 +162,20 @@ class Application
 //        print_r($user);
 //        exit();
 //        Role == 'Manager
-            if ($Role === User::MANAGER)
-            {
+        if ($user->IsUserVerified()) {
+            if ($Role === User::MANAGER) {
                 $this->user = Manager::findOne(['Manager_ID' => $ID]);
 
-            }else if ($Role === User::MEDICAL_OFFICER)
-            {
+            } else if ($Role === User::MEDICAL_OFFICER) {
                 $this->user = MedicalOfficer::findOne(['Officer_ID' => $ID]);
-            }else if ($Role === User::ADMIN)
-            {
+            } else if ($Role === User::ADMIN) {
                 $this->user = Admin::findOne(['Admin_ID' => $ID]);
-            }else if ($Role === User::DONOR)
-            {
+            } else if ($Role === User::DONOR) {
                 $this->user = Donor::findOne(['Donor_ID' => $ID]);
                 if ($this->user === null) {
                     $this->user = new Donor();
                 }
-            }else if ($Role === User::HOSPITAL)
-            {
+            } else if ($Role === User::HOSPITAL) {
                 $this->user = Hospital::findOne(['Hospital_ID' => $ID]);
             } else if ($Role === User::ORGANIZATION) {
                 $this->user = Organization::findOne(['Organization_ID' => $ID]);
@@ -191,23 +187,20 @@ class Application
             if ($this->user === null) {
                 return false;
             }
+            $primaryKey = $user->primaryKey();
 
-        $primaryKey = $user->primaryKey();
-
-        $primaryValue = $user->getID();
-//        Create Login Sessions
-
-        //TODO Update the minutes to 30
-        $this->session->set('user', ['UID' => $primaryValue, 'UserClass' => get_class($this->user)], 60);
-        $this->session->setFlash('success', 'Welcome Back ' . $user->getEmail());
-        $login = new LoggingHistory();
-        $login->setSessionID($this->session->get('user')->getSessionID());
-        $login->setUserID($primaryValue);
-        $login->setSessionEnd(date('Y-m-d H:i:s'));
-        $login->setSessionStart(date('Y-m-d H:i:s'));
-        if (!$login->save(['Session_End']))
-        {
-            return false;
+            $primaryValue = $user->getID();
+            $this->session->set('user', ['UID' => $primaryValue, 'UserClass' => get_class($this->user)], 60);
+            $this->session->setFlash('success', 'Welcome Back ' . $user->getEmail());
+            $login = new LoggingHistory();
+            $login->setSessionID($this->session->get('user')->getSessionID());
+            $login->setUserID($primaryValue);
+            $login->setSessionEnd(date('Y-m-d H:i:s'));
+            $login->setSessionStart(date('Y-m-d H:i:s'));
+            if (!$login->save(['Session_End']))
+            {
+                return false;
+            }
         }
         return true;
     }

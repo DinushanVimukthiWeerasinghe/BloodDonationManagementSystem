@@ -50,7 +50,7 @@
                 'Requested At'=>Date::GetProperDateTime($request->getRequestedAt()),
                 'Type'=>$request->getType(),
                 'Status'=>$request->getStatus(),
-                'Quantity'=>$request->getQuantity(),
+                'Volume'=>$request->getVolume(),
                 'Remarks'=>$request->getRemarks(),
             ];
         }

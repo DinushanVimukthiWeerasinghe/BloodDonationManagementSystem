@@ -456,6 +456,7 @@ CREATE TABLE IF NOT EXISTS Organization_Members
     Contact_No      VARCHAR(100) UNIQUE ,
     NIC             VARCHAR(100) UNIQUE,
     Position        VARCHAR(100) NOT NULL,
+    Email           VARCHAR(100) UNIQUE ,
     PRIMARY KEY (Organization_ID, NIC),
     FOREIGN KEY (Organization_ID) REFERENCES Organizations (Organization_ID)
 ) ENGINE = InnoDB

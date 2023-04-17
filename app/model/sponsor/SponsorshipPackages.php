@@ -38,6 +38,8 @@ class SponsorshipPackages extends \App\model\database\dbModel
         return $this->Package_Image;
     }
 
+
+
     /**
      * @param string $Package_Image
      */
