@@ -76,6 +76,25 @@ class Organization extends Person
         $this->Organization_Name = $Organization_Name;
     }
 
+    /**
+     * @return string
+     */
+    public function getType(): string
+    {
+        return $this->Type;
+    }
+
+    /**
+     * @param string $Type
+     */
+    public function setType(string $Type): void
+    {
+        $this->Type = $Type;
+    }
+    public function setEmail(string $email):void
+    {
+        $this->Organization_Email = $email;
+    }
 
     public function getEmail():string
     {

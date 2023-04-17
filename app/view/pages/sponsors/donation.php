@@ -1,10 +1,31 @@
 <link rel="stylesheet" href="/public/css/framework/utils.css">
 <link rel="stylesheet" href="/public/css/components/cardPane/index.css">
 <!--<script src="/public/scripts/index.js"></script>-->
+<style>
+    .btn:hover{
+        background-color: red;
+        color: #0b0000;
+    }
+    /*.btn{*/
+    /*    animation: blink .7s infinite;*/
+    /*}*/
+
+    @keyframes blink{
+        0%{
+            background-color: green;
+
+        }
+        100%{
+            background-color: red;
+        }
+
+    }
+</style>
 <?php
 /* @var string $firstName */
 
 /* @var string $lastName */
+/* @var string $campaigns */
 
 use App\model\users\Organization;
 use App\view\components\ResponsiveComponent\Alert\FlashMessage;
@@ -35,18 +56,6 @@ FlashMessage::RenderFlashMessages();
 ?>
 
 <div id="detail-pane" class="detail-pane">
-        <div class="filter-card">
-            <div class="card-navigation">
-                <a class="disabled" href="?page=1"><img class="nav-btn" src="/public/images/icons/previous.png"
-                                                        alt=""></a>
-                <div class="page-numbers">
-                    <a href='?page=1' class='disabled'>
-                        <div class='page-number active'>1</div>
-                    </a>
-                </div>
-                <a class="disabled" href="?page=1"><img class="nav-btn" src="/public/images/icons/next.png" alt=""></a>
-            </div>
-        </div>
         <div id="card-pane" class="card-pane">
             <?php
             if (empty($params)){
@@ -62,18 +71,17 @@ FlashMessage::RenderFlashMessages();
                     </div>
                 </div>
             <?php } ?>
-            <?php foreach ($params as $key=>$row){?>
-            <?php if($row['Status'] == 2) {?>
-            <div class="card none detail-card" style="height: 300px;">
+            <?php foreach ($params as $row){?>
+            <div class="card none detail-card" style="height: 370px; width: 350px;">
                 <div class="card-body">
-                    <div class="card-title" style="font-size: 2em;"><?php echo $row['Campaign_Name'] ?></div>
-                    <div class="card-description" style="font-size: 1.2em;font-weight: 900;"><?php echo $row['Venue'] ?></div>
-                    <div class="card-description" style="font-size: 1.2em;font-weight: 900;"><?php echo $row['Campaign_Date'] ?></div><br>
-                    <div class="card-description bg-yellow-6 p-1" style="font-size: 1.5em;font-weight: 900;"><?php echo $row['Package_Name'] ?></div><br>
-                    <button class="btn btn-success" href="">Sponse</button>
+                    <div class="card-image" style="text-align: center;margin-left: 100px;width: 100px;height: 100px;margin-top: -50px;"><img src="../../../../public/images/donation.png" alt="hello"></div>
+                    <div class="card-title" style="font-size: 1.2em;font-weight: 900"><?php  echo $row['Campaign_Name']; ?></div>
+                    <div class="card-description" style="font-size: 1.2em;font-weight: 900;"><?php echo $row['Campaign_Date']; ?></div>
+                    <div class="card-description" style="font-size: 1.2em;font-weight: 900;"><?php echo $row['Requested_Package']; ?></div>
+                    <div class="card-description bg-yellow-7 p-1" style="font-size: 1.2em;font-weight: 900;">LKR. <?php echo $row['Package_Price']; ?></div>
+                    <button class="btn btn-success w-100 mt-1" href="#">Sponse</button>
                 </div>
             </div>
-                <?php } ?>
             <?php } ?>
         </div>
     </div>

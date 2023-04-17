@@ -3,10 +3,11 @@
 namespace App\controller;
 use App\middleware\sponsorMiddleware;
 use App\model\Authentication\Login;
+use App\model\Notification\OrganizationNotification;
+use App\model\Notification\SponsorNotification;
 use App\model\Requests\AttendanceAcceptedRequest;
 use App\model\Requests\SponsorshipRequest;
 use App\model\sponsor\campaigns_sponsors;
-use App\model\sponsor\sponsorship_packages;
 use App\model\sponsor\SponsorshipPackages;
 use App\model\users\organization;
 use App\model\Campaigns\Campaign;
@@ -156,26 +157,66 @@ class sponsorController extends Controller
     }
     public function MakeDonation(Request $request,Response $response)
     {
-        /* @var Campaign $campaign */
-        /* @var SponsorshipRequest $SponsorshipRequest */
-        if ($request->isPost()){
-            $UserID = Application::$app->getUser()->getID();
-            $CampaignID = $request->getBody()['cid'];
-            if (isset($CampaignID)){
-                $campaign = Campaign::findOne(['Campaign_ID' => $CampaignID]);
-                if ($campaign){
-                    $SponsorshipRequest = SponsorshipRequest::findOne(['Campaign_ID' => $CampaignID, 'Sponsorship_Status' => 2]);
-                    if ($SponsorshipRequest){
-                        $SuggestedPackage = SponsorshipRequest::getSuggestedPackage($SponsorshipRequest->getSponsorshipAmount());
-                        return json_encode(['status' => true, 'suggestedPackage' => $SuggestedPackage, 'campaign' => $campaign]);
-                    }else{
-                        return json_encode(['status' => false, 'message' => 'No Sponsorship Request Found']);
-                    }
-                }else{
-                    return json_encode(['status' => false, 'message' => 'No Campaign Found']);
-                }
+        /* @var SponsorshipRequest $campaign */
+        $today = date("Y-m-d");
+//        $conditions = ['Package_ID'];
+        /* @var Sponsor $sponsor*/
+        $campaigns = SponsorshipRequest::RetrieveAll(false,[],true,['Sponsorship_Status' => 2]);
+        $params = [];
+        foreach ($campaigns as $campaign){
+            $camp = Campaign::findOne(['Campaign_ID' => $campaign->getCampaignID()]);
+            $package = SponsorshipPackages::findOne(['Package_Price' => $campaign->getSponsorshipAmount()]);
+
+            if($camp->getCampaignDate() >= date('Y-m-d')){
+//                if($campaign->getSponsorshipDate() == ''){
+                    $params[] =[
+                      'Campaign_Name' => $camp->getCampaignName(),
+                      'Campaign_Date' => $camp->getCampaignDate(),
+                      'Requested_Package' => $package->getPackageName(),
+                      'Package_Price' => $package->getPackagePrice(),
+                    ];
+//                }
             }
         }
+        return $this->render('sponsors/donation',$params);
+//        $sponsor = sponsor::findOne(['Sponsor_ID' => Application::$app->getUser()->getID()]);
+//        $sponPack = sponsorship_packages::findOne(['Package_ID' => $sponsor->getPackageID()]);
+//        $pri = $sponPack->getPackagePrice();
+//        $result = Campaign::RetrieveAll(false, [], false);
+//        //check sponsored Campaigns
+//        $confirmsponse = campaigns_sponsors::RetrieveAll(false,[],true,['Sponsor_ID' => Application::$app->getUser()->getID()]);
+//        $par = [];
+        //initialize sponsored state
+//        $paid = 0;
+//        $params = [];
+//        foreach ($result as $campaign) {
+//            $packid = $campaign->getPackageID();
+//            $pack = sponsorship_packages::findOne(['Package_ID' => $packid]);
+//            $price = $pack->getPackagePrice();
+//            foreach ($confirmsponse as $con) {
+//                if ($con->getID() === $campaign->getCampaignID()) {
+//                    $paid = 1;
+//                }
+//            }
+//                if ($price <= $pri && $paid == 0 && $campaign->getCampaignDate() >= date("Y-m-d")) {
+//                    $params[] = [
+//                        'Campaign_Name' => $campaign->getCampaignName(),
+//                        'Campaign_Date' => $campaign->getCampaignDate(),
+//                        'Venue' => $campaign->getVenue(),
+//                        'Status' => $campaign->getStatus(),
+//                        'Campaign_ID' => $campaign->getCampaignID(),
+//                        'Package_Name' => $pack->getPackageName(),
+//                    ];
+//                } else {
+//                    $params = [];
+//                }
+//
+//        }
+//        print_r($params);
+//        exit();
+//        echo '<pre>';
+//        print_r($params);
+//        exit();
     }
 
 
@@ -267,7 +308,21 @@ class sponsorController extends Controller
         $notification = Notification::RetrieveAll(true,[$initial,$limit],true,['Target_User' => $id]);
         return $this->render('Manager/Notification',['model'=>$notification,'total_pages'=>$total_pages,'current_page'=>$page]);
     }
-
+    public function GetNotification(Request $request,Response $response): string
+    {
+        if ($request->isPost()){
+            $Notifications=SponsorNotification::RetrieveAll(false,[],true,['Target_ID'=>Application::$app->getUser()->getId()],['Notification_Date'=>'ASC']);
+            if ($Notifications){
+                $Notifications = array_map(function ($object) {
+                    return $object->toArray();
+                }, $Notifications);
+            }
+            return json_encode([
+                'status'=>true,
+                'notifications'=>$Notifications
+            ]);
+        }
+    }
     public function upload(Request $request, Response $response)
     {
         $folderPath = Application::$ROOT_DIR."/public/upload/test/";
@@ -280,5 +335,42 @@ class sponsorController extends Controller
         file_put_contents($file, $image_base64);
         return json_encode($file);
     }
+    public function ChangeProfileImage(Request $request,Response $response)
+    {
+        /* @var $sponsor Sponsor*/
 
+        if($request->isPost()){
+
+            $UserID= Application::$app->getUser()->getId();
+            $sponsor = Sponsor::findOne(['Sponsor_ID'=>$UserID]);
+            $ExistingFile = $sponsor->getProfileImage();
+            $File=$request->getBody()['profileImage'];
+            if($File) {
+                $File->setPath('Profile/Sponsor');
+                $filename = $File->GenerateFileName('SPN_');
+                $sponsor->setProfileImage($filename);
+                if ($sponsor->update($sponsor->getID(), [], ['Profile_Image'])){
+                    $File->saveFile();
+                    File::DeleteFileByPath($ExistingFile);
+                    return json_encode([
+                        'status' => true,
+                        'filename' => $filename,
+                        'data' => $File,
+                        'message' => 'File Selected!'
+                    ]);
+                }else{
+                    return json_encode([
+                        'status'=>false,
+                        'message'=>'File Not Selected!'
+                    ]);
+                }
+            }else{
+                return json_encode([
+                    'status'=>false,
+                    'message'=>'No File Selected!'
+                ]);
+            }
+        }
+
+    }
 }

@@ -22,6 +22,7 @@ class SponsorNotification extends \App\model\database\dbModel
 
     public static function tableName(): string
     {
+        return 'sponsornotification';
         // TODO: Implement tableName() method.
     }
 
