@@ -3,9 +3,13 @@
 namespace App\controller;
 use App\middleware\sponsorMiddleware;
 use App\model\Authentication\Login;
+use App\model\Notification\OrganizationNotification;
+use App\model\Notification\SponsorNotification;
 use App\model\Requests\AttendanceAcceptedRequest;
+use App\model\Requests\SponsorshipRequest;
 use App\model\sponsor\campaigns_sponsors;
 use App\model\sponsor\sponsorship_packages;
+use App\model\sponsor\SponsorshipPackages;
 use App\model\users\organization;
 use App\model\Campaigns\Campaign;
 use App\model\users\Sponsor;
@@ -154,28 +158,35 @@ class sponsorController extends Controller
     }
     public function donation()
     {
-        /* @var Campaign $campaign */
+        /* @var SponsorshipRequest $campaign */
         $today = date("Y-m-d");
 //        $conditions = ['Package_ID'];
         /* @var Sponsor $sponsor*/
-        $campaigns = Campaign::RetrieveAll(false,[],false);
+        $campaigns = SponsorshipRequest::RetrieveAll(false,[],true,['Sponsorship_Status' => 2]);
         $params = [];
         foreach ($campaigns as $campaign){
-            if($campaign->getCampaignDate() > date('Y-m-d')){
-                $params[] = [
-                    'Campaign_Name' => $campaign->getCampaignName(),
-                    'Campaign_Date' => $campaign->getCampaignDate(),
-//                    'Campaign_Date' => $campaign->getCampaignDate(),
-                ];
+            $camp = Campaign::findOne(['Campaign_ID' => $campaign->getCampaignID()]);
+            $package = SponsorshipPackages::findOne(['Package_Price' => $campaign->getSponsorshipAmount()]);
+
+            if($camp->getCampaignDate() >= date('Y-m-d')){
+//                if($campaign->getSponsorshipDate() == ''){
+                    $params[] =[
+                      'Campaign_Name' => $camp->getCampaignName(),
+                      'Campaign_Date' => $camp->getCampaignDate(),
+                      'Requested_Package' => $package->getPackageName(),
+                      'Package_Price' => $package->getPackagePrice(),
+                    ];
+//                }
             }
         }
+        return $this->render('sponsors/donation',$params);
 //        $sponsor = sponsor::findOne(['Sponsor_ID' => Application::$app->getUser()->getID()]);
 //        $sponPack = sponsorship_packages::findOne(['Package_ID' => $sponsor->getPackageID()]);
 //        $pri = $sponPack->getPackagePrice();
 //        $result = Campaign::RetrieveAll(false, [], false);
 //        //check sponsored Campaigns
 //        $confirmsponse = campaigns_sponsors::RetrieveAll(false,[],true,['Sponsor_ID' => Application::$app->getUser()->getID()]);
-        $par = [];
+//        $par = [];
         //initialize sponsored state
 //        $paid = 0;
 //        $params = [];
@@ -204,7 +215,9 @@ class sponsorController extends Controller
 //        }
 //        print_r($params);
 //        exit();
-        return $this->render('sponsors/donation',['params'=>$params]);
+//        echo '<pre>';
+//        print_r($params);
+//        exit();
     }
     public function report()
     {
@@ -296,7 +309,21 @@ class sponsorController extends Controller
         $notification = Notification::RetrieveAll(true,[$initial,$limit],true,['Target_User' => $id]);
         return $this->render('Manager/Notification',['model'=>$notification,'total_pages'=>$total_pages,'current_page'=>$page]);
     }
-
+    public function GetNotification(Request $request,Response $response): string
+    {
+        if ($request->isPost()){
+            $Notifications=SponsorNotification::RetrieveAll(false,[],true,['Target_ID'=>Application::$app->getUser()->getId()],['Notification_Date'=>'ASC']);
+            if ($Notifications){
+                $Notifications = array_map(function ($object) {
+                    return $object->toArray();
+                }, $Notifications);
+            }
+            return json_encode([
+                'status'=>true,
+                'notifications'=>$Notifications
+            ]);
+        }
+    }
     public function upload(Request $request, Response $response)
     {
         $folderPath = Application::$ROOT_DIR."/public/upload/test/";
@@ -309,5 +336,42 @@ class sponsorController extends Controller
         file_put_contents($file, $image_base64);
         return json_encode($file);
     }
+    public function ChangeProfileImage(Request $request,Response $response)
+    {
+        /* @var $sponsor Sponsor*/
 
+        if($request->isPost()){
+
+            $UserID= Application::$app->getUser()->getId();
+            $sponsor = Sponsor::findOne(['Sponsor_ID'=>$UserID]);
+            $ExistingFile = $sponsor->getProfileImage();
+            $File=$request->getBody()['profileImage'];
+            if($File) {
+                $File->setPath('Profile/Sponsor');
+                $filename = $File->GenerateFileName('SPN_');
+                $sponsor->setProfileImage($filename);
+                if ($sponsor->update($sponsor->getID(), [], ['Profile_Image'])){
+                    $File->saveFile();
+                    File::DeleteFileByPath($ExistingFile);
+                    return json_encode([
+                        'status' => true,
+                        'filename' => $filename,
+                        'data' => $File,
+                        'message' => 'File Selected!'
+                    ]);
+                }else{
+                    return json_encode([
+                        'status'=>false,
+                        'message'=>'File Not Selected!'
+                    ]);
+                }
+            }else{
+                return json_encode([
+                    'status'=>false,
+                    'message'=>'No File Selected!'
+                ]);
+            }
+        }
+
+    }
 }

@@ -1,4 +1,4 @@
-DROP database IF EXISTS bepositive;
+# DROP database IF EXISTS bepositive;
 CREATE DATABASE IF NOT EXISTS `bepositive` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
 use bepositive;
 

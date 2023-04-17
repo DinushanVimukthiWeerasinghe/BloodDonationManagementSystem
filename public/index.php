@@ -141,7 +141,8 @@ $app->router->post('/user/change-password', [authController::class, 'ChangePassw
     $app->router->get('/sponsor/donation', [sponsorController::class, 'donation']);
     $app->router->get('/sponsor/campDetails', [sponsorController::class, 'campDetails']);
     $app->router->get('/sponsor/guideline', [sponsorController::class, 'guideline']);
-
+    $app->router->post('/sponsor/notification', [SponsorController::class, 'GetNotification']);
+    $app->router->post('/sponsor/changeProfile', [SponsorController::class, 'ChangeProfileImage']);
     $app->router->get('/gmp', [siteController::class, 'gmap']);
 
 

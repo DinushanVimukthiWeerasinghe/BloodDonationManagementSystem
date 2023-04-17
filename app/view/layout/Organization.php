@@ -98,7 +98,7 @@ $User = Application::$app->getUser();
                      <div id="profile" class="d-flex flex-column w-100">
                             <div class="d-flex flex-column flex-center gap-1 max-h-80vh w-100">
                                 <div class="d-flex w-100 justify-content-center">
-                                    <img id="profileImage" src="<?= $User->getProfileImage()?>" alt="" width=300px height=300px class="border-1 border-radius-50 " style="object-fit:cover"/>
+                                    <img id="profileImage" src="<?= $User->getProfileImage()?>" alt="" width=200px height=200px class="border-1 border-radius-50 " style="object-fit:cover"/>
 
                                  </div>
                                  <button class="btn btn-success d-flex align-items-center font-bold" onclick="ChangeProfileImage()"><span><img src="/public/icons/camera.svg" alt="" width="24px" class="cursor invert-100" onclick="EditProfile()"></span> &nbsp;Change Profile Image</button>

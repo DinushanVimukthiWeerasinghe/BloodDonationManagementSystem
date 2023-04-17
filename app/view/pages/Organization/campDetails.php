@@ -25,54 +25,102 @@ $background = new BackGroundImage();
 echo $background;
 FlashMessage::RenderFlashMessages();
 ?>
-<div class="d-flex flex-column w-90  mt-3 p-5 scroll">
-    <div class="d-flex text-xl w-100 align-items-center justify-content-center bg-dark px-2 py-0-5 text-white font-bold" style="font-size: 1.8rem"><?=$campaign->getCampaignName(); ?></div>
-        <div class="d-flex bg-white-0-3 p-2 gap-2 details w-100 justify-content-between">
-            <div class="text-xl d-flex flex-column justify-content-center align-items-center w-100 bg-white border-radius-10 gap-1 p-3" id="Campaign_Detail">
-                <div class="d-flex justify-content-between w-100" id="Campaign_Name">
+<style>
+    @media only screen and (max-width: 394px) {
+        .intro{
+            display: flex;
+            flex-direction: column;
+            text-align: center;
+        }
+    }
+    @media only screen and (max-width: 830px) {
+        #Campaign_Detail {
+            min-width: 50vw;
+        }
+    }
+    @media only screen and (max-width: 455px) and (min-width: 310px) {
+        #Campaign_Detail {
+            min-width: 70vw;
+        }
+        .reqcards{
+            margin-left: 50px;
+        }
+    }
+    @media only screen and (max-width: 1025px) and (min-width: 1023px) {
+        /*#Campaign_Detail {*/
+        /*    min-width: 70vw;*/
+        /*}*/
+        .reqcards{
+            margin-left: 100px;
+        }
+    }
+    @media only screen and (max-width: 1281px) and (min-width: 1279px) {
+        /*#Campaign_Detail {*/
+        /*    min-width: 70vw;*/
+        /*}*/
+        .reqcards{
+            margin-left: 80px;
+        }
+    }
+    @media only screen and (max-width: 857px) and (min-width: 845px){
+        .reqcards{
+            margin-left: 200px;
+        }
+    }
+    @media only screen and (max-width: 770px) and (min-width: 768px){
+        .reqcards{
+            margin-left: 100px;
+        }
+    }
+</style>
+<div class="d-flex flex-column w-90  p-1" style="overflow-y: scroll;">
+<!--    <div class="d-flex text-xl w-100 align-items-center justify-content-center bg-dark px-2 py-0-5 text-white font-bold" style="font-size: 1.8rem">--><?php //=$campaign->getCampaignName(); ?><!--</div>-->
+        <div class="d-flex bg-white-0-3 p-2 gap-2 details w-100 justify-content-center" style="flex-wrap: wrap;">
+            <div class="text-xl d-flex flex-column justify-content-center align-items-center w-50 bg-white border-radius-10 gap-1 p-3 mt-3"  id="Campaign_Detail" style="flex-wrap: wrap;">
+                <div class="d-flex justify-content-between w-100 intro" id="Campaign_Name">
                     <div class="w-40">Campaign Name </div>
                     <div class="font-bold w-60 d-flex align-items-center justify-content-start text-right"><?=$campaign->getCampaignName(); ?></div>
                 </div>
-                <div class="d-flex w-100 justify-content-between" id="Campaign_Venue">
+                <div class="d-flex w-100 justify-content-between intro" id="Campaign_Venue">
                     <div class="w-40">Venue </div>
                     <div class="font-bold w-60 d-flex align-items-center justify-content-start text-right"><?=$campaign->getVenue(); ?></div>
                 </div>
-                <div class="d-flex w-100 justify-content-between" id="Campaign_Date">
+                <div class="d-flex w-100 justify-content-between intro" id="Campaign_Date">
                     <div class="w-40">Date </div>
                     <div class="font-bold w-60 d-flex align-items-center justify-content-start text-right"><?= Date::GetProperDate($campaign->getCampaignDate()); ?></div>
                 </div>
-                <div class="d-flex w-100 justify-content-between" id="Campaign_Status">
+                <div class="d-flex w-100 justify-content-between intro" id="Campaign_Status">
                     <div class="w-40">Status </div>
                     <div class="font-bold w-60 d-flex align-items-center justify-content-start text-right">
                     <?php
                     $CampaignStatus =$campaign->getCampaignStatus();
                     if($CampaignStatus === "Pending"): ?>
-                        <div class="font-bold bg-yellow-10 py-0-5 px-1 border-radius-10 text-white " >Pending Approval</div>
+                        <div class="font-bold bg-yellow-10 py-0-5 px-1 border-radius-10 text-white intro" >Pending Approval</div>
                     <?php elseif($CampaignStatus === 'Approved'): ?>
-                        <div class="font-bold bg-green-6 py-0-5 px-1 border-radius-10 text-white">Campaign Approved</div>
+                        <div class="font-bold bg-green-6 py-0-5 px-1 border-radius-10 text-white intro">Campaign Approved</div>
                     <?php elseif($CampaignStatus === 'Rejected'): ?>
-                        <div class="font-bold bg-red-6 py-0-5 px-1 border-radius-10 text-white">Campaign Rejected</div>
+                        <div class="font-bold bg-red-6 py-0-5 px-1 border-radius-10 text-white intro">Campaign Rejected</div>
                     <?php endif;
                     ?>
                     </div>
                 </div>
-                <div class="d-flex flex-column w-100 justify-content-between gap-1" id="Campaign_Date">
+                <div class="d-flex flex-column w-100 justify-content-between gap-1 intro" id="Campaign_Date">
                     <div class="">Description </div>
                     <div class="font-bold px-1 ">
                         <?=$campaign->getCampaignDescription(); ?>
                     </div>
                 </div>
 
-                <?php if(isset($expired) &&  $expired== 1) { ?>
-                <div class="d-flex gap-6" id="Campaign_Status">
-                    <div class="">Received Income</div>
-                    <div class="font-bold" style="padding: 0 5px "></div>
-                </div>
-                <div class="d-flex gap-6" id="Campaign_Status">
-                    <div class="">Donor Participation</div>
-                    <div class="font-bold" style="padding: 0 5px "></div>
-                </div>
-                <?php } ?>
+<!--                --><?php //if(isset($expired) &&  $expired== 1) { ?>
+<!--                <div class="d-flex gap-6" id="Campaign_Status">-->
+<!--                    <div class="">Received Income</div>-->
+<!--                    <div class="font-bold" style="padding: 0 5px "></div>-->
+<!--                </div>-->
+<!--                <div class="d-flex gap-6" id="Campaign_Status">-->
+<!--                    <div class="">Donor Participation</div>-->
+<!--                    <div class="font-bold" style="padding: 0 5px "></div>-->
+<!--                </div>-->
+<!--                --><?php //} ?>
                 <?php if(isset($disable) &&  $disable== 1) {?>
                     <div style="text-align: center;display: flex;flex-direction: row;gap: 20px;margin-left: 30vh;">
                         <a href="/organization/campaign/updateCampaign?id=<?php echo $_GET['id']?>"><button class="btn btn-success w-100">Update Campaign</button></a>
@@ -80,11 +128,11 @@ FlashMessage::RenderFlashMessages();
                     </div>
                 <?php } ?>
             </div>
-            <div id="Map" class="bg-red-1" style="width: 500px;height: 400px;"></div>
+            <div id="Map" class="bg-red-1 mt-5" style="width: 500px;height: 300px;"></div>
         </div>
     <?php if($campaign->getVerified()===Campaign::VERIFIED) { ?>
-        <div class="d-flex flex-wrap cards justify-content-center bg-white-0-3 py-1 mt-1">
-        <div class="d-flex cards mt-2">
+        <div class="d-flex flex-wrap cards justify-content-center bg-white-0-3 py-1">
+        <div class="d-flex cards text-center  reqcards" style="margin-top: -10px;flex-wrap: wrap">
             <div class="card nav-card bg-white text-dark" onclick="RequestSponsorship()">
                 <div class="card-header">
                     <div class="card-header-img">
@@ -95,7 +143,7 @@ FlashMessage::RenderFlashMessages();
                     </div>
                 </div>
             </div>
-            <div class="card nav-card bg-white text-dark" onclick="Redirect('received?id=<?php echo $id ?>')">
+            <div class="card nav-card bg-white text-dark" onclick="ReceivedSponsorship()">
                 <div class="card-header">
                     <div class="card-header-img">
                         <img src="/public/images/icons/organization/campaignDetails/received.png" alt="Received" width="100px">
@@ -159,6 +207,18 @@ FlashMessage::RenderFlashMessages();
     <?php } ?>
 </div>
 <script>
+    const ReceivedSponsorship = () =>{
+        const url = '/organization/received';
+        fetch(url,{
+            method: 'POST',
+        }).then(res=>res.json())
+            .then((data)=> {
+                let Sponsorship_Amount = "";
+                if (data.status) {
+                    console.log(data);
+                }
+            })
+    }
     const RequestSponsorship = ()=>{
         const url ='/organization/getBankDetails';
         fetch(url,{
@@ -315,6 +375,7 @@ FlashMessage::RenderFlashMessages();
 
             })
     }
+
     function initMap(){
         const Campaign = {lat: <?php echo $campaign->getLatitude()?>, lng: <?php echo $campaign->getLongitude()?>};
         // console.log(Campaign)
