@@ -246,7 +246,10 @@ abstract class Person extends dbModel
      */
     public function getContactNo(): string
     {
-        return $this->Contact_No;
+        if ($this->Contact_No){
+            return $this->Contact_No;
+        }
+        return 'Not Available';
     }
 
     /**

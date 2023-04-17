@@ -13,6 +13,9 @@ class SponsorshipRequest extends \App\model\database\dbModel
     const STATUS_APPROVED = 2;
     const STATUS_REJECTED = 3;
     const STATUS_COMPLETED = 4;
+    const STATUS_EXPIRED = 5;
+    const TRANSFERRING_PENDING = 1;
+    const TRANSFERRING_COMPLETED = 2;
     protected string $Sponsorship_ID='';
     protected string $Campaign_ID='';
     protected int $Sponsorship_Amount=0;
@@ -20,6 +23,10 @@ class SponsorshipRequest extends \App\model\database\dbModel
     protected int $Sponsorship_Status=1;
     protected string $Description='';
     protected string $Report='';
+    protected ?string $Sponsor_ID=null;
+    protected ?string $Sponsored_At=null;
+    protected ?string $Transferred=null;
+    protected ?string $Transferred_At=null;
 
     /**
      * @return string
@@ -35,6 +42,70 @@ class SponsorshipRequest extends \App\model\database\dbModel
     public function setReport(string $Report): void
     {
         $this->Report = $Report;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getSponsorID(): ?string
+    {
+        return $this->Sponsor_ID;
+    }
+
+    /**
+     * @param string|null $Sponsor_ID
+     */
+    public function setSponsorID(?string $Sponsor_ID): void
+    {
+        $this->Sponsor_ID = $Sponsor_ID;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getSponsoredAt(): ?string
+    {
+        return $this->Sponsored_At;
+    }
+
+    /**
+     * @param string|null $Sponsored_At
+     */
+    public function setSponsoredAt(?string $Sponsored_At): void
+    {
+        $this->Sponsored_At = $Sponsored_At;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getTransferred(): ?string
+    {
+        return $this->Transferred;
+    }
+
+    /**
+     * @param string|null $Transferred
+     */
+    public function setTransferred(?string $Transferred): void
+    {
+        $this->Transferred = $Transferred;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getTransferredAt(): ?string
+    {
+        return $this->Transferred_At;
+    }
+
+    /**
+     * @param string|null $Transferred_At
+     */
+    public function setTransferredAt(?string $Transferred_At): void
+    {
+        $this->Transferred_At = $Transferred_At;
     }
 
 
@@ -155,7 +226,16 @@ class SponsorshipRequest extends \App\model\database\dbModel
         return Campaign::findOne(['Campaign_ID'=>$this->Campaign_ID])->getCampaignDate();
     }
 
-    public static function getSuggestedPackage($Amount): bool|array
+    public function Sponsor(string $SponsorID): void
+    {
+        $this->Sponsor_ID = $SponsorID;
+        $this->Sponsored_At = date('Y-m-d H:i:s');
+        $this->Sponsorship_Status = self::STATUS_COMPLETED;
+        $this->Transferred = self::TRANSFERRING_PENDING;
+        $this->update($this->getSponsorshipID(),[],['Sponsor_ID','Sponsored_At','Sponsorship_Status','Transferred']);
+    }
+
+    public static function getSuggestedPackage($Amount) : SponsorshipPackages | bool
     {
         $Packages= SponsorshipPackages::RetrieveAll();
         return array_filter($Packages, function ($package) use ($Amount) {
@@ -171,7 +251,7 @@ class SponsorshipRequest extends \App\model\database\dbModel
                     return false;
             else
                 return false;
-        });
+        })[0] ?? false;
 
     }
 
@@ -182,7 +262,7 @@ class SponsorshipRequest extends \App\model\database\dbModel
     }
     public function getOrganizationID()
     {
-        return Campaign::findOne(['Campaign_ID'=>$this->Campaign_ID])->getOrganizationID();
+        return Campaign::findOne(['Campaign_ID'=>$this->Campaign_ID])?->getOrganizationID();
     }
 
     public function getOrganizationEmail()
@@ -238,7 +318,11 @@ class SponsorshipRequest extends \App\model\database\dbModel
             'Sponsorship_Date',
             'Sponsorship_Status',
             'Description',
-            'Report'
+            'Report',
+            'Transferred',
+            'Transferred_At',
+            'Sponsor_ID',
+            'Sponsored_At'
         ];
     }
 }

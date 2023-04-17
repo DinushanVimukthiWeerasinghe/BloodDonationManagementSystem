@@ -13,6 +13,7 @@ class SponsorshipPackages extends \App\model\database\dbModel
     protected string $Created_At='';
     protected ?string $Updated_By='';
     protected ?string $Updated_At='';
+    protected string $Package_Price_ID='';
 
     /**
      * @return string
@@ -201,6 +202,26 @@ class SponsorshipPackages extends \App\model\database\dbModel
     public function getPackagePrice(): string
     {
         return $this->Package_Price;
+    }
+
+    public function getPackagePriceFormatted(): string
+    {
+        return number_format($this->Package_Price, 2);
+    }
+
+    /**
+     * @param string $Package_Price_ID
+     */
+    public function setPackagePriceID(string $Package_Price_ID): void
+    {
+        $this->Package_Price_ID = $Package_Price_ID;
+    }
+
+
+
+    public function getPackagePriceID(): string
+    {
+        return $this->Package_Price_ID;
     }
 
     /**

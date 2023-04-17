@@ -142,6 +142,7 @@ $app->router->post('/user/change-password', [authController::class, 'ChangePassw
 
     $app->router->get('/sponsor/dashboard', [sponsorController::class, 'dashboard']);
     $app->router->get('/sponsor/test', [sponsorController::class, 'Test']);
+    $app->router->get('/sponsor/makePayment', [sponsorController::class, 'MakePayment']);
     $app->router->post('/sponsor/makePayment', [sponsorController::class, 'MakePayment']);
     $app->router->get('/sponsor/history', [sponsorController::class, 'history']);
     $app->router->get('/sponsor/manage', [sponsorController::class, 'manage']);

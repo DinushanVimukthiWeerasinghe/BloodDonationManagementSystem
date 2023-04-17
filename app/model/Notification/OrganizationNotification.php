@@ -10,6 +10,7 @@ class OrganizationNotification extends \App\model\database\dbModel
     const STATE_PENDING = 1;
     const TYPE_CAMPAIGN = 1;
     const TYPE_SPONSORSHIP_REQUEST = 3;
+    const TYPE_SPONSORSHIP = 4;
     protected string $Notification_ID='';
     protected string $Notification_Type='';
     protected string $Notification_Title='';
@@ -137,6 +138,20 @@ class OrganizationNotification extends \App\model\database\dbModel
     public function getValidUntil(): string
     {
         return $this->Valid_Until;
+    }
+
+    public static function CreateNewSponsorshipAcceptedRequest($Organization_ID): bool
+    {
+        $notification = new self();
+        $notification->setNotificationID(self::generateID("ON_"));
+        $notification->setNotificationType(self::TYPE_SPONSORSHIP_REQUEST);
+        $notification->setNotificationTitle('Sponsorship Request Accepted');
+        $notification->setNotificationMessage('Your sponsorship request has been accepted');
+        $notification->setNotificationDate(date('Y-m-d H:i:s'));
+        $notification->setNotificationState(self::STATE_PENDING);
+        $notification->setTargetID($Organization_ID);
+        $notification->setValidUntil(date('Y-m-d H:i:s', strtotime('+1 month')));
+        return $notification->save();
     }
 
     /**

@@ -21,6 +21,11 @@ abstract class dbModel extends Model
         return $this->errors;
     }
 
+    public static function generateID($param="")
+    {
+        return uniqid($param);
+    }
+
 //    abstract public function getPrimaryKey(): string;
     /**
      * @param string $id
