@@ -19,20 +19,30 @@ use Core\middleware\AuthenticationMiddleware;
 use Core\Request;
 use Core\Response;
 
+
 class donorController extends Controller
 {
+
     public function __construct(){
         $this->layout = "Donor";
         $this->registerMiddleware(new donorMiddleware(['dashboard'], BaseMiddleware::FORBIDDEN_ROUTES));
+        if($_SESSION['pop'] == 1){
+            $_SESSION['pop'] = 1;
+        }
+        else{
+            $_SESSION['pop'] = 0;
+        }
     }
 
     public function dashboard(): string
     {
         /* @var Donor $donor*/
         $donor = Donor::findOne(['Donor_ID' => Application::$app->getUser()->getID()]);
+
         $data=[
             'firstName'=>$donor->getFirstName(),
-            'lastName'=>$donor->getLastName()
+            'lastName'=>$donor->getLastName(),
+            'state' => $donor->getDonationAvailability()
         ];
       //  print_r($data);
       //  exit();
@@ -157,4 +167,15 @@ class donorController extends Controller
         $response->redirect('/donor/profile');
     }
 
+    public function loginPrompt(Request $request, Response $response): string
+    {
+        if ($request->isPost()){
+            $donor = Donor::findOne(['Donor_ID' => Application::$app->getUser()->getID()]);
+            if (count($request->getBody() ) == 0){
+                Donor::updateOne(['Donor_ID' => Application::$app->getUser()->getID()], ['Donation_Availability' => 0]);
+            }
+        }
+        $_SESSION['pop'] = 1;
+        return $this->render('Donor/Dashboard', ['formPop' => $this->formPop] );
+    }
 }

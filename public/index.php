@@ -14,7 +14,6 @@ use App\controller\siteController;
 use App\controller\sponsorController;
 use Core\Application;
 
-
 require_once __DIR__ . '/../vendor/autoload.php';
 $dotenv = Dotenv\Dotenv::createImmutable(dirname(__DIR__));
 $dotenv->load();
@@ -93,6 +92,11 @@ try {
     $app->router->get('/admin/dashboard/manageSetting', [adminController::class, 'manageSetting']);
     $app->router->get('/admin/dashboard/manageTransactions', [adminController::class, 'manageTransactions']);
     $app->router->get('/admin/dashboard/manageBanks', [adminController::class, 'manageBanks']);
+    $app->router->post('/admin/dashboard/manageBanks/edit', [adminController::class, 'editBank']);
+    $app->router->post('/admin/dashboard/manageBanks/delete', [adminController::class, 'deleteBank']);
+    $app->router->post('/admin/dashboard/manageBanks/add', [adminController::class, 'addNewBank']);
+    $app->router->post('/admin/dashboard/manageBanks/search', [adminController::class, 'searchBank']);
+
 
     $app->router->post('/user/resetPassword', [adminController::class, 'ResetPassword']);
     $app->router->post('/user/removeUser', [adminController::class, 'RemoveUser']);
@@ -335,6 +339,7 @@ $app->router->post('/donor/profile/edit', [donorController::class, 'editDetails'
     $app->router->get('/donor/history', [donorController::class, 'history']);
     $app->router->get('/donor/nearby', [donorController::class, 'nearby']);
     $app->router->get('/donor/verify', [donorController::class, 'nearby']);
+$app->router->post('/donor/profile/loginPrompt', [donorController::class, 'loginPrompt']);
 
 
     $app->router->get('/hospital/bloodRequest/addRequest', [hospitalController::class, 'addBloodRequest']);

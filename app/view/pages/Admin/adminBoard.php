@@ -1,4 +1,3 @@
-
 <div class="information-cards d-flex justify-content-center align-items-center bg-white-0-5">
         <div class="card card-sm bg-white border border-radius-5 d-flex align-center flex-row justify-content-center">
             <div class="card-header">
