@@ -111,6 +111,7 @@ FlashMessage::RenderFlashMessages();
                 });
             });
     }
+
     const Register = ()=>{
         const Email = document.getElementById('email').value;
         const Password = document.getElementById('password').value;
@@ -191,11 +192,11 @@ FlashMessage::RenderFlashMessages();
                     <div class="d-flex font-bold">Enter OTP Below</div>
                     <div class="d-flex ml-2 w-100">
                         <div class="d-flex w-100 justify-content-center gap-1">
-                            <input type="text" name="OTP[]" id="otp" class="" style="height: 50px;width: 50px;border-radius: 10px;border:2px solid black;font-size: larger;text-align: center">
-                            <input type="text" name="OTP[]" id="otp" class="" style="height: 50px;width: 50px;border-radius: 10px;border:2px solid black;font-size: larger;text-align: center">
-                            <input type="text" name="OTP[]" id="otp" class="" style="height: 50px;width: 50px;border-radius: 10px;border:2px solid black;font-size: larger;text-align: center">
-                            <input type="text" name="OTP[]" id="otp" class="" style="height: 50px;width: 50px;border-radius: 10px;border:2px solid black;font-size: larger;text-align: center">
-                            <input type="text" name="OTP[]" id="otp" class="" style="height: 50px;width: 50px;border-radius: 10px;border:2px solid black;font-size: larger;text-align: center">
+                            <input type="text" name="OTP[]" id="otp" class="" maxlength="1" style="height: 50px;width: 50px;border-radius: 10px;border:2px solid black;font-size: larger;text-align: center">
+                            <input type="text" name="OTP[]" id="otp" class="" maxlength="1" style="height: 50px;width: 50px;border-radius: 10px;border:2px solid black;font-size: larger;text-align: center">
+                            <input type="text" name="OTP[]" id="otp" class="" maxlength="1" style="height: 50px;width: 50px;border-radius: 10px;border:2px solid black;font-size: larger;text-align: center">
+                            <input type="text" name="OTP[]" id="otp" class="" maxlength="1" style="height: 50px;width: 50px;border-radius: 10px;border:2px solid black;font-size: larger;text-align: center">
+                            <input type="text" name="OTP[]" id="otp" class="" maxlength="1" style="height: 50px;width: 50px;border-radius: 10px;border:2px solid black;font-size: larger;text-align: center">
                         </div>
                     </div>
                     <div class="d-flex flex-column align-items-center justify-content-center">
@@ -228,39 +229,38 @@ FlashMessage::RenderFlashMessages();
                     .then(data => {
                         console.log(data)
                         if (data.status){
-                            OpenDialogBox({
-                                id: 'register',
-                                popupOrder: 2,
-                                title: 'Add User Details',
-                                content: `
-                                    <div class="d-flex flex-column justify-content-center align-items-center gap-1">
-                                        <div class="d-flex">Email: ${Email}</div>
-                                        <div class="d-flex">Password: ${Password}</div>
-                                        <div class="d-flex">Confirm Password: ${ConfirmPassword}</div>
-                                        <div class="d-flex">Role: ${Role}</div>
-                                    </div>
-                                `
-                            })
-                            // const formData = new FormData();
-                            // formData.append('Email', Email);
-                            // formData.append('Password', Password);
-                            // formData.append('ConfirmPassword',ConfirmPassword);
-                            // formData.append('Role', Role);
-                            // const RegisterUrl = '/register';
-                            // fetch(RegisterUrl, {
-                            //     method: 'POST',
-                            //     body: formData
-                            // }).then(response => response.json())
-                            //     .then(data => {
-                            //         if (data.status){
-                            //
-                            //         }else{
-                            //             ShowToast({
-                            //                 message: data.message,
-                            //                 type: 'danger'
-                            //             });
-                            //         }
-                            //     })
+                            const formData = new FormData();
+                            formData.append('Email', Email);
+                            formData.append('Password', Password);
+                            formData.append('ConfirmPassword',ConfirmPassword);
+                            formData.append('Role', Role);
+                            const RegisterUrl = '/register';
+                            fetch(RegisterUrl, {
+                                method: 'POST',
+                                body: formData
+                            }).then(response => response.json())
+                                .then(data => {
+                                    if (data.status){
+                                        console.log(data)
+                                        // wrap up the encrypted uid get parameter from url
+                                        let redirect = data.redirect;
+                                        // extract the encrypted uid from the url
+                                        let encrypted_uid = redirect.split('=')[1];
+                                        // encode the encrypted uid
+                                        encrypted_uid = encodeURIComponent(encrypted_uid);
+                                        // replace the encrypted uid with the encoded encrypted uid
+                                        redirect = redirect.replace(redirect.split('=')[1], encrypted_uid);
+                                        console.log(redirect)
+
+                                        window.location.href = `${redirect}}`;
+
+                                    }else{
+                                        ShowToast({
+                                            message: data.message,
+                                            type: 'danger'
+                                        });
+                                    }
+                                })
                         }else{
                             ShowToast({
                                 message: data.message,

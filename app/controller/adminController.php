@@ -163,8 +163,13 @@ class adminController extends \Core\Controller
 
     public function ReactivateUser(Request $request, Response $response): bool|string
     {
+        /** @var  $user User */
+        $DateAndTime = date('Y-m-d H:i:s');
         if ($request->isPost()){
             $id=trim($request->getBody()['id']);
+            if (empty($id)){
+                return json_encode(['status'=>false,'message'=>'User Not Found']);
+            }
             $user=User::findOne(['UID'=>$id]);
             $Role=$user->getRole();
             if (!$user)

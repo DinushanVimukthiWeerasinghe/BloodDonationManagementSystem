@@ -21,6 +21,11 @@ abstract class dbModel extends Model
         return $this->errors;
     }
 
+    public static function generateID($param="")
+    {
+        return uniqid($param);
+    }
+
 //    abstract public function getPrimaryKey(): string;
     /**
      * @param string $id
@@ -281,6 +286,7 @@ abstract class dbModel extends Model
                 if (in_array($attribute, $Include)) {
                     $demo .= $attribute . '="' . $this->{$attribute} . '", ';
                 }
+
             }
         }else {
             foreach ($attributes as $attribute) {
@@ -302,7 +308,9 @@ abstract class dbModel extends Model
             }
             $demo=substr($demo,0,-4);
         }
+
         $statement=self::prepare($demo);
+
         $statement->execute();
         return true;
     }

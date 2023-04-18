@@ -403,6 +403,8 @@ class Campaign extends dbModel
             'Nearest_City' => [self::RULE_REQUIRED],
             'Status' => [self::RULE_REQUIRED],
             'Nearest_BloodBank' => [self::RULE_REQUIRED],
+            'Latitude' => [self::RULE_REQUIRED],
+            'Longitude' => [self::RULE_REQUIRED],
         ];
     }
 
@@ -447,7 +449,7 @@ class Campaign extends dbModel
      */
     public function getExpectedAmount(): string
     {
-        return $this->Expected_Amount;
+        return $this->Expected_Amount ?? '0';
     }
 
     /**

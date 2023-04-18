@@ -18,8 +18,8 @@ $navbar = new AuthNavbar('Create Campaign', '#', '/public/images/icons/navbar/be
 echo $navbar;
 echo $background;
 ?>
-<div class=" d-flex align-item-center justify-content-center p-1 w-100 h-100">
-    <form action="create" method="post" class="d-flex flex-column p-3 bg-white-0-7 border-radius-10 text-xl w-50 gap-1">
+<div class=" d-flex flex-column bg-white-0-7 border-radius-10 align-item-center justify-content-center w-50 p-1 h-100">
+    <form id="form" action="create" method="post" class="d-flex flex-column p-3 text-xl w-100 gap-1">
         <div class="bg-dark py-0-5 px-2 text-center text-white"> Fill Campaign Details</div>
         <div class="d-flex text-center flex-column gap-0-5 w-100">
             <div class="form-group w-100">
@@ -35,16 +35,16 @@ echo $background;
                 <input type="date" id="CampaignDate" class="form-date" name="Campaign_Date" min= "<?php echo date("Y-m-d", strtotime($Date.'+ 8days')) ?>" required style="border-radius: 50px;padding-left: 10px;padding-right: 10px">
             </div>
             <div class="form-group">
-                <label class="w-40" for="Venue">Venue</label>
-                <input type="text" id="Venue" class="form-control w-20" name="Venue" required style="width: 70%"  placeholder="Eg :- Sugatharamaya, Kirulapone">
+                <label class="w-40" for="CampaignVenue">Venue</label>
+                <input type="text" id="CampaignVenue" class="form-control w-20" name="Venue" required style="width: 70%"  placeholder="Eg :- Sugatharamaya, Kirulapone">
                 <button class="btn btn-info d-flex gap-0-5 align-items-center justify-content-center" type="button" id="SelectLocationBtn" onclick="SelectLocation()">
                     <img src="/public/icons/location.svg" alt="map" class="invert-100" style="width: 20px; height: 20px;">
                     <span class="ms-1">Select on Map</span>
                 </button>
             </div>
             <div class="form-group">
-                <label class="w-40">Nearest City</label>
-                <input type="text" class="form-control" name="Nearest_City"  required  placeholder="Eg :- Nugegoda">
+                <label class="w-40" for="NearestCity">Nearest City</label>
+                <input type="text" id="NearestCity" class="form-control" name="Nearest_City"  required  placeholder="Eg :- Nugegoda">
             </div>
             <div class="form-group">
                 <label class="w-40" for="NearestBloodBank">Nearest Blood Bank</label>
@@ -65,11 +65,12 @@ echo $background;
             </div>
 
         </div>
+    </form>
         <div class="d-flex align-items-center justify-content-center gap-2">
-            <button class="btn btn-success w-25" id="button" value="Create"> Create </button>
+            <button class="btn btn-success w-25" id="button" value="Create" onclick="AcceptGuidelines()"> Create </button>
             <button class="btn btn-danger w-25" id="button" value="Cancel"> Cancel </button>
         </div>
-    </form>
+
 <!--    <div class="w-40 d-flex justify-content-center flex-column align-items-center gap-1 bg-white border-radius-10 p-1 m-1">-->
 <!--        <h3> Read the Guidelines </h3>-->
 <!--        <p class="p-1">-->
@@ -245,12 +246,26 @@ echo $background;
 
     }
     function AcceptGuidelines() {
-        OpenDialogBox({
-            id: 'guidelines',
-            title: 'Accept the Guidelines',
-            titleClass: 'bg-dark text-white',
-            content: `
-                    <div class="w-100 d-flex justify-content-center flex-column align-items-center gap-1">
+        const CampaignName = document.getElementById('CampaignName').value.trim();
+        const CampaignDescription = document.getElementById('CampaignDescription').value.trim();
+        const CampaignVenue = document.getElementById('CampaignVenue').value.trim();
+        const NearestCity = document.getElementById('NearestCity').value.trim();
+        const NearestBloodBank = document.getElementById('NearestBloodBank').value.trim();
+        const Latitude = document.getElementById('Latitude').value.trim();
+        const Longitude = document.getElementById('Longitude').value.trim();
+
+        if(CampaignName === '' || CampaignDescription === '' || CampaignVenue === '' || NearestCity === '' || NearestBloodBank === '' || Latitude === '' || Longitude === ''){
+            ShowToast({
+                type: 'danger',
+                message: 'Please fill all the fields'
+            })
+        }else{
+            OpenDialogBox({
+                id: 'guidelines',
+                title: 'Accept the Guidelines',
+                titleClass: 'bg-dark text-white',
+                content: `
+                    <div class="w-100 d-flex flex-column align-items-center gap-1 overflow-y-scroll max-h-80vh">
                         <div class="bg-dark text-center text-white px-2 py-1">
                             <h5> Lorem ipsum dolor sit amet, consectetur adipisicing elit. </h5>
                         </div>
@@ -299,17 +314,18 @@ echo $background;
 
                     </div>
             `,
-            showCloseButton: true,
-            showCancelButton: true,
-            cancelButtonText: 'Reject',
-            successBtnText: 'Accept',
-            successBtnAction:()=>{
-                document.getElementById('Agreed').value = 'true';
-                CloseDialogBox();
-                const form = document.getElementById('form');
-                form.submit();
-            }
-        })
+                showCloseButton: true,
+                showCancelButton: true,
+                cancelButtonText: 'Reject',
+                successBtnText: 'Accept',
+                successBtnAction:()=>{
+                    document.getElementById('Agreed').value = 'true';
+                    CloseDialogBox();
+                    const form = document.getElementById('form');
+                    form.submit();
+                }
+            })
+        }
     }
 </script>
 

@@ -8,7 +8,7 @@ const ShowToast = (props) => {
     //     Get the Position of the toast
         const toastPosition = AlreadyToast.getBoundingClientRect();
         console.log(toastPosition.top)
-        newToastPosition = toastPosition.top + 40;
+        newToastPosition = toastPosition.top + 30;
     }
     const toast = document.createElement("div");
     toast.id = "toast-"+id;
@@ -26,7 +26,7 @@ const ShowToast = (props) => {
     toast.className = `toast show ${type}`;
     toastContainer.className = `toast-container show ${type}`;
     const body= document.querySelector("body");
-    toast.style.top = AlreadyToast ? newToastPosition + "px" : "10px";
+    toast.style.top = AlreadyToast ? newToastPosition + "px" : "40px";
     body.prepend(toast);
     let TimeOut = 3000;
     if (timeout){

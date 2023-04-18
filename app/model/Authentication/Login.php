@@ -24,6 +24,11 @@ class Login extends dbModel
         return $this->UID;
     }
 
+    public function IsUserVerified(): bool
+    {
+        return $this->Account_Status !== 5;
+    }
+
     /**
      * @param string $ID
      */

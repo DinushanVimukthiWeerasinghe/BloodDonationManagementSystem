@@ -51,25 +51,62 @@ $navbar = new AuthNavbar('Medical Officer Dashboard', '/mofficer', '/public/imag
         </div>
     </div>
     <div id="SideBarLinks" class="d-flex w-100 flex-column justify-content-center align-items-center gap-1">
-        <div class="d-flex p-1 w-100 align-items-center text-xl cursor" onclick="Redirect('/medicalofficer/dashboard')">
-            <img src="/public/icons/dashboard.svg" class="mr-1" width="24px" alt="" data-tooltip="Dashboard"
+
+        <?php
+        if (isset($page) && $page==="dashboard"){
+            echo '<div class="d-flex p-1 w-100 align-items-center text-xl cursor bg-primary border-radius-10 text-white font-bold" onclick="Redirect(\'/medicalofficer/dashboard\')">
+            <img src="/public/icons/dashboard.svg" class="mr-1 invert-100" width="24px" alt="" data-tooltip="Dashboard"
                  data-tooltip-position="top">
             <span>Dashboard</span>
-        </div>
-        <div class="d-flex w-100 p-1 align-items-center text-xl cursor" id="mngRequests"
-             onclick="Redirect('/mofficer/take-donation')">
+            </div>';
+        }else{
+            echo '<div class="d-flex p-1 w-100 align-items-center text-xl cursor" onclick="Redirect(\'/medicalofficer/dashboard\')">
+            <img src="/public/icons/dashboard.svg" class="mr-1 " width="24px" alt="" data-tooltip="Dashboard"
+                 data-tooltip-position="top">
+            <span>Dashboard</span>
+            </div>';
+        }
+
+        if (isset($page) && $page==="donations"){
+            echo '<div class="d-flex w-100 p-1 align-items-center text-xl cursor bg-primary border-radius-10 text-white font-bold" id="mngRequests"
+             onclick="Redirect(\'/mofficer/take-donation\')">
+            <img src="/public/icons/bloodDonation.svg" class="mr-1 invert-100" width="24px" alt="">
+            <span>Donations</span>
+            </div>';
+        }else{
+            echo '<div class="d-flex w-100 p-1 align-items-center text-xl cursor" id="mngRequests"
+             onclick="Redirect(\'/mofficer/take-donation\')">
             <img src="/public/icons/bloodDonation.svg" class="mr-1" width="24px" alt="">
             <span>Donations</span>
-        </div>
-        <!--        <div class="d-flex p-1 w-100 align-items-center text-xl cursor" id="mngDonors" onclick="Redirect('/mofficer/history')">-->
-        <!--            <img src="/public/icons/history.svg" class="mr-1" width="24px" alt="">-->
-        <!--            <span>History</span>-->
-        <!--        </div>-->
-        <div class="d-flex p-1 w-100 align-items-center text-xl cursor" id="mngCampaigns"
-             onclick="Redirect('/mofficer/campaigns')">
+            </div>';
+        }
+
+        if (isset($page) && $page==="history"){
+            echo '<div class="d-flex p-1 w-100 align-items-center text-xl cursor bg-primary border-radius-10 text-white font-bold" id="mngDonors" onclick="Redirect(\'/mofficer/history\')">
+            <img src="/public/icons/history.svg" class="mr-1 invert-100" width="24px" alt="">
+            <span>History</span>
+            </div>';
+        }else{
+            echo '<div class="d-flex p-1 w-100 align-items-center text-xl cursor" id="mngDonors" onclick="Redirect(\'/mofficer/history\')">
+            <img src="/public/icons/history.svg" class="mr-1" width="24px" alt="">
+            <span>History</span>
+            </div>';
+        }
+
+        if (isset($page) && $page==="campaigns"){
+            echo '<div class="d-flex p-1 w-100 align-items-center text-xl cursor bg-primary border-radius-10 text-white font-bold" id="mngCampaigns"
+             onclick="Redirect(\'/mofficer/campaigns\')">
+            <img src="/public/icons/campaign.png" class="mr-1 invert-100" width="24px" alt="">
+            <span>Campaigns</span>
+            </div>';
+        }else{
+            echo '<div class="d-flex p-1 w-100 align-items-center text-xl cursor" id="mngCampaigns"
+             onclick="Redirect(\'/mofficer/campaigns\')">
             <img src="/public/icons/campaign.png" class="mr-1" width="24px" alt="">
             <span>Campaigns</span>
-        </div>
+            </div>';
+        }
+        ?>
 
 
     </div>
@@ -106,6 +143,7 @@ $navbar = new AuthNavbar('Medical Officer Dashboard', '/mofficer', '/public/imag
                         OpenDialogBox({
                             id: 'notification',
                             title: 'Notification',
+                            titleClass:'bg-dark text-white px-1 py-0-5',
                             content: `
                             <div class="d-flex flex-column gap-1">
                                    <div id="notification" class="d-flex flex-column gap-1">
@@ -123,6 +161,14 @@ $navbar = new AuthNavbar('Medical Officer Dashboard', '/mofficer', '/public/imag
                                                         </div>
 
                                             `).join('')}
+                                            <!--If data.notification is empty - Show no Notification-->
+                                            ${data.notifications.length === 0 ? `
+                                                <div class="d-flex flex-column px-1 py-0-5">
+                                                    <div class="d-flex flex-center text-center   ">
+                                                        <div class="text-sm font-bold">No Notification to Show!</div>
+                                                    </div>
+                                                </div>
+                                            ` : ''}
                                         </div>
                                    </div>
                             </div>
@@ -200,6 +246,10 @@ $navbar = new AuthNavbar('Medical Officer Dashboard', '/mofficer', '/public/imag
             `,
             showSuccessButton: false,
             cancelBtnText: 'Close',
+            cancelBtnAction: () => {
+                window.location.reload();
+                CloseDialogBox('profile');
+            }
         })
     }
 

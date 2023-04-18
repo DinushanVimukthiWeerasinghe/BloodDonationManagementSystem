@@ -1,23 +1,29 @@
 <?php
 ;
-
 use App\controller\adminController;
 use App\controller\apiController;
 use App\controller\authController;
 use App\controller\blogController;
 use App\controller\donorController;
 use App\controller\fileController;
+use App\controller\OrganizationController;
 use App\controller\hospitalController;
 use App\controller\managerController;
 use App\controller\medicalOfficerController;
-use App\controller\OrganizationController;
 use App\controller\siteController;
 use App\controller\sponsorController;
 use Core\Application;
 
+
 require_once __DIR__ . '/../vendor/autoload.php';
 $dotenv = Dotenv\Dotenv::createImmutable(dirname(__DIR__));
 $dotenv->load();
+
+
+
+require_once __DIR__ . '/../public/config.php';
+
+
 $config=[
     'db'=>[
         'dsn'=>$_ENV['DB_DSN'],
@@ -36,6 +42,7 @@ $config=[
         'key'=>$_ENV['MAP_API_KEY']
     ],
 ];
+
 //Set Env Variables
 $MAP_API_KEY=$_ENV['MAP_API_KEY'];
 
@@ -57,6 +64,8 @@ try {
     $app->router->post('/register', [authController::class, 'UserRegister']);
     $app->router->post('/register/send-otp', [authController::class, 'SendRegistrationOTP']);
     $app->router->post('/register/validate-otp', [authController::class, 'ValidateOTP']);
+    $app->router->get('/organization/register', [authController::class, 'OrganizationRegister']);
+    $app->router->post('/organization/register', [authController::class, 'OrganizationRegister']);
 
 //Logout
     $app->router->get('/logout', [authController::class, 'logout']);
@@ -101,41 +110,51 @@ $app->router->post('/admin/dashboard/manageBanks/search', [adminController::clas
 
     $app->router->get('/test',[siteController::class,'Test']);
 
-    $app->router->get('/organization/register', [OrganizationController::class, 'register']);
-    $app->router->post('/organization/register', [OrganizationController::class, 'register']);
-    $app->router->get('/organization/dashboard', [OrganizationController::class, 'dashboard']);
-    $app->router->get('/organization/create', [OrganizationController::class, 'CreateCampaign']);
-    $app->router->get('/organization/history', [OrganizationController::class, 'history']);
-    $app->router->get('/organization/home', [OrganizationController::class, 'home']);
-    $app->router->get('/organization/inform', [OrganizationController::class, 'inform']);
-    $app->router->post('/organization/inform', [OrganizationController::class, 'inform']);
-    $app->router->get('/organization/manage', [OrganizationController::class, 'manage']);
-    $app->router->get('/organization/create', [OrganizationController::class, 'CreateCampaign']);
-    $app->router->post('/organization/create', [OrganizationController::class, 'CreateCampaign']);
-    $app->router->get('/organization/near', [OrganizationController::class, 'near']);
-    $app->router->get('/organization/report', [OrganizationController::class, 'report']);
-    $app->router->get('/organization/history', [OrganizationController::class, 'history']);
-    $app->router->get('/organization/guideline', [OrganizationController::class, 'guideline']);
-    $app->router->get('/organization/request', [OrganizationController::class, 'request']);
-    $app->router->post('/organization/request', [OrganizationController::class, 'request']);
-    $app->router->get('/organization/campDetails', [OrganizationController::class, 'campDetails']);
-    $app->router->get('/organization/received', [OrganizationController::class, 'received']);
-    $app->router->get('/organization/accepted', [OrganizationController::class, 'accepted']);
-    $app->router->get('/organization/profile', [OrganizationController::class, 'profile']);
-    $app->router->get('/organization/campaign/view', [OrganizationController::class, 'view']);
-    $app->router->post('/organization/getCampaignCoordinate', [OrganizationController::class, 'GetCampaignCoordinate']);
+$app->router->get('/organization/dashboard', [OrganizationController::class, 'dashboard']);
+$app->router->get('/organization/create', [OrganizationController::class, 'CreateCampaign']);
+$app->router->get('/organization/history', [OrganizationController::class, 'history']);
+$app->router->get('/organization/home', [OrganizationController::class, 'home']);
+$app->router->get('/organization/inform', [OrganizationController::class, 'inform']);
+$app->router->post('/organization/inform', [OrganizationController::class, 'inform']);
+$app->router->get('/organization/manage', [OrganizationController::class, 'manage']);
+$app->router->get('/organization/create', [OrganizationController::class, 'CreateCampaign']);
+$app->router->post('/organization/create', [OrganizationController::class, 'CreateCampaign']);
+$app->router->get('/organization/near', [OrganizationController::class, 'near']);
+$app->router->get('/organization/report', [OrganizationController::class, 'report']);
+$app->router->get('/organization/history', [OrganizationController::class, 'history']);
+$app->router->get('/organization/guideline', [OrganizationController::class, 'guideline']);
+$app->router->get('/organization/request', [OrganizationController::class, 'request']);
+$app->router->post('/organization/request', [OrganizationController::class, 'request']);
+$app->router->get('/organization/campDetails', [OrganizationController::class, 'campDetails']);
+$app->router->get('/organization/received', [OrganizationController::class, 'received']);
+$app->router->get('/organization/accepted', [OrganizationController::class, 'accepted']);
+$app->router->get('/organization/profile', [OrganizationController::class, 'profile']);
+$app->router->get('/organization/campaign/view', [OrganizationController::class, 'view']);
+$app->router->get('/organization/campaign/updateCampaign', [OrganizationController::class, 'update']);
+$app->router->post('/organization/campaign/updateCampaign', [OrganizationController::class, 'update']);
+$app->router->get('/organization/campaign/deleteCampaign', [OrganizationController::class, 'delete']);
+$app->router->post('/organization/getCampaignCoordinate', [OrganizationController::class, 'GetCampaignCoordinate']);
+$app->router->post('/organization/getBankDetails', [OrganizationController::class, 'GetOrganizationBankAccountDetails']);
+$app->router->post('/organization/addBankDetails', [OrganizationController::class, 'AddOrganizationBankAccountDetails']);
+$app->router->post('/organization/changeProfile', [OrganizationController::class, 'ChangeProfileImage']);
+$app->router->post('/organization/notification', [OrganizationController::class, 'GetNotification']);
+$app->router->post('/organization/requestSponsorship', [OrganizationController::class, 'RequestSponsorship']);
+
+$app->router->post('/user/change-password', [authController::class, 'ChangePassword']);
 
 //sponsor
 
     $app->router->get('/sponsor/dashboard', [sponsorController::class, 'dashboard']);
     $app->router->get('/sponsor/test', [sponsorController::class, 'Test']);
+    $app->router->get('/sponsor/makePayment', [sponsorController::class, 'MakePayment']);
     $app->router->post('/sponsor/makePayment', [sponsorController::class, 'MakePayment']);
     $app->router->get('/sponsor/history', [sponsorController::class, 'history']);
     $app->router->get('/sponsor/manage', [sponsorController::class, 'manage']);
-    $app->router->get('/sponsor/donation', [sponsorController::class, 'donation']);
+    $app->router->get('/sponsor/donation', [sponsorController::class, 'MakeDonation']);
     $app->router->get('/sponsor/campDetails', [sponsorController::class, 'campDetails']);
     $app->router->get('/sponsor/guideline', [sponsorController::class, 'guideline']);
-
+    $app->router->post('/sponsor/notification', [SponsorController::class, 'GetNotification']);
+    $app->router->post('/sponsor/changeProfile', [SponsorController::class, 'ChangeProfileImage']);
     $app->router->get('/gmp', [siteController::class, 'gmap']);
 
 
@@ -186,6 +205,10 @@ $app->router->post('/admin/dashboard/manageBanks/search', [adminController::clas
 
     $app->router->get('/manager/mngSponsorship', [managerController::class, 'ManageSponsorship']);
     $app->router->post('/manager/mngSponsorship', [managerController::class, 'ManageSponsorship']);
+    $app->router->post('/manager/mngSponsorship/viewRequest', [managerController::class, 'GetSponsorshipRequest']);
+    $app->router->post('/manager/mngSponsorship/approveRequest', [managerController::class, 'ApproveSponsorshipRequest']);
+    $app->router->post('/manager/mngSponsorship/rejectRequest', [managerController::class, 'RejectSponsorshipRequest']);
+    $app->router->post('/manager/mngSponsorship/sendEmail', [managerController::class, 'SendEmailToOrganization']);
 
 
     $app->router->get('/manager/mngDonors', [managerController::class, 'ManageDonors']);
@@ -232,21 +255,22 @@ $app->router->post('/admin/dashboard/manageBanks/search', [adminController::clas
 
 //Manage Requests
 
-    $app->router->get('/mofficer/campaigns', [medicalOfficerController::class, 'ManageCampaigns']);
-    $app->router->post('/mofficer/changepassword', [medicalOfficerController::class, 'ChangePassword']);
-    $app->router->post('/mofficer/changeProfile', [medicalOfficerController::class, 'ChangeProfileImage']);
-    $app->router->get('/mofficer/history', [medicalOfficerController::class, 'ManageHistory']);
-    $app->router->get('/mofficer/donors', [medicalOfficerController::class, 'ManageDonors']);
-    $app->router->get('/mofficer/take-donation', [medicalOfficerController::class, 'ManageDonation']);
-    $app->router->post('/mofficer/take-donation', [medicalOfficerController::class, 'ManageDonation']);
-    $app->router->get('/mofficer/donation', [medicalOfficerController::class, 'ManageDonation']);
-    $app->router->post('/mofficer/startBloodDonation', [medicalOfficerController::class, 'StartDonation']);
-    $app->router->post('/mofficer/medicalteam/allocateTask', [medicalOfficerController::class, 'AssignTasks']);
-    $app->router->post('/mofficer/CompleteDonation', [medicalOfficerController::class, 'CompleteDonation']);
-    $app->router->get('/mofficer/AbortDonation', [medicalOfficerController::class, 'AbortDonation']);
-    $app->router->get('/mofficer/searchdonor', [medicalOfficerController::class, 'SearchDonor']);
-    $app->router->post('/mofficer/registerDonor', [medicalOfficerController::class, 'RegisterDonor']);
-    $app->router->post('/mofficer/registerDonorForCampaign', [medicalOfficerController::class, 'RegisterDonorForCampaign']);
+$app->router->get('/mofficer/campaigns', [medicalOfficerController::class, 'ManageCampaigns']);
+$app->router->post('/mofficer/changepassword', [medicalOfficerController::class, 'ChangePassword']);
+$app->router->post('/mofficer/stat', [medicalOfficerController::class, 'GetStatistics']);
+$app->router->post('/mofficer/changeProfile', [medicalOfficerController::class, 'ChangeProfileImage']);
+$app->router->get('/mofficer/history', [medicalOfficerController::class, 'ManageHistory']);
+$app->router->get('/mofficer/donors', [medicalOfficerController::class, 'ManageDonors']);
+$app->router->get('/mofficer/take-donation', [medicalOfficerController::class, 'ManageDonation']);
+$app->router->post('/mofficer/take-donation', [medicalOfficerController::class, 'ManageDonation']);
+$app->router->get('/mofficer/donation', [medicalOfficerController::class, 'ManageDonation']);
+$app->router->post('/mofficer/startBloodDonation', [medicalOfficerController::class, 'StartDonation']);
+$app->router->post('/mofficer/medicalteam/allocateTask', [medicalOfficerController::class, 'AssignTasks']);
+$app->router->post('/mofficer/CompleteDonation', [medicalOfficerController::class, 'CompleteDonation']);
+$app->router->get('/mofficer/AbortDonation', [medicalOfficerController::class, 'AbortDonation']);
+$app->router->get('/mofficer/searchdonor', [medicalOfficerController::class, 'SearchDonor']);
+$app->router->post('/mofficer/registerDonor', [medicalOfficerController::class, 'RegisterDonor']);
+$app->router->post('/mofficer/registerDonorForCampaign', [medicalOfficerController::class, 'RegisterDonorForCampaign']);
 //$app->router->get('/mofficer/campaigns', [medicalOfficerController::class, 'VerifyDonor']);
     $app->router->post('/medicalofficer/get-donor', [medicalOfficerController::class, 'FindDonor']);
 //$app->router->post('/manager/mngRequests/emergency', [managerController::class, 'FindRequests']);
@@ -336,3 +360,7 @@ $app->router->post('/donor/profile/loginPrompt', [donorController::class, 'login
     echo $e->getMessage();
 }
 //Application::CreateDirectories(['public/upload/Profile/Donors','public/upload/Profile/Managers','public/upload/Profile/MedicalOfficers','public/upload/Profile/Receivers']);
+
+?>
+
+
