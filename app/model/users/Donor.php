@@ -399,12 +399,4 @@ class Donor extends Person
         return $this->Verified ? "Verified" : "Not Verified";
     }
 
-    public function setDonationAvailability(int $x):void
-    {
-        $this->Donation_Availability = $x;
-    }
-    public function getDonationAvailability():int
-    {
-        return $this->Donation_Availability;
-    }
 }

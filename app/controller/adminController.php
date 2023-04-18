@@ -8,7 +8,12 @@ use App\model\Authentication\PasswordReset;
 use App\model\BloodBankBranch\BloodBank;
 use App\model\Email\BaseEmail;
 use App\model\users\Admin;
+use App\model\users\Donor;
+use App\model\users\Hospital;
 use App\model\users\Manager;
+use App\model\users\MedicalOfficer;
+use App\model\users\Organization;
+use App\model\users\Sponsor;
 use App\model\users\User;
 use Core\Application;
 use Core\BaseMiddleware;
@@ -232,34 +237,69 @@ class adminController extends \Core\Controller
         if ($request->isPost() || $request->isGet()) {
             $Search = trim($request->getBody()['Search']);
             $Role=trim($request->getBody()['Role']);
+
             $Account= match (strtolower($Search)){
-                'active'=>User::ACTIVE,
-                'deactivated','inactive'=>User::TEMPORARY_DEACTIVATED,
-                'removed', 'disabled', 'deleted' =>User::PERMANENTLY_DEACTIVATED,
+                'active'=>$userRole::ACTIVE,
+                'deactivated','inactive'=>$userRole::TEMPORARY_DEACTIVATED,
+                'removed', 'disabled', 'deleted' =>$userRole::PERMANENTLY_DEACTIVATED,
                 default=>5
             };
             if ($Account===5)
             {
-                $user = User::Search(['UID' => $Search,'Email'=>$Search]);
-                $FilterUser=array_filter($user,function ($user) use ($Role){
-                    /** @var User $user */
-                    return $user->getRole()===$Role;
-                });
+
+                switch ($Role) {
+                    case 'Donor':
+                        $user = Donor::Search(['City' => $Search, 'Donor_ID' => $Search, 'NIC' => $Search, 'First_Name' => $Search, 'Last_Name' => $Search, 'Email' => $Search, 'Contact_No' => $Search]);
+                        break;
+                    case 'Organization':
+                        $user = Organization::Search(['Organization_ID' => $Search, 'Organization_Name' => $Search, 'Organization_Email' => $Search, 'Contact_No' => $Search, 'City' => $Search]);
+                        break;
+                    case 'MedicalOfficer':
+                        $user = MedicalOfficer::Search(['Officer_ID' => $Search, 'First_Name' => $Search, 'Last_Name' => $Search, 'Contact_No' => $Search, 'City' => $Search, 'Email' => $Search, 'NIC' => $Search, 'Position' => $Search]);
+                        break;
+                    case 'Hospital':
+                        $user = Hospital::Search(['Hospital_ID' => $Search, 'Hospital_Name' => $Search, 'Email' => $Search, 'City' => $Search, 'Contact_No' => $Search]);
+                        break;
+                    case 'Sponsor':
+                        $user = Sponsor::Search(['Sponsor_ID' => $Search, 'Sponsor_Name' => $Search, 'Email' => $Search, 'City' => $Search]);
+                        break;
+                    case 'Manager':
+                        $user = Manager::Search(['Manager_ID' => $Search, 'First_Name' => $Search, 'Last_Name' => $Search, 'City' => $Search, 'Contact_No' => $Search, 'Email' => $Search]);
+                        break;
+                    default:
+                        $user = User::Search(['UID' => $Search,'Email'=>$Search]);
+                }
+
+
+//                $user = $userRole::Search(['UID' => $Search,'Email'=>$Search]);
+//                $FilterUser=array_filter($user,function ($user) use ($Role){
+//                    /** @var User $user */
+//                    return $user->getRole()===$Role;
+//                });
 
                 $this->layout='none';
                 return $this->render('Admin/searchUser',[
-                    'users'=>$FilterUser
+                    'users'=>$user
                 ]);
             }else{
-                $user = User::Search(['UID' => $Search,'Email'=>$Search],['Account_Status'=>$Account]);
-                $FilterUser=array_filter($user,function ($user) use ($Role){
-                    /** @var User $user */
-                    return $user->getRole()===$Role;
-                });
+                $userRole = match ($Role) {
+                    'Donor' => new Donor(),
+                    'Organization' => new Organization(),
+                    'MedicalOfficer' => new MedicalOfficer(),
+                    'Hospital' => new Hospital(),
+                    'Sponsor' => new Sponsor(),
+                    'Manager' => new Manager(),
+                    default => new User(),
+                };
+                $user = $userRole::Search(['Account_Status'=>$Account]);
+//                $FilterUser=array_filter($user,function ($user) use ($Role){
+//                    /** @var User $user */
+//                    return $user->getRole()===$Role;
+//                });
 
                 $this->layout='none';
                 return $this->render('Admin/searchUser',[
-                    'users'=>$FilterUser
+                    'users'=>$user
                 ]);
             }
 

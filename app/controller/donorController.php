@@ -111,27 +111,20 @@ class donorController extends Controller
 
     public function register(Request $request, Response $response)
     {
-        $this->usrCheck($response);
-        $user = Application::$app->getUser();
-        $primaryKey = $user->primaryKey();
-        $primaryValue = $user->{$primaryKey};
-
-        if (Donor::findOne(['Donor_ID' => $primaryValue])) {
-            $response->redirect('/donor/profile');
-        }
+        // get email address and userID from user Table
+        $userID = 12345;
+        $email = 'test@example.com';
         if ($request->isPost()) {
             $donor = new Donor();
             $donor->loadData($request->getBody());
-            $donor->setDonorId($user->$primaryKey);
+            $donor->setDonorId($userID);
             $donor->setId($donor->getId());
-            print_r($donor);
 
             if ($donor->validate() && $donor->save()) {
                 $response->redirect('/donor/profile');
             }
         }
-
-        return $this->render('Donor/register');
+        return $this->render('Donor/register',['email'=>$email]);
     }
 
     public function guideline(Request $request, Response $response)

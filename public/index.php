@@ -41,7 +41,6 @@ $config=[
         'key'=>$_ENV['MAP_API_KEY']
     ],
 ];
-
 //Set Env Variables
 $MAP_API_KEY=$_ENV['MAP_API_KEY'];
 
@@ -150,7 +149,7 @@ $app->router->post('/user/change-password', [authController::class, 'ChangePassw
     $app->router->post('/sponsor/makePayment', [sponsorController::class, 'MakePayment']);
     $app->router->get('/sponsor/history', [sponsorController::class, 'history']);
     $app->router->get('/sponsor/manage', [sponsorController::class, 'manage']);
-    $app->router->get('/sponsor/donation', [sponsorController::class, 'MakeDonation']);
+    $app->router->get('/sponsor/donation', [sponsorController::class, 'donation']);
     $app->router->get('/sponsor/campDetails', [sponsorController::class, 'campDetails']);
     $app->router->get('/sponsor/guideline', [sponsorController::class, 'guideline']);
     $app->router->post('/sponsor/notification', [SponsorController::class, 'GetNotification']);
@@ -334,6 +333,16 @@ $app->router->post('/donor/profile/edit', [donorController::class, 'editDetails'
     $app->router->post('/donor/signup', [donorController::class, 'signup']);
     $app->router->get('/donor/profile', [donorController::class, 'profile']);
     $app->router->get('/donor/register',[donorController::class, 'register']);
+$app->router->post('/donor/profile/loginPrompt', [donorController::class, 'loginPrompt']);
+    //$app->router->get('/donor/dashboard', [donorController::class, 'dashboard']);
+    //$app->router->get('/about', [siteController::class, 'about']);
+    //$app->router->get('/donor', [donorController::class, 'home']);
+    //$app->router->get('/donor/login', [donorController::class, 'login']);
+    //$app->router->post('/donor/login', [donorController::class, 'login']);
+    //$app->router->get('/donor/signup', [donorController::class, 'signup']);
+    //$app->router->post('/donor/signup', [donorController::class, 'signup']);
+    //$app->router->get('/donor/profile', [donorController::class, 'profile']);
+    //$app->router->get('/donor/register',[donorController::class, 'register']);
     $app->router->post('/donor/register', [donorController::class, 'register']);
     $app->router->get('/donor/guideline', [donorController::class, 'guideline']);
     $app->router->get('/donor/history', [donorController::class, 'history']);

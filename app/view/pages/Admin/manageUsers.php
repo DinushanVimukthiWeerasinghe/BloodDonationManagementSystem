@@ -53,6 +53,9 @@ use App\model\users\User;
 
 
 <div class="d-flex h-100 w-100 justify-content-between">
+<!--<div class="">-->
+<!--</div>-->
+
 
 <div class="d-flex justify-content-center align-self-baseline flex-column " >
     <div class="d-flex justify-content-center align-items-center my-2">
@@ -60,6 +63,7 @@ use App\model\users\User;
             <label for="Search" class="text-dark text-xl font-bold">Search</label>
             <input type="text" class="form-control" name="Search" placeholder="Search" onkeyup="SearchUser('<?=$Role?>')">
         </div>
+        <button id="addNewUser" class="btn btn-success" onclick="AddNewManager()">Add New <?php echo $Role ?></button>
     </div>
 <!--    <div class="title">Donor</div>-->
     <div class="d-flex justify-content-center align-items-center cards flex-wrap" id="userTable">

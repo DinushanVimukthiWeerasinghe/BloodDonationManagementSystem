@@ -125,7 +125,7 @@ abstract class dbModel extends Model
         $statement->execute();
         return $statement->fetchAll(PDO::FETCH_CLASS,static::class);
     }
-    
+
 
     public static function RetrieveAll(bool $pagination=false,array $limit=[],bool $IsConditional=false,array $conditions=[],array $OrderBy=[],array $GroupBy=[]): bool|array
     {
