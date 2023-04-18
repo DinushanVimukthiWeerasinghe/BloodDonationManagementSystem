@@ -3,33 +3,36 @@
 //print_r($BloodBanks);
 
 ?>
-<div class="d-flex justify-content-center flex-column align-items-center bg-white-0-3 p-2">
-    <div class="d-flex w-100">
-        <div class="d-flex bg-white-0-7 p-1 text-dark justify-content-between align-items-center w-100 ">
+<div class="d-flex justify-content-center flex-column align-items-center p-1">
+    <div class="d-flex gap-1 w-100">
+        <div class="d-flex gap-1 text-dark align-items-center justify-content-between align-items-center w-100 ">
             <div id="Search" class="d-flex gap-0-5 align-items-center">
                 <label for="Search" class="text-dark text-xl font-bold">Search</label>
                 <input class="form-control" name="Search" id="search" onkeyup="SearchBank()">
             </div>
-            </div>
-<!--a-->
+             <button class="btn btn-success" onclick="addNewBank()">Add New Bank</button>
         </div>
     </div>
-    <button class="btn btn-success" onclick="addNewBank()">Add New Bank</button>
-    <div id="div1" class="d-flex justify-content-center align-items-center">
+    </div>
+    <div id="div1" class="d-flex min-h-75 overflow-y-auto mb-3">
         <table class="" id="bankTable">
-            <tr>
-                <th>Blood Bank ID</th>
-                <th>Blood Bank Name</th>
-                <th>Address</th>
-                <th>City</th>
-                <th>Telephone Number</th>
-                <th>Number Of Doctors</th>
-                <th>Number Of Nurses</th>
-                <th>Number Of Beds</th>
-                <th>Number Of Storages</th>
-                <th>Type</th>
-                <th>Edit Bank</th>
+            <thead class="bg-white">
+            <tr class="bg-white">
+                <th class="bg-white">Blood Bank ID</th>
+                <th class="bg-white">Blood Bank Name</th>
+                <th class="bg-white">Address</th>
+                <th class="bg-white">City</th>
+                <th class="bg-white">Telephone Number</th>
+                <th class="bg-white">Number Of Doctors</th>
+                <th class="bg-white">Number Of Nurses</th>
+                <th class="bg-white">Number Of Beds</th>
+                <th class="bg-white">Number Of Storages</th>
+                <th class="bg-white">Type</th>
+                <th class="bg-white">Action</th>
             </tr>
+            </thead>
+            <tbody>
+
             <?php
             foreach ($BloodBanks as $BloodBank) {
             $id=$BloodBank->getBloodBankID();
@@ -55,13 +58,14 @@
                     <td><?php echo $numberOfBeds ?></td>
                     <td><?php echo $numberOfStorages ?></td>
                     <td><?php echo $type ?></td>
-                    <td>
-                        <button type="button" class="btn btn-success" onclick="editBnkData('<?php echo $id; ?>')">
+                    <td class="d-flex flex-center">
+                        <button type="button" class="btn btn-outline-success border-radius-10" onclick="editBnkData('<?php echo $id; ?>')">
                             <img src="/public/icons/edit.png" width="24px" alt="">
                         </button>
                     </td>
                 </tr>
             <?php } ?>
+            </tbody>
         </table>
     </div>
     <div id="tableFooter" class="mt-1">
