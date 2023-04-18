@@ -76,7 +76,7 @@ const ViewUser = (type="Donor")=>{
                 Role[i].innerHTML = type;
             }
             document.getElementById('userTable').innerHTML = doc.getElementById('userTable').innerHTML;
-
+            document.getElementById('addNewUser').innerText = 'Add New ' + type;
         })
 }
 
@@ -250,6 +250,7 @@ const RemoveUser = (id)=>{
             }
         })
 }
+
 
 const SearchUser = (role)=>{
     const Search = document.getElementsByName('Search')[0].value.trim();
