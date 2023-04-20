@@ -109,6 +109,8 @@ try {
 
     $app->router->get('/test',[siteController::class,'Test']);
 
+$app->router->get('/organization/register', [OrganizationController::class, 'register']);
+$app->router->post('/organization/register', [OrganizationController::class, 'register']);
 $app->router->get('/organization/dashboard', [OrganizationController::class, 'dashboard']);
 $app->router->get('/organization/create', [OrganizationController::class, 'CreateCampaign']);
 $app->router->get('/organization/history', [OrganizationController::class, 'history']);
@@ -128,6 +130,9 @@ $app->router->get('/organization/campDetails', [OrganizationController::class, '
 $app->router->get('/organization/received', [OrganizationController::class, 'received']);
 $app->router->get('/organization/accepted', [OrganizationController::class, 'accepted']);
 $app->router->get('/organization/profile', [OrganizationController::class, 'profile']);
+$app->router->get('/organization/campaign/view', [OrganizationController::class, 'view']);
+$app->router->get('/organization/campaign/updateCampaign', [OrganizationController::class, 'updateCampaign']);
+$app->router->post('/organization/campaign/updateCampaign', [OrganizationController::class, 'updateCampaign']);
 $app->router->get('/organization/campaign/view', [OrganizationController::class, 'ViewCampaign']);
 $app->router->get('/organization/campaign/updateCampaign', [OrganizationController::class, 'update']);
 $app->router->post('/organization/campaign/updateCampaign', [OrganizationController::class, 'update']);
@@ -149,7 +154,7 @@ $app->router->post('/user/change-password', [authController::class, 'ChangePassw
     $app->router->post('/sponsor/makePayment', [sponsorController::class, 'MakePayment']);
     $app->router->get('/sponsor/history', [sponsorController::class, 'history']);
     $app->router->get('/sponsor/manage', [sponsorController::class, 'manage']);
-    $app->router->get('/sponsor/donation', [sponsorController::class, 'MakeDonation']);
+    $app->router->get('/sponsor/donation', [sponsorController::class, 'donation']);
     $app->router->get('/sponsor/campDetails', [sponsorController::class, 'campDetails']);
     $app->router->post('/sponsor/campaign/view', [sponsorController::class, 'GetCampaignDetails']);
     $app->router->get('/sponsor/guideline', [sponsorController::class, 'guideline']);
@@ -370,7 +375,3 @@ $app->router->post('/donor/profile/loginPrompt', [donorController::class, 'login
     echo $e->getMessage();
 }
 //Application::CreateDirectories(['public/upload/Profile/Donors','public/upload/Profile/Managers','public/upload/Profile/MedicalOfficers','public/upload/Profile/Receivers']);
-
-?>
-
-
