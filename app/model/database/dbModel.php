@@ -302,6 +302,8 @@ abstract class dbModel extends Model
             }
             $demo=substr($demo,0,-4);
         }
+//        print_r($demo);
+//        exit();
         $statement=self::prepare($demo);
 
         $statement->execute();

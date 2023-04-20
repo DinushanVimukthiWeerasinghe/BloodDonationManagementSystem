@@ -35,7 +35,7 @@ FlashMessage::RenderFlashMessages();
 <link rel="stylesheet" href="/public/css/components/form/index2.css">
 <link rel="stylesheet" href="/public/css/framework/util/border/border-radius.css">
 <link rel="stylesheet" href="/public/css/fontawesome/fa.css">
-<div class="container p-5 mt-4">
+<div class="container p-5" style="height: 10px;margin-top: -500px">
     <form action="inform?id=<?php echo $_GET['id'] ?>" method="post" class="form-column p-3" enctype="multipart/form-data">
         <h1 class="form-title mt-0">Inform Donors</h1>
         <div class="form-entity mt-2">
