@@ -96,3 +96,40 @@ echo $table->render("table");
         })
     }
 </script>
+
+<div id="button" class="d-flex align-items-center gap-1 btn btn-outline-success" onclick="AddDonation()" style="
+        background-color: white;
+        color: black;
+        border: 1px solid black;
+        padding: 1vw 2vw;
+        border-radius: 20px;
+        font-size: large;
+        position: absolute;
+        top: 15vh;
+        right: 2vh;
+        z-index: 100;">
+    <img src="/public/icons/blood-bag-svgrepo-com.svg" width="24" alt=""/>
+    <span class=" font-bold">Take New Donation</span>
+</div>
+<style>
+    #button:hover{
+        background-color: var(--primary)!important;
+        color: white;
+    }
+</style>
+
+<script>
+    const AddDonation = () =>{
+        OpenDialogBox({
+            id:'TakeNewDonation',
+            title: 'Take New Donation',
+            content: `
+            
+            `,
+            successBtnText: 'Add',
+            successBtnAction:()=>{
+                document.getElementById('form').submit();
+            }
+        })
+    }
+</script>

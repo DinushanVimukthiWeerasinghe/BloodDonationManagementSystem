@@ -12,6 +12,7 @@ class BloodRequest extends dbModel
     public const CRITICAL_REQUEST = 2;
     public const REQUEST_STATUS_PENDING = 1;
     public const REQUEST_STATUS_FULFILLED = 2;
+    public const REQUEST_STATUS_APPROVED = 3;
     protected string $Request_ID;
     protected string $BloodGroup;
     protected string $Requested_By;
@@ -157,13 +158,18 @@ class BloodRequest extends dbModel
      */
     public function getStatus(): string
     {
-        return $this->Status;
+        return match ($this->Status) {
+            self::REQUEST_STATUS_PENDING => 'Pending',
+            self::REQUEST_STATUS_FULFILLED => 'Fulfilled',
+            self::REQUEST_STATUS_APPROVED => 'Approved',
+        };
     }
 
     public function getRequestStatus()
     {
         return match ($this->Status) {
             self::REQUEST_STATUS_PENDING => 'Pending',
+            self::REQUEST_STATUS_APPROVED => 'Approved',
             self::REQUEST_STATUS_FULFILLED => 'Fulfilled',
         };
     }
