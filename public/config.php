@@ -3,8 +3,14 @@ const DEVELOPMENT = 'DEV';
 define("MODE", $_ENV['MODE']);
 if (MODE == DEVELOPMENT) {
     define("HOST", $_ENV['DEV_HOST']);
-} else {
+    define("DB_DSN", $_ENV['DB_DEV_DSN']);
+}else if (MODE == 'TEST') {
+    define("HOST", $_ENV['TEST_HOST']);
+    define("DB_DSN", $_ENV['DB_TEST_DSN']);
+}
+else {
     define("HOST", $_ENV['PROD_HOST']);
+    define("DB_DSN", $_ENV['DB_PROD_DSN']);
 }
 
 //Define Encryption Key and Algorithm

@@ -12,8 +12,7 @@ use App\model\Notification\OrganizationNotification;
 use App\model\Requests\additional_sponsorship_request;
 use App\model\Requests\AttendanceAcceptedRequest;
 use App\model\Requests\SponsorshipRequest;
-use App\model\sponsor\campaigns_sponsors;
-use App\model\sponsor\SponsorshipPackages;
+use App\model\sponsor\CampaignsSponsor;
 use App\model\users\organization;
 use App\model\Campaigns\Campaign;
 use App\model\users\Sponsor;
@@ -141,8 +140,6 @@ class OrganizationController extends Controller
         }else {
             $campaign = new Campaign();
             $bank = BloodBank::RetrieveAll(false, [], false);
-            $packages = SponsorshipPackages::RetrieveAll(false, [], false);
-
             if ($request->isPost()) {
                 $campaign->loadData($request->getBody());
                 $campaign->setOrganizationID(Application::$app->getUser()->getID());
@@ -162,7 +159,7 @@ class OrganizationController extends Controller
 
             }
             Application::$app->session->setFlash('success', 'You Successfully Created a Campaign! Please Wait for the Admin Approval.');
-            return $this->render('Organization/createCampaign', ['banks' => $bank, 'package' => $packages]);
+            return $this->render('Organization/createCampaign', ['banks' => $bank]);
         }
     }
 

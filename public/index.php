@@ -25,7 +25,7 @@ require_once __DIR__ . '/../public/config.php';
 
 $config=[
     'db'=>[
-        'dsn'=>$_ENV['DB_DSN'],
+        'dsn'=>DB_DSN,
         'user'=>$_ENV['DB_USER'],
         'password'=>$_ENV['DB_PASSWORD'] ?? ''
     ],
@@ -128,7 +128,7 @@ $app->router->get('/organization/campDetails', [OrganizationController::class, '
 $app->router->get('/organization/received', [OrganizationController::class, 'received']);
 $app->router->get('/organization/accepted', [OrganizationController::class, 'accepted']);
 $app->router->get('/organization/profile', [OrganizationController::class, 'profile']);
-$app->router->get('/organization/campaign/view', [OrganizationController::class, 'view']);
+$app->router->get('/organization/campaign/view', [OrganizationController::class, 'ViewCampaign']);
 $app->router->get('/organization/campaign/updateCampaign', [OrganizationController::class, 'update']);
 $app->router->post('/organization/campaign/updateCampaign', [OrganizationController::class, 'update']);
 $app->router->get('/organization/campaign/deleteCampaign', [OrganizationController::class, 'delete']);
@@ -149,8 +149,9 @@ $app->router->post('/user/change-password', [authController::class, 'ChangePassw
     $app->router->post('/sponsor/makePayment', [sponsorController::class, 'MakePayment']);
     $app->router->get('/sponsor/history', [sponsorController::class, 'history']);
     $app->router->get('/sponsor/manage', [sponsorController::class, 'manage']);
-    $app->router->get('/sponsor/donation', [sponsorController::class, 'donation']);
+    $app->router->get('/sponsor/donation', [sponsorController::class, 'MakeDonation']);
     $app->router->get('/sponsor/campDetails', [sponsorController::class, 'campDetails']);
+    $app->router->post('/sponsor/campaign/view', [sponsorController::class, 'GetCampaignDetails']);
     $app->router->get('/sponsor/guideline', [sponsorController::class, 'guideline']);
     $app->router->post('/sponsor/notification', [SponsorController::class, 'GetNotification']);
     $app->router->post('/sponsor/changeProfile', [SponsorController::class, 'ChangeProfileImage']);

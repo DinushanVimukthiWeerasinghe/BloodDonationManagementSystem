@@ -258,7 +258,8 @@ const ViewRequest = (id)=>{
             body : formData
         }).then(res=>res.json()).then(data=> {
             console.log(data.data)
-            const {organizationName,campaignName,date,amount,report,suggest,campaignDate} = data.data;
+            const {organizationName,campaignName,date,amount,report,campaignDate} = data.data;
+            // TODO : Style This
             OpenDialogBox({
                 id: 'ViewRequest',
                 title: 'View Request',
@@ -275,14 +276,6 @@ const ViewRequest = (id)=>{
                                 <div class="d-flex">Amount : <span class="font-bold ms-2">LKR ${amount}</span></div>
                                 <div class="d-flex align-items-center">Report &nbsp; <button class="btn btn-info" onclick="ViewReport('${report}')">View Report</button></div>
                             </div>
-                        </div>
-                            <div class="d-flex flex-column">
-                                <div class="d-flex flex-center bg-dark text-white px-2 py-0-5">Suggested Package</div>
-                                <img src="${suggest.Package_Image}" alt="" width="200px">
-                                <div class="d-flex flex-column">
-                                    <div class="d-flex">Package Name : <span class="font-bold ms-2">${suggest.Package_Name} </span></div>
-                                    <div class="d-flex">Package Amount : <span class="font-bold ms-2">LKR ${suggest.Package_Price}</span></div>
-                                </div>
                         </div>
                         </div>
                         <div class="d-flex flex-center">

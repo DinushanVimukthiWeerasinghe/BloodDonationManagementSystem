@@ -18,7 +18,7 @@ use App\model\Notification\MedicalOfficerNotification;
 use App\model\Notification\OrganizationNotification;
 use App\model\Requests\BloodRequest;
 use App\model\Requests\SponsorshipRequest;
-use App\model\sponsor\SponsorshipPackages;
+//use App\model\sponsor\SponsorshipPackages;
 use App\model\users\Donor;
 use App\model\users\Hospital;
 use App\model\users\Manager;
@@ -666,9 +666,7 @@ class managerController extends Controller
         $total_rows = Sponsor::getCount();
         $total_pages = ceil ($total_rows / $limit);
         $Sponsors=Sponsor::RetrieveAll(true,[$initial,$limit]);
-        $Packages=SponsorshipPackages::RetrieveAll();
         $params=[
-            'packages'=>$Packages,
             'page'=>'mngSponsor',
             'rpp'=>$limit,
             'total_pages'=>$total_pages,
@@ -749,17 +747,6 @@ class managerController extends Controller
             $Request= SponsorshipRequest::findOne(['Sponsorship_ID'=>$Req_ID]);
             if ($Request){
                 $Amount = $Request->getSponsorshipAmount();
-                $SuggestedPackage = SponsorshipRequest::getSuggestedPackage($Amount);
-                $suggest = [];
-                if ($SuggestedPackage){
-                    $suggest=[
-                        'Package_ID'=>$SuggestedPackage[0]->getPackageID(),
-                        'Package_Name'=>$SuggestedPackage[0]->getPackageName(),
-                        'Package_Price'=>$SuggestedPackage[0]->getPackagePrice(),
-                        'Package_Description'=>$SuggestedPackage[0]->getPackageDescription(),
-                        'Package_Image'=>$SuggestedPackage[0]->getPackageImage(),
-                    ];
-                }
                 return json_encode(['status'=>true,"data"=>[
                     'campaignName'=> $Request->getCampaignName(),
                     'campaignDate'=>$Request->getCampaignDate(),
@@ -768,7 +755,6 @@ class managerController extends Controller
                     'amount'=>$Request->getSponsorshipAmount(),
                     'description'=>$Request->getDescription(),
                     'report'=>$Request->getReport(),
-                    'suggest'=>$suggest
                 ]]);
                             }else{
                 return json_encode(['status'=>false,'message'=>"No Request Found"]);
@@ -784,7 +770,9 @@ class managerController extends Controller
             $Request= SponsorshipRequest::findOne(['Sponsorship_ID'=>$Req_ID]);
             if ($Request){
                 $Request->setSponsorshipStatus(SponsorshipRequest::STATUS_APPROVED);
-                $Request->update($Request->getSponsorshipID(),[],['Sponsorship_Status']);
+                $Request->setManagedBy(Application::$app->getUser()->getID());
+                $Request->setManagedAt(date('Y-m-d'));
+                $Request->update($Request->getSponsorshipID(),[],['Sponsorship_Status','Managed_By','Managed_At']);
                 $OrgNotification = new OrganizationNotification();
                 $OrgNotification->setTargetID($Request->getOrganizationID());
                 $OrgNotification->setNotificationType(OrganizationNotification::TYPE_SPONSORSHIP_REQUEST);

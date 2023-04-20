@@ -144,6 +144,10 @@ abstract class Person extends dbModel
     {
         return $this->First_Name.' '.$this->Last_Name;
     }
+    public function getNameWithInitial(): string
+    {
+        return $this->First_Name.' '.$this->Last_Name;
+    }
 
     /**
      * @return string

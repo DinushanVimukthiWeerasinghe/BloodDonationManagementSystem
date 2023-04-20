@@ -227,7 +227,7 @@ body{
     margin-bottom: 1rem;
 }
 
-#donate-btn{
+#donate-btn, #reg-org-btn{
     background: #7f0505;
     color: white;
     padding: 1rem;

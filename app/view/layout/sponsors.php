@@ -20,6 +20,15 @@ $navbar = new AuthNavbar(strtoupper($User->getSponsorName()).' '.'SPONSOR BOARD'
     <link rel="icon" type="image/png" sizes="16x16" href="/public/favicon/favicon-16x16.png">
     <link rel="manifest" href="/public/favicon/site.webmanifest">
 
+    <script
+        src="https://maps.googleapis.com/maps/api/js?key=<?=$_ENV['MAP_API_KEY'];?>&callback=initMap&v=weekly&libraries=places"
+        defer
+    ></script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+    <link rel="stylesheet" href="/public/css/fontawesome/fa.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.2.1/dist/chart.umd.min.js"></script>
+
     <link rel="stylesheet" href="/public/css/framework/utils.css">
     <link rel="stylesheet" href="/public/css/components/cardPane/index.css">
     <script src="/public/scripts/index.js"></script>
@@ -29,6 +38,7 @@ $navbar = new AuthNavbar(strtoupper($User->getSponsorName()).' '.'SPONSOR BOARD'
 </body>
 <script src="/public/js/components/navbar/navbar.js"></script>
 <script src="/public/js/components/dialog-box/dialog-box.js"></script>
+<script src="/public/js/components/toasts/toast.js"></script>
 <script>
     const getNotification = () => {
         const url = '/sponsor/notification';

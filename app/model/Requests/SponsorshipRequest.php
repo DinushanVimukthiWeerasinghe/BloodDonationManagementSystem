@@ -2,9 +2,13 @@
 
 namespace App\model\Requests;
 
+use App\model\BloodBankBranch\BloodBank;
 use App\model\Campaigns\Campaign;
-use App\model\sponsor\SponsorshipPackages;
+//use App\model\sponsor\SponsorshipPackages;
+use App\model\sponsor\CampaignsSponsor;
+use App\model\users\Manager;
 use App\model\users\Organization;
+use App\model\users\Sponsor;
 
 class SponsorshipRequest extends \App\model\database\dbModel
 {
@@ -23,10 +27,10 @@ class SponsorshipRequest extends \App\model\database\dbModel
     protected int $Sponsorship_Status=1;
     protected string $Description='';
     protected string $Report='';
-    protected ?string $Sponsor_ID=null;
-    protected ?string $Sponsored_At=null;
     protected ?string $Transferred=null;
     protected ?string $Transferred_At=null;
+    protected ?string $Managed_By=null;
+    protected ?string $Managed_At=null;
 
     /**
      * @return string
@@ -35,6 +39,44 @@ class SponsorshipRequest extends \App\model\database\dbModel
     {
         return $this->Report;
     }
+
+    /**
+     * @return string|null
+     */
+    public function getManagedBy(): ?string
+    {
+        return $this->Managed_By;
+    }
+
+    /**
+     * @param string|null $Managed_By
+     */
+    public function setManagedBy(?string $Managed_By): void
+    {
+        $this->Managed_By = $Managed_By;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getManagedAt(): ?string
+    {
+        return $this->Managed_At;
+    }
+
+    /**
+     * @param string|null $Managed_At
+     */
+    public function setManagedAt(?string $Managed_At): void
+    {
+        $this->Managed_At = $Managed_At;
+    }
+
+    /**
+     * @param string|null $Sponsored_Amount
+     */
+
+
 
     /**
      * @param string $Report
@@ -52,29 +94,25 @@ class SponsorshipRequest extends \App\model\database\dbModel
         return $this->Sponsor_ID;
     }
 
-    /**
-     * @param string|null $Sponsor_ID
-     */
-    public function setSponsorID(?string $Sponsor_ID): void
+    public function getSponsorName() : string
     {
-        $this->Sponsor_ID = $Sponsor_ID;
+        /** @var $sponsor Sponsor */
+        return "Kamal";;
     }
 
-    /**
-     * @return string|null
-     */
-    public function getSponsoredAt(): ?string
+    public function getToBeSponsoredAmount(): float|int
     {
-        return $this->Sponsored_At;
+        $CampaignSponsors = CampaignsSponsor::RetrieveAll(false,[],true,['Sponsorship_ID'=>$this->Sponsorship_ID]);
+        if (count($CampaignSponsors) == 0)
+            return $this->Sponsorship_Amount;
+        $SponsoredAmount = array_sum(array_map(function ($CampaignSponsor){
+            /** @var $CampaignSponsor CampaignsSponsor */
+            return $CampaignSponsor->getSponsoredAmount();
+        },$CampaignSponsors));
+        return $this->Sponsorship_Amount - $SponsoredAmount;
     }
 
-    /**
-     * @param string|null $Sponsored_At
-     */
-    public function setSponsoredAt(?string $Sponsored_At): void
-    {
-        $this->Sponsored_At = $Sponsored_At;
-    }
+
 
     /**
      * @return string|null
@@ -182,6 +220,15 @@ class SponsorshipRequest extends \App\model\database\dbModel
         return $this->Sponsorship_Status;
     }
 
+    public function getSponsorStatus(): string
+    {
+        return match ($this->Transferred) {
+            self::TRANSFERRING_PENDING => 'NOT TRANSFERRED',
+            self::TRANSFERRING_COMPLETED => 'TRANSFERRED',
+            default => 'UNKNOWN'
+        };
+    }
+
     public function getReadableSponsorshipStatus(): string
     {
         return match ($this->Sponsorship_Status) {
@@ -226,33 +273,25 @@ class SponsorshipRequest extends \App\model\database\dbModel
         return Campaign::findOne(['Campaign_ID'=>$this->Campaign_ID])->getCampaignDate();
     }
 
-    public function Sponsor(string $SponsorID): void
+    public function Sponsor(string $SponsorID,$Amount,$Description="Paid"): void
     {
-        $this->Sponsor_ID = $SponsorID;
-        $this->Sponsored_At = date('Y-m-d H:i:s');
-        $this->Sponsorship_Status = self::STATUS_COMPLETED;
         $this->Transferred = self::TRANSFERRING_PENDING;
-        $this->update($this->getSponsorshipID(),[],['Sponsor_ID','Sponsored_At','Sponsorship_Status','Transferred']);
-    }
+        if ($this->Sponsorship_Amount <= $this->getToBeSponsoredAmount()){
+            $this->Sponsorship_Status = self::STATUS_COMPLETED;
+        }else{
+            $this->Sponsorship_Status = self::STATUS_APPROVED;
+        }
+        $CampaignSponsor = new CampaignsSponsor();
+        $CampaignSponsor->setSponsorshipID($this->Sponsorship_ID);
+        $CampaignSponsor->setSponsorID($SponsorID);
+        $CampaignSponsor->setSponsoredAmount($Amount);
+        $CampaignSponsor->setSponsoredAt(date('Y-m-d H:i:s'));
+        $CampaignSponsor->setDescription($Description);
 
-    public static function getSuggestedPackage($Amount) : SponsorshipPackages | bool
-    {
-        $Packages= SponsorshipPackages::RetrieveAll();
-        return array_filter($Packages, function ($package) use ($Amount) {
-            /** @var SponsorshipPackages $package */
-            if ($package->getPackagePrice() == $Amount)
-                return true;
-            else if ($package->getPackagePrice() > $Amount)
-                return false;
-            else if ($package->getPackagePrice() < $Amount)
-                if ($package->getPackagePrice() + 10000 > $Amount)
-                    return true;
-                else
-                    return false;
-            else
-                return false;
-        })[0] ?? false;
-
+        if ($CampaignSponsor->validate()){
+            $CampaignSponsor->save();
+        }
+        $this->update($this->getSponsorshipID(),[],['Sponsorship_Status','Transferred','Sponsored_Amount']);
     }
 
     public function getOrganizationName()
@@ -321,8 +360,42 @@ class SponsorshipRequest extends \App\model\database\dbModel
             'Report',
             'Transferred',
             'Transferred_At',
-            'Sponsor_ID',
-            'Sponsored_At'
+            'Managed_By',
+            'Managed_At',
         ];
+    }
+
+    public function getManagerName(): string
+    {
+        /** @var Manager $Manager*/
+        $Manager = Manager::findOne(['Manager_ID'=>$this->Managed_By]);
+        if ($Manager)
+            return $Manager->getNameWithInitial();
+        else
+            return 'Unknown';
+    }
+
+    public function getManagerBloodBankName()
+    {
+        /** @var Manager $Manager*/
+        /** @var BloodBank $Bank*/
+        $Manager = Manager::findOne(['Manager_ID'=>$this->Managed_By]);
+        if ($Manager) {
+            $Bank = BloodBank::findOne(['BloodBank_ID' => $Manager->getBloodBankID()]);
+            if ($Bank)
+                return $Bank->getBankName();
+            else
+                return 'Unknown';
+        }else {
+            return 'Unknown';
+        }
+    }
+
+    public function getNeededAmount()
+    {
+        if ($this->Sponsored_Amount)
+            return $this->Sponsorship_Amount - $this->Sponsored_Amount;
+        else
+            return $this->Sponsorship_Amount;
     }
 }

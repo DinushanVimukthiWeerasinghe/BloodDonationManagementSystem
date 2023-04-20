@@ -294,7 +294,7 @@ INSERT INTO `campaign` (`Campaign_ID`, `Campaign_Name`, `Campaign_Description`, 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `campaigns_sponsors`
+-- Table structure for table `campaignsSponsor`
 --
 
 CREATE TABLE `campaigns_sponsors` (
@@ -304,7 +304,7 @@ CREATE TABLE `campaigns_sponsors` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 --
--- Dumping data for table `campaigns_sponsors`
+-- Dumping data for table `campaignsSponsor`
 --
 
 INSERT INTO `campaigns_sponsors` (`Campaign_ID`, `Sponsor_ID`, `Package_ID`) VALUES
@@ -1014,7 +1014,7 @@ ALTER TABLE `campaign`
   ADD KEY `campaign_ibfk_5` (`Package_ID`);
 
 --
--- Indexes for table `campaigns_sponsors`
+-- Indexes for table `campaignsSponsor`
 --
 ALTER TABLE `campaigns_sponsors`
   ADD KEY `Campaign_ID` (`Campaign_ID`),
@@ -1314,7 +1314,7 @@ ALTER TABLE `campaign`
   ADD CONSTRAINT `campaign_ibfk_5` FOREIGN KEY (`Package_ID`) REFERENCES `sponsorship_packages` (`Package_ID`);
 
 --
--- Constraints for table `campaigns_sponsors`
+-- Constraints for table `campaignsSponsor`
 --
 ALTER TABLE `campaigns_sponsors`
   ADD CONSTRAINT `campaigns_sponsors_ibfk_1` FOREIGN KEY (`Campaign_ID`) REFERENCES `campaign` (`Campaign_ID`),
