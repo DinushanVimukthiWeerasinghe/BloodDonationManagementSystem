@@ -111,16 +111,7 @@ FlashMessage::RenderFlashMessages();
                     </div>
                 </div>
 
-<!--                --><?php //if(isset($expired) &&  $expired== 1) { ?>
-<!--                <div class="d-flex gap-6" id="Campaign_Status">-->
-<!--                    <div class="">Received Income</div>-->
-<!--                    <div class="font-bold" style="padding: 0 5px "></div>-->
-<!--                </div>-->
-<!--                <div class="d-flex gap-6" id="Campaign_Status">-->
-<!--                    <div class="">Donor Participation</div>-->
-<!--                    <div class="font-bold" style="padding: 0 5px "></div>-->
-<!--                </div>-->
-<!--                --><?php //} ?>
+
                 <?php if(isset($disable) &&  $disable== 1) {?>
                     <div style="text-align: center;display: flex;flex-direction: row;gap: 20px;margin-left: 30vh;">
                         <a href="/organization/campaign/updateCampaign?id=<?php echo $_GET['id']?>"><button class="btn btn-success w-100">Update Campaign</button></a>
@@ -143,6 +134,7 @@ FlashMessage::RenderFlashMessages();
                     </div>
                 </div>
             </div>
+
             <div class="card nav-card bg-white text-dark" onclick="ReceivedSponsorship()">
                 <div class="card-header">
                     <div class="card-header-img">
@@ -153,7 +145,8 @@ FlashMessage::RenderFlashMessages();
                     </div>
                 </div>
             </div>
-            <div class="card nav-card bg-white text-dark" onclick="Redirect('accepted?id=<?php echo $id ?>')">
+
+            <div class="card nav-card bg-white text-dark" onclick="Redirect('accepted?id=<?php ?>')">
                 <div class="card-header">
                     <div class="card-header-img">
                         <img src="/public/images/icons/organization/campaignDetails/accepted.png" alt="Accepted" width="100px">
@@ -163,7 +156,8 @@ FlashMessage::RenderFlashMessages();
                     </div>
                 </div>
             </div>
-            <div class="card nav-card bg-white text-dark" onclick="Redirect('inform?id=<?php echo $id ?>')">
+
+            <div class="card nav-card bg-white text-dark" onclick="Redirect('inform?id=<?php ?>')">
                 <div class="card-header">
                     <div class="card-header-img">
                         <img src="/public/images/icons/organization/campaignDetails/inform.png" alt="Inform" width="100px">
@@ -176,6 +170,7 @@ FlashMessage::RenderFlashMessages();
         </div>
     <?php }
     else{?>
+
         <div class="d-flex justify-content-center cards mt-2">
             <div class="card nav-card bg-white card-disabled text-dark">
                 <div class="disable-text bg-white-0-7 py-2 px-1 font-bold absolute"  style="color: red">

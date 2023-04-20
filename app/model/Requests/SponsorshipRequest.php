@@ -72,11 +72,6 @@ class SponsorshipRequest extends \App\model\database\dbModel
         $this->Managed_At = $Managed_At;
     }
 
-    /**
-     * @param string|null $Sponsored_Amount
-     */
-
-
 
     /**
      * @param string $Report
@@ -291,7 +286,7 @@ class SponsorshipRequest extends \App\model\database\dbModel
         if ($CampaignSponsor->validate()){
             $CampaignSponsor->save();
         }
-        $this->update($this->getSponsorshipID(),[],['Sponsorship_Status','Transferred','Sponsored_Amount']);
+        $this->update($this->getSponsorshipID(),[],['Sponsorship_Status','Transferred']);
     }
 
     public function getOrganizationName()
@@ -393,9 +388,12 @@ class SponsorshipRequest extends \App\model\database\dbModel
 
     public function getNeededAmount()
     {
-        if ($this->Sponsored_Amount)
-            return $this->Sponsorship_Amount - $this->Sponsored_Amount;
+        /** @var $Sponsorship CampaignsSponsor*/
+        $ReceivedSponsorship= CampaignsSponsor::RetrieveAll(false,[],true,['Sponsorship_ID'=>$this->Sponsorship_ID]);
+        if ($ReceivedSponsorship)
+            return $this->Sponsorship_Amount - array_sum(array_map(fn($Sponsorship)=>$Sponsorship->getSponsoredAmount() ,$ReceivedSponsorship));
         else
             return $this->Sponsorship_Amount;
+
     }
 }

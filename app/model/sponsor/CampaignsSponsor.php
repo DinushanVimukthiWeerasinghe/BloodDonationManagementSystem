@@ -11,6 +11,9 @@ class CampaignsSponsor extends \App\model\database\dbModel
     protected string $Sponsored_At='';
 
 
+
+
+
     public function labels(): array
     {
         return [
