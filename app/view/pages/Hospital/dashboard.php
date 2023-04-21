@@ -124,7 +124,7 @@ echo $table->render("table");
             id:'TakeNewDonation',
             title: 'Take New Donation',
             content: `
-            
+            p
             `,
             successBtnText: 'Add',
             successBtnAction:()=>{
