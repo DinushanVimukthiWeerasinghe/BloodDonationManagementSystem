@@ -816,8 +816,10 @@ CREATE TABLE IF NOT EXISTS campaigns_sponsors
     Sponsor_ID VARCHAR(20) NOT NULL,
     Description VARCHAR(100) NOT NULL,
     Sponsored_Amount INT NOT NULL,
+    Session_ID VARCHAR(255) NOT NULL,
+    Status INT NOT NULL DEFAULT 1,
     Sponsored_At TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (Sponsorship_ID, Sponsor_ID),
+    PRIMARY KEY (Sponsorship_ID, Sponsor_ID,Sponsored_At),
     FOREIGN KEY (Sponsorship_ID) REFERENCES Sponsorship_Requests (Sponsorship_ID)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8;

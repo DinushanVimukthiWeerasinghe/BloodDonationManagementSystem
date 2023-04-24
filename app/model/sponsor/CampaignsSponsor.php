@@ -2,17 +2,59 @@
 
 namespace App\model\sponsor;
 
+use App\model\Utils\Security;
+
 class CampaignsSponsor extends \App\model\database\dbModel
 {
+    const PAYMENT_STATUS_PENDING = 1;
+    const PAYMENT_STATUS_PAID = 2;
+    const PAYMENT_STATUS_FAILED = 3;
+
+
     protected string $Sponsor_ID='';
     protected string $Sponsorship_ID='';
     protected string $Description='';
     protected int $Sponsored_Amount=0;
     protected string $Sponsored_At='';
+    protected int $Status = 1;
+    protected string $Session_ID = '';
 
+    /**
+     * @return int
+     */
+    public function getStatus(): int
+    {
+        return $this->Status;
+    }
 
+    /**
+     * @param int $Status
+     */
+    public function setStatus(int $Status): void
+    {
+        $this->Status = $Status;
+    }
 
+    /**
+     * @return string
+     */
+    public function getSessionID(): string
+    {
+        return $this->Session_ID;
+    }
 
+    public function IsSessionValid($sessionID): bool
+    {
+        return Security::VerifyHash($sessionID,$this->Session_ID);
+    }
+
+    /**
+     * @param string $Session_ID
+     */
+    public function setSessionID(string $Session_ID): void
+    {
+        $this->Session_ID = Security::HashData($Session_ID);
+    }
 
     public function labels(): array
     {
@@ -33,6 +75,8 @@ class CampaignsSponsor extends \App\model\database\dbModel
             'Description'=>[self::RULE_REQUIRED],
             'Sponsored_Amount'=>[self::RULE_REQUIRED],
             'Sponsored_At'=>[self::RULE_REQUIRED],
+            'Status'=>[self::RULE_REQUIRED],
+            'Session_ID'=>[self::RULE_REQUIRED],
         ];
     }
 
@@ -55,7 +99,7 @@ class CampaignsSponsor extends \App\model\database\dbModel
     public static function PrimaryKey(): string
     {
         // TODO: Implement PrimaryKey() method.
-        return 'Campaign_ID';
+        return 'Sponsorship_ID';
 
     }
 
@@ -68,6 +112,8 @@ class CampaignsSponsor extends \App\model\database\dbModel
             'Description',
             'Sponsored_Amount',
             'Sponsored_At',
+            'Status',
+            'Session_ID',
         ];
     }
 

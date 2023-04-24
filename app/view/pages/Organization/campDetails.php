@@ -149,7 +149,7 @@ FlashMessage::RenderFlashMessages();
 <!--                        <img src="/public/images/icons/organization/campaignDetails/received.png" alt="Received" width="100px">-->
 <!--                    </div>-->
                     <div class="card-title">
-                        <h3 style="color: whitesmoke">You have Received <span class="bg-warning fa fa-1x p-1 " style="color: #0b0000">LKR. <?php echo $pack_price ?></span></h3>
+                        <h3 style="color: whitesmoke">You have Received <span class="bg-warning fa fa-1x p-1 " style="color: #0b0000">LKR. <?php echo $ReceivedAmount ?></span></h3>
                     </div>
                 </div>
             </div>

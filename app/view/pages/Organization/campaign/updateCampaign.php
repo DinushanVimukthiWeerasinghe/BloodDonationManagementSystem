@@ -76,7 +76,7 @@ echo $background;
     </form>
     <div class="d-flex align-items-center justify-content-center gap-2">
         <button class="btn btn-success w-25" id="button" value="Create" onclick="update()" type="submit"> Update </button>
-        <a href="CampDetails"><button class="btn btn-danger w-25" id="button" value="Cancel"> Cancel </button>
+        <button class="btn btn-danger w-25" id="button" value="Cancel"> Cancel </button>
     </div>
 </div>
 

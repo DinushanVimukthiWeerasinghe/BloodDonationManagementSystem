@@ -50,6 +50,7 @@ class sponsorController extends Controller
 
     /**
      * @throws ApiErrorException
+     * @throws \Exception
      */
     public function MakePayment(Request $request, Response $response)
     {
@@ -61,10 +62,9 @@ class sponsorController extends Controller
 
             if (!isset($Amount) || !isset($Description) || !isset($RequestID)){
                 $this->setFlashMessage('error','Invalid Request');
-                Application::Redirect('/sponsor/donation');
+                Application::Redirect('/sponsor/sponsor');
                 exit();
             }
-
 //            Check Amount
             if (!is_numeric($Amount)){
                 $Amount = intval($Amount);
@@ -72,14 +72,14 @@ class sponsorController extends Controller
 
             if ($Amount <= 0){
                 $this->setFlashMessage('error','Invalid Amount');
-                Application::Redirect('/sponsor/donation');
+                Application::Redirect('/sponsor/sponsor');
                 exit();
             }
 
             $SponsorshipRequest = SponsorshipRequest::findOne(['Sponsorship_ID' => $RequestID]);
             if (!$SponsorshipRequest){
                 $this->setFlashMessage('error','Invalid Request');
-                Application::Redirect('/sponsor/donation');
+                Application::Redirect('/sponsor/sponsor');
                 exit();
             }
 
@@ -91,6 +91,7 @@ class sponsorController extends Controller
             $SponsorshipRequestedAmount = intval($SponsorshipRequest->getSponsorshipAmount());
             $CampaignName = $SponsorshipRequest->getCampaignName();
 
+            $SponsorshipRequest = SponsorshipRequest::findOne(['Sponsorship_ID' => $RequestID]);
             $RequestID = Security::Encrypt($RequestID);
             $RequestID = urlencode($RequestID);
 
@@ -105,17 +106,19 @@ class sponsorController extends Controller
                 ],
                 'quantity' => 1,
             ];
-            $Amount = Security::Encrypt($Amount);
-            $Amount = urlencode($Amount);
+            $EncAmount = Security::Encrypt($Amount);
+            $EncAmount = urlencode($Amount);
             $Description =Security::Encrypt($Description);
             $Description = urlencode($Description);
+            /** @var $SponsorshipRequest SponsorshipRequest*/
+            $UserID = Application::$app->getUser()->getID();
 
             Stripe::setApiKey($_ENV['STRIPE_SECRET_KEY']);
             $checkout_session = Session::create([
                 'payment_method_types' => ['card'],
                 'line_items' => $line_items,
                 'mode' => 'payment',
-                'success_url' => HOST . '/sponsor/makePayment?success=true&RequestID='.$RequestID.'&Amount='.$Amount.'&Description='.$Description,
+                'success_url' => HOST . '/sponsor/makePayment?success=true&RequestID='.$RequestID.'&Amount='.$EncAmount.'&Description='.$Description.'&session_id='.'{CHECKOUT_SESSION_ID}' ,
                 'cancel_url' => HOST . '/sponsor/makePayment?success=false',
                 'custom_text'=>[
                     'submit' =>[
@@ -123,6 +126,9 @@ class sponsorController extends Controller
                     ]
                 ]
             ]);
+
+            $SessionID = $checkout_session->id;
+            $SponsorshipRequest->sponsor($UserID,$Amount,$SessionID,$Description);
             return json_encode(['status'=>true,'redirect'=>$checkout_session->url]);
         }else if ($request->isGet()){
             /** @var $SponsorshipRequest SponsorshipRequest*/
@@ -131,26 +137,36 @@ class sponsorController extends Controller
                 $RequestID = $request->getBody()['RequestID'];
                 $Amount = $request->getBody()['Amount'];
                 $Description = $request->getBody()['Description'];
+                $SessionID = $request->getBody()['session_id'];
                 $RequestID = Security::Decrypt($RequestID);
                 $Amount = Security::Decrypt($Amount);
                 $Description = Security::Decrypt($Description);
-                if (!isset($RequestID) || !$RequestID || !isset($Amount) || !$Amount){
+                /** @var $SponsorshipRequest CampaignsSponsor*/
+                $SponsorshipRequest = CampaignsSponsor::RetrieveAll(false,[],false,['Sponsorship_ID'=>$RequestID],['Sponsored_At'=>'DESC']);
+                if (!$SponsorshipRequest){
                     $this->setFlashMessage('error','Invalid Request');
-                    Application::Redirect('/sponsor/donation');
+                    Application::Redirect('/sponsor/sponsor');
                     exit();
                 }
-
-                $UserID = Application::$app->getUser()->getID();
-                $SponsorshipRequest = SponsorshipRequest::findOne(['Sponsorship_ID' => $RequestID]);
-                $SponsorshipRequest->sponsor($UserID,$Amount,$Description);
-                $OrganizationID = $SponsorshipRequest->getOrganizationID();
-                OrganizationNotification::CreateNewSponsorshipAcceptedRequest($OrganizationID);
-                $this->setFlashMessage('success','Payment Successful');
-                Application::Redirect('/sponsor/donation');
-
+                if (count($SponsorshipRequest)>=1){
+                    $SponsorshipRequest = $SponsorshipRequest[0];
+                }
+                if ($SponsorshipRequest->IsSessionValid($SessionID)){
+                    $SponsorshipRequest->setStatus(CampaignsSponsor::PAYMENT_STATUS_PAID);
+//                    var_dump("Hello");
+//                    exit();
+                    $SponsorshipRequest->update($SponsorshipRequest->getSponsorshipID(),[],['Status'],['Session_ID'=>Security::HashData($SessionID)]);
+                    $this->setFlashMessage('success','Payment Successful!');
+                    Application::Redirect('/sponsor/sponsor');
+                }else{
+                    $this->setFlashMessage('error','Transaction Failed');
+                    Application::Redirect('/sponsor/sponsor');
+                    exit();
+                }
             }else{
-                $this->setFlashMessage('error','Payment Failed');
-                Application::Redirect('/sponsor/donation');
+                $this->setFlashMessage('error','Transaction Failed');
+                Application::Redirect('/sponsor/sponsor');
+                exit();
             }
         }
     }

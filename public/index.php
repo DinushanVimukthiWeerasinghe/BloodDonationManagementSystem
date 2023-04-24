@@ -134,8 +134,6 @@ $app->router->get('/organization/campaign/view', [OrganizationController::class,
 $app->router->get('/organization/campaign/updateCampaign', [OrganizationController::class, 'updateCampaign']);
 $app->router->post('/organization/campaign/updateCampaign', [OrganizationController::class, 'updateCampaign']);
 $app->router->get('/organization/campaign/view', [OrganizationController::class, 'ViewCampaign']);
-$app->router->get('/organization/campaign/updateCampaign', [OrganizationController::class, 'update']);
-$app->router->post('/organization/campaign/updateCampaign', [OrganizationController::class, 'update']);
 $app->router->get('/organization/campaign/deleteCampaign', [OrganizationController::class, 'delete']);
 $app->router->post('/organization/getCampaignCoordinate', [OrganizationController::class, 'GetCampaignCoordinate']);
 $app->router->post('/organization/getBankDetails', [OrganizationController::class, 'GetOrganizationBankAccountDetails']);
@@ -154,7 +152,7 @@ $app->router->post('/user/change-password', [authController::class, 'ChangePassw
     $app->router->post('/sponsor/makePayment', [sponsorController::class, 'MakePayment']);
     $app->router->get('/sponsor/history', [sponsorController::class, 'history']);
     $app->router->get('/sponsor/manage', [sponsorController::class, 'manage']);
-    $app->router->get('/sponsor/donation', [sponsorController::class, 'donation']);
+    $app->router->get('/sponsor/sponsor', [sponsorController::class, 'MakeDonation']);
     $app->router->get('/sponsor/campDetails', [sponsorController::class, 'campDetails']);
     $app->router->post('/sponsor/campaign/view', [sponsorController::class, 'GetCampaignDetails']);
     $app->router->get('/sponsor/guideline', [sponsorController::class, 'guideline']);

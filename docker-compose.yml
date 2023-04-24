@@ -1,0 +1,15 @@
+version: "2"
+services:
+  web:
+    build : .
+    ports:
+      - "5000:5000"
+      - "443:6000"
+    volumes:
+      - .:/var/www/html
+    environment:
+      MYSQL_DB_CONNECTION: test
+      MYSQL_DB_NAME: test
+      MYSQL_USER: test
+      MYSQL_PASSWORD: test
+      SITE_URL: https://bepositive.local

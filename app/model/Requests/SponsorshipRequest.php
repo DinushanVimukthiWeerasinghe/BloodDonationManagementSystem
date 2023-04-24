@@ -9,6 +9,7 @@ use App\model\sponsor\CampaignsSponsor;
 use App\model\users\Manager;
 use App\model\users\Organization;
 use App\model\users\Sponsor;
+use Exception;
 
 class SponsorshipRequest extends \App\model\database\dbModel
 {
@@ -268,7 +269,10 @@ class SponsorshipRequest extends \App\model\database\dbModel
         return Campaign::findOne(['Campaign_ID'=>$this->Campaign_ID])->getCampaignDate();
     }
 
-    public function Sponsor(string $SponsorID,$Amount,$Description="Paid"): void
+    /**
+     * @throws Exception
+     */
+    public function Sponsor(string $SponsorID, $Amount, $SessionID, $Description): void
     {
         $this->Transferred = self::TRANSFERRING_PENDING;
         if ($this->Sponsorship_Amount <= $this->getToBeSponsoredAmount()){
@@ -282,11 +286,13 @@ class SponsorshipRequest extends \App\model\database\dbModel
         $CampaignSponsor->setSponsoredAmount($Amount);
         $CampaignSponsor->setSponsoredAt(date('Y-m-d H:i:s'));
         $CampaignSponsor->setDescription($Description);
+        $CampaignSponsor->setStatus(CampaignsSponsor::PAYMENT_STATUS_PENDING);
+        $CampaignSponsor->setSessionID($SessionID);
+
 
         if ($CampaignSponsor->validate()){
             $CampaignSponsor->save();
         }
-        $this->update($this->getSponsorshipID(),[],['Sponsorship_Status','Transferred']);
     }
 
     public function getOrganizationName()
