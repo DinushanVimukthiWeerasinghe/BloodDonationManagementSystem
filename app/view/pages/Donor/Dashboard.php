@@ -98,24 +98,23 @@ if ($state == 0){
     window.onload = () => {onLoadTrigger(<?php echo $_SESSION['pop']; ?>)};
 
     function onLoadTrigger(trigger){
-        if (trigger == 0){
-            CloseDialogBox();
+        if (trigger === 0){
         OpenDialogBox({
             title: 'Quick Data Collection About You',
             id : 'dataPop',
             content: `<form action="/donor/profile/loginPrompt" method="post" id='donorDataCollection'>
-<label>Are you?</label>
-<ul class="" style="text-align: left">
-<li class="">Patient of serious disease condition.</li>
-<li class="">Pregnant</li>
-<li class="">Homosexual.</li>
-<li class="">Sex worker or their client.</li>
-<li class="">Drug addict.</li>
-<li class="">Engaging in sex with any of the above.</li>
-<li class="">Having more than one sexual partner.</li>
-</ul><br>
-<input type="checkbox" name="agree" id='agree' value='0'> &emsp; I am free from all of above</input>
-                          </form>`,
+                        <label>Are you?</label>
+                        <ul class="" style="text-align: left">
+                        <li class="">Patient of serious disease condition.</li>
+                        <li class="">Pregnant</li>
+                        <li class="">Homosexual.</li>
+                        <li class="">Sex worker or their client.</li>
+                        <li class="">Drug addict.</li>
+                        <li class="">Engaging in sex with any of the above.</li>
+                        <li class="">Having more than one sexual partner.</li>
+                        </ul><br>
+                        <input type="checkbox" name="agree" id='agree' value='0'> &emsp; I am free from all of above</input>
+                                                  </form>`,
             successBtnText: 'Submit',
             successBtnAction: () => {
                 document.getElementById('donorDataCollection').submit();
