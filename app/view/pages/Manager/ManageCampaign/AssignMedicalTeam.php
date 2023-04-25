@@ -35,32 +35,10 @@ FlashMessage::RenderFlashMessages();
 </div>
 <div id="MedOfficers" class="d-flex w-60 flex-column align-items-center bg-white p-1 border-radius-10 m-1">
     <div class="d-flex w-100 flex-row">
-        <div class="d-flex bg-white-0-7 p-1 text-dark justify-content-between align-items-center w-100 flex-row gap-0-5 justify-content-center ">
-            <div class="d-flex align-items-center gap-1 btn btn-outline-success" onclick="AddMedicalOfficer()">
-                <img src="/public/icons/person-add.svg" width="24" alt=""/>
-                <span class=" font-bold">Add Officer</span>
-            </div>
-            <div id="Search" class="d-flex gap-0-5 align-items-center">
+        <div class="d-flex bg-white-0-7 p-1 text-dark align-items-center w-100 flex-row gap-0-5 justify-content-center flex-center">
+            <div id="Search" class="d-flex gap-0-5 align-items-center flex-center">
                 <label for="search" class="search">Search </label>
                 <input class="form-control" name="search" id="search" onkeyup="SearchAssignOfficer('/manager/mngMedicalOfficer/search-for-team','assign')">
-            </div>
-            <div id="Filters" class="d-flex gap-1">
-                <div class="form-group">
-                    <label for="filter" class="search ">Position</label>
-                    <select class="form-control" name="filter" id="filter">
-                        <option value="All">All</option>
-                        <option value="Active">Active</option>
-                        <option value="Inactive">Inactive</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="filter" class="search ">Branch</label>
-                    <select class="form-control" name="filter" id="filter">
-                        <option value="All">All</option>
-                        <option value="Active">Active</option>
-                        <option value="Inactive">Inactive</option>
-                    </select>
-                </div>
             </div>
         </div>
     </div>
@@ -84,6 +62,7 @@ FlashMessage::RenderFlashMessages();
             <?php
             $i=1;
             if (!empty($data)):
+//                Create copy of array 100 times and make a new array
                 foreach ($data as $value) :
                     $id=$value->getID();
                     $image=$value->getProfileImage();
@@ -118,45 +97,6 @@ FlashMessage::RenderFlashMessages();
             <?php endif; ?>
             </tbody>
         </table>
-    </div>
-    <div id="tableFooter" class="py-0-5 bg-white w-100 d-flex justify-content-end align-items-center">
-        <div class="d-flex">
-            <div class="d-flex align-items-center justify-content-center">
-                <div class="d-flex gap-1 align-items-center">
-                    <label for="rpp" class="search">Record Per Page</label>
-                    <select class="px-2 py-0-5" name="page" id="rpp" onchange="ChangeRecordsPerPage()">
-                        <?php
-                        $i=5;
-                        while ($i<20):
-                            /** @var int $rpp */
-                            if ((int)$rpp===$i):
-                                ?>
-                                <option selected value="<?=$i?>"><?=$i?></option>
-                            <?php
-                            else :
-                                ?>
-                                <option value="<?=$i?>"><?=$i?></option>
-                            <?php
-                            endif;
-                            ?>
-                            <?php
-                            $i=$i+5;
-                        endwhile;
-                        ?>
-                    </select>
-                </div>
-            </div>
-            <div class="d-flex align-items-center justify-content-center bg-white border-radius-10 " style="padding: 0.3rem 0.6rem">
-                <a href="<?=$getParams($_GET)?>page=<?=$current_page-1?>">
-                    <img src="/public/icons/chevron-left.svg" width="20rem">
-                </a>
-            </div>
-            <div class="d-flex align-items-center justify-content-center bg-white-0-5 border-radius-10 " style="padding: 0.3rem 0.6rem">
-                <a href="<?=$getParams($_GET)?>page=<?=$current_page+1?>">
-                    <img src="/public/icons/chevron-right.svg" width="20rem">
-                </a>
-            </div>
-        </div>
     </div>
 </div>
 <div id="AssignTeam-Content" class="d-flex w-40 flex-column align-items-center bg-white p-1 gap-1 border-radius-10 m-1">
@@ -388,6 +328,66 @@ FlashMessage::RenderFlashMessages();
                 setTimeout(()=>{
                     Loader.classList.add('none')
                 },500)
+            })
+
+    }
+
+    const AssignTeamLeader = (id) =>{
+        const url = "/manager/mngCampaign/assign-team/get-members";
+        const formData = new FormData();
+        formData.append('campId', id);
+        fetch(url, {
+            method: 'POST',
+            body: formData
+        }).then(response => response.json())
+            .then(data => {
+                if (data.status) {
+                    console.log(data)
+                    let options = '';
+                    data.data.forEach((member) => {
+                        options += `<option value="${member.Member_ID}">${member.Name} - ${member.NIC}</option>`
+                    })
+                    OpenDialogBox({
+                        id: 'assignTeamLeader',
+                        title: 'Assign Team Leader',
+                        titleClass: 'bg-dark text-white',
+                        content: `
+            <div class="d-flex flex-column justify-content-center align-items-center">
+            <div class="form-group">
+                <label for="teamLeader" class="w-40">Team Leader</label>
+                <select class="form-control w-60" id="teamLeader">
+                    ${options}
+                </select>
+            </div>
+            `,
+                        successBtnText: 'Assign',
+                        successBtnClass: 'btn-success',
+                        successBtnAction: () => {
+                            const url = '/manager/mngCampaign/assign-team/assign-leader';
+                            const form = new FormData();
+                            form.append('campId', id);
+                            form.append('teamLeaderId', document.getElementById('teamLeader').value);
+                            fetch(url, {
+                                method: 'POST',
+                                body: form
+                            }).then(response => response.json())
+                                .then(data => {
+                                    CloseDialogBox('assignTeamLeader');
+                                    if (data.status){
+                                        ShowToast({
+                                            type: 'success',
+                                            message: data.message
+                                        })
+                                    }else{
+                                        ShowToast({
+                                            type: 'danger',
+                                            message: data.message
+                                        })
+                                    }
+                                })
+                        }
+                    })
+                }
             })
 
     }

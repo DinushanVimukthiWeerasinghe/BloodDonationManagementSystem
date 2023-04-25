@@ -324,7 +324,13 @@
                })
            }
            const PrintReport = (reportID,title)=>{
-               window.print();
+               printJS({
+                   printable: 'branch-report', // ID of the HTML element to be printed
+                   type: 'html', // Type of content to be printed
+                   documentTitle: title, // Optional document title
+                   targetStyles: ['/public/css/framework/utils.cs'], // Optional CSS file to be included
+                   style: 'table {border-collapse: collapse; width: 100%;} table, th, td {border: 1px solid black; padding: 5px; text-align: center;} table tbody tr:nth-child(even){background-color:#f2f2f2}', // Optional inline CSS
+               });
 
            }
        </script>

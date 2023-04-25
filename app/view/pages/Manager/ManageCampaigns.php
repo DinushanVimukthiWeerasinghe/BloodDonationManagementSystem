@@ -107,7 +107,7 @@ $getParams = function ($params) {
         <div class="d-flex">
             <div class="d-flex align-items-center justify-content-center">
                 <div class="d-flex gap-1 align-items-center">
-                    <label for="page" class="search">Record Per Page</label>
+                    <label for="rpp" class="search">Record Per Page</label>
                     <div class="none">
                         <span id="total_pages"><?=$total_pages?></span>
                         <span id="current_page"><?=$current_page?></span>
@@ -352,6 +352,7 @@ $getParams = function ($params) {
                     OpenDialogBox({
                         id: 'viewCampaignRequest',
                         title: 'Campaign Request',
+                        titleClass: 'bg-dark text-white px-2 py-1',
                         content: `
                     <div class="d-flex flex-column">
                         <div class="d-flex flex-column w-100 justify-content-center align-items-center">
@@ -543,6 +544,7 @@ $getParams = function ($params) {
                             CloseDialogBox('acceptCampaignRequest');
                             ShowToast({
                                 title: 'success',
+                                type: 'success',
                                 message: data.message,
                             })
                             setTimeout(()=>{
@@ -552,6 +554,7 @@ $getParams = function ($params) {
                             CloseDialogBox('acceptCampaignRequest');
                             ShowToast({
                                 title: 'danger',
+                                type: 'danger',
                                 message: data.message,
                             });
                         }

@@ -35,6 +35,8 @@ use Core\File;
 use Core\middleware\AuthenticationMiddleware;
 use Core\Request;
 use Core\Response;
+use DateTime;
+use Dompdf\Dompdf;
 use PHPMailer\PHPMailer\Exception;
 
 class managerController extends Controller
@@ -148,6 +150,7 @@ class managerController extends Controller
                     }
                 }
                 $params=[
+                    'page'=>'mngCampaign',
                     'Campaign_ID'=>$campaignID,
                     'rpp'=>$limit,
                     'firstName'=>$manager->getFirstName(),
@@ -380,6 +383,10 @@ class managerController extends Controller
             /* @var $campaign Campaign*/
             $campaign = Campaign::findOne(['Campaign_ID' => $id]);
             if ($campaign){
+                $IsAlreadyApproved = ApprovedCampaigns::findOne(['Campaign_ID'=>$campaign->getCampaignID()]);
+                if ($IsAlreadyApproved){
+                    return json_encode(['status'=>false,'message'=>'Campaign Already Approved ! Refresh the page !']);
+                }
                 $ApprovedCampaign = new ApprovedCampaigns();
                 $ApprovedCampaign->setCampaignID($campaign->getCampaignID());
                 $ApprovedCampaign->setApprovedBy(Application::$app->getUser()->getID());
@@ -423,7 +430,8 @@ class managerController extends Controller
                     return json_encode(['status'=>false,'message'=>'Error on Server','data'=>$RejectedCampaign->errors]);
                 $RejectedCampaign->save();
                 $campaign->setStatus(Campaign::REJECTED);
-                $campaign->update($campaign->getCampaignID(),[],['Status']);
+                $campaign->setVerified(Campaign::REJECTED);
+                $campaign->update($campaign->getCampaignID(),[],['Status','Verified']);
                 return json_encode(['status'=>true,'message'=>'Campaign Rejected Successfully !']);
             }
         }
@@ -1098,13 +1106,34 @@ class managerController extends Controller
         }else if ($CampaignStatus===2){
             $total_rows = Campaign::getCount();
             $total_pages = ceil ($total_rows / $limit);
-            $data= Campaign::RetrieveAll(true,[$initial,$limit],true,['Status'=>Campaign::APPROVED]);
+            $data= Campaign::RetrieveAll(true,[$initial,$limit],true,['Status'=>Campaign::APPROVED,'Verified'=>Campaign::VERIFIED]);
         }
         else if ($CampaignStatus===3){
             $total_rows = Campaign::getCount(true);
             $total_pages = ceil ($total_rows / $limit);
-            $data= Campaign::RetrieveAll(true,[$initial,$limit],true,['Status'=>Campaign::REJECTED]);
+            $data= Campaign::RetrieveAll(true,[$initial,$limit],true,['Status'=>Campaign::REJECTED,'Verified'=>Campaign::REJECTED]);
         }
+//        Filter the $data array that Campaign Date is not greater than 12 hours from now
+        /**
+         * @throws \Exception
+         */
+        $data=array_filter(/**
+         * @throws \Exception
+         */ /**
+         * @throws \Exception
+         */ /**
+         */ $data,function ($item){
+            /** @var $item Campaign*/
+            $date = new DateTime($item->getCampaignDate());
+            $now = new DateTime();
+            $interval = $date->diff($now);
+            $days = $interval->format('%d');
+            $days = intval($days);
+            if ($days>14){
+                return true;
+            }
+            return false;
+        });
         return $this->render('Manager/ManageCampaigns',
             [
                 'page'=>'mngCampaign',
@@ -1345,5 +1374,12 @@ class managerController extends Controller
         $Year=date('Y');
         $DonationCampaigns=Campaign::RetrieveAll();
         
+    }
+
+    public function CampaignReport(Request $request,Response $response): bool|string
+    {
+        if ($request->isPost()){
+            $FinishedCampaigns=Campaign::RetrieveAll(false,[],true,['Status'=>Campaign::CAMPAIGN_STATUS_FINISHED]);
+        }
     }
 }

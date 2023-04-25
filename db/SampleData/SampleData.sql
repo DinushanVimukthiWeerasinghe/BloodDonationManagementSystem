@@ -227,6 +227,8 @@ VALUES
     ('Cmp_15', 'Be a Blood Donor', 'Org_15', 'Join us in this life saving cause by donating blood.', '2023-04-10', 'Kotte Road', 'Rajagiriya', 1, 6.9025, 79.8936, 'BB_14', 5000),
     ('Cmp_16', 'Save Lives with Blood Donation', 'Org_16', 'Make a difference in someone\'s life by donating blood today.', '2023-04-12', 'Havelock Road', 'Colombo 05', 1, 6.8949, 79.8665, 'BB_15', 7000);
 
+# Add 2 Month to Campaign Date
+UPDATE Campaign SET Campaign_Date = DATE_ADD(Campaign_Date, INTERVAL 2 MONTH);
 
 # Add Sample Data to the Donor TABLE
 INSERT INTO Donors (DONOR_ID, FIRST_NAME, LAST_NAME, ADDRESS1, ADDRESS2, CITY, NEAREST_BANK, CONTACT_NO, EMAIL, NIC,
