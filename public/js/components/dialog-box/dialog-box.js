@@ -2,6 +2,7 @@ const OpenDialogBox= (props) => {
     const {
         id,
         title,
+        titleClass,
         content,
         closeDialog,
         successBtnText,
@@ -9,23 +10,41 @@ const OpenDialogBox= (props) => {
         closeDialogBtn,
         successBtnAction,
         secondaryBtnText,
+        secondaryBtnColor,
         secondaryBtnAction,
         cancelBtnAction,
         popupOrder,
-        showCancelButton
+        showCancelButton,
+        showSuccessButton,
+        footer,
+        contentSize,
+        minWidth,
+        maxWidth,
     } = props;
     const dialogBoxOuter = document.createElement('div');
     dialogBoxOuter.id = id;
     if (popupOrder) {
-        dialogBoxOuter.style.zIndex = 999 + popupOrder;
+        dialogBoxOuter.style.zIndex = 1000 + popupOrder;
     } else {
-        dialogBoxOuter.style.zIndex = '999';
+        dialogBoxOuter.style.zIndex = '1000';
     }
     dialogBoxOuter.className = 'dialog-box-outer';
     const dialogBoxInner = document.createElement('div');
     dialogBoxInner.className = 'dialog-box';
+    if (minWidth) {
+        dialogBoxInner.style.minWidth = minWidth;
+    }
+    if (maxWidth) {
+        dialogBoxInner.style.maxWidth = maxWidth;
+    }
+    if (contentSize){
+        dialogBoxInner.style.minWidth=contentSize+'%';
+    }
     const dialogBoxTitle = document.createElement('div');
     dialogBoxTitle.className = 'dialog-box-title';
+    if (titleClass){
+        dialogBoxTitle.className += ' '+titleClass;
+    }
     if (title) {
         dialogBoxTitle.innerHTML = title;
     } else {
@@ -47,22 +66,32 @@ const OpenDialogBox= (props) => {
     }
     const dialogBoxActionBtn= document.createElement('div');
     dialogBoxActionBtn.className= 'dialog-box-action';
-    const OKBtn= document.createElement('button');
-    OKBtn.className= 'btn btn-success';
-    OKBtn.innerHTML= successBtnText || 'OK';
-
-    if (successBtnAction) {
-        OKBtn.addEventListener('click', successBtnAction);
-    }else{
-        OKBtn.addEventListener('click', closeDialog || function() {
-            dialogBoxOuter.remove();
-        });
+    if (showSuccessButton === false) {
+        // do nothing
     }
-    dialogBoxActionBtn.appendChild(OKBtn);
+    else {
+        const OKBtn = document.createElement('button');
+        OKBtn.className = 'btn btn-outline-success';
+        OKBtn.innerHTML = successBtnText || 'OK';
+
+        if (successBtnAction) {
+            OKBtn.addEventListener('click', successBtnAction);
+        } else {
+            OKBtn.addEventListener('click', closeDialog || function () {
+                dialogBoxOuter.remove();
+            });
+        }
+        dialogBoxActionBtn.appendChild(OKBtn);
+    }
     if (secondaryBtnText) {
         const secondaryBtnElement= document.createElement('button');
-        secondaryBtnElement.className= 'btn btn-secondary';
+        secondaryBtnElement.className= 'btn ';
         secondaryBtnElement.innerHTML= secondaryBtnText;
+        if (secondaryBtnColor) {
+            secondaryBtnElement.classList.add(secondaryBtnColor);
+        }else{
+            secondaryBtnElement.classList.add('btn-outline-secondary');
+        }
         if (secondaryBtnAction) {
             secondaryBtnElement.addEventListener('click', secondaryBtnAction);
         }else{
@@ -75,10 +104,10 @@ const OpenDialogBox= (props) => {
 
 
     if (showCancelButton === false) {
-        // OKBtn.style.width= '50%';
+        // do nothing
     }else{
         const cancelBtnElement= document.createElement('button');
-        cancelBtnElement.className= 'btn btn-danger';
+        cancelBtnElement.className= 'btn btn-outline-danger';
         cancelBtnElement.innerHTML= cancelBtnText || 'Cancel';
         if (cancelBtnAction) {
             cancelBtnElement.addEventListener('click', cancelBtnAction);
@@ -92,10 +121,17 @@ const OpenDialogBox= (props) => {
 
 
 
+
     dialogBoxInner.appendChild(dialogBoxTitle);
     dialogBoxInner.appendChild(dialogBoxContent);
     if (dialogBoxCloseBtn) {
         dialogBoxInner.appendChild(dialogBoxCloseBtn);
+    }
+    if (footer) {
+        const footerElement= document.createElement('div');
+        footerElement.className= 'dialog-box-footer';
+        footerElement.innerHTML= footer;
+        dialogBoxInner.appendChild(footerElement);
     }
     dialogBoxInner.appendChild(dialogBoxActionBtn);
     dialogBoxOuter.appendChild(dialogBoxInner);

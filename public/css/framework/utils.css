@@ -42,6 +42,12 @@
 @import "components/list/list.css";
 /*Import Flash*/
 @import "components/alert/flash.css";
+/*Import Breadcrumbs*/
+@import "components/breadcrumb/breadcrumb.css";
+/*Import Tooltips*/
+@import "components/tooltip/tooltip.css";
+/*Import Badges*/
+@import "components/badge/badge.css";
 
 @import "util/colors/base.css";
 

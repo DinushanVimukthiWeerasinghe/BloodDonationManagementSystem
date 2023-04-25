@@ -1,155 +1,89 @@
 <?php
-/* @var string $firstName*/
-/* @var string $lastName*/
-/** @var Organization $user */
-
-use App\model\users\Manager;
-use App\model\users\Organization;
-use App\model\users\Person;
-use App\view\components\ResponsiveComponent\ImageComponent\BackGroundImage;
-use App\view\components\ResponsiveComponent\NavbarComponent\AuthNavbar;
-
-$background=new BackGroundImage();
-$navbar= new AuthNavbar('Manage Profile','/organization/profile','/public/images/icons/user.png',false);
-echo $background;
-echo $navbar;
-?>
-<style>
-    @font-face {
-        font-family: 'Popins';
-        /*src: url("/public/fonts/Poppins/Poppins-Regular.ttf");*/
-    }
-    body{
-        font-family: 'Popins', serif;
-    }
-    .profile-container{
-        display:flex;
-        flex-direction: row;
-        align-items: center;
-        justify-content: center;
-    }
-    .profile-container .profile-image{
-        width: 300px;
-        height: 300px;
-        border-radius: 50%;
-
-    }
-    .profile-container .profile-image img{
-        width:inherit;
-        height: inherit;
-        border-radius: 50%;
-        /*object-position: 50% 50%;*/
-        object-fit: cover;
-    }
-    .profile-container .profile-details{
-        min-width: 60vw;
-        margin: 1rem;
-        padding: 1rem;
-        border-radius: 10%;
-        background: rgba(255,255,255,0.3);
-    }
-    .profile-container .profile-details{
-        display: flex;
-        flex-direction: column;
-        gap: 1rem;
-    }
-
-    .profile-container .profile-details .basic-details{
-        display: flex;
-        align-items: flex-start;
-        justify-content: space-around;
-    }
-
-    .profile-details .profile-entity{
-        width: 100%;
-        display: flex;
-        align-content: center;
-        align-items: center;
-        justify-content: center;
-    }
-    .profile-details .entity-title{
-        width: 60%;
-        text-align: center;
-        font-size: 1.5rem;
-        font-weight: bolder;
-
-    }
-    .profile-details .personal-details{
-        display: flex;
-        flex-direction: column;
-        margin: 1rem;
-    }
-    .profile-details .entity-value{
-        width: 100%;
-        font-size: 1.2rem;
-        padding: 1rem;
-        background: rgba(0,0,0,0.3);
-        color: white;
-        border-radius: 20px;
-        margin: 0.5rem;
-    }
-    .profile-details{
-        font-size: 1.2rem;
-    }
-    a{
-        text-decoration: none;
-        color: white;
-    }
-    .btn{
-        padding: 1rem;
-        background: darkred;
-        color: white;
-        margin: 1rem;
-        border-radius: 20px;
-        outline: none;
-        border:none;
-        box-shadow: 0 0 10px rgba(255,255,255,0.5);
-        font-size: 1.2rem;
-    }
-
-    .profile-details .profile-title{
-        font-size: 2rem;
-        font-weight: bolder;
-        text-align: center;
-        margin: 1rem;
-    }
-    .profile-details .profile-action{
-        margin: 1rem;
-        display: flex;
-        gap: 1rem;
-        justify-content: center;
-
-    }
-</style>
-<div class="profile-container">
-    <div class="profile-image">
-        <?php $profileImage= $user->getProfileImage() ?>
-        <img src="<?php echo $profileImage ?>" alt="Image" width="400px">
-    </div>
-    <div class="profile-details">
-        <div class="basic-details">
-            <div class="personal-details">
-                <div class="profile-title">Personal Details</div>
-                <div class="profile-entity profile-name"><div class="entity-title"> Name : </div>  <div class="entity-value"><?php echo $user->getFullName()?></div></div>
-                <div class="profile-entity profile-position"><div class="entity-title"> Address : </div>  <div class="entity-value"><?php echo $user->getAddress()?></div></div>
-                <div class="profile-entity profile-nic"><div class="entity-title"> Email : </div>  <div class="entity-value"><?php echo $user->getEmail()?></div></div>
-                <div class="profile-entity profile-nic"><div class="entity-title"> Contact No : </div>  <div class="entity-value"><?php echo $user->getContactNo()?></div></div>
-                <div class="profile-entity profile-nic"><div class="entity-title"> NIC : </div>  <div class="entity-value"><?php echo $user->getNIC()?></div></div>
-            </div>
-            <div class="branch-details">
-                <div class="profile-title">Branch Details</div>
-                <div class="profile branch-name"><div class="entity-title"> Assigned Branch : </div>  <div class="entity-value"><?php echo $user->GetBranch()->getLocation(). " Branch" ?></div></div>
-                <div class="profile branch-tp"><div class="entity-title"> Branch Contact No : </div>  <div class="entity-value"><?php echo $user->GetBranch()->getTelephoneNo() ?></div></div>
-            </div>
-        </div>
-        <div class="profile-action">
-            <a href="/manager/profile/change-password" class="btn ">Change Password</a>
-            <a href="/manager/profile/reset-password" class="btn ">Reset Password</a>
-        </div>
-    </div>
-</div>
-<!--TODO Change Password -->
-<!--TODO Reset Password -->
-
-
-
+//
+///* @var string $donorID */
+///* @var string $firstName */
+///* @var string $lastName */
+///* @var string $email */
+///* @var string $NIC */
+///* @var string $contactNumber */
+///* @var string $city */
+//
+///* @var string $bloodGroup */
+///* @var string $weight */
+///* @var string $remark */
+//
+//use App\view\components\ResponsiveComponent\ImageComponent\BackGroundImage;
+//use App\view\components\ResponsiveComponent\NavbarComponent\DonorNavbar;
+//
+//$donorID = "1234";
+//$firstName = "John";
+//$lastName = "Smith";
+//$email = "John@example.com";
+//$NIC = "123456789";
+//$contactNumber = "123456789";
+//$city = "Colorado";
+//
+//$bloodGroup = "B+";
+//$weight = "100";
+//$remark = "Goodbye";
+//
+//$background = new BackGroundImage();
+//
+//echo $background;
+//
+//$navbar = new DonorNavbar('Donor Profile', '/donor/profile', '/public/images/icons/user.png', true, $firstName . ' ' . $lastName, false);
+//echo $navbar;
+//
+//
+//?>
+<!---->
+<!--<!--<head>-->-->
+<!--<!--    <link rel="stylesheet" href='/public/css/home.css'>-->-->
+<!--<!--    <link rel="stylesheet" href='/public/styles/home.css'>-->-->
+<!--<!--</head>-->-->
+<!---->
+<!---->
+<!---->
+<!--<div class="d-flex gap-1 bg-white-0-5 mt-7 p-3 border-radius-10 min-h-80 flex-column justify-content-center align-items-center">-->
+<!--    <div class="d-flex border-radius-10 gap-2 bg-white p-2">-->
+<!--        <div class="d-flex">-->
+<!--            <img src="/public/upload/profile/donorDefault.png" width="300rem" alt="profile image for user" class="border-2 border-radius-10 border-success" />-->
+<!--        </div>-->
+<!--        <div class="d-flex flex-column bg-white p-2">-->
+<!--            <div class="d-flex gap-1 flex-column " id="PersonalDetails">-->
+<!--                <div class="d-flex ">-->
+<!--                    Name : --><?php //echo $firstName . " " . $lastName ?>
+<!--                </div>-->
+<!--                <div class="d-flex">-->
+<!--                    Email : --><?php //echo $email ?>
+<!--                </div>-->
+<!--                <div class="d-flex">-->
+<!--                    NIC : --><?php //echo $NIC ?>
+<!--                </div>-->
+<!--                <div class="d-flex">-->
+<!--                    Contact Number : --><?php //echo $contactNumber ?>
+<!--                </div>-->
+<!--                <div class="d-flex">-->
+<!--                    City : --><?php //echo $city ?>
+<!--                </div>-->
+<!--                <div class="button">-->
+<!--                    <button type="button" class="btn btn-success">Change Password</button>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--    <div class="d-flex gap-1 justify-content-evenly">-->
+<!--        <div class="bg-white d-flex flex-column gap-1 p-3 border-radius-10">-->
+<!--            <p> Blood Type: --><?php //echo $bloodGroup ?><!--</p>-->
+<!--            <p>Weight(Kg): --><?php //echo $weight ?><!-- </p>-->
+<!--            <p>Chronic Diseases: --><?php //echo $remark ?><!--</p>-->
+<!--        </div>-->
+<!--        <div class="bg-white d-flex flex-column gap-1 p-3 border-radius-10">-->
+<!--            <p> Blood Type: --><?php //echo $bloodGroup ?><!--</p>-->
+<!--            <p>Weight(Kg): --><?php //echo $weight ?><!-- </p>-->
+<!--            <p>Chronic Diseases: --><?php //echo $remark ?><!--</p>-->
+<!--        </div>-->
+<!---->
+<!--    </div>-->
+<!---->
+<!--</div>-->

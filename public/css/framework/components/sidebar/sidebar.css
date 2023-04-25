@@ -226,3 +226,75 @@
     }
 
 }
+@media screen and (max-width: 920px) {
+    #sidePanel{
+        width: 100px;
+    }
+    #sidePanel #SideBarLinks{
+
+    }
+    #sidePanel #SideBarLinks div {
+        width: auto;
+    }
+    #sidePanel #SideBarLinks span{
+            display: none;
+    }
+    #sidePanel #SideBarLinks div:hover span{
+        background: black;
+        padding: 5px 5px;
+        color: white;
+        width: auto;
+        left: 75%;
+        display: flex;
+        position: absolute;
+        font-size: 1rem;
+    }
+    #sidePanel #SideBarLinks img{
+        margin: 0;
+        width: 36px;
+    }
+    #sidePanel #sidePanel {
+
+    }
+    #Content{
+        width: calc(100vw - 100px) !important;
+        max-width: calc(100vw - 100px) !important;
+        left: 100px !important;
+    }
+}
+@media screen and (max-width: 500px) {
+    #sidePanel{
+        width: 80px;
+    }
+    #sidePanel #SideBarLinks{
+
+    }
+    #sidePanel #SideBarLinks div {
+        width: auto;
+    }
+    #sidePanel #SideBarLinks span{
+            display: none;
+    }
+    #sidePanel #SideBarLinks div:hover span{
+        background: black;
+        padding: 5px 5px;
+        color: white;
+        width: auto;
+        left: 75%;
+        display: flex;
+        position: absolute;
+        font-size: 1rem;
+    }
+    #sidePanel #SideBarLinks img{
+        margin: 0;
+        width: 30px;
+    }
+    #sidePanel #sidePanel {
+
+    }
+    #Content{
+        width: calc(100vw - 80px) !important;
+        max-width: calc(100vw - 80px) !important;
+        left: 80px !important;
+    }
+}

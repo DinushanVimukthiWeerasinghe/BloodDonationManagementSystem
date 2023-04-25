@@ -310,6 +310,12 @@
 .overflow-y-scroll{
     overflow-y: scroll;
 }
+.overflow-y-clip{
+    overflow-y: clip;
+}
+.overflow-y-overlay{
+    overflow-y: overlay;
+}
 .overflow-x-auto{
     overflow-x: auto;
 }

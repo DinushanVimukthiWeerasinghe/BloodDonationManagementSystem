@@ -16,6 +16,120 @@ class AcceptedDonations extends dbModel
     protected string $Out_Time = '';
     protected string $Verified_By = '';
 
+    /**
+     * @param string $Donation_ID
+     */
+    public function setDonationID(string $Donation_ID): void
+    {
+        $this->Donation_ID = $Donation_ID;
+    }
+
+    /**
+     * @param string $Donor_ID
+     */
+    public function setDonorID(string $Donor_ID): void
+    {
+        $this->Donor_ID = $Donor_ID;
+    }
+
+    /**
+     * @param string $Packet_ID
+     */
+    public function setPacketID(string $Packet_ID): void
+    {
+        $this->Packet_ID = $Packet_ID;
+    }
+
+    /**
+     * @param string $Donated_At
+     */
+    public function setDonatedAt(string $Donated_At): void
+    {
+        $this->Donated_At = $Donated_At;
+    }
+
+    /**
+     * @param string $Retrieved_By
+     */
+    public function setRetrievedBy(string $Retrieved_By): void
+    {
+        $this->Retrieved_By = $Retrieved_By;
+    }
+
+    /**
+     * @param string $In_Time
+     */
+    public function setInTime(string $In_Time): void
+    {
+        $this->In_Time = $In_Time;
+    }
+
+    /**
+     * @param string $Out_Time
+     */
+    public function setOutTime(string $Out_Time): void
+    {
+        $this->Out_Time = $Out_Time;
+    }
+
+    /**
+     * @param string $Verified_By
+     */
+    public function setVerifiedBy(string $Verified_By): void
+    {
+        $this->Verified_By = $Verified_By;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDonorID(): string
+    {
+        return $this->Donor_ID;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDonatedAt(): string
+    {
+        return $this->Donated_At;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRetrievedBy(): string
+    {
+        return $this->Retrieved_By;
+    }
+
+    /**
+     * @return string
+     */
+    public function getInTime(): string
+    {
+        return $this->In_Time;
+    }
+
+    /**
+     * @return string
+     */
+    public function getOutTime(): string
+    {
+        return $this->Out_Time;
+    }
+
+    /**
+     * @return string
+     */
+    public function getVerifiedBy(): string
+    {
+        return $this->Verified_By;
+    }
+
+
+
     public function labels(): array
     {
         // TODO: Implement labels() method.

@@ -44,6 +44,9 @@ use App\model\users\User;
                 <div class=""><?php echo $user->getEmail(); ?></div>
                 <div class=""><?php echo $user->getRole(); ?></div>
                 <div class=""><?php echo $user->getLastActive(); ?></div>
+                <div class=""><?php if($user instanceof (Manager::class)){
+                    echo \App\model\BloodBankBranch\BloodBank::findOne(['BloodBank_ID'=>$user->getBloodBankID()])->getBankName();
+                    } ?></div>
             </div>
             <div class="card-action gap-1">
                 <?php if ($user->getAccountStatus() == User::TEMPORARY_DEACTIVATED): ?>

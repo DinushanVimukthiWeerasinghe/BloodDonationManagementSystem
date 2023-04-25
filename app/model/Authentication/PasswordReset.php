@@ -8,23 +8,62 @@ use PHPMailer\PHPMailer\Exception;
 
 class PasswordReset extends \App\model\database\dbModel
 {
+    public const STATUS_INACTIVE=1;
+    public const STATUS_ACTIVE=2;
+    public const STATUS_RESET=3;
+
     protected string $UID='';
     protected string $Email='';
     protected ?string $Name ='';
     protected string $Token='';
-    protected string $Created_at='';
-    protected int $Status=0;
+    protected string $Created_At='';
+    protected int $Status=2;
     protected string $Device_IP='';
-    protected ?string $ResetPassword_At='';
+    protected ?string $Reset_At=null;
+    protected int $Lifetime=60;
 
     /**
      * @throws \Exception
      */
-    public function GenerateToken()
+    public function GenerateToken(): void
     {
         $this->Created_at=date('Y-m-d H:i:s');
         $this->Token=bin2hex(random_bytes(50));
     }
+
+    public function IsTokenValid(): bool
+    {
+        return $this->Status===self::STATUS_ACTIVE;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getLifetime(): ?string
+    {
+        return $this->Lifetime;
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function IsExpired(): bool
+    {
+        $created_at=new \DateTime($this->Created_At);
+        $now=new \DateTime(date('Y-m-d H:i:s'));
+        $diff=$created_at->diff($now);
+        return $diff->i>$this->Lifetime;
+    }
+
+    /**
+     * @param int $Lifetime
+     */
+    public function setLifetime(int $Lifetime): void
+    {
+        $this->Lifetime = $Lifetime;
+    }
+
+
 
     /**
      * @return string
@@ -64,7 +103,7 @@ class PasswordReset extends \App\model\database\dbModel
     /**
      * @throws Exception
      */
-    public function SendPasswordResetEmail()
+    public function SendPasswordResetEmail(): void
     {
         $email = Application::$app->email;
         $email->setTo('stdinushan@gmail.com');
@@ -85,10 +124,11 @@ class PasswordReset extends \App\model\database\dbModel
     {
         return [
             'UID'=>'User ID',
-            'email'=>'Email',
-            'token'=>'Token',
-            'created_at'=>'Created At',
+            'Email'=>'Email',
+            'Token'=>'Token',
+            'Created_at'=>'Created At',
             'Status'=>'Status',
+            'Lifetime'=>'Lifetime',
         ];
     }
 
@@ -96,11 +136,12 @@ class PasswordReset extends \App\model\database\dbModel
     {
         return [
             'UID'=>[self::RULE_REQUIRED,self::RULE_UNIQUE],
-            'email'=>[self::RULE_REQUIRED,self::RULE_EMAIL,self::RULE_UNIQUE],
-            'token'=>[self::RULE_REQUIRED,self::RULE_UNIQUE],
-            'created_at'=>[self::RULE_REQUIRED],
+            'Email'=>[self::RULE_REQUIRED,self::RULE_EMAIL,self::RULE_UNIQUE],
+            'Token'=>[self::RULE_REQUIRED,self::RULE_UNIQUE],
+            'Created_At'=>[self::RULE_REQUIRED],
             'Status'=>[self::RULE_REQUIRED],
             'Device_IP'=>[self::RULE_REQUIRED],
+            'Lifetime'=>[self::RULE_REQUIRED],
         ];
     }
 
@@ -121,7 +162,7 @@ class PasswordReset extends \App\model\database\dbModel
 
     public function attributes(): array
     {
-        return ['UID','Email','Token','Created_at','Status','Device_IP'];
+        return ['UID','Email','Token','Created_at','Status','Device_IP','Lifetime','Reset_At'];
     }
 
     /**
@@ -177,15 +218,15 @@ class PasswordReset extends \App\model\database\dbModel
      */
     public function getCreatedAt(): string
     {
-        return $this->Created_at;
+        return $this->Created_At;
     }
 
     /**
-     * @param string $Created_at
+     * @param string $Created_At
      */
-    public function setCreatedAt(string $Created_at): void
+    public function setCreatedAt(string $Created_At): void
     {
-        $this->Created_at = $Created_at;
+        $this->Created_At = $Created_At;
     }
 
     /**
@@ -209,7 +250,7 @@ class PasswordReset extends \App\model\database\dbModel
      */
     public function getResetPasswordAt(): ?string
     {
-        return $this->ResetPassword_At;
+        return $this->Reset_At;
     }
 
     /**
@@ -217,7 +258,7 @@ class PasswordReset extends \App\model\database\dbModel
      */
     public function setResetPasswordAt(?string $ResetPassword_At): void
     {
-        $this->ResetPassword_At = $ResetPassword_At;
+        $this->Reset_At = $ResetPassword_At;
     }
 
 

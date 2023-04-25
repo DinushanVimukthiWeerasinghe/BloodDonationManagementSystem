@@ -56,7 +56,7 @@ echo $background;
 <div class="container p-5" style="background-color: rgba(0,0,0,0.3);margin-top: 10vh;border-radius: 80px;">
     <?php
 
-    if (empty($data)): ?>
+    if (empty($params)): ?>
     <div class="card detail-card">
         <div class="card-image">
             <img src="/public/images/icons/organization/history/notfound.png" alt="">
@@ -71,22 +71,20 @@ echo $background;
     else:
     ?>
     <div id="card-pane" class="card-pane" >
-                <?php foreach ($data as $campaign):?>
+                <?php foreach ($params as $key=>$row){ ?>
                     <div class="card">
                         <div class="card-image">
                             <img src='/public/images/icons/bloodDrop.png'alt="">
                         </div>
                         <div class="card-body">
-                            <div class="card-title fa fa-2x"><?= $campaign->getCampaignName(); ?></div>
-                            <div class="card-description"><?= $campaign->getCampaignDate(); ?></div>
-                            <div class="card-description"><?= $campaign->getCampaignStatus(); ?></div>
-                            <?php if($campaign->getStatus() == 2) {?>
-                            <a href="campDetails?id=<?php echo $campaign->getCampaignID()?>"><button class="btn btn-success">Campaign Detaila</button></a>
-                            <?php } ?>
+                            <div class="card-title fa fa-2x"><?= $row['Campaign_Name']; ?></div>
+                            <div class="card-description"><?= $row['Campaign_Date']; ?></div>
+                            <div class="card-description"><?= $row['Status']; ?></div>
+                            <a href="campDetails?id=<?php echo $row['Campaign_ID'];?>"><button class="btn btn-success">Campaign Details</button></a>
                         </div>
                     </div>
                 <?php
-                endforeach;
+                }
                 ?>
     </div>
     <?php

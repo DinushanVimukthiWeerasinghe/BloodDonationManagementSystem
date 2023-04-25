@@ -53,6 +53,9 @@ use App\model\users\User;
 
 
 <div class="d-flex h-100 w-100 justify-content-between">
+<!--<div class="">-->
+<!--</div>-->
+
 
 <div class="d-flex justify-content-center align-self-baseline flex-column " >
     <div class="d-flex justify-content-center align-items-center my-2">
@@ -60,6 +63,7 @@ use App\model\users\User;
             <label for="Search" class="text-dark text-xl font-bold">Search</label>
             <input type="text" class="form-control" name="Search" placeholder="Search" onkeyup="SearchUser('<?=$Role?>')">
         </div>
+        <button id="addNewUser" class="btn btn-success" hidden="hidden">
     </div>
 <!--    <div class="title">Donor</div>-->
     <div class="d-flex justify-content-center align-items-center cards flex-wrap" id="userTable">
@@ -84,7 +88,7 @@ use App\model\users\User;
                             } elseif ($user instanceof (Organization::class)) {
                                 echo $user->getOrganizationName();
                             } elseif ($user instanceof (Sponsor::class)) {
-                                echo $user->getFirstName() . " " . $user->getLastName();
+                                echo $user->getSponsorName();
                             } elseif ($user instanceof (Hospital::class)) {
                                 echo $user->getHospitalName();
                             }
@@ -96,6 +100,9 @@ use App\model\users\User;
                         <div class=""><?php echo $user->getEmail(); ?></div>
                         <div class=""><?php echo $user->getRole(); ?></div>
                         <div class=""><?php echo $user->getLastActive(); ?></div>
+                        <div class=""><?php if($user instanceof (Manager::class)){
+                                echo \App\model\BloodBankBranch\BloodBank::findOne(['BloodBank_ID'=>$user->getBloodBankID()])->getBankName();
+                            } ?></div>
                     </div>
                     <div class="card-action gap-1">
                         <?php if ($user->getAccountStatus() == User::TEMPORARY_DEACTIVATED): ?>

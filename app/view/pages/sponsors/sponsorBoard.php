@@ -1,4 +1,4 @@
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w==" crossorigin="anonymous" referrerpolicy="no-referrer" /> --><?php
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w==" crossorigin="anonymous" referrerpolicy="no-referrer" /> <?php
 /* @var string $sponsor_Name */
 
 
@@ -21,9 +21,9 @@ use App\model\users\organization;
 
 use App\view\components\WebComponent\Card\NavigationCard;
 
-$CampaignGuidelines = new NavigationCard('/sponsors/guideline', '/public/images/icons/manager/dashboard/requests.png', 'Sponsor Guidelines');
-$ManageCampaigns = new NavigationCard('/sponsors/manage', '/public/images/icons/organization/dashboard/campaign.png', 'Manage Sponsorships');
-$History = new NavigationCard('/sponsors/history', '/public/images/icons/organization/dashboard/history.png', 'Sponsorships History');
+$CampaignGuidelines = new NavigationCard('/sponsor/guideline', '/public/images/icons/manager/dashboard/requests.png', 'Sponsor Guidelines');
+$ManageCampaigns = new NavigationCard('/sponsor/donation', '/public/images/icons/organization/dashboard/campaign.png', 'Sponsor for Campaigns');
+$History = new NavigationCard('/sponsor/history', '/public/images/icons/organization/dashboard/history.png', 'Sponsorships History');
 $background = new BackGroundImage();
 
 echo $background;

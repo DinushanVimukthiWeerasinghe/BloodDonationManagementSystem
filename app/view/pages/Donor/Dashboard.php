@@ -99,6 +99,7 @@ if ($state == 0){
 
     function onLoadTrigger(trigger){
         if (trigger == 0){
+            CloseDialogBox();
         OpenDialogBox({
             title: 'Quick Data Collection About You',
             id : 'dataPop',
@@ -118,13 +119,14 @@ if ($state == 0){
             successBtnText: 'Submit',
             successBtnAction: () => {
                 document.getElementById('donorDataCollection').submit();
-                document.getElementById('dataPop').remove();
+                CloseDialogBox();
             },
             cancelBtnAction: () => {
                 <?php $_SESSION['pop'] = 1; ?>
-                document.getElementById('dataPop').remove();
+                CloseDialogBox();
             }
         })
-    }
+            // CloseDialogBox();
+        }
     }
 </script>

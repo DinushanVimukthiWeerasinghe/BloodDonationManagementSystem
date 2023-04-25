@@ -92,6 +92,7 @@ class Router
 //        echo '<pre>';
 //        print_r($callback);
 //        exit();
+//        print_r($callback);
         return call_user_func($callback,$this->request,$this->response);
 
     }

@@ -15,10 +15,28 @@ CREATE TABLE `Reported_Donors` (
 
 
 # Blood Requests Sample Data
-INSERT INTO `Blood_Requests` (`Request_ID`, `Requested_By`, `BloodGroup`, `Requested_At`, `Type`, `Status`) VALUES ('Req_01', 'Hos_01', 'A+', CURRENT_TIMESTAMP, '1', '1');
-INSERT INTO `Blood_Requests` (`Request_ID`, `Requested_By`, `BloodGroup`, `Requested_At`, `Type`, `Status`) VALUES ('Req_02', 'Hos_01', 'AB+', CURRENT_TIMESTAMP, '1', '1');
-INSERT INTO `Blood_Requests` (`Request_ID`, `Requested_By`, `BloodGroup`, `Requested_At`, `Type`, `Status`) VALUES ('Req_03', 'Hos_01', 'O+', CURRENT_TIMESTAMP, '1', '1');
-INSERT INTO `Blood_Requests` (`Request_ID`, `Requested_By`, `BloodGroup`, `Requested_At`, `Type`, `Status`) VALUES ('Req_04', 'Hos_01', 'B-', CURRENT_TIMESTAMP, '1', '1');
-INSERT INTO `Blood_Requests` (`Request_ID`, `Requested_By`, `BloodGroup`, `Requested_At`, `Type`, `Status`) VALUES ('Req_05', 'Hos_01', 'O+', CURRENT_TIMESTAMP, '1', '1');
-
+INSERT INTO `Blood_Requests` (Request_ID, Requested_By, BloodGroup, Requested_At, Type, Volume, Status, Action, Remarks)
+VALUES ('RQ0001', 'Hos_01', 'A+', '2019-01-01 00:00:00', 1,14.25, 1, 1, 'Sample Request'),
+('RQ0002', 'Hos_01', 'B+', '2019-01-01 00:00:00', 1,14.25, 1, 1, 'Sample Request'),
+('RQ0003', 'Hos_01', 'AB+', '2019-01-01 00:00:00', 1,14.25, 1, 1, 'Sample Request'),
+('RQ0004', 'Hos_01', 'O+', '2019-01-01 00:00:00', 1,14.25, 1, 1, 'Sample Request'),
+('RQ0005', 'Hos_01', 'A-', '2019-01-01 00:00:00', 1,14.25, 1, 1, 'Sample Request'),
+('RQ0006', 'Hos_01', 'B-', '2019-01-01 00:00:00', 1,14.25, 1, 1, 'Sample Request'),
+('RQ0007', 'Hos_01', 'AB-', '2019-01-01 00:00:00', 1,14.25, 1, 1, 'Sample Request'),
+('RQ0008', 'Hos_01', 'O-', '2019-01-01 00:00:00', 1,14.25, 1, 1, 'Sample Request'),
+('RQ0009', 'Hos_01', 'A+', '2019-01-01 00:00:00', 1,14.25, 1, 1, 'Sample Request'),
+('RQ0010', 'Hos_01', 'B+', '2019-01-01 00:00:00', 1,14.25, 1, 1, 'Sample Request'),
+('RQ0011', 'Hos_01', 'AB+', '2019-01-01 00:00:00', 1,14.25, 1, 1, 'Sample Request'),
+('RQ0012', 'Hos_01', 'O+', '2019-01-01 00:00:00', 1,14.25, 1, 1, 'Sample Request'),
+('RQ0013', 'Hos_01', 'A-', '2019-01-01 00:00:00', 1,14.25, 1, 1, 'Sample Request'),
+('RQ0014', 'Hos_01', 'B-', '2019-01-01 00:00:00', 1,14.25, 1, 1, 'Sample Request'),
+('RQ0015', 'Hos_01', 'AB-', '2019-01-01 00:00:00', 1,14.25, 1, 1, 'Sample Request'),
+('RQ0016', 'Hos_01', 'O-', '2019-01-01 00:00:00', 1,14.25, 1, 1, 'Sample Request'),
+('RQ0017', 'Hos_01', 'A+', '2019-01-01 00:00:00', 1,14.25, 1, 1, 'Sample Request'),
+('RQ0018', 'Hos_01', 'B+', '2019-01-01 00:00:00', 1,14.25, 1, 1, 'Sample Request'),
+('RQ0019', 'Hos_01', 'AB+', '2019-01-01 00:00:00', 1,14.25, 1, 1, 'Sample Request'),
+('RQ0020', 'Hos_01', 'O+', '2019-01-01 00:00:00', 1,14.25, 1, 1, 'Sample Request'),
+('RQ0021', 'Hos_01', 'A-', '2019-01-01 00:00:00', 1,14.25, 1, 1, 'Sample Request'),
+('RQ0022', 'Hos_01', 'B-', '2019-01-01 00:00:00', 1,14.25, 1, 1, 'Sample Request'),
+('RQ0023', 'Hos_01', 'AB-', '2019-01-01 00:00:00', 1,14.25, 1, 1, 'Sample Request');
 

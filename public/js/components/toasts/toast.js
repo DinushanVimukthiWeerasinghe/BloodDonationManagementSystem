@@ -7,8 +7,8 @@ const ShowToast = (props) => {
     if (AlreadyToast) {
     //     Get the Position of the toast
         const toastPosition = AlreadyToast.getBoundingClientRect();
-        console.log(toastPosition)
-        newToastPosition = toastPosition.top + 40;
+        console.log(toastPosition.top)
+        newToastPosition = toastPosition.top + 30;
     }
     const toast = document.createElement("div");
     toast.id = "toast-"+id;
@@ -26,7 +26,7 @@ const ShowToast = (props) => {
     toast.className = `toast show ${type}`;
     toastContainer.className = `toast-container show ${type}`;
     const body= document.querySelector("body");
-    toast.style.top = AlreadyToast ? newToastPosition + "px" : "10px";
+    toast.style.top = AlreadyToast ? newToastPosition + "px" : "40px";
     body.prepend(toast);
     let TimeOut = 3000;
     if (timeout){
@@ -44,7 +44,7 @@ const CloseToast = (id = '') => {
         MoreToast.forEach((toast) => {
             if (toast.id !== id) {
                 const toastPosition = toast.getBoundingClientRect();
-                const newToastPosition = toastPosition.top - 70;
+                const newToastPosition = (toastPosition.top - 56)+"px";
                 toast.style.top = newToastPosition + "px";
             }
         });
