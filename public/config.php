@@ -17,5 +17,7 @@ else {
 define("ENCRYPTION_KEY", $_ENV['ENCRYPTION_KEY']);
 define("ENCRYPTION_METHOD", $_ENV['ENCRYPTION_METHOD']);
 define("ENCRYPTION_IV", $_ENV['ENCRYPTION_IV']);
+
+// Hashing Algorithm
 define("HASH_ALGORITHM", $_ENV['HASH_ALGORITHM']);
 
