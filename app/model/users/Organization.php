@@ -212,9 +212,9 @@ class Organization extends Person
         $this->Organization_ID=$ID;
     }
 
-    private function generateID()
-    {
-        $ID=uniqid("ORG_");
-        return $ID;
-    }
+//    private function generateID()
+//    {
+//        $ID=uniqid("ORG_");
+//        return $ID;
+//    }
 }

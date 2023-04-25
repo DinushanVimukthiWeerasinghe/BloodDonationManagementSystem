@@ -14,8 +14,8 @@ class apiController extends Controller
         foreach ($bloodBanks as $bloodBank)
         {
             $bankName=$bloodBank->getBankName();
-            $bankId=$bloodBank->getBankId();
-            $bankBranches=$bloodBank->getBankBranches();
+            $bankId=$bloodBank->getBloodBankID();
+//            $bankBranches=$bloodBank->getBankBranches();
             $bb[$bankName]=[
                 'id'=>$bankId,
                 'name'=>$bankName
