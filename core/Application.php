@@ -210,9 +210,10 @@ class Application
         try {
             echo self::$app->router->resolve();
         }catch (Exception $e){
-//            self::Redirect('/login');
-            print_r($e->getMessage());
-            throw $e;
+//            Set Status Code to 500
+//            http_response_code(404);
+//            self::Redirect('/');
+            var_dump($e->getMessage());
         }
     }
 

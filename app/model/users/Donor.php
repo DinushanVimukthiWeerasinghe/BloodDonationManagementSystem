@@ -16,7 +16,6 @@ class Donor extends Person
     const PENDING = 1;
     const NOT_VERIFIED = 3;
     const ACTIVE = 1;
-    //const RULE_TODAY_OR_OLDER_DATE = ;
     protected string $Donor_ID = '';
     protected string $Nearest_Bank = '';
     protected int $Donation_Availability = 0;
@@ -46,15 +45,13 @@ class Donor extends Person
         return Donor::RetrieveAll(false,[],true,['Status'=>self::REPORTED_DONOR]);
     }
 
-
-
     public static function InformDonors(mixed $q): bool
     {
-        $notification=new DonorNotification();
+        $notification = new DonorNotification();
         $notification->setNotificationType(DonorNotification::INFORM_ALL_DONOR);
         $notification->setNotificationTitle($q['title']);
         $notification->setNotificationMessage($q['message']);
-        if (isset($q['valid_until']) && trim($q['valid_until'])!==''):
+        if (isset($q['valid_until']) && trim($q['valid_until']) !== ''):
             $notification->setValidUntil($q['valid_until']);
         endif;
         $notification->setNotificationDate(date('Y-m-d H:i:s'));
@@ -402,12 +399,4 @@ class Donor extends Person
         return $this->Verified ? "Verified" : "Not Verified";
     }
 
-//    public function setDonationAvailability(int $x):void
-//    {
-//        $this->Donation_Availability = $x;
-//    }
-//    public function getDonationAvailability():int
-//    {
-//        return $this->Donation_Availability;
-//    }
 }

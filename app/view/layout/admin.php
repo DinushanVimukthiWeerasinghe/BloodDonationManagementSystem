@@ -11,7 +11,7 @@
     <link rel="icon" type="image/png" sizes="16x16" href="/public/favicon/favicon-16x16.png">
     <link rel="manifest" href="/public/favicon/site.webmanifest">
 
-    <link rel="stylesheet" href="/public/css/custom/admin/index.css">
+<!--    <link rel="stylesheet" href="/public/css/custom/admin/index.css">-->
     <link rel="stylesheet" href="/public/css/card.css">
     <link rel="stylesheet" href="/public/css/framework/utils.css">
     <script src="https://kit.fontawesome.com/185eb0391e.js" crossorigin="anonymous"></script>

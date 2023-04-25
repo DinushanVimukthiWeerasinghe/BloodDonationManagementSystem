@@ -10,6 +10,8 @@ class OrganizationNotification extends \App\model\database\dbModel
     const STATE_PENDING = 1;
     const TYPE_CAMPAIGN = 1;
     const TYPE_SPONSORSHIP_REQUEST = 3;
+
+
     const TYPE_SPONSORSHIP = 4;
     protected string $Notification_ID='';
     protected string $Notification_Type='';
@@ -19,6 +21,7 @@ class OrganizationNotification extends \App\model\database\dbModel
     protected string $Notification_State='';
     protected string $Target_ID='';
     protected string $Valid_Until='';
+
 
     /**
      * @return string
@@ -234,6 +237,8 @@ class OrganizationNotification extends \App\model\database\dbModel
             'Notification_State',
             'Target_ID',
             'Valid_Until',
+            'Session_ID',
+            'Status'
         ];
     }
 }

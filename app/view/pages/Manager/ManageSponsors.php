@@ -4,7 +4,6 @@
 
 /* @var string $lastName */
 
-use App\model\sponsor\SponsorshipPackages;
 use App\model\users\MedicalOfficer;
 use App\model\users\Sponsor;
 use App\view\components\ResponsiveComponent\Alert\FlashMessage;
@@ -32,29 +31,28 @@ FlashMessage::RenderFlashMessages();
 
 <div class="d-flex w-100 flex-column align-items-center bg-white p-1 border-radius-10 m-1">
     <div class="d-flex w-100 flex-row">
-        <div class="d-flex bg-white-0-7 p-1 text-dark justify-content-between align-items-center w-100 flex-row gap-0-5 justify-content-center ">
-            <div></div>
+        <div class="d-flex bg-white-0-7 p-1 text-dark justify-content-center align-items-center w-100 flex-row gap-0-5 justify-content-center ">
             <div id="Search" class="d-flex gap-0-5 align-items-center">
                 <label for="search" class="search">Search </label>
                 <input class="form-control" style="width: 300px" name="search" id="search" onkeyup="Search('/manager/mngSponsors/search')">
             </div>
-            <div id="Filters" class="d-flex gap-1">
-                <div class="form-group">
-                    <label for="filter" class="search ">Package</label>
-                    <select class="form-control" style="width: 200px" name="filter" id="filter">
-                        <?php
-                        /* @var $packages array*/
-                        /* @var $package SponsorshipPackages*/
-                            foreach ($packages as $package):
-                                $packageID=$package->getPackageID();
-                                $packageName=$package->getPackageName();
-                                $packagePrice=$package->getPackagePrice();
-                        ?>
-                        <option value="<?php echo $packageID?>"><?php echo $packageName?> - LKR <?= number_format(intval($packagePrice),0,'.',",")?></option>
-                        <?php endforeach;?>
-                    </select>
-                </div>
-            </div>
+<!--            <div id="Filters" class="d-flex gap-1">-->
+<!--                <div class="form-group">-->
+<!--                    <label for="filter" class="search ">Package</label>-->
+<!--                    <select class="form-control" style="width: 200px" name="filter" id="filter">-->
+<!--                        --><?php
+//                        /* @var $packages array*/
+//                        /* @var $package SponsorshipPackages*/
+//                            foreach ($packages as $package):
+//                                $packageID=$package->getPackageID();
+//                                $packageName=$package->getPackageName();
+//                                $packagePrice=$package->getPackagePrice();
+//                        ?>
+<!--                        <option value="--><?php //echo $packageID?><!--">--><?php //echo $packageName?><!-- - LKR --><?php //= number_format(intval($packagePrice),0,'.',",")?><!--</option>-->
+<!--                        --><?php //endforeach;?>
+<!--                    </select>-->
+<!--                </div>-->
+<!--            </div>-->
         </div>
     </div>
     <div class="d-flex w-100 overflow-y-scroll" style="margin-left: 50px">

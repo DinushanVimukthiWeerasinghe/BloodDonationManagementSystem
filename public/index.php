@@ -14,7 +14,6 @@ use App\controller\siteController;
 use App\controller\sponsorController;
 use Core\Application;
 
-
 require_once __DIR__ . '/../vendor/autoload.php';
 $dotenv = Dotenv\Dotenv::createImmutable(dirname(__DIR__));
 $dotenv->load();
@@ -26,7 +25,7 @@ require_once __DIR__ . '/../public/config.php';
 
 $config=[
     'db'=>[
-        'dsn'=>$_ENV['DB_DSN'],
+        'dsn'=>DB_DSN,
         'user'=>$_ENV['DB_USER'],
         'password'=>$_ENV['DB_PASSWORD'] ?? ''
     ],
@@ -42,7 +41,6 @@ $config=[
         'key'=>$_ENV['MAP_API_KEY']
     ],
 ];
-
 //Set Env Variables
 $MAP_API_KEY=$_ENV['MAP_API_KEY'];
 
@@ -114,6 +112,8 @@ try {
 
     $app->router->get('/test',[siteController::class,'Test']);
 
+$app->router->get('/organization/register', [OrganizationController::class, 'register']);
+$app->router->post('/organization/register', [OrganizationController::class, 'register']);
 $app->router->get('/organization/dashboard', [OrganizationController::class, 'dashboard']);
 $app->router->get('/organization/create', [OrganizationController::class, 'CreateCampaign']);
 $app->router->get('/organization/history', [OrganizationController::class, 'history']);
@@ -134,8 +134,9 @@ $app->router->get('/organization/received', [OrganizationController::class, 'rec
 $app->router->get('/organization/accepted', [OrganizationController::class, 'accepted']);
 $app->router->get('/organization/profile', [OrganizationController::class, 'profile']);
 $app->router->get('/organization/campaign/view', [OrganizationController::class, 'view']);
-$app->router->get('/organization/campaign/updateCampaign', [OrganizationController::class, 'update']);
-$app->router->post('/organization/campaign/updateCampaign', [OrganizationController::class, 'update']);
+$app->router->get('/organization/campaign/updateCampaign', [OrganizationController::class, 'updateCampaign']);
+$app->router->post('/organization/campaign/updateCampaign', [OrganizationController::class, 'updateCampaign']);
+$app->router->get('/organization/campaign/view', [OrganizationController::class, 'ViewCampaign']);
 $app->router->get('/organization/campaign/deleteCampaign', [OrganizationController::class, 'delete']);
 $app->router->post('/organization/getCampaignCoordinate', [OrganizationController::class, 'GetCampaignCoordinate']);
 $app->router->post('/organization/getBankDetails', [OrganizationController::class, 'GetOrganizationBankAccountDetails']);
@@ -154,8 +155,9 @@ $app->router->post('/user/change-password', [authController::class, 'ChangePassw
     $app->router->post('/sponsor/makePayment', [sponsorController::class, 'MakePayment']);
     $app->router->get('/sponsor/history', [sponsorController::class, 'history']);
     $app->router->get('/sponsor/manage', [sponsorController::class, 'manage']);
-    $app->router->get('/sponsor/donation', [sponsorController::class, 'MakeDonation']);
+    $app->router->get('/sponsor/sponsor', [sponsorController::class, 'MakeDonation']);
     $app->router->get('/sponsor/campDetails', [sponsorController::class, 'campDetails']);
+    $app->router->post('/sponsor/campaign/view', [sponsorController::class, 'GetCampaignDetails']);
     $app->router->get('/sponsor/guideline', [sponsorController::class, 'guideline']);
     $app->router->post('/sponsor/notification', [SponsorController::class, 'GetNotification']);
     $app->router->post('/sponsor/changeProfile', [SponsorController::class, 'ChangeProfileImage']);
@@ -329,6 +331,15 @@ $app->router->get('/donor/guideline', [donorController::class, 'guideline']);
 $app->router->get('/donor/history', [donorController::class, 'history']);
 $app->router->get('/donor/nearby', [donorController::class, 'nearby']);
 $app->router->post('/donor/profile/edit', [donorController::class, 'editDetails']);
+    $app->router->get('/donor/dashboard', [donorController::class, 'dashboard']);
+    $app->router->get('/about', [siteController::class, 'about']);
+    $app->router->get('/donor', [donorController::class, 'home']);
+    $app->router->get('/donor/login', [donorController::class, 'login']);
+    $app->router->post('/donor/login', [donorController::class, 'login']);
+    $app->router->get('/donor/signup', [donorController::class, 'signup']);
+    $app->router->post('/donor/signup', [donorController::class, 'signup']);
+    $app->router->get('/donor/profile', [donorController::class, 'profile']);
+    $app->router->get('/donor/register',[donorController::class, 'register']);
 $app->router->post('/donor/profile/loginPrompt', [donorController::class, 'loginPrompt']);
     //$app->router->get('/donor/dashboard', [donorController::class, 'dashboard']);
     //$app->router->get('/about', [siteController::class, 'about']);
@@ -344,6 +355,7 @@ $app->router->post('/donor/profile/loginPrompt', [donorController::class, 'login
     $app->router->get('/donor/history', [donorController::class, 'history']);
     $app->router->get('/donor/nearby', [donorController::class, 'nearby']);
     $app->router->get('/donor/verify', [donorController::class, 'nearby']);
+$app->router->post('/donor/profile/loginPrompt', [donorController::class, 'loginPrompt']);
 
 
     $app->router->get('/hospital/bloodRequest/addRequest', [hospitalController::class, 'addBloodRequest']);
@@ -364,7 +376,3 @@ $app->router->post('/donor/profile/loginPrompt', [donorController::class, 'login
     echo $e->getMessage();
 }
 //Application::CreateDirectories(['public/upload/Profile/Donors','public/upload/Profile/Managers','public/upload/Profile/MedicalOfficers','public/upload/Profile/Receivers']);
-
-?>
-
-

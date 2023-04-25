@@ -312,18 +312,3 @@ VALUES ('Req_01', 'Hos_01', 'A+', '2023-03-06 00:00:00', 1, 1,100),
 ('Req_14', 'Hos_01', 'A+', '2023-03-06 00:00:00', 1, 1,100),
 ('Req_15', 'Hos_01', 'A+', '2023-03-06 00:00:00', 1,1,100);
 
-# Create Packages
-INSERT INTO sponsorship_packages(Package_ID, Package_Name, Package_Price, Package_Description,Created_By)
-VALUES
-    ('Pack_01', 'Bronze I',10000,'Bronze I - LKR 10000','Mng_01'),
-    ('Pack_02', 'Bronze II',20000,'Bronze II - LKR 20000','Mng_01'),
-    ('Pack_03', 'Bronze III',30000,'Bronze III - LKR 30000','Mng_01'),
-    ('Pack_04', 'Silver I',40000,'Silver I - LKR 40000','Mng_01'),
-    ('Pack_05', 'Silver II',50000,'Silver II - LKR 50000','Mng_01'),
-    ('Pack_06', 'Silver III',60000,'Silver III - LKR 60000','Mng_01'),
-    ('Pack_07', 'Gold I',70000,'Gold I - LKR 70000','Mng_01'),
-    ('Pack_08', 'Gold II',80000,'Gold II - LKR 80000','Mng_01'),
-    ('Pack_09', 'Gold III',90000,'Gold III - LKR 90000','Mng_01'),
-    ('Pack_10', 'Platinum I',100000,'Platinum I - LKR 100000','Mng_01'),
-    ('Pack_11', 'Platinum II',110000,'Platinum II - LKR 110000','Mng_01'),
-    ('Pack_12', 'Platinum III',120000,'Platinum III - LKR 120000','Mng_01');

@@ -212,9 +212,8 @@ class Organization extends Person
         $this->Organization_ID=$ID;
     }
 
-//    private function generateID()
-//    {
-//        $ID=uniqid("ORG_");
-//        return $ID;
-//    }
+    public static function generateID($param = ""): string
+    {
+        return uniqid("ORG_");
+    }
 }

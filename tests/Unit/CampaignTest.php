@@ -1,6 +1,6 @@
 <?php
 
-namespace TEST;
+namespace Unit;
 
 
 use App\model\Campaigns\Campaign;

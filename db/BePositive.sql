@@ -1,4 +1,4 @@
-# DROP database IF EXISTS bepositive;
+DROP database IF EXISTS bepositive;
 CREATE DATABASE IF NOT EXISTS `bepositive` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
 use bepositive;
 
@@ -49,7 +49,7 @@ CREATE TABLE IF NOT EXISTS MedicalOfficers
     NIC                 VARCHAR(12) UNIQUE,
     Position            VARCHAR(20)           DEFAULT 'Nurse',
     Registration_Number VARCHAR(20) UNIQUE NOT NULL ,
-    Registration_Date   TIMESTAMP  NOT NULL CHECK ( Registration_Date <= CURRENT_TIMESTAMP ) DEFAULT CURRENT_TIMESTAMP,
+    Registration_Date   TIMESTAMP  NOT NULL DEFAULT CURRENT_TIMESTAMP,
     Status              INT          NOT NULL DEFAULT 1,
     Joined_At           TIMESTAMP             DEFAULT CURRENT_TIMESTAMP,
     Branch_ID           VARCHAR(20)  NOT NULL,
@@ -463,22 +463,6 @@ CREATE TABLE IF NOT EXISTS Organization_Members
   DEFAULT CHARSET = utf8;
 
 
-# Create Table for Sponsorship Packages
-DROP TABLE IF EXISTS Sponsorship_Packages;
-CREATE TABLE IF NOT EXISTS Sponsorship_Packages (
-    Package_ID VARCHAR(20) NOT NULL  PRIMARY KEY,
-    Package_Name VARCHAR(100) NOT NULL,
-    Package_Description VARCHAR(100) NOT NULL,
-    Package_Price VARCHAR(100) NOT NULL,
-    Package_Image VARCHAR(100) NOT NULL,
-    Created_By VARCHAR(20) NOT NULL,
-    Updated_By VARCHAR(20) NULL,
-    Created_At TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    Updated_At TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (Created_By) REFERENCES Managers(Manager_ID),
-    FOREIGN KEY (Updated_By) REFERENCES Managers(Manager_ID)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
 # Create Table for Team Members
 DROP TABLE IF EXISTS Team_Members;
 CREATE TABLE IF NOT EXISTS Team_Members
@@ -494,32 +478,6 @@ CREATE TABLE IF NOT EXISTS Team_Members
 
 # Create Table for Campaigns
 
-
-CREATE TABLE IF NOT EXISTS Additional_Sponsorship_Requests
-(
-    Request_ID     varchar(255) NOT NULL,
-    Account_Number varchar(255) NOT NULL,
-    Bank_Name      varchar(255) NOT NULL,
-    Branch_Name    varchar(255) NOT NULL,
-    Account_Name   varchar(255) NOT NULL,
-    Status         int(11)      NOT NULL,
-    Amount         varchar(255) NOT NULL,
-    Campaign_ID    varchar(255) NOT NULL
-) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8;
-
-DROP TABLE IF EXISTS Campaigns_Sponsors;
-CREATE TABLE IF NOT EXISTS Campaigns_Sponsors
-(
-    Campaign_ID VARCHAR(20) NOT NULL,
-    Sponsor_ID  VARCHAR(20) NOT NULL,
-    Package_ID  VARCHAR(20) NOT NULL,
-    PRIMARY KEY(Campaign_ID,Sponsor_ID,Package_ID),
-    FOREIGN KEY (Campaign_ID) REFERENCES Campaign (Campaign_ID),
-    FOREIGN KEY (Sponsor_ID) REFERENCES Sponsors (Sponsor_ID),
-    FOREIGN KEY (Package_ID) REFERENCES Sponsorship_Packages (Package_ID)
-) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8;
 
 DROP TABLE IF EXISTS Inform_Donors;
 CREATE TABLE IF NOT EXISTS `Inform_Donors`
@@ -831,6 +789,7 @@ CREATE TABLE IF NOT EXISTS Organization_Bank_Accounts
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8;
 
+
 DROP TABLE IF EXISTS Sponsorship_Requests;
 CREATE TABLE IF NOT EXISTS Sponsorship_Requests
 (
@@ -841,7 +800,27 @@ CREATE TABLE IF NOT EXISTS Sponsorship_Requests
     Report VARCHAR(100) NOT NULL,
     Sponsorship_Date DATE NOT NULL DEFAULT CURRENT_DATE,
     Description VARCHAR(100) NOT NULL,
+    Transferred INT NULL,
+    Transferred_At TIMESTAMP NULL,
+    Managed_By VARCHAR(20) NULL,
+    Managed_At TIMESTAMP NULL,
+    FOREIGN KEY (Managed_By) REFERENCES Managers (Manager_ID),
     FOREIGN KEY (Campaign_ID) REFERENCES Campaign (Campaign_ID)
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8;
+
+DROP TABLE IF EXISTS campaigns_sponsors;
+CREATE TABLE IF NOT EXISTS campaigns_sponsors
+(
+    Sponsorship_ID VARCHAR(20) NOT NULL,
+    Sponsor_ID VARCHAR(20) NOT NULL,
+    Description VARCHAR(100) NOT NULL,
+    Sponsored_Amount INT NOT NULL,
+    Session_ID VARCHAR(255) NOT NULL,
+    Status INT NOT NULL DEFAULT 1,
+    Sponsored_At TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (Sponsorship_ID, Sponsor_ID,Sponsored_At),
+    FOREIGN KEY (Sponsorship_ID) REFERENCES Sponsorship_Requests (Sponsorship_ID)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8;
 

@@ -126,13 +126,6 @@ abstract class dbModel extends Model
         return $statement->fetchAll(PDO::FETCH_CLASS,static::class);
     }
 
-    public static function RetrieveAllowedMedicalOfficerByCampaignDate(string $campaignDate,array $CampaignDateArray,bool $pagination=false,array $limit=[])
-    {
-        $tableName = static::tableName();
-        $sql = "SELECT * FROM $tableName WHERE ";
-
-    }
-
 
     public static function RetrieveAll(bool $pagination=false,array $limit=[],bool $IsConditional=false,array $conditions=[],array $OrderBy=[],array $GroupBy=[]): bool|array
     {
@@ -152,7 +145,6 @@ abstract class dbModel extends Model
             if ($pagination) {
                 $sql .= " LIMIT $limit[0],$limit[1]";
             }
-
             $statement = self::prepare($sql);
             foreach ($conditions as $key => $value) {
                 $statement->bindValue(":$key", $value);
@@ -243,6 +235,7 @@ abstract class dbModel extends Model
         foreach ($attributes as $attribute) {
             $statement->bindValue(":$attribute", $this->{$attribute});
         }
+
         $statement->execute();
 
 
@@ -277,6 +270,7 @@ abstract class dbModel extends Model
         $tableName = static::tableName();
         $attributes = $this->attributes();
         $params = array_map(fn($attr) => ":$attr", $attributes);
+
         $demo = 'UPDATE ' . $tableName . ' SET ';
         if (!empty($Include)){
             foreach ($attributes as $attribute) {
@@ -368,7 +362,6 @@ abstract class dbModel extends Model
         }
 
         $statement = self::prepare("SELECT * FROM $tableName WHERE $sql");
-
         foreach ($where as $key => $item) {
             $statement->bindValue(":$key", $item);
         }
