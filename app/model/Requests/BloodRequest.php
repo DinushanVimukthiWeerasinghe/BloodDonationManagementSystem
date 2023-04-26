@@ -24,25 +24,7 @@ class BloodRequest extends dbModel
     protected int $Action = 0;
     protected float $Volume = 0.0;
 
-    protected int $Quantity;
 
-    protected string $Remark;
-
-    /**
-     * @return string
-     */
-    public function getRemark(): string
-    {
-        return $this->Remark;
-    }
-
-    /**
-     * @param string $Remark
-     */
-    public function setRemark(string $Remark): void
-    {
-        $this->Remark = $Remark;
-    }
 
 
 
@@ -261,14 +243,7 @@ class BloodRequest extends dbModel
     {
         $this->Status = $Status;
     }
-    public function getQuantity(): int
-    {
-        return $this->Quantity;
-    }
-    public function setQuantity(int $Quantity): void
-    {
-        $this->Quantity = $Quantity;
-    }
+
 
 
 
@@ -295,12 +270,12 @@ class BloodRequest extends dbModel
         return [
             'Request_ID' => [self::RULE_REQUIRED],
             'BloodGroup' => [self::RULE_REQUIRED],
-            'RequestedBy' => [self::RULE_REQUIRED],
+            'Requested_By' => [self::RULE_REQUIRED],
             'Requested_At' => [self::RULE_REQUIRED],
             'Status' => [self::RULE_REQUIRED],
             'Type' => [self::RULE_REQUIRED],
-            'Quantity' => [self::RULE_REQUIRED],
-            'Remark' => [self::RULE_REQUIRED]
+            'Remarks' => [self::RULE_REQUIRED],
+            'Volume' => [self::RULE_REQUIRED],
 
         ];
     }
@@ -329,8 +304,7 @@ class BloodRequest extends dbModel
             'Requested_At',
             'Status',
             'Type',
-            'Quantity',
-            'Remark',
+            'Remarks',
             'Volume',
             'Action'
         ];
