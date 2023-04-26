@@ -450,6 +450,19 @@ CREATE TABLE IF NOT EXISTS Blood_Requests (
     FOREIGN KEY (BloodGroup) REFERENCES BloodGroups(BloodGroup_ID)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+DROP TABLE IF EXISTS Hospital_Blood_Donations;
+CREATE TABLE IF NOT EXISTS Hospital_Blood_Donations
+(
+    Donation_ID VARCHAR(20) NOT NULL PRIMARY KEY,
+    Donor_ID    VARCHAR(20) NOT NULL,
+    Request_ID  VARCHAR(20) NOT NULL,
+    Donation_At TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    Volume      DECIMAL(10,2) NOT NULL CHECK ( Volume BETWEEN 0 AND 1000),
+    FOREIGN KEY (Request_ID) REFERENCES Blood_Requests (Request_ID),
+    FOREIGN KEY (Donor_ID) REFERENCES Donors (Donor_ID)
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8;
+
 # Create Table for Organization Members
 DROP TABLE IF EXISTS Organization_Members;
 CREATE TABLE IF NOT EXISTS Organization_Members

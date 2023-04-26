@@ -316,6 +316,7 @@ class medicalOfficerController extends \Core\Controller
                 'page'=>'donations',
             ];
 
+
             if ($MedicalTeam){
                 $TeamMember = TeamMembers::findOne(['Team_ID' => $MedicalTeam->getTeamID(), 'Member_ID' => $UserID],false);
                 if ($TeamMember){
@@ -333,6 +334,7 @@ class medicalOfficerController extends \Core\Controller
                                 return $this->render('/MedicalOfficer/DonorRegistration', $model);
                             }else{
                                 $this->setFlashMessage('error','Donor not found! Ask the donor to register first.');
+                                Application::Redirect('/mofficer/take-donation');
                             }
                         }else{
                             return $this->render('/MedicalOfficer/DonorRegistration', $model);
@@ -425,6 +427,7 @@ class medicalOfficerController extends \Core\Controller
                                 return $this->render('/MedicalOfficer/TakeDonation', $model);
                             }else{
                                 $this->setFlashMessage('error','Donor not found! Ask the donor to register first.');
+                                Application::Redirect('/mofficer/take-donation');
                             }
                         }else{
                             $IsOngoingDonation=Donation::findOne(['Campaign_ID'=>$Campaign->getCampaignID(),'Status'=>Donation::STATUS_BLOOD_RETRIEVING,'Officer_ID'=>$UserID],false);
@@ -500,6 +503,8 @@ class medicalOfficerController extends \Core\Controller
                     $this->setFlashMessage('success','Donor Blood Check Up Completed!');
                     Application::Redirect('/mofficer/take-donation');
                 }else{
+                    var_dump($DonorBloodCheck->getErrors());
+                    exit();
                     $Donor=$DonorQueue->getDonor();
                     $model['Donor']=$Donor;
                     $model['BloodCheck']=$DonorBloodCheck;
@@ -518,6 +523,7 @@ class medicalOfficerController extends \Core\Controller
 
     public function AbortDonation(Request $request,Response $response){
         if ($request->isPost()){
+            return json_encode(['status'=>false,'message'=>'Donation already started!']);
 
         }
     }
