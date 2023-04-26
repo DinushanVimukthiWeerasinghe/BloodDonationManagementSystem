@@ -106,7 +106,7 @@ class TeamMembers extends dbModel
         };
     }
 
-    public function getMember()
+    public function getMember() : MedicalOfficer | null
     {
         return MedicalOfficer::findOne(['Officer_ID' => $this->Member_ID]);
     }

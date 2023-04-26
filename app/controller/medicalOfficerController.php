@@ -64,9 +64,20 @@ class medicalOfficerController extends \Core\Controller
 
     public function ManageHistory()
     {
-        return $this->render('/MedicalOfficer/OfficerHistory',[
-            'page'=>'history'
-        ]);
+        $UserID = Application::$app->getUser()->getId();
+        $Campaigns = MedicalOfficer::GetAllCampaign($UserID);
+        if (!empty($Campaigns)){
+            return $this->render('/MedicalOfficer/OfficerHistory',[
+                'page'=>'history',
+                'Campaigns'=>$Campaigns
+            ]);
+        }else{
+            return $this->render('/MedicalOfficer/OfficerHistory',[
+                'page'=>'history',
+                'Campaigns'=>[]
+            ]);
+        }
+
     }
 
     public function CampaignAssignment(Request $request, Response $response)
@@ -111,6 +122,79 @@ class medicalOfficerController extends \Core\Controller
             ]]);
     }
 
+    public function ViewReport(Request $request,Response $response)
+    {
+        /** @var $Campaigns Campaign*/
+        $UserID = Application::$app->getUser()->getId();
+        $Campaigns = MedicalOfficer::GetAllCampaign($UserID);
+        if (!empty($Campaigns)){
+            header('Content-Type: application/json');
+            $CampaignArray=[];
+            foreach ($Campaigns as $Campaign){
+                $CampaignArray[]=[
+                    'CampaignName'=>$Campaign->getCampaignName(),
+                    'CampaignDate'=>$Campaign->getCampaignDate(),
+                    'Venue'=>$Campaign->getVenue(),
+                    'Role'=>MedicalOfficer::getRoleOfCampaign($UserID,$Campaign->getCampaignID()),
+                    'Task'=>MedicalOfficer::getTaskOfCampaign($UserID,$Campaign->getCampaignID()),
+                ];
+            }
+            return json_encode([
+                'status'=>true,
+                'campaigns'=>$CampaignArray
+            ]);
+        }else{
+            return json_encode([
+                'status'=>false,
+                'message'=>'No Campaigns Found!'
+            ]);
+        }
+
+
+    }
+
+    public function ViewTeam(Request $request,Response $response)
+    {
+        if ($request->isPost()){
+            $CampaignID=$request->getBody()['campaignID'];
+            $Campaign = Campaign::findOne(['Campaign_ID' => $CampaignID]);
+
+            if ($Campaign){
+                if ($Campaign->getStatus()!==Campaign::CAMPAIGN_STATUS_FINISHED){
+                    return json_encode([
+                        'status'=>false,
+                        'message'=>'Campaign Is Not Finished Yet!'
+                    ]);
+                }
+                /** @var $MedicalTeam MedicalTeam*/
+                /** @var $TeamMember TeamMembers*/
+                $MedicalTeam = MedicalTeam::findOne(['Campaign_ID' => $CampaignID]);
+                $TeamMembers = TeamMembers::RetrieveAll(false,[],false,['Team_ID'=>$MedicalTeam->getTeamID()]);
+                $TeamMembersArray = [];
+                foreach ($TeamMembers as $TeamMember){
+                    $TeamMembersArray[]=[
+                        'MemberID'=>$TeamMember->getMemberID(),
+                        'MemberName'=>$TeamMember->getMember()->getFullName(),
+                        'Position'=>$TeamMember->getPosition(),
+                    ];
+                }
+                return json_encode([
+                    'status'=>true,
+                    'team'=>$TeamMembersArray
+                ]);
+
+            }else{
+                return json_encode([
+                    'status'=>false,
+                    'message'=>'No Campaign Found!'
+                ]);
+            }
+
+
+        }
+
+    }
+
     public function ManageCampaigns(Request $request, Response $response)
     {
         $UserID = Application::$app->getUser()->getId();
@@ -123,15 +207,18 @@ class medicalOfficerController extends \Core\Controller
             $this->setFlashMessage('error','No Campaign Assigned!');
             return $this->render('/MedicalOfficer/ManageCampaigns',['page'=>'campaigns']);
         }
+        if ($Campaign->getStatus()===Campaign::CAMPAIGN_STATUS_FINISHED){
+            $this->setFlashMessage('error','Campaign Ended!');
+            return $this->render('/MedicalOfficer/ManageCampaigns',['page'=>'campaigns']);
+        }
         $MedicalTeam = MedicalTeam::findOne(['Campaign_ID' => $Campaign->getCampaignID()]);
         $Organization = Organization::findOne(['Organization_ID' => $Campaign->getOrganizationID()]);
 
-        $model=[
-            'page'=>'campaigns',
-        ];
+        $model['page']='campaigns';
         if ($Campaign){
             $Position = MedicalTeam::findOne(['Campaign_ID' => $Campaign->getCampaignID(), 'Team_Leader' => $UserID],false) ? MedicalTeam::TEAM_LEADER : MedicalTeam::TEAM_MEMBER;
             $model=[
+                'page'=>'campaigns',
                 'Position'=>$Position,
                 'Campaign'=>$Campaign,
                 'MedicalTeam'=>$MedicalTeam,
@@ -141,7 +228,39 @@ class medicalOfficerController extends \Core\Controller
         return $this->render('/MedicalOfficer/ManageCampaigns',$model);
     }
 
+    public function EndCampaigns(Request $request, Response $response)
+    {
+        if ($request->isPost()){
+            $CampaignID = $request->getBody()['CampaignID'];
+            if ($CampaignID){
+                $CampaignID = trim($CampaignID);
+                $Campaign=Campaign::findOne(['Campaign_ID'=>$CampaignID]);
+                if ($Campaign){
+                    /**@var $Campaign Campaign */
+                    $Campaign->setStatus(Campaign::CAMPAIGN_STATUS_FINISHED);
+                    $Campaign->update($Campaign->getCampaignID(),[],['Status']);
+                    $this->setFlashMessage('success','Campaign Ended Successfully!');
+                    return json_encode([
+                        'status'=>true,
+                        'message'=>'Campaign Ended Successfully!'
+                    ]);
+                }else{
+                    $this->setFlashMessage('error','Invalid Campaign!');
+                    return json_encode([
+                        'status'=>false,
+                        'message'=>'Invalid Campaign !'
+                    ]);
+                }
+            }else{
+                $this->setFlashMessage('error','Invalid Campaign ID!');
+                return json_encode([
+                    'status'=>false,
+                    'message'=>'Invalid Campaign !'
+                ]);
+            }
 
+        }
+    }
     public function GetStatistics(Request $request,Response $response)
     {
         if ($request->isPost()){
@@ -185,9 +304,8 @@ class medicalOfficerController extends \Core\Controller
             $Campaign=MedicalOfficer::getAssignedCampaign($Date);
             if (!$Campaign){
                 $this->setFlashMessage('error','No Campaign Assigned!');
-                return $this->render('/MedicalOfficer/ManageDonation',[
-                    'page'=>'donations'
-                ]);
+                Application::Redirect('/medicalofficer/dashboard');
+                exit();
             }
 
 
@@ -360,7 +478,7 @@ class medicalOfficerController extends \Core\Controller
                 }
             }
             else if ($type===TeamMembers::TASK_BLOOD_CHECK){
-//                echo '<pre>';
+
                 /* @var $DonorQueue CampaignDonorQueue*/
                 $UserID = Application::$app->getUser()->getID();
                 $DonorBloodCheck = new DonorBloodCheck();

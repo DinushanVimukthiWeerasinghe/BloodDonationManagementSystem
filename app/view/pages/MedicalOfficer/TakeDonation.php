@@ -8,7 +8,7 @@ use App\model\users\Donor;
 //print_r($Donor);
 ?>
 <?php
-if ($BloodRetrievingStarted):
+if (isset($BloodRetrievingStarted)):
     ?>
 
 <div class="bg-dark-0-5 fixed h-100 w-100 top-0 left-0 d-flex align-items-center justify-content-center" style="z-index: 999">
@@ -99,7 +99,7 @@ endif;
 
 <script>
     <?php
-    if ($BloodRetrievingStarted):
+    if (isset($BloodRetrievingStarted)):
         ?>
 
     const TimeCounter = ()=>{

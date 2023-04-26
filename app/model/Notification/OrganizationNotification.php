@@ -237,8 +237,6 @@ class OrganizationNotification extends \App\model\database\dbModel
             'Notification_State',
             'Target_ID',
             'Valid_Until',
-            'Session_ID',
-            'Status'
         ];
     }
 }

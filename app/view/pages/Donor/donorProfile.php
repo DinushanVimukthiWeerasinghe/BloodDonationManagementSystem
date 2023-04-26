@@ -31,20 +31,20 @@ $bloodGroup = "B+";
 $weight = "100";
 $remark = "Goodbye";
 
-$Gender;
-$Nationality;
-$Profile_Image;
-$Availability;
-$Status;
-$Nearest_Bank;
-$Donation_Availability;
-$Verified;
-$Verified_At;
-$Verified_By;
-$Verification_Remarks;
-$BloodPacket_ID;
-$Created_At;
-$Updated_At;
+//$Gender;
+//$Nationality;
+//$Profile_Image;
+//$Availability;
+//$Status;
+//$Nearest_Bank;
+//$Donation_Availability;
+//$Verified;
+//$Verified_At;
+//$Verified_By;
+//$Verification_Remarks;
+//$BloodPacket_ID;
+//$Created_At;
+//$Updated_At;
 
 
 $background = new BackGroundImage();
@@ -67,7 +67,7 @@ echo $navbar;
 <div class="d-flex gap-1 bg-white-0-5 mt-7 p-3 border-radius-10 min-h-80 flex-column justify-content-center align-items-center">
     <div class="d-flex border-radius-10 gap-2 bg-white p-2">
         <div class="d-flex">
-            <img src="/public/upload/profile/donorDefault.png" width="300rem" alt="profile image for user" class="border-2 border-radius-10 border-success" />
+            <img src="<?=$Profile_Image?>" width="300rem" alt="profile image for user" class="border-2 border-radius-10 border-success" />
         </div>
         <div class="d-flex flex-column bg-white p-2">
             <div class="d-flex gap-1 flex-column " id="PersonalDetails">

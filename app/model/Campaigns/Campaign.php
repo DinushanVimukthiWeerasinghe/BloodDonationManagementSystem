@@ -13,6 +13,7 @@ class Campaign extends dbModel
     public const REJECTED = 3;
     public const NOT_VERIFIED = 1;
     public const VERIFIED = 2;
+    const CAMPAIGN_STATUS_FINISHED = 4;
     protected string $Campaign_ID='';
     protected string $Organization_ID='';
     protected ?string $Expected_Amount=null;

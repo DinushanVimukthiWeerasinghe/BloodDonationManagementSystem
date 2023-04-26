@@ -76,6 +76,7 @@ Hi
             $MedicalOfficers = $MedicalTeam->getTeamMembers();
             ?>
             <button class="btn btn-outline-success" onclick="AllocateTask()">Allocate Task</button>
+            <button class="btn btn-danger" onclick="EndCampaign()">End Campaign</button>
             <?php
             endif;
             ?>
@@ -184,6 +185,46 @@ Hi
                 }).catch((error)=>{
                     alert(error.message);
 
+                })
+            }
+        })
+    }
+    const EndCampaign = ()=>{
+        OpenDialogBox({
+            title: "End Campaign",
+            titleClass : "bg-dark text-white",
+            content: `
+                        <div class="d-flex flex-column w-100 p-1 align-items-center">
+                            <div class="d-flex font-bold mb-1"> <span class="ml-1">Are You Sure You Want To End The Campaign?</span></div>
+                        </div>
+                    `,
+            successBtnText: "End Campaign",
+            cancelBtnText: "Cancel",
+            successBtnAction : ()=>{
+                const url ="/mofficer/campaigns/endCampaign";
+                const formData = new FormData();
+                formData.append("CampaignID",'<?= $Campaign->getCampaignID();?>');
+                const successAction = ()=>{
+                    ShowToast({
+                        message: "Campaign Ended Successfully",
+                        type: "success"
+                    })
+                    setTimeout(()=>{
+                        location.reload();
+                    },1000);
+                }
+                fetch(url,{
+                    method: "POST",
+                    body: formData
+                }).then((response)=>response.json())
+                    .then((data)=>{
+                    console.log(data)
+                    if (data.status){
+                        CloseDialogBox();
+                        successAction();
+                    }else{
+                        console.log(data);
+                    }
                 })
             }
         })

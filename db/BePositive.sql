@@ -204,7 +204,7 @@ CREATE TABLE IF NOT EXISTS Campaign
     Campaign_Date        DATE         NOT NULL,
     Venue                VARCHAR(100) NOT NULL,
     Nearest_City         VARCHAR(100) NOT NULL,
-    Status               INT          NOT NULL CHECK ( Status Between 1 AND 3),
+    Status               INT          NOT NULL CHECK ( Status Between 1 AND 4),
     Latitude             VARCHAR(100) NOT NULL,
     Longitude            VARCHAR(100) NOT NULL,
     Nearest_BloodBank    VARCHAR(20)  NOT NULL,
@@ -215,6 +215,9 @@ CREATE TABLE IF NOT EXISTS Campaign
     FOREIGN KEY (Nearest_BloodBank) REFERENCES BloodBanks (BloodBank_ID),
     FOREIGN KEY (Organization_ID) REFERENCES Organizations (Organization_ID)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8;
+
+# select all Constraint of Campaign Table with name
+SELECT * FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS WHERE TABLE_NAME = 'Campaign';
 
 
 # Create Table for Approved Campaigns
