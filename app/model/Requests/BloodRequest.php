@@ -2,7 +2,6 @@
 
 namespace App\model\Requests;
 
-//TODO : Create Blood Request Model
 use App\model\database\dbModel;
 use App\model\users\Hospital;
 
@@ -12,15 +11,18 @@ class BloodRequest extends dbModel
     public const CRITICAL_REQUEST = 2;
     public const REQUEST_STATUS_PENDING = 1;
     public const REQUEST_STATUS_FULFILLED = 2;
-    public const REQUEST_STATUS_APPROVED = 3;
+    public const REQUEST_STATUS_SENT_TO_DONOR = 3;
     protected string $Request_ID;
     protected string $BloodGroup;
     protected string $Requested_By;
     protected string $Requested_At;
-
+    protected ?string $FullFilled_By = null;
+    protected ?string $Remarks = null;
     protected int $Status=1;
 
     protected int $Type=1;
+    protected int $Action = 0;
+    protected float $Volume = 0.0;
 
     protected int $Quantity;
 
@@ -56,7 +58,67 @@ class BloodRequest extends dbModel
         };
     }
 
+    /**
+     * @return string|null
+     */
+    public function getFullFilledBy(): ?string
+    {
+        return $this->FullFilled_By;
+    }
 
+    /**
+     * @return string|null
+     */
+    public function getRemarks(): ?string
+    {
+        return $this->Remarks;
+    }
+
+    /**
+     * @param string|null $Remarks
+     */
+    public function setRemarks(?string $Remarks): void
+    {
+        $this->Remarks = $Remarks;
+    }
+
+
+    /**
+     * @param string|null $FullFilled_By
+     */
+    public function setFullFilledBy(?string $FullFilled_By): void
+    {
+        $this->FullFilled_By = $FullFilled_By;
+    }
+
+
+    /**
+     * @return string
+     */
+    public function getActionText(): string
+    {
+        return match ($this->Action) {
+            self::REQUEST_STATUS_PENDING => 'Pending',
+            self::REQUEST_STATUS_FULFILLED => 'Fulfilled',
+            self::REQUEST_STATUS_SENT_TO_DONOR => 'Sent to Donor',
+            default => 'Unknown',
+        };
+    }
+
+    public function getAction(): int
+    {
+        return $this->Action;
+    }
+
+
+
+    /**
+     * @param int $Action
+     */
+    public function setAction(int $Action): void
+    {
+        $this->Action = $Action;
+    }
 
     /**
      * @param int $Type
@@ -65,6 +127,24 @@ class BloodRequest extends dbModel
     {
         $this->Type = $Type;
     }
+
+    /**
+     * @return float
+     */
+    public function getVolume(): float
+    {
+        return $this->Volume;
+    }
+
+    /**
+     * @param float $Volume
+     */
+    public function setVolume(float $Volume): void
+    {
+        $this->Volume = $Volume;
+    }
+
+
 
     /**
      * @return string
@@ -190,14 +270,6 @@ class BloodRequest extends dbModel
         $this->Quantity = $Quantity;
     }
 
-    public function getRemarks(): string
-    {
-        return $this->Remark;
-    }
-    public function setRemarks(string $Remarks): void
-    {
-        $this->Remark = $Remarks;
-    }
 
 
 
@@ -210,8 +282,11 @@ class BloodRequest extends dbModel
             'Requested_By' => 'Requested By',
             'Requested_At' => 'Requested At',
             'Status' => 'Status',
-            'quantity' => 'Quantity',
-            'Remark' => 'Remarks'
+            'Quantity' => 'Quantity',
+            'Remark' => 'Remarks',
+            'Type' => 'Type',
+            'Volume' => 'Volume',
+            'Action' => 'Action'
         ];
     }
 
@@ -220,7 +295,7 @@ class BloodRequest extends dbModel
         return [
             'Request_ID' => [self::RULE_REQUIRED],
             'BloodGroup' => [self::RULE_REQUIRED],
-            'Requested_By' => [self::RULE_REQUIRED],
+            'RequestedBy' => [self::RULE_REQUIRED],
             'Requested_At' => [self::RULE_REQUIRED],
             'Status' => [self::RULE_REQUIRED],
             'Type' => [self::RULE_REQUIRED],
@@ -255,7 +330,9 @@ class BloodRequest extends dbModel
             'Status',
             'Type',
             'Quantity',
-            'Remark'
+            'Remark',
+            'Volume',
+            'Action'
         ];
     }
 

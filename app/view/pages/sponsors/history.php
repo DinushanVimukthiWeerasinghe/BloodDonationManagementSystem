@@ -38,22 +38,7 @@ FlashMessage::RenderFlashMessages();
 
 <div id="detail-pane" class="detail-pane">
     <div id="detail-pane" class="detail-pane">
-        <div class="filter-card">
-            <div class="card-navigation">
-                <a class="disabled" href="?page=1"><img class="nav-btn" src="/public/images/icons/previous.png"
-                                                        alt=""></a>
-                <div class="page-numbers">
-                    <a href='?page=1' class='disabled'>
-                        <div class='page-number active'>1</div>
-                    </a>
-                </div>
-                <a class="disabled" href="?page=1"><img class="nav-btn" src="/public/images/icons/next.png" alt=""></a>
-            </div>
-        </div>
         <div id="card-pane" class="card-pane">
-            <div class="pane-loader">
-                <img src="/public/loading4.svg" alt="" width="200px">
-            </div>
             <?php
             if (empty($para)){
                 ?>
@@ -63,13 +48,13 @@ FlashMessage::RenderFlashMessages();
                     </div>
                     <div class="card-body">
                         <div class="card-title">
-                            No Campaigns Found
+                            No Sponsorships Found
                         </div>
                     </div>
                 </div>
             <?php } ?>
             <?php foreach ($para as $campaign){?>
-                <div class="card none detail-card">
+                <div class="card none detail-card"  style="height: 370px; width: 350px;">
                     <div class="card-image">
                         <img src='/public/images/campaign.png' alt="hello">
                     </div>

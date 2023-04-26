@@ -66,7 +66,7 @@ class siteController extends \Core\Controller
         
     }
 
-    public function Test()
+    public function Test(): string
     {
         $this->layout='none';
         return $this->render('Email/PasswordReset');

@@ -12,6 +12,8 @@ abstract class Model
     public const RULE_OLDER_DATE = 'older_date';
     public const RULE_TODAY_OR_OLDER_DATE = 'today_or_older_date';
     public const RULE_UPCOMING_DATE = 'upcoming_date';
+    public const    RULE_MAX_VALUE = 'max_value';
+    public const RULE_MIN_VALUE = 'min_value';
 
     public const RULE_MOBILE_NO = 'mobile';
     abstract public function labels():array;
@@ -91,6 +93,14 @@ abstract class Model
                 {
                     $this->addErrorRule($attribute, self::RULE_UPCOMING_DATE,['field'=>$this->getLabel($attribute)]);
                 }
+                if ($rulename===self::RULE_MAX_VALUE && $value > $rule['max'])
+                {
+                    $this->addErrorRule($attribute, self::RULE_MAX_VALUE,['max'=>$rule['max'],'field'=>$this->getLabel($attribute)]);
+                }
+                if ($rulename===self::RULE_MIN_VALUE && $value < $rule['min'])
+                {
+                    $this->addErrorRule($attribute, self::RULE_MIN_VALUE,['min'=>$rule['min'],'field'=>$this->getLabel($attribute)]);
+                }
                 if(!$update && $rulename===self::RULE_UNIQUE)
                 {
                     //Get Class Name
@@ -152,6 +162,9 @@ abstract class Model
             self::RULE_MOBILE_NO=>'This {field} must be a valid mobile number',
             self::RULE_OLDER_DATE=>'This {field} must be older than today',
             self::RULE_UPCOMING_DATE=>'This {field} must be upcoming date',
+            self::RULE_TODAY_OR_OLDER_DATE=>'This {field} must be today or older than today',
+            self::RULE_MAX_VALUE=>'This {field} must be less than {max}',
+            self::RULE_MIN_VALUE=>'This {field} must be greater than {min}',
         ];
 
     }

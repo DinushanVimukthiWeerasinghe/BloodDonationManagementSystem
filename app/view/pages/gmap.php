@@ -5,10 +5,7 @@ Make Google Map Location Maker
 <!--<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3966.657127085989!2d106.8151583147693!3d-6.175667995496071!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69f0f2f2f2f2f2%3A0x2e69f0f2f2f2f2f2!2sJl.+Kebon+Jeruk+No.1%2C+RT.1%2FRW.1%2C+Klp.+Dua%2C+Kec.+Kby.+Baru%2C+Kota+Jakarta+Selatan%2C+Daerah+Khusus+Ibukota+Jakarta+12160!5e0!3m2!1sid!2sid!4v1530000000000" width="600" height="450" frameborder="0" style="border:0" allowfullscreen></iframe>-->
 <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
 <link rel="stylesheet" href="/public/css/framework/utils.css">
-<script
-        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCvbYq82SFP1JVqiFXWTMKAfwpUWQUtaPs&callback=initMap&v=weekly&libraries=places"
-        defer
-></script>
+
 <h3>My Google Maps Demo</h3>
 <button onclick="ViewMap()">Try It</button>
 <button onclick="clickMe()">Try It 2</button>

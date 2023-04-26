@@ -61,7 +61,7 @@ echo AuthNavbar::getNavbarJS();
                 <div id="caption">
                     <div class="tagline">Organize Blood Campaign</div>
                     <span class="desc">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Error ex optio qui ratione ullam. Adipisci amet architecto aut culpa cum delectus dicta dolorem, enim impedit iste itaque placeat possimus quasi qui quidem quod quos rem tempora, unde veniam. Debitis molestias nisi vel? Asperiores, optio, quaerat!</span>
-                    <a id="donate-btn" href="/register?role=organization" class="btn btn-primary">Organize Blood Campaign </a>
+                    <a id="reg-org-btn" href="/register?role=organization" class="btn btn-primary">Organize Blood Campaign </a>
                 </div>
                 <div class="desc-image">
                     <img src="/public/images/bd-home.png" alt="">

@@ -76,7 +76,7 @@ const ViewUser = (type="Donor")=>{
                 Role[i].innerHTML = type;
             }
             document.getElementById('userTable').innerHTML = doc.getElementById('userTable').innerHTML;
-
+            document.getElementById('addNewUser').innerText = 'Add New ' + type;
         })
 }
 
@@ -251,6 +251,7 @@ const RemoveUser = (id)=>{
         })
 }
 
+
 const SearchUser = (role)=>{
     const Search = document.getElementsByName('Search')[0].value.trim();
     const formData = new FormData();
@@ -262,7 +263,14 @@ const SearchUser = (role)=>{
     })
         .then(res => res.text())
         .then(data => {
-            console.log(data)
+            //console.log(data)
             document.getElementById('userTable').innerHTML = data;
         })
 }
+//
+// const AddNewUser = () => {
+//     OpenDialogBox(
+//         id = 'addNewUser',
+//
+//     )
+// }

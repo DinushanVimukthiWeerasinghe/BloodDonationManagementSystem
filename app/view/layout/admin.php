@@ -11,7 +11,7 @@
     <link rel="icon" type="image/png" sizes="16x16" href="/public/favicon/favicon-16x16.png">
     <link rel="manifest" href="/public/favicon/site.webmanifest">
 
-    <link rel="stylesheet" href="/public/css/custom/admin/index.css">
+<!--    <link rel="stylesheet" href="/public/css/custom/admin/index.css">-->
     <link rel="stylesheet" href="/public/css/card.css">
     <link rel="stylesheet" href="/public/css/framework/utils.css">
     <script src="https://kit.fontawesome.com/185eb0391e.js" crossorigin="anonymous"></script>
@@ -54,12 +54,12 @@
                     <span class="nav-link-text">DashBoard</span>
                 </a>
             </div>
-            <div onclick="RenderPage('manageDonors')" class="side-bar-link" id="manageDonors">
-                <a >
-                    <img src="/public/images/icons/admin/dashboard/donation.png" width="40rem" alt="">
-                    <span class="nav-link-text">Donors</span>
-                </a>
-            </div>
+<!--            <div onclick="RenderPage('manageDonors')" class="side-bar-link" id="manageDonors">-->
+<!--                <a >-->
+<!--                    <img src="/public/images/icons/admin/dashboard/donation.png" width="40rem" alt="">-->
+<!--                    <span class="nav-link-text">Donors</span>-->
+<!--                </a>-->
+<!--            </div>-->
             <div onclick="RenderPage('manageBanks')" class="side-bar-link" id="manageBanks">
                 <a >
                     <img src="/public/images/icons/admin/dashboard/blood-bank.png" width="40rem" alt="">
@@ -92,7 +92,7 @@
             </div>
         </div>
     <div class="nav-footer">
-        <div class="footer-text">Footer</div>
+        <div class="footer-text"></div>
     </div>
 </div>
 <div class="top-bar">
@@ -109,77 +109,11 @@
 <div class="content">
     {{content}}
 </div>
-<script>
-
-    function ToggleSideBar(){
-        let sideBar = document.querySelector('.side-bar');
-        sideBar.classList.toggle('side-bar-compress');
-        let topBar = document.querySelector('.top-bar');
-        topBar.classList.toggle('top-bar-expand');
-        let Content = document.querySelector('.content');
-        Content.classList.toggle('content-expand');
-    }
-    let timeoutId=0;
-    function KeepLive(param){
-        if (param.trim() === ''){
-            param = '?layout=none';
-        }
-        else {
-            param ='/'+param
-        }
-        let path='/admin/dashboard';
-        timeoutId =setInterval(function(){
-            let xhr = new XMLHttpRequest()
-            xhr.onreadystatechange = function(){
-                if(xhr.readyState === 4 && xhr.status === 200){
-                    console.log(xhr.responseText)
-                    document.querySelector('.content').innerHTML=this.responseText;
-                }
-            }
-            xhr.open('GET',path+param);
-            xhr.send();
-        },5000);
-    }
-    function RenderPage(param='')
-    {
-        if (timeoutId!==0)
-        {
-            console.log("Cleared");
-            clearInterval(timeoutId)
-        }
-        // KeepLive(param);
-        let xhttp=new XMLHttpRequest();
-        xhttp.onreadystatechange=function ()
-        {
-            if (this.readyState===4 && this.status===200)
-            {
-                if (param.trim()==='')
-                {
-                    param='adminBoard';
-                }
-                const links=document.getElementsByClassName('side-bar-links')[0].children;
-                for (let i=0;i<links.length;i++)
-                {
-                    links[i].classList.remove('side-bar-link-active');
-                }
-                document.getElementById(param).classList.add('side-bar-link-active');
-                document.querySelector('.content').innerHTML=this.responseText;
-            }
-        }
-        Url='/admin/dashboard/'+param;
-        if (param.trim()===''){
-            Url='/admin/dashboard?layout=none';
-            window.location.reload();
-        }
-
-        xhttp.open('GET',Url,true);
-        xhttp.send();
-    }
-</script>
 </body>
 <script src="/public/js/components/dialog-box/dialog-box.js"></script>
 <script src="/public/js/components/toasts/toast.js"></script>
 <script src="/public/js/admin/manageBanks.js"></script>
 <script src="/public/js/admin/manageUsers.js"></script>
 <script src="/public/js/admin/manageSetting.js"></script>
+<script src="/public/js/admin/admin.js"></script>
 </html>

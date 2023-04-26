@@ -14,10 +14,10 @@ class User extends dbModel
     public const MEDICAL_OFFICER='MedicalOfficer';
     public const MANAGER='Manager';
     public const HOSPITAL='Hospital';
+    public const ACCOUNT_NOT_VERIFIED=5;
 
     public const ACTIVE = 0;
     public const TEMPORARY_DEACTIVATED = 1;
-
     public const PERMANENTLY_DEACTIVATED = 2;
     public const SEC_LEVEL_SUSPICIOUS = 1;
     public const SEC_LEVEL_NORMAL = 0;
@@ -459,6 +459,21 @@ class User extends dbModel
             'UserName'=>'User Name',
             'Role'=>'Role'
         ];
+    }
+
+    public function generateUID()
+    {
+        $Abbreviation = match ($this->Role) {
+            'Admin' => 'ADM',
+            'Manager' => 'MGR',
+            'MedicalOfficer' => 'MDO',
+            'Donor' => 'DNR',
+            'Organization' => 'ORG',
+            'Sponsor' => 'SPN',
+            'Hospital' => 'HOS',
+            default => 'USR',
+        };
+        $this->UID = uniqid($Abbreviation.'_');
     }
 
 }

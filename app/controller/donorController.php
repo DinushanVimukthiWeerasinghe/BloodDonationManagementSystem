@@ -19,20 +19,30 @@ use Core\middleware\AuthenticationMiddleware;
 use Core\Request;
 use Core\Response;
 
+
 class donorController extends Controller
 {
+
     public function __construct(){
         $this->layout = "Donor";
         $this->registerMiddleware(new donorMiddleware(['dashboard'], BaseMiddleware::FORBIDDEN_ROUTES));
+        if($_SESSION['pop'] == 1){
+            $_SESSION['pop'] = 1;
+        }
+        else{
+            $_SESSION['pop'] = 0;
+        }
     }
 
     public function dashboard(): string
     {
         /* @var Donor $donor*/
         $donor = Donor::findOne(['Donor_ID' => Application::$app->getUser()->getID()]);
+
         $data=[
             'firstName'=>$donor->getFirstName(),
-            'lastName'=>$donor->getLastName()
+            'lastName'=>$donor->getLastName(),
+            'state' => $donor->getDonationAvailability()
         ];
       //  print_r($data);
       //  exit();
@@ -101,27 +111,20 @@ class donorController extends Controller
 
     public function register(Request $request, Response $response)
     {
-        $this->usrCheck($response);
-        $user = Application::$app->getUser();
-        $primaryKey = $user->primaryKey();
-        $primaryValue = $user->{$primaryKey};
-
-        if (Donor::findOne(['Donor_ID' => $primaryValue])) {
-            $response->redirect('/donor/profile');
-        }
+        // get email address and userID from user Table
+        $userID = 12345;
+        $email = 'test@example.com';
         if ($request->isPost()) {
             $donor = new Donor();
             $donor->loadData($request->getBody());
-            $donor->setDonorId($user->$primaryKey);
+            $donor->setDonorId($userID);
             $donor->setId($donor->getId());
-            print_r($donor);
 
             if ($donor->validate() && $donor->save()) {
                 $response->redirect('/donor/profile');
             }
         }
-
-        return $this->render('Donor/register');
+        return $this->render('Donor/register',['email'=>$email]);
     }
 
     public function guideline(Request $request, Response $response)
@@ -157,4 +160,15 @@ class donorController extends Controller
         $response->redirect('/donor/profile');
     }
 
+    public function loginPrompt(Request $request, Response $response): string
+    {
+        if ($request->isPost()){
+            $donor = Donor::findOne(['Donor_ID' => Application::$app->getUser()->getID()]);
+            if (count($request->getBody() ) == 0){
+                Donor::updateOne(['Donor_ID' => Application::$app->getUser()->getID()], ['Donation_Availability' => 0]);
+            }
+        }
+        $_SESSION['pop'] = 1;
+        return $this->render('Donor/Dashboard', ['formPop' => $this->formPop] );
+    }
 }
