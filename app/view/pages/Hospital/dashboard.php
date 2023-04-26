@@ -81,11 +81,11 @@ echo $table->render("table");
                 </div>
                 <div class="form-group">
                     <label for="quantity">Quantity (In Pintes)</label>
-                    <input type="number" min="1" class="form-control" id="quantity" placeholder="Quantity (In Pints)" name="Quantity" value="0" required>
+                    <input type="number" min="1" class="form-control" id="quantity" placeholder="Quantity (In Pints)" name="Volume" value="0" required>
                 </div>
                 <div class="form-group">
                     <label for="remarks">Remarks</label>
-                    <textarea class="form-control" id="remarks" rows="3" name="Remark" required></textarea>
+                    <textarea class="form-control" id="remarks" rows="3" name="Remarks" required></textarea>
                 </div>
             </form>
             `,

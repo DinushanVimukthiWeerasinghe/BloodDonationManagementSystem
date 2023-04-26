@@ -105,10 +105,10 @@
             $BloodRequest->setRequestedBy($newRequestedBy);
             $BloodRequest->setStatus($newStatus);
 //            $BloodRequest->save();
-            if($BloodRequest->getQuantity()<1){
+            if($BloodRequest->getVolume()<1){
                 $this->setFlashMessage('error','Please Enter Valid Quantity');
                 Application::Redirect('/hospital/dashboard');
-            }else if (trim($BloodRequest->getRemark())==""){
+            }else if (trim($BloodRequest->getRemarks())==""){
                 $this->setFlashMessage('error','Please Enter Remarks');
                 Application::Redirect('/hospital/dashboard');
             }else if(strlen($BloodRequest->getRemarks())>100){
