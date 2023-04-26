@@ -366,11 +366,11 @@ class DonorBloodCheck extends \App\model\database\dbModel
     public function rules(): array
     {
         return [
-            'Donor_ID' =>[self::RULE_REQUIRED,self::RULE_UNIQUE],
-            'Campaign_ID' => [self::RULE_REQUIRED,self::RULE_UNIQUE],
+            'Donor_ID' =>[self::RULE_REQUIRED],
+            'Campaign_ID' => [self::RULE_REQUIRED],
             'BloodGroup' => [self::RULE_REQUIRED],
-            'Hemoglobin_Level' => [self::RULE_REQUIRED,[self::RULE_MIN_VALUE,'min' => 10],[self::RULE_MAX_VALUE,'max' => 25]],
-            'Blood_Pressure' => [self::RULE_REQUIRED,[self::RULE_MIN_VALUE,'min' => 10],[self::RULE_MAX_VALUE,'max' => 25]],
+            'Hemoglobin_Level' => [self::RULE_REQUIRED],
+            'Blood_Pressure' => [self::RULE_REQUIRED],
             'Temperature' => [self::RULE_REQUIRED],
             'Pulse_Rate' => [self::RULE_REQUIRED],
             'Infection_Diseases' => [self::RULE_REQUIRED],

@@ -76,7 +76,18 @@ const ViewUser = (type="Donor")=>{
                 Role[i].innerHTML = type;
             }
             document.getElementById('userTable').innerHTML = doc.getElementById('userTable').innerHTML;
-            document.getElementById('addNewUser').innerText = 'Add New ' + type;
+            const addBtn = document.getElementById('addNewUser');
+            if(type==='Hospital'){
+                addBtn.hidden=false;
+                addBtn.innerText = 'Add New ' + type;
+                addBtn.onclick = addNewHospital;
+            }else if(type==='Manager'){
+                addBtn.hidden=false;
+                addBtn.innerText = 'Add New ' + type;
+                addBtn.onclick = AddNewManager;
+            }else {
+                addBtn.hidden=true;
+            }
         })
 }
 
@@ -268,9 +279,31 @@ const SearchUser = (role)=>{
         })
 }
 //
-// const AddNewUser = () => {
-//     OpenDialogBox(
-//         id = 'addNewUser',
-//
-//     )
+const addNewHospital = () => {
+    OpenDialogBox({
+        title: 'Add New Hospital',
+        id: 'addNewHospital',
+        content: `<form method="post" action="/admin/manageHospital/addHospital" id="addHospitalForm">
+            <input type="email" name="Email" id="email" placeholder="E-Mail for Hospital">
+            <input type="password" name="password" id="password" placeholder="Password">
+            <input type="text" name="Hospital_Name" id="name" placeholder="Hospital Name">
+            <input type="text" name="Address1" id="address1" placeholder="Address Line 1">
+            <input type="text" name="Address2" id="address2" placeholder="Address Line 1">
+            <input type="text" name="City" id="city" placeholder="City">
+            <input type="tel" name="Contact_No" id="contactNo" placeholder="Contact Number">
+        </form>`,
+        successBtnAction: () => {
+            document.getElementById('addHospitalForm').submit();
+            CloseDialogBox();
+        },
+        cancelBtnAction: () => {
+            CloseDialogBox();
+        }
+        })
+}
+// const addNewManager = () => {
+//     OpenDialogBox({
+//         title: 'Add New Manager',
+//         id: 'addNewManager',
+//     })
 // }

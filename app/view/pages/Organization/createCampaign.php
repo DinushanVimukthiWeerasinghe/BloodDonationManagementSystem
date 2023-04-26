@@ -32,7 +32,7 @@ echo $background;
 <!--            </div>-->
             <div class="form-group">
                 <label class="w-40" for="CampaignDate">Campaign Date</label>
-                <input type="date" id="CampaignDate" class="form-date" name="Campaign_Date" min= "<?php echo date("Y-m-d", strtotime($Date.'+ 8days')) ?>" required style="border-radius: 50px;padding-left: 10px;padding-right: 10px">
+                <input type="date" id="CampaignDate" class="form-date" name="Campaign_Date" min= "<?php echo date("Y-m-d", strtotime($Date.'+ 30days')) ?>" required style="border-radius: 50px;padding-left: 10px;padding-right: 10px">
             </div>
             <div class="form-group">
                 <label class="w-40" for="CampaignVenue">Venue</label>

@@ -192,7 +192,6 @@ $navbar = new AuthNavbar('Medical Officer Dashboard', '/mofficer', '/public/imag
                             <div class="d-flex flex-column flex-center gap-1 max-h-80vh w-100">
                                 <div class="d-flex w-100 justify-content-center">
                                     <img id="profileImage" src="<?= $User->getProfileImage()?>" alt="" width=300px height=300px class="border-1 border-radius-50 " style="object-fit:cover"/>
-
                                  </div>
                                  <button class="btn btn-success d-flex align-items-center font-bold" onclick="ChangeProfileImage()"><span><img src="/public/icons/camera.svg" alt="" width="24px" class="cursor invert-100" onclick="EditProfile()"></span> &nbsp;Change Profile Image</button>
                                 <div class="bg-dark w-100 text-center text-white py-0-5 px-1"> Profile Details</div>
@@ -260,7 +259,6 @@ $navbar = new AuthNavbar('Medical Officer Dashboard', '/mofficer', '/public/imag
         input.onchange = _ => {
             // you can use this method to get file and perform respective operations
             let files =   Array.from(input.files);
-            console.log(files);
             const url="/mofficer/changeProfile";
             const formData = new FormData();
             formData.append('profileImage',files[0]);

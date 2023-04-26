@@ -8,16 +8,20 @@ use App\model\users\Donor;
 //print_r($Donor);
 ?>
 <?php
-if ($BloodRetrievingStarted):
+if (isset($BloodRetrievingStarted)):
     ?>
 
 <div class="bg-dark-0-5 fixed h-100 w-100 top-0 left-0 d-flex align-items-center justify-content-center" style="z-index: 999">
+<!--    <div id="loader" class=" absolute d-flex justify-content-center align-items-center bg-white w-50 h-50" style="z-index: 999;margin-top: 35px;">-->
+<!--        <img src="/public/loading2.svg" alt="" width="100px">-->
+<!--    </div>-->
     <div class="d-flex bg-white p-2 flex-column min-h-50 min-w-50 border-radius-10 align-items-center justify-content-center gap-3">
         <div class="w-100 text-center text-xl bg-dark text-white py-1 px-1">Blood Retrieving Started</div>
         <div class="d-flex w-100 justify-content-around gap-2">
             <div class="d-flex flex-column align-items-center justify-content-center gap-2">
-                <img src="/public/icons/bloodDonation.gif" alt="bloodDonation" class="" width="400px">
-                <div class="d-flex font-bold justify-content-center none" style="font-size: 4rem;" id="timer"> 00 : 00 : 00 </div>
+                <img src="/public/icons/bloodDonation.gif" alt="bloodDonation" class="" width="400px" >
+                <div class="d-flex font-bold justify-content-center " style="font-size: 4rem;" id="timer"> 00 : 00 : 00 </div>
+
             </div>
             <div class="d-flex flex-column align-items-center justify-content-center gap-2">
                 <img src="<?=$Donor->getProfileImage()?>" alt="<?=$Donor->getFullName()?>" width="200px"/>
@@ -99,7 +103,7 @@ endif;
 
 <script>
     <?php
-    if ($BloodRetrievingStarted):
+    if (isset($BloodRetrievingStarted)):
         ?>
 
     const TimeCounter = ()=>{
@@ -145,6 +149,10 @@ endif;
                     <div class="form-group">
                         <label for="PacketID" class="form-label w-40">Packet ID</label>
                         <input type="text" class="form-control w-60" id="PacketID" placeholder="Packet ID" style="border-radius: 0;border-color: black">
+                    </div>
+                    <div class="form-group">
+                        <label for="Volume" class="form-label w-40">Volume</label>
+                        <input type="number" class="form-control w-60" id="Volume" placeholder="Volume" style="border-radius: 0;border-color: black">
                     </div>
                     <div class="form-group">
                         <label for="BloodGroup" class="form-label w-40">Remarks</label>
@@ -239,7 +247,7 @@ endif;
                     if (data.status === "success") {
                         window.location.reload();
                     } else {
-                        alert(data.message);
+                        console.log(data);
                     }
                 }).catch((error) => {
                     console.log(error)
@@ -275,8 +283,6 @@ endif;
                 }
             })
     }
-
-
 
     const OtherReason = () => {
         const AbortDonationReason = document.getElementById("AbortDonationReason");

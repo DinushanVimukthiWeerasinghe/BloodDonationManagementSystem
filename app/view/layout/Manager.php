@@ -47,6 +47,8 @@ $Sidelnk = function () {
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.2.1/dist/chart.umd.min.js"></script>
     <link rel="stylesheet" href="/public/css/framework/utils.css">
     <link rel="stylesheet" href="/public/css/fontawesome/fa.css">
+    <link rel="stylesheet" href="https://printjs-4de6.kxcdn.com/print.min.css">
+    <script src="  https://printjs-4de6.kxcdn.com/print.min.js"></script>
     <script src="/public/scripts/index.js"></script>
 </head>
 <body class="d-flex">
@@ -264,6 +266,9 @@ $Sidelnk = function () {
                 }
             )
 
+    }
+    const getProfile = ()=>{
+        console.log('getProfile')
     }
 </script>
 </html>
