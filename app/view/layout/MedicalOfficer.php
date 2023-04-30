@@ -4,8 +4,9 @@ use App\view\components\ResponsiveComponent\Alert\FlashMessage;
 use App\view\components\ResponsiveComponent\NavbarComponent\AuthNavbar;
 use Core\Application;
 
+$PageTitle = $BrandTitle ?? "Medical Officer Dashboard";
 $User = Application::$app->getUser();
-$navbar = new AuthNavbar('Medical Officer Dashboard', '/mofficer', '/public/images/icons/user.png', true, false);
+$navbar = new AuthNavbar($PageTitle, '/mofficer', '/public/images/icons/user.png', true, false);
 ?>
 <!DOCTYPE html>
 <html lang="en">

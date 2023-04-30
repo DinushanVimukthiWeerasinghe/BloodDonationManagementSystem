@@ -10,6 +10,7 @@ class CampaignDonorQueue extends \App\model\database\dbModel
     const STAGE_2 = 2;
     const STAGE_3 = 3;
     const STAGE_4 = 4;
+    const STAGE_5 = 5;
     protected string $Donor_ID='';
     protected string $Campaign_ID='';
     protected int $Donor_Status=1;

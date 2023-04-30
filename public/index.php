@@ -221,6 +221,7 @@ $app->router->post('/user/change-password', [authController::class, 'ChangePassw
     $app->router->post('/manager/mngDonors', [managerController::class, 'ManageDonors']);
 
     $app->router->get('/manager/mngCampaigns', [managerController::class, 'ManageCampaigns']);
+    $app->router->get('/manager/mngCampaigns/ViewReport', [managerController::class, 'CampaignReport']);
     $app->router->post('/manager/mngCampaigns', [managerController::class, 'ManageCampaigns']);
     $app->router->post('/manager/mngCampaigns/search', [managerController::class, 'SearchCampaign']);
 
@@ -273,9 +274,10 @@ $app->router->get('/mofficer/take-donation', [medicalOfficerController::class, '
 $app->router->post('/mofficer/take-donation', [medicalOfficerController::class, 'ManageDonation']);
 $app->router->get('/mofficer/donation', [medicalOfficerController::class, 'ManageDonation']);
 $app->router->post('/mofficer/startBloodDonation', [medicalOfficerController::class, 'StartDonation']);
+$app->router->post('/mofficer/rejectBloodDonation', [medicalOfficerController::class, 'RejectDonation']);
 $app->router->post('/mofficer/medicalteam/allocateTask', [medicalOfficerController::class, 'AssignTasks']);
 $app->router->post('/mofficer/CompleteDonation', [medicalOfficerController::class, 'CompleteDonation']);
-$app->router->get('/mofficer/AbortDonation', [medicalOfficerController::class, 'AbortDonation']);
+$app->router->post('/mofficer/AbortDonation', [medicalOfficerController::class, 'AbortDonation']);
 $app->router->get('/mofficer/searchdonor', [medicalOfficerController::class, 'SearchDonor']);
 $app->router->post('/mofficer/registerDonor', [medicalOfficerController::class, 'RegisterDonor']);
 $app->router->post('/mofficer/registerDonorForCampaign', [medicalOfficerController::class, 'RegisterDonorForCampaign']);

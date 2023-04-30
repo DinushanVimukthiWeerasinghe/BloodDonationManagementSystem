@@ -70,6 +70,24 @@ class Donation extends dbModel
     }
 
     /**
+     * @return float
+     */
+    public function getVolume(): float
+    {
+        return $this->Volume;
+    }
+
+    /**
+     * @param float $Volume
+     */
+    public function setVolume(float $Volume): void
+    {
+        $this->Volume = $Volume;
+    }
+
+
+
+    /**
      * @return string
      */
     public function getCampaignID(): string
@@ -144,7 +162,7 @@ class Donation extends dbModel
             'Start_At' => 'Start At',
             'End_At' => 'End At',
             'Status' => 'Status',
-            'Officer_ID' => 'Officer ID'
+            'Officer_ID' => 'Officer ID',
         ];
     }
 
@@ -156,7 +174,7 @@ class Donation extends dbModel
             'Campaign_ID' => [self::RULE_REQUIRED],
             'Start_At' => [self::RULE_REQUIRED],
             'Status' => [self::RULE_REQUIRED],
-            'Officer_ID' => [self::RULE_REQUIRED]
+            'Officer_ID' => [self::RULE_REQUIRED],
         ];
     }
 
@@ -184,7 +202,7 @@ class Donation extends dbModel
             'Start_At',
             'End_At',
             'Status',
-            'Officer_ID'
+            'Officer_ID',
         ];
     }
 }

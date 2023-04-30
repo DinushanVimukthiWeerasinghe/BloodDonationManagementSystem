@@ -37,9 +37,9 @@ use App\model\users\User;
 
         </div>
         <div class="bg-dark py-1 px-2 w-90 text-center text-white my-1">Assigned Campaign</div>
-        <div class="d-flex w-90">
+        <div class="d-flex flex-column overflow-y-overlay w-90">
             <table class="table table-sm table-hover">
-                <thead>
+                <thead class="sticky top-0">
                     <tr>
                         <th scope="col">No</th>
                         <th scope="col">Campaign Name</th>
@@ -48,16 +48,18 @@ use App\model\users\User;
                         <th scope="col">Assigned Position</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody >
                 <?php
                 if (!empty($Campaigns)):
                 $i=1;
+//                    $SponsorshipTransactions=array_merge(...array_fill(0,50,$SponsorshipTransactions));
+                $Campaigns =  array_merge(...array_fill(0,50,$Campaigns));
                 foreach ($Campaigns as $campaign):
                 ?>
                     <tr>
                         <th scope="row"><?=$i++?></th>
                         <td><?=$campaign->getCampaignName()?></td>
-                        <td><?=$campaign->getCampaignDate()?></td>
+                        <td><?=\App\model\Utils\Date::GetProperDate($campaign->getCampaignDate())?></td>
                         <td><?=$campaign->getVenue()?></td>
                         <td>
                             <?php

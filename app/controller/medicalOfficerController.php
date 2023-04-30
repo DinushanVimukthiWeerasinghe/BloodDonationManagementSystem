@@ -10,6 +10,7 @@ use App\model\Campaigns\Campaign;
 use App\model\Campaigns\CampaignDonorQueue;
 use App\model\Donations\AcceptedDonations;
 use App\model\Donations\Donation;
+use App\model\Donations\RejectedDonations;
 use App\model\Donor\DonorHealthCheckUp;
 use App\model\MedicalTeam\MedicalTeam;
 use App\model\MedicalTeam\TeamMembers;
@@ -69,11 +70,13 @@ class medicalOfficerController extends \Core\Controller
         if (!empty($Campaigns)){
             return $this->render('/MedicalOfficer/OfficerHistory',[
                 'page'=>'history',
+                'BrandTitle'=>'History',
                 'Campaigns'=>$Campaigns
             ]);
         }else{
             return $this->render('/MedicalOfficer/OfficerHistory',[
                 'page'=>'history',
+                'BrandTitle'=>'History',
                 'Campaigns'=>[]
             ]);
         }
@@ -405,12 +408,18 @@ class medicalOfficerController extends \Core\Controller
                         $model['Task']=$TeamMember->getTaskName();
                         $NIC = $request->getBody()['NIC'] ?? null;
 
+
                         if ($NIC)
                         {
                             $Donor = Donor::findOne(['NIC' => $NIC]);
+
                             if ($Donor)
                             {
                                 $Donation_Queue=CampaignDonorQueue::findOne(['Campaign_ID'=>$Campaign->getCampaignID(),'Donor_ID'=>$Donor->getID(),'Donor_Status'=>CampaignDonorQueue::STAGE_3],false);
+                                if ($Donation_Queue){
+                                    
+                                }
+
                                 if(!$Donation_Queue){
                                     $this->setFlashMessage('error','Donor not found in the queue! Ask the donor to register first.');
                                     $DonorTakeBloodDonation= CampaignDonorQueue::RetrieveAll(false,[],true,['Campaign_ID'=>$Campaign->getCampaignID(),'Donor_Status'=>CampaignDonorQueue::STAGE_3]);
@@ -431,6 +440,7 @@ class medicalOfficerController extends \Core\Controller
                             }
                         }else{
                             $IsOngoingDonation=Donation::findOne(['Campaign_ID'=>$Campaign->getCampaignID(),'Status'=>Donation::STATUS_BLOOD_RETRIEVING,'Officer_ID'=>$UserID],false);
+//                            $Donation_Queue = CampaignDonorQueue::findOne(['Donor_ID'=>])
                             if ($IsOngoingDonation){
                                 $model['Donation']=$IsOngoingDonation;
                                 $model['BloodRetrievingStarted']=true;
@@ -481,7 +491,6 @@ class medicalOfficerController extends \Core\Controller
                 }
             }
             else if ($type===TeamMembers::TASK_BLOOD_CHECK){
-
                 /* @var $DonorQueue CampaignDonorQueue*/
                 $UserID = Application::$app->getUser()->getID();
                 $DonorBloodCheck = new DonorBloodCheck();
@@ -522,9 +531,40 @@ class medicalOfficerController extends \Core\Controller
     }
 
     public function AbortDonation(Request $request,Response $response){
+        /** @var $DonorQueue CampaignDonorQueue*/
+        /** @var $Donation Donation*/
         if ($request->isPost()){
-            return json_encode(['status'=>false,'message'=>'Donation already started!']);
-
+            $Reason = $request->getBody()['AbortDonationReason'];
+            $DonorID = $request->getBody()['DonorID'];
+            $ReasonOther = $request->getBody()['AbortDonationReasonOther'] ?? null;
+            $DonorQueue=CampaignDonorQueue::findOne(['Donor_ID'=>$DonorID,'Donor_Status'=>CampaignDonorQueue::STAGE_3],false);
+            if (!$DonorQueue){
+                return json_encode(['status'=>false,'message'=>'Donor not ready for donation!']);
+            }
+            $DonorQueue->setDonor_Status(CampaignDonorQueue::STAGE_5);
+            $Donation = Donation::findOne(['Donor_ID'=>$DonorID,'Campaign_ID'=>$DonorQueue->getCampaignID()],false);
+            if (!$Donation){
+                return json_encode(['status'=>false,'message'=>"No Donation"]);
+            }
+            $UserID = Application::$app->getUser()->getID();
+            $RejectedDonation = new RejectedDonations();
+            $RejectedDonation->setCampaignID($DonorQueue->getCampaignID());
+            $RejectedDonation->setDonationID($Donation->getDonationID());
+            $RejectedDonation->setReason($Reason);
+            $RejectedDonation->setRejectedAt(date("Y-m-d H:i:s"));
+            $RejectedDonation->setRejectedBy($UserID);
+            $RejectedDonation->setDonorID($DonorID);
+            $RejectedDonation->setType(RejectedDonations::TYPE_ABORT_BLOOD_RETRIEVING);
+            if ($ReasonOther){
+                $RejectedDonation->setOtherReason($ReasonOther);
+            }
+            if ($RejectedDonation->validate()){
+                $RejectedDonation->save();
+                $DonorQueue->update($DonorID,[],['Donor_Status'],['Campaign_ID'=>$DonorQueue->getCampaignID()]);
+                return json_encode(['status'=>true,'message'=>'Aborted the Donation']);
+            }else{
+                return json_encode(['status'=>false,'message'=>'Error Occured','errors'=>$RejectedDonation->getErrors()]);
+            }
         }
     }
 
@@ -551,7 +591,59 @@ class medicalOfficerController extends \Core\Controller
                 return json_encode(['status' => true, 'message' => 'Donation Started!']);
             }else{
                 $this->setFlashMessage('error', 'Donation Failed!');
-                return json_encode(['status' => false, 'message' => 'Donation Failed!']);
+                return json_encode(['status' => false, 'message' => 'Donation Failed!', 'errors' => $Donation->getErrors()]);
+            }
+        }
+    }
+
+    public function RejectDonation(Request $request,Response $response)
+    {
+        /** @var $DonorQueue CampaignDonorQueue*/
+        /** @var $Donation Donation*/
+        if ($request->isPost()){
+            $Reason = $request->getBody()['AbortDonationReason'];
+            $DonorID = $request->getBody()['DonorID'];
+            $ReasonOther = $request->getBody()['AbortDonationReasonOther'] ?? null;
+            $DonorQueue=CampaignDonorQueue::findOne(['Donor_ID'=>$DonorID,'Donor_Status'=>CampaignDonorQueue::STAGE_3],false);
+            if (!$DonorQueue){
+                return json_encode(['status'=>false,'message'=>'Donor not ready for donation!']);
+            }
+            $DonorQueue->setDonor_Status(CampaignDonorQueue::STAGE_5);
+            $Donation = Donation::findOne(['Donor_ID'=>$DonorID,'Campaign_ID'=>$DonorQueue->getCampaignID()],false);
+            if ($Donation){
+                return json_encode(['status'=>false,'message'=>"Already Donation exist"]);
+            }
+            $Donation = new Donation();
+            $Donation->setDonationID(uniqid('Dnt_'));
+            $Donation->setDonorID($DonorID);
+            $Donation->setCampaignID($DonorQueue->getCampaignID());
+            $Donation->setStatus(Donation::STATUS_BLOOD_DONATION_ABORTED);
+            $Donation->setOfficerID(Application::$app->getUser()->getID());
+            $Donation->setStartAt(date('Y-m-d H:i:s'));
+            if (!$Donation->validate()){
+                return json_encode(['status'=>false,'message'=>'Error Occured','errors'=>$Donation->getErrors()]);
+            }
+            if (!$Donation->save()){
+                return json_encode(['status'=>false,'message'=>'Error Occured','errors'=>$Donation->getErrors()]);
+            }
+            $UserID = Application::$app->getUser()->getID();
+            $RejectedDonation = new RejectedDonations();
+            $RejectedDonation->setCampaignID($DonorQueue->getCampaignID());
+            $RejectedDonation->setDonationID($Donation->getDonationID());
+            $RejectedDonation->setReason($Reason);
+            $RejectedDonation->setRejectedAt(date("Y-m-d H:i:s"));
+            $RejectedDonation->setRejectedBy($UserID);
+            $RejectedDonation->setDonorID($DonorID);
+            $RejectedDonation->setType(RejectedDonations::TYPE_ABORT_DONATION);
+            if ($ReasonOther){
+                $RejectedDonation->setOtherReason($ReasonOther);
+            }
+            if ($RejectedDonation->validate()){
+                $RejectedDonation->save();
+                $DonorQueue->update($DonorID,[],['Donor_Status'],['Campaign_ID'=>$DonorQueue->getCampaignID()]);
+                return json_encode(['status'=>true,'message'=>'Rejected the Donation']);
+            }else{
+                return json_encode(['status'=>false,'message'=>'Error Occured','errors'=>$RejectedDonation->getErrors()]);
             }
         }
     }
@@ -562,6 +654,7 @@ class medicalOfficerController extends \Core\Controller
         /* @var $Donation Donation*/
         if ($request->isPost()){
             $DonorID=$request->getBody()['DonorID'];
+            $Volume=$request->getBody()['Volume'];
             $DonorQueue=CampaignDonorQueue::findOne(['Donor_ID'=>$DonorID,'Donor_Status'=>CampaignDonorQueue::STAGE_3],false);
             if (!$DonorQueue){
                 return json_encode(['status'=>false,'message'=>'Donor not ready for donation!']);
@@ -588,6 +681,7 @@ class medicalOfficerController extends \Core\Controller
                 $Accepted_Donation->setOutTime($Donation->getEndAt());
                 $Accepted_Donation->setPacketID($BloodPacket->getPacketID());
                 $Accepted_Donation->setDonorID($DonorID);
+                $Accepted_Donation->setVolume($Volume);
                 $Accepted_Donation->setRetrievedBy(Application::$app->getUser()->getID());
                 $Accepted_Donation->setVerifiedBy(Application::$app->getUser()->getID());
                 $Donation->update($Donation->getDonationID(),[],['Status','End_At']);
@@ -595,8 +689,9 @@ class medicalOfficerController extends \Core\Controller
                 if ($Accepted_Donation->validate() && $Accepted_Donation->save()) {
                     return json_encode(['status' => true, 'message' => 'Donation Completed!']);
                 }else{
+
                     $this->setFlashMessage('error', 'Donation Failed!');
-                    return json_encode(['status' => false, 'message' => 'Donation Failed!']);
+                    return json_encode(['status' => false, 'message' => 'Donation Failed!', 'error' => $Accepted_Donation->getErrors()]);
                 }
             }else{
                 $this->setFlashMessage('error', 'Donation Failed!');

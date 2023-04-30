@@ -19,9 +19,9 @@ use App\model\users\Donor;
             foreach ($DonorTakeBloodDonation as $DonorInQueue):
                 $Donor=$DonorInQueue->getDonor();
         ?>
-        <div class="card">
-            <div class="card-header flex-column">
-                <img src="<?=$Donor->getProfileImage()?>" alt="donation" >
+        <div class="card d-flex flex-center gap-0-5">
+            <img src="<?=$Donor->getProfileImage()?>" class="border-radius-10" alt="donation" width="60%">
+            <div class="card-header flex-column gap-0-5">
                 <div class="text-xl text-center"><?= $Donor->getFullName()?></div>
                 <div class="text-xl text-center"><?= $Donor->getNIC()?></div>
             </div>

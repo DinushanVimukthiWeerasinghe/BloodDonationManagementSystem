@@ -1,10 +1,14 @@
+<?php
+use App\model\users\MedicalOfficer;
+use App\model\Utils\Date;
+use Core\Application;
+?>
 
 
 
-
-<div class="d-flex m-1 flex-center ">
-    <div class="d-flex w-100 h-60 align-items-center flex-center  overflow-y-scroll">
-        <table class="w-100 ">
+<div class="d-flex m-1 justify-content-center ">
+    <div class="d-flex w-100 justify-content-center  overflow-y-scroll">
+        <table class="w-100 h-10" style="min-width: 90vh">
             <thead class="sticky top-0">
             <tr>
                 <th>No</th>
@@ -17,20 +21,16 @@
             </tr>
             </thead>
 
-            <tbody id="content" class="">
-            <div id="loader" class="bg-white absolute w-50 d-flex justify-content-center align-items-center" style="z-index: 999;height: 90%;margin-top: 35px;">
+            <div id="loader" class="bg-white absolute d-flex justify-content-center align-items-center" style="z-index: 999;height: 100%;margin-top: 35px;">
                 <img src="/public/loading2.svg" alt="" width="100px">
             </div>
+            <tbody id="content" class="">
             <?php
             /** @var $Campaign App\model\Campaigns\Campaign*/
 
-            use App\model\users\MedicalOfficer;
-            use App\model\Utils\Date;
-            use Core\Application;
-
             $i = 1;
             if (!empty($Campaigns)):
-                $Campaigns = array_merge($Campaigns,$Campaigns,$Campaigns);
+//                $Campaigns = array_merge(...array_fill(0, 1000, $Campaigns));
             $UserID = Application::$app->getUser()->getID();
                 foreach ($Campaigns as $Campaign):
             ?>
@@ -43,7 +43,7 @@
                     <td><?= MedicalOfficer::getTaskOfCampaign($UserID,$Campaign->getCampaignID())?></td>
                     <td>
                         <button onclick="ViewTeam('<?=$Campaign->getCampaignID()?>')" class="btn btn-info btn-sm">View Team</button>
-                        <button class="btn btn-primary btn-sm">View Report</button>
+                        <button class="btn btn-primary btn-sm" onclick="ViewReport()">View Report</button>
                     </td>
                 </tr>
             <?php

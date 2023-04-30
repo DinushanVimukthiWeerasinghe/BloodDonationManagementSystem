@@ -9,6 +9,9 @@ use App\model\BloodBankBranch\BloodBank;
 use App\model\Campaigns\ApprovedCampaigns;
 use App\model\Campaigns\Campaign;
 use App\model\Campaigns\RejectedCampaign;
+use App\model\Donations\AcceptedDonations;
+use App\model\Donations\Donation;
+use App\model\Donations\RejectedDonations;
 use App\model\Email\Email;
 use App\model\MedicalTeam\MedicalTeam;
 use App\model\MedicalTeam\TeamMembers;
@@ -1378,8 +1381,44 @@ class managerController extends Controller
 
     public function CampaignReport(Request $request,Response $response): bool|string
     {
-        if ($request->isPost()){
-            $FinishedCampaigns=Campaign::RetrieveAll(false,[],true,['Status'=>Campaign::CAMPAIGN_STATUS_FINISHED]);
+        /** @var $Campaign Campaign*/
+        /** @var $Donation Donation*/
+        /** @var $RejectedDonations RejectedDonations*/
+        /** @var $AcceptedDonations AcceptedDonations*/
+        $CampaignID = $request->getBody()['CampaignID'] ?? null;
+        if ($CampaignID){
+            $Campaign = Campaign::findOne(['Campaign_ID' => $CampaignID]);
+            if ($Campaign){
+//                TODO : Check if the campaign is Finished
+                if ($Campaign->getStatus()===Campaign::APPROVED){
+                    $Data = [];
+                    $Donations = Donation::RetrieveAll(false,[],true,['Campaign_ID'=>$CampaignID]);
+                    if ($Donations){
+                        $Data['TotalDonations'] = count($Donations);
+                        foreach ($Donations as $Donation){
+                            if ($Donation->getStatus()===Donation::STATUS_BLOOD_STORED){
+                                $Data['BloodStored'] = ($Data['BloodStored'] ?? 0) + 1;
+                            }
+                            $AcceptedDonations = AcceptedDonations::findOne(['Donation_ID'=>$Donation->getDonationID()]);
+                            if ($AcceptedDonations){
+                                $Data['AcceptedDonations'] = $Data['AcceptedDonations'] ?? [];
+                                $Data['AcceptedDonations']['count'] = ($Data['AcceptedDonations']['count'] ?? 0) + 1;
+                                $Data['AcceptedDonations']['TotalVolume'] = ($Data['AcceptedDonations']['TotalVolume'] ?? 0) + $AcceptedDonations->getVolume();
+                            }
+                            $RejectedDonations = RejectedDonations::findOne(['Donation_ID'=>$Donation->getDonationID()]);
+                            if ($RejectedDonations){
+                                $Data['RejectedDonations'] = $Data['RejectedDonations'] ?? [];
+                                $Data['RejectedDonations']['count'] = ($Data['RejectedDonations']['count'] ?? 0) + 1;
+                            }
+                        }
+                    }
+                    var_dump($Data);
+                    exit();
+                }
+            }
+//            header('Content-Type: application/json');
+            return json_encode(['status'=>true,'data'=>Campaign::findOne(['Campaign_ID'=>$CampaignID])->toArray()]);
         }
+        return "Campaign Report";
     }
 }
