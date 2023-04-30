@@ -96,16 +96,16 @@ class SponsorshipRequest extends \App\model\database\dbModel
         return "Kamal";;
     }
 
-    public function getToBeSponsoredAmount(): float|int
+    public function getToBeSponsoredAmount(bool $Readable=false): float|int|string
     {
-        $CampaignSponsors = CampaignsSponsor::RetrieveAll(false,[],true,['Sponsorship_ID'=>$this->Sponsorship_ID]);
+        $CampaignSponsors = CampaignsSponsor::RetrieveAll(false,[],true,['Sponsorship_ID'=>$this->Sponsorship_ID,'Status'=>self::TRANSFERRING_COMPLETED]);
         if (count($CampaignSponsors) == 0)
-            return $this->Sponsorship_Amount;
+            return $Readable ? number_format(intval($this->Sponsorship_Amount),0,'.',",") : $this->Sponsorship_Amount;
         $SponsoredAmount = array_sum(array_map(function ($CampaignSponsor){
             /** @var $CampaignSponsor CampaignsSponsor */
             return $CampaignSponsor->getSponsoredAmount();
         },$CampaignSponsors));
-        return $this->Sponsorship_Amount - $SponsoredAmount;
+        return $Readable ? number_format(($this->Sponsorship_Amount - $SponsoredAmount),0,'.',",") : $this->Sponsorship_Amount - $SponsoredAmount;
     }
 
 

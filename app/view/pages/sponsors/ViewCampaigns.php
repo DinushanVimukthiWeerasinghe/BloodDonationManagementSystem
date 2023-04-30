@@ -19,7 +19,7 @@ use App\view\components\ResponsiveComponent\NavbarComponent\AuthNavbar;
 
 //echo Loader::GetLoader();
 $background = new BackGroundImage();
-$navbar = new AuthNavbar('Donation Campaigns', '/organization/near', '/public/images/icons/user.png', false);
+$navbar = new AuthNavbar('Sponsor For Campaigns', '/organization/near', '/public/images/icons/user.png', true);
 
 echo $navbar;
 echo $background;
@@ -38,37 +38,40 @@ FlashMessage::RenderFlashMessages();
 ?>
 
 <div id="detail-pane" class="detail-pane">
-        <div id="card-pane" class="card-pane">
+        <div id="card-pane " class="card-pane flex-center d-flex" style="max-height: 90vh;padding: 0.5rem 0.5rem;margin-top: 2rem;">
             <?php
+//            $SponsorshipRequests = array_merge(...array_fill(0, 100, $SponsorshipRequests));
+            $SponsorshipRequests = [];
             if (empty($SponsorshipRequests)){
                 ?>
-                <div class="card detail-card">
+                <div class="card detail-card" style="background: #FFFFFF;">
                     <div class="card-image">
                         <img src="/public/images/icons/organization/dashboard/campaign.png" alt="">
                     </div>
                     <div class="card-body">
                         <div class="card-title">
-                            No Campaigns Found
+                            No Campaigns Available
                         </div>
                     </div>
                 </div>
-            <?php } ?>
+            <?php }else{ ?>
             <?php foreach ($SponsorshipRequests as $SponsorshipRequest){
                 $Needed_Amount = $SponsorshipRequest->getNeededAmount();
                 ?>
-            <div class="card ">
+            <div class="card bg-white" style="height: 250px;width: 200px;border-radius: 10px">
                 <div class="card-body d-flex flex-column gap-0-5 flex-center">
 <!--                    <div class="card-image" style="text-align: center;margin-left: 100px;width: 100px;height: 100px;margin-top: -50px;"><img src="/public/images/donation.png" alt="hello"></div>-->
                     <div class="font-bold text-xl"> <?php  echo $SponsorshipRequest->getCampaignName(); ?></div>
                     <div class="card-description"><?= Date::GetProperDate($SponsorshipRequest->getCampaignDate()); ?></div>
-                    <div class="card-description bg-yellow-7 border-radius-10 p-1" style="font-size: 1.2em;font-weight: bolder;">LKR. <?= $SponsorshipRequest->getToBeSponsoredAmount() ?></div>
-                    <div class="d-flex gap-0-5">
-                            <button class="btn btn-success w-100 mt-1" onclick="SponsorForCampaign('<?=$SponsorshipRequest->getSponsorshipID()?>','<?= $SponsorshipRequest->getToBeSponsoredAmount() ?>')">Sponsor</button>
-                        <button class="btn btn-outline-info w-100 mt-1" onclick="ViewCampaignRequest('<?=$SponsorshipRequest->getCampaignID()?>')">View Campaign</button>
+                    <div class="card-description bg-yellow-5 text-dark border-radius-10 " style="font-size: 1.2em;font-weight: bolder;padding: 0.5rem">LKR. <?= $SponsorshipRequest->getToBeSponsoredAmount(true) ?></div>
+                    <div class="d-flex flex-column gap-0-5">
+                        <button class="btn btn-info w-100 " onclick="ViewCampaignRequest('<?=$SponsorshipRequest->getCampaignID()?>')">View Campaign</button>
+                        <button class="btn btn-success w-100 " onclick="SponsorForCampaign('<?=$SponsorshipRequest->getSponsorshipID()?>','<?= $SponsorshipRequest->getToBeSponsoredAmount() ?>')">Sponsor</button>
                     </div>
                 </div>
             </div>
             <?php
+            }
             }
             ?>
         </div>
@@ -195,7 +198,7 @@ FlashMessage::RenderFlashMessages();
                         <div class="d-flex">
                             <select class="form-control" id="sponsorshipType" onclick="NotAvailable()" disabled>
                                 <option value="1" selected>Cash</option>
-                                <option value="2">Goods</option>
+<!--                                <option value="2">Goods</option>-->
                             </select>
                         </div>
                     </div>
