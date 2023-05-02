@@ -26,13 +26,60 @@ echo $background;
 FlashMessage::RenderFlashMessages();
 ?>
 <style>
-    @media only screen and (max-width: 394px) {
-        .intro{
-            display: flex;
-            flex-direction: column;
-            text-align: center;
+    .links{
+        text-align: center;
+        display: flex;
+        flex-direction: row;
+        gap: 20px;
+        margin-left: 30vh;
+    }
+    @media only screen and (max-width: 1526px) {
+        .links{
+            margin-left: 10vh;
         }
     }
+    @media only screen and (max-width: 1114px) {
+        .links{
+            display: flex;
+            flex-direction: column;
+            margin-left: -5vh;
+        }
+    }
+    @media only screen and (max-width: 304px) {
+        .links{
+            width: 40vw;
+            height: auto;
+        }
+        .links button{
+            font-size: 8pt;
+        }
+
+    }
+    @media only screen and (max-width: 413px) {
+        .intro{
+           margin-left: 10px;
+        }
+    }
+    @media only screen and (max-width: 394px) {
+        .intro{
+            font-size: 12pt;
+        }
+    }
+    @media only screen and (max-width: 281px) {
+        .intro{
+            font-size: 8pt;
+            margin-left: -10px;
+            flex-direction: column;
+            row-gap: 10px;
+        }
+    }
+    /*@media only screen and (max-width: 394px) {*/
+    /*    .intro{*/
+    /*        display: flex;*/
+    /*        flex-direction: column;*/
+    /*        text-align: center;*/
+    /*    }*/
+    /*}*/
     @media only screen and (max-width: 830px) {
         #Campaign_Detail {
             min-width: 50vw;
@@ -72,12 +119,17 @@ FlashMessage::RenderFlashMessages();
             margin-left: 100px;
         }
     }
+    .back:hover{
+        background-color: red;
+    }
 </style>
-<div class="d-flex flex-column w-90  p-1" style="overflow-y: scroll;">
+
+<button class="btn btn-info w-10 back" style="position: absolute;margin-top:-500px;margin-left: -1300px;" onclick="history.back()">Go Back</button>
+<div class="d-flex flex-column w-90  p-1 mt-4" style="overflow-y: scroll;margin-left: 10vw">
 <!--    <div class="d-flex text-xl w-100 align-items-center justify-content-center bg-dark px-2 py-0-5 text-white font-bold" style="font-size: 1.8rem">--><?php //=$campaign->getCampaignName(); ?><!--</div>-->
         <div class="d-flex bg-white-0-3 p-2 gap-2 details w-100 justify-content-center" style="flex-wrap: wrap;">
             <div class="text-xl d-flex flex-column justify-content-center align-items-center w-50 bg-white border-radius-10 gap-1 p-3 mt-3"  id="Campaign_Detail" style="flex-wrap: wrap;">
-                <div class="d-flex justify-content-between w-100 intro" id="Campaign_Name">
+                <div class="d-flex justify-content-between w-100 intro " id="Campaign_Name">
                     <div class="w-40">Campaign Name </div>
                     <div class="font-bold w-60 d-flex align-items-center justify-content-start text-right"><?=$campaign->getCampaignName(); ?></div>
                 </div>
@@ -122,8 +174,8 @@ FlashMessage::RenderFlashMessages();
 <!--                </div>-->
 <!--                --><?php //} ?>
                 <?php if($campaign->getVerified() === Campaign::NOT_VERIFIED) {?>
-                    <div style="text-align: center;display: flex;flex-direction: row;gap: 20px;margin-left: 30vh;">
-                        <a href="/organization/campaign/updateCampaign?id=<?php echo $campaign->getCampaignID()?>"><button class="btn btn-success w-100">Update Campaign</button></a>
+                    <div class="links">
+                        <a href="/organization/campaign/updateCampaign?id=<?php echo \App\model\Utils\Security::Encrypt($campaign->getCampaignID())?>"><button class="btn btn-success w-100">Update Campaign</button></a>
                         <a href="" id="delete"><button class="btn btn-danger w-100" onclick="del()">Delete Campaign</button></a>
                     </div>
                 <?php } ?>
@@ -156,11 +208,11 @@ FlashMessage::RenderFlashMessages();
             <div class="card nav-card bg-green-3 text-dark">
                 <div class="card-header">
                     <div class="card-title">
-                        <h3 style="color: whitesmoke"> No. of Accepted Donors<br> <span class="bg-warning fa fa-1x p-1 " style="color: #0b0000"><?php echo $donor ?></span></h3>
+                        <h3 style="color: whitesmoke"> No. of Accepted Donors<br> <span class="bg-warning fa fa-1x p-1 " style="color: #0b0000"><?php echo $count ?></span></h3>
                     </div>
                 </div>
             </div>
-            <div class="card nav-card bg-white text-dark" onclick="informDonors()">
+            <div class="card nav-card bg-white text-dark" onclick="inform()">
                 <div class="card-header">
                     <div class="card-header-img">
                         <img src="/public/images/icons/organization/campaignDetails/inform.png" alt="Inform" width="100px">
@@ -389,7 +441,15 @@ FlashMessage::RenderFlashMessages();
         marker.addListener("click", () => {
             map.setZoom(16);
             map.setCenter(marker.getPosition());
+            infoWindow.open(map,marker)
         });
+        const infoWindow = new google.maps.InfoWindow({
+            content : `
+                Campaign Name : <?php echo $campaign->getCampaignName() ?> <br/>
+                Campaign Date : <?php echo $campaign->getCampaignDate() ?> <br/>
+                Campaign Status : <?php echo $campaign->getCampaignStatus() ?> <br/>
+            `
+        })
     }
     window.addEventListener('load', initMap);
 
@@ -401,7 +461,7 @@ FlashMessage::RenderFlashMessages();
     content :`Are You Sure You Want to Delete Details? This Action Cannot be Undone.`,
     successBtnText:'Yes',
     successBtnAction : ()=>{
-        window.location.href = "/organization/campaign/deleteCampaign?id=<?php echo $campaign->getCampaignID(); ?>"
+        window.location.href = "/organization/campaign/deleteCampaign?id=<?php echo \App\model\Utils\Security::Encrypt($campaign->getCampaignID()); ?>"
     },
 
     });
@@ -499,9 +559,9 @@ FlashMessage::RenderFlashMessages();
     //
     //         })
     // }
-    function informDonors(){
+    const inform= () =>{
        OpenDialogBox({
-           id : 'informDonors',
+           id : 'inform',
            title : 'Inform Donors',
            content :`<div class="d-flex flex-column gap-0-5" >
                             <label for="message" class="form-label">Message</label>
@@ -544,8 +604,8 @@ FlashMessage::RenderFlashMessages();
                                type:'success'
                            });
                            setTimeout(()=>{
-                               CloseDialogBox('informDonors')
-                               window.location.reload()
+                                CloseDialogBox('inform')
+                                window.location.reload();
                            },2000);
                        }else{
                            ShowToast({
@@ -553,8 +613,8 @@ FlashMessage::RenderFlashMessages();
                                type:'danger'
                            });
                            setTimeout(()=>{
-                               CloseDialogBox('informDonors')
-                               window.location.reload()
+                                CloseDialogBox('inform')
+                               window.location.reload();
                            },2000);
                        }
                    });

@@ -52,7 +52,8 @@ FlashMessage::RenderFlashMessages();
                         </div>
                     </div>
                 </div>
-            <?php } ?>
+            <?php } else{?>
+
             <?php foreach ($SponsorshipRequests as $SponsorshipRequest){
                 $Needed_Amount = $SponsorshipRequest->getNeededAmount();
                 ?>
@@ -70,7 +71,9 @@ FlashMessage::RenderFlashMessages();
             </div>
             <?php
             }
+            }
             ?>
+
         </div>
     </div>
     <?php

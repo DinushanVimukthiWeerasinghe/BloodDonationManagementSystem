@@ -85,15 +85,15 @@ class SponsorshipRequest extends \App\model\database\dbModel
     /**
      * @return string|null
      */
-    public function getSponsorID(): ?string
+    public function getSponsorshipID(): ?string
     {
-        return $this->Sponsor_ID;
+        return $this->Sponsorship_ID;
     }
 
     public function getSponsorName() : string
     {
         /** @var $sponsor Sponsor */
-        return "Kamal";;
+        return $this->getSponsorName();
     }
 
     public function getToBeSponsoredAmount(): float|int
@@ -108,7 +108,9 @@ class SponsorshipRequest extends \App\model\database\dbModel
         return $this->Sponsorship_Amount - $SponsoredAmount;
     }
 
-
+    public function setToBeSponsoredAmount(int $SponsorAmount): float| int{
+        $this->Sponsorship_Amount = $SponsorAmount;
+    }
 
     /**
      * @return string|null
@@ -147,10 +149,10 @@ class SponsorshipRequest extends \App\model\database\dbModel
     /**
      * @return string
      */
-    public function getSponsorshipID(): string
-    {
-        return $this->Sponsorship_ID;
-    }
+//    public function getSponsorshipID(): string
+//    {
+//        return $this->Sponsorship_ID;
+//    }
 
     /**
      * @param string $Sponsorship_ID

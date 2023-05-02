@@ -17,9 +17,9 @@ use App\model\users\Organization;
 
 use App\view\components\WebComponent\Card\NavigationCard;
 
-$CampaignGuidelines = new NavigationCard('/organization/guideline', '/public/images/icons/manager/dashboard/requests.png', 'Campaign Guidelines');
-$ManageCampaigns = new NavigationCard('/organization/manage', '/public/images/icons/organization/dashboard/campaign.png', 'Manage Campaigns');
-$History = new NavigationCard('/organization/history', '/public/images/icons/organization/dashboard/history.png', 'Campaign History');
+$CampaignGuidelines = new NavigationCard('/organization/guideline', '/public/images/icons/manager/dashboard/requests.png', 'Campaign Guidelines','guideline');
+$ManageCampaigns = new NavigationCard('/organization/manage', '/public/images/icons/organization/dashboard/campaign.png', 'Manage Campaigns','campaign');
+$History = new NavigationCard('/organization/history', '/public/images/icons/organization/dashboard/history.png', 'Campaign History','history');
 $background = new BackGroundImage();
 
 echo $background;

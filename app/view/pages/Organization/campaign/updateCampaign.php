@@ -41,7 +41,7 @@ echo $background;
     /*}*/
 </style>
 <div class=" d-flex flex-column bg-white-0-7 border-radius-10 align-item-center justify-content-center w-50 p-1 h-100">
-    <form id="form" action="updateCampaign?id=<?php echo $campaign->getCampaignID() ?>" method="post" class="d-flex flex-column p-3 text-xl w-100 gap-1">
+    <form id="form" action="updateCampaign?id=<?php echo \App\model\Utils\Security::Encrypt($campaign->getCampaignID()) ?>" method="post" class="d-flex flex-column p-3 text-xl w-100 gap-1">
         <div class="bg-dark py-0-5 px-2 text-center text-white"> Fill Campaign Details</div>
         <div class="d-flex text-center flex-column gap-0-5 w-100">
             <div class="form-group w-100">
@@ -76,35 +76,35 @@ echo $background;
     </form>
     <div class="d-flex align-items-center justify-content-center gap-2">
         <button class="btn btn-success w-25" id="button" value="Create" onclick="update()" type="submit"> Update </button>
-        <button class="btn btn-danger w-25" id="button" value="Cancel"> Cancel </button>
+        <button class="btn btn-danger w-25" id="button" value="Cancel" onclick="history.back()"> Cancel </button>
     </div>
 </div>
 
 </div>
 <script>
-    // function read(){
-    //     let select = document.getElementById('error');
-    //     if(select.selectedIndex === 1){
-    //         document.getElementById('errors').style.visibility = 'visible';
-    //         document.getElementById('button').disabled = true;
-    //         document.getElementById('button').style.backgroundColor = '#F5F5F5';
-    //         document.getElementById('button').style.color = 'black';
-    //     }else{
-    //         document.getElementById('errors').style.visibility = 'hidden';
-    //         document.getElementById('button').disabled = false;
-    //         document.getElementById('button').style.backgroundColor = 'rgba(251, 0, 0, 0.7)';
-    //         document.getElementById('button').style.color = 'white';
-    //     }
-    // }
-    // function expect(){
-    //     let val = document.getElementById('expect').value;
-    //     if(val === "1") {
-    //         document.getElementById('expec').style.visibility = 'visible';
-    //     }else{
-    //         document.getElementById('amount').value = "";
-    //         document.getElementById('expec').style.visibility = 'hidden';
-    //     }
-    // }
+    function read(){
+        let select = document.getElementById('error');
+        if(select.selectedIndex === 1){
+            document.getElementById('errors').style.visibility = 'visible';
+            document.getElementById('button').disabled = true;
+            document.getElementById('button').style.backgroundColor = '#F5F5F5';
+            document.getElementById('button').style.color = 'black';
+        }else{
+            document.getElementById('errors').style.visibility = 'hidden';
+            document.getElementById('button').disabled = false;
+            document.getElementById('button').style.backgroundColor = 'rgba(251, 0, 0, 0.7)';
+            document.getElementById('button').style.color = 'white';
+        }
+    }
+    function expect(){
+        let val = document.getElementById('expect').value;
+        if(val === "1") {
+            document.getElementById('expec').style.visibility = 'visible';
+        }else{
+            document.getElementById('amount').value = "";
+            document.getElementById('expec').style.visibility = 'hidden';
+        }
+    }
     const update = (event)=>{
 
         // event.preventDefault();
@@ -294,5 +294,16 @@ echo $background;
         initMap();
 
     }
+    // const cancellation=(click)=>{
+    //     OpenDialogBox({
+    //         title: 'Cancel Confirmation',
+    //         content: 'Are You Sure You want to Go Back? Your Changes will not be saved.'
+    //         successBtnText: 'Yes',
+    //         successBtnAction: () =>{
+    //             // history.back();
+    //         },
+    //     });
+    // }
+
 </script>
 

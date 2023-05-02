@@ -53,16 +53,15 @@ FlashMessage::RenderFlashMessages();
                     </div>
                 </div>
             <?php } ?>
-            <?php foreach ($para as $campaign){?>
+            <?php foreach ($para as $key=>$row){?>
                 <div class="card none detail-card"  style="height: 370px; width: 350px;">
                     <div class="card-image">
                         <img src='/public/images/campaign.png' alt="hello">
                     </div>
                     <div class="card-body">
-                        <div class="card-title"><?= $campaign->getCampaignName()?></div>
-                        <div class="card-description"><?= $campaign->getCampaignDate() ?></div>
-                        <div class="card-description"><?= $campaign->getCampaignDescription() ?></div>
-                        <div class="form-label bg-red-8 p-1 border-radius-10">Sponsored</div>
+                        <div class="card-title"><?= $row['Campaign_Name']?></div>
+                        <div class="card-description"><?= $row['Sponsored_At'] ?></div>
+                        <div class="form-label bg-red-8 p-1 border-radius-10" style="font-size: 20pt;color: whitesmoke;font-weight: bolder">LKR. <?= $row['Sponsored_Amount'] ?></div>
                     </div>
                 </div>
             <?php } ?>

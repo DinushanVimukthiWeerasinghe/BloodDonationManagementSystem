@@ -23,9 +23,9 @@ use App\model\users\Organization;
 use App\view\components\WebComponent\Card\NavigationCard;
 
 
-$NearByCampaigns = new NavigationCard('/organization/near', '/public/images/icons/organization/manage/nearby.png', 'Nearby Campaigns');
-$CreateCampaigns = new NavigationCard('/organization/create', '/public/images/icons/organization/manage/create.png', 'Create Campaign');
-$ViewCampaign = new NavigationCard('/organization/campDetails?id='.$identity, '/public/images/icons/organization/manage/donation.png', 'View Ongoing Campaigns');
+$NearByCampaigns = new NavigationCard('/organization/near', '/public/images/icons/organization/manage/nearby.png', 'Nearby Campaigns','near');
+$CreateCampaigns = new NavigationCard('/organization/create', '/public/images/icons/organization/manage/create.png', 'Create Campaign','create');
+$ViewCampaign = new NavigationCard('/organization/campDetails?id='.urlencode($identity), '/public/images/icons/organization/manage/donation.png', 'View Ongoing Campaigns','ongoing');
 //$ViewApprovedCampaign = new NavigationCard('/organization/campaign/view', '/public/images/icons/organization/manage/create.png', 'View Campaign');
 //$History = new NavigationCard('/organization/report', '/public/images/icons/Organization/dashboard/history.png', 'Donor Attendance');
 $background = new BackGroundImage();
