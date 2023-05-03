@@ -1,263 +1,384 @@
 <?php
+/* @var Donor $value*/
+/* @var BloodGroup $BloodType*/
+/* @var array $BloodTypes*/
+/* @var array $data*/
+/* @var string $rpp*/
+/* @var string $current_page*/
 
-use App\view\components\ResponsiveComponent\Alert\FlashMessage;
-use App\view\components\ResponsiveComponent\ImageComponent\BackGroundImage;
-use App\view\components\ResponsiveComponent\NavbarComponent\AuthNavbar;
+use App\model\Blood\BloodGroup;
+use App\model\users\Donor;
+use App\model\Utils\Date;
 
-$navbar= new AuthNavbar('Manage Donors','/manager','/public/images/icons/user.png',true,false);
-echo $navbar;
-$background=new BackGroundImage();
-echo $background;
-FlashMessage::RenderFlashMessages();
+$getParams = function ($params) {
+    $str = '?';
+    if (empty($params)) return $str;
+    foreach ($params as $key => $value) {
+        if ($key == 'page')
+            continue;
+        $str .= $key . '=' . $value . '&';
+    }
+    return $str;
+};
 ?>
-<div class="class-pane bg-black-0-3 p-1 border-radius-6 flex-wrap min-w-40 max-w-55 w-85 d-flex justify-content-center ">
-    <div class="card nav-card" onclick="SearchDonorByNIC()">
-        <div class="card-header">
-            <img src="/public/images/icons/SearchUser.png" alt="">
-            <div class="header-title">Search Donor</div>
+
+<div class="d-flex w-100 flex-column align-items-center bg-white p-1 border-radius-10 m-1">
+    <div class="d-flex w-100 flex-row">
+        <div class="d-flex bg-white-0-7 p-1 text-dark justify-content-between align-items-center w-100 flex-row gap-0-5 justify-content-center border-bottom-2 mb-1">
+            <div></div>
+            <div id="Search" class="d-flex gap-1 align-items-center">
+                <label for="search" class="search">Search </label>
+                <input class="form-control" style="width: 20vw" name="search" id="search" onkeyup="Search('/manager/mngDonors/Search')">
+            </div>
+            <div id="Filters" class="d-flex gap-1">
+                <div class="form-group">
+                    <label for="BloodFilter" class="search">Blood Group</label>
+                    <select class="form-control" style="width: 20vw" name="BloodFilter" id="BloodFilter" onchange="FilterFromBloodGroup()">
+                        <option value="All" >All</option>
+                        <?php
+                        foreach($BloodTypes as $BloodType):
+                        if ($BloodGroup===$BloodType->getBloodGroupName()):
+                        ?>
+                        <option value="<?php echo $BloodType->getBloodGroupIDForGET()?>" selected><?php echo $BloodType->getBloodGroupName()?></option>
+                        <?php
+                        continue;
+                        endif;
+                        ?>
+                            <option value="<?php echo $BloodType->getBloodGroupIDForGET()?>"><?php echo $BloodType->getBloodGroupName()?></option>
+                        <?php
+                        endforeach;
+                        ?>
+                    </select>
+                </div>
+            </div>
         </div>
     </div>
-    <div class="card nav-card" onclick="DeactivateDonorByNIC()">
-        <div class="card-header nav">
-            <img src="/public/images/icons/UnavailableUser.png" alt="">
-            <div class="header-title">Deactivate Donors</div>
-        </div>
+    <div class="d-flex w-100 overflow-y-scroll" style="margin-left: 50px">
+        <table class="w-100 ">
+            <thead class="sticky top-0">
+            <tr>
+                <th scope="col">No</th>
+                <th scope="col">Full Name</th>
+                <th scope="col">NIC</th>
+                <th scope="col">Contact No</th>
+                <th scope="col">Blood Group</th>
+                <th scope="col">Address</th>
+                <th scope="col">Status</th>
+                <th scope="col">Action</th>
+            </tr>
+            </thead>
+            <tbody id="content">
+            <div id="loader" class="none bg-white absolute w-100 h-100 d-flex justify-content-center align-items-center" style="z-index: 999;height: 90%;margin-top: 35px;">
+                <img src="/public/loading2.svg" alt="" width="100px">
+            </div>
+            <?php
+            if (empty($data)):
+                ?>
+                <tr>
+                    <td colspan="8" class="text-center">No Data Found</td>
+                </tr>
+                <?php
+            else:
+            $i=1;
+            foreach ($data as $value):
+                $id = $value->getID();
+                ?>
+                <tr>
+                    <td data-label="No "><?= $i++;?></td>
+                    <td data-label="Full Name " class="font-bold"><?php echo $value->getFullName()?></td>
+                    <td data-label="NIC "><?php echo $value->getNIC()?></td>
+                    <td data-label="Contact No "><?php echo $value->getContactNo()?></td>
+                    <td data-label="Blood Group "><?php echo $value->getBloodGroup()?></td>
+                    <td data-label="Address "><?php echo $value->getAddress()?></td>
+                    <td data-label="Status "><?php echo $value->getVerificationStatus()?></td>
+                    <td class="d-flex justify-content-center gap-0-5 align-items-center">
+                        <button class="text-dark btn gap-0-5 btn-outline-info d-flex align-items-center justify-content-center" onclick="ViewDonor('<?php echo $id ?>')" ><img src="/public/icons/view.svg" width="24px" alt="">View</button>
+                        <button class="text-dark btn gap-0-5 btn-outline-info d-flex align-items-center justify-content-center" onclick="SendEmail('<?php echo $id ?>')" ><img src="/public/icons/mail.png" width="24px" alt="">Send Email</button>
+                    </td>
+                </tr>
+            <?php
+            endforeach;
+            endif;
+            ?>
+
+            </tbody>
+        </table>
     </div>
-    <div class="card nav-card" onclick="DisabledDonor()">
-        <div class="card-header">
-            <img src="/public/images/icons/QuestionedUser.png" alt="">
-            <div class="header-title">Disable Donor</div>
-        </div>
-    </div>
-    <div class="card nav-card" onclick="ReportedDonors()">
-        <div class="card-header">
-            <img src="/public/images/icons/ReportUser.png" alt="">
-            <div class="header-title">Reported Donor</div>
-        </div>
-    </div>
-    <div class="card nav-card" onclick="InformDonors()">
-        <div class="card-header">
-            <img src="/public/images/icons/InformUser.png" alt="">
-            <div class="header-title">Inform Donor</div>
-        </div>
-    </div>
-<!--    TODO Remove IF not needed Verify Donor-->
-    <div class="card nav-card" onclick="VerifyDonors()">
-        <div class="card-header">
-            <img src="/public/images/icons/VerifiedUser.png" alt="">
-            <div class="header-title">Verify Donor</div>
+    <div id="tableFooter" class="py-0-5 bg-white w-100 d-flex justify-content-end align-items-center">
+        <div class="d-flex">
+            <div class="d-flex align-items-center justify-content-center">
+                <div class="d-flex gap-1 align-items-center">
+                    <div class="none">
+                        <span id="total_pages"><?=$total_pages?></span>
+                        <span id="current_page"><?=$current_page?></span>
+                    </div>
+                    <label for="rpp" class="search">Record Per Page</label>
+                    <select class="px-2 py-0-5" name="page" id="rpp" onchange="ChangeRecordsPerPage()">
+                        <?php
+                        $i=5;
+                        while ($i<20):
+                            /** @var int $rpp */
+                            if ((int)$rpp===$i):
+                                ?>
+                                <option selected value="<?=$i?>"><?=$i?></option>
+                            <?php
+                            else :
+                                ?>
+                                <option value="<?=$i?>"><?=$i?></option>
+                            <?php
+                            endif;
+                            ?>
+                            <?php
+                            $i=$i+5;
+                        endwhile;
+                        ?>
+                    </select>
+                </div>
+            </div>
+            <div onclick="prevData()" id="paginationleft" class="d-flex align-items-center justify-content-center bg-white border-radius-10 <?= ($current_page <= 1)? 'disabled':''?>" style="padding: 0.3rem 0.6rem">
+                <span>
+                    <img src="/public/icons/chevron-left.svg" width="20rem">
+                </span>
+            </div>
+            <div onclick="nextData()" id="paginationright" class="d-flex align-items-center justify-content-center bg-white-0-5 border-radius-10 <?= ($total_pages<=$current_page)? 'disabled':''?>" style="padding: 0.3rem 0.6rem">
+                <span>
+
+                    <img src="/public/icons/chevron-right.svg" width="20rem">
+                </span>
+            </div>
         </div>
     </div>
 </div>
-<style>
-    .class-pane {
-        margin-top: 10%;
-    }
 
-    @media only screen and (max-width: 500px) {
-        .class-pane {
-            max-width: 100%;
-            width: 98%;
-            padding: 0.2rem;
-        }
-
-    }
-</style>
 <script>
-    function SearchDonorByNIC() {
+
+    const FilterFromBloodGroup = ()=>{
+        const BloodGroup=document.getElementById('BloodFilter').value;
+        const url = "/manager/mngDonors?BloodGroup="+BloodGroup;
+        fetch(url,{
+            method:'GET',
+        }).then(response=>response.text()).then(data=>{
+            const content = document.getElementById('content');
+            const Tpaginationleft = document.getElementById('paginationleft');
+            const Tpaginationright = document.getElementById('paginationright');
+            const tf = document.getElementById('tableFooter');
+            const DParser = new DOMParser();
+            const DHTML = DParser.parseFromString(data, 'text/html');
+            const table = DHTML.getElementById('content');
+            const tableFooter = DHTML.getElementById('tableFooter');
+            const paginationl = DHTML.getElementById('paginationleft');
+            const paginationr = DHTML.getElementById('paginationright');
+            content.innerHTML = table.innerHTML;
+            tf.innerHTML = tableFooter.innerHTML;
+            Tpaginationleft.innerHTML = paginationl.innerHTML;
+            Tpaginationright.innerHTML = paginationr.innerHTML;
+            setTimeout(()=>{
+                loader.classList.add('none');
+            },1000)
+        }).catch(error=>{
+            console.log(error);
+        })
+    }
+
+    const ViewDonor = (id)=>{
         OpenDialogBox({
-            id: 'find-donor',
-            title: 'Find Donor',
-            content: "<label for='Search'>Enter NIC </label><input class='text-center border-radius-6' id='Search' type='text' name='Search'>",
-            successBtnAction: () => {
-                // Todo : Check whether Donor exist on the particular NIC number
-                const SearchText = document.getElementsByName('Search')[0].value;
-                if (SearchText.trim() !== '') {
-                    const form = new FormData();
-                    form.append('nic', SearchText);
-                    fetch("/manager/mngDonors/isExist",{
-                        method: 'POST',
-                        body: form
-                    }).then(res => res.json())
-                        .then(data => {
-                            if(data.status === true){
-                                window.location.href = "/manager/mngDonors/find?nic=" + SearchText
-                                CloseDialogBox('find-donor');
-                            }else{
-                                ShowToast({
-                                    message : 'Donor Not Found!',
-                                    type : 'danger',
-                                    timeout :3000
-                                })
-                                const searchBox = document.getElementById('Search');
-                                searchBox.classList.add('border-danger')
-                                searchBox.focus();
+            id:'viewDonor',
+            title:'View Donor',
+            content: `
+                <div class="d-flex flex-column">
+                    <div class="bg-dark d-flex flex-center text-center text-white py-0-5 px-2">Donor Details</div>
+                </div>
+            `
+        })
+    }
+
+    const ChangeRecordsPerPage = ()=>{
+        const RecordsPerPage=document.getElementById('rpp').value;
+        const BloodGroup=document.getElementById('BloodFilter').value;
+        const url = '/manager/mngDonors?BloodGroup='+BloodGroup+'&rpp='+RecordsPerPage;
+        const loader = document.getElementById('loader');
+        loader.classList.remove('none');
+        fetch(url,{
+            method: 'GET',
+        })
+            .then(response => response.text())
+            .then(data => {
+                const content = document.getElementById('content');
+                const Tpaginationleft = document.getElementById('paginationleft');
+                const Tpaginationright = document.getElementById('paginationright');
+                const tf = document.getElementById('tableFooter');
+                const DParser = new DOMParser();
+                const DHTML = DParser.parseFromString(data, 'text/html');
+                const table = DHTML.getElementById('content');
+                const tableFooter = DHTML.getElementById('tableFooter');
+                const paginationl = DHTML.getElementById('paginationleft');
+                const paginationr = DHTML.getElementById('paginationright');
+                content.innerHTML = table.innerHTML;
+                tf.innerHTML = tableFooter.innerHTML;
+                Tpaginationleft.innerHTML = paginationl.innerHTML;
+                Tpaginationright.innerHTML = paginationr.innerHTML;
+                setTimeout(()=>{
+                    loader.classList.add('none');
+                },1000)
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    }
+    const nextData = ()=>{
+        const current_page = parseInt(document.getElementById('current_page').innerText)
+        const total_pages = parseInt(document.getElementById('total_pages').innerText)
+        if (current_page>=total_pages){
+            ShowToast({
+                message: 'No More Data',
+                type: 'danger',
+            })
+            return;
+        }
+        const RecordsPerPage=document.getElementById('rpp').value;
+        const BloodGroup=document.getElementById('BloodFilter').value;
+        const url = '/manager/mngDonors?BloodGroup='+BloodGroup+'&rpp='+RecordsPerPage+'&page='+(current_page+1);
+        const loader = document.getElementById('loader');
+        loader.classList.remove('none');
+        fetch(url,{
+            method: 'GET',
+        })
+            .then(response => response.text())
+            .then(data => {
+                const content = document.getElementById('content');
+                const Tpaginationleft = document.getElementById('paginationleft');
+                const Tpaginationright = document.getElementById('paginationright');
+                const tf = document.getElementById('tableFooter');
+                const DParser = new DOMParser();
+                const DHTML = DParser.parseFromString(data, 'text/html');
+                const table = DHTML.getElementById('content');
+                const tableFooter = DHTML.getElementById('tableFooter');
+                const paginationl = DHTML.getElementById('paginationleft');
+                const paginationr = DHTML.getElementById('paginationright');
+                content.innerHTML = table.innerHTML;
+                tf.innerHTML = tableFooter.innerHTML;
+                Tpaginationleft.innerHTML = paginationl.innerHTML;
+                Tpaginationright.innerHTML = paginationr.innerHTML;
+                setTimeout(()=>{
+                    loader.classList.add('none');
+                },1000)
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    }
+    const prevData = ()=>{
+        const current_page = parseInt(document.getElementById('current_page').innerText)
+        const total_pages = parseInt(document.getElementById('total_pages').innerText)
+        if (current_page<=1){
+            ShowToast({
+                message: 'You are on First Page',
+                type: 'danger',
+            })
+            return;
+        }
+        const RecordsPerPage=document.getElementById('rpp').value;
+        const BloodGroup=document.getElementById('BloodFilter').value;
+        const url = '/manager/mngDonors?BloodGroup='+BloodGroup+'&rpp='+RecordsPerPage+'&page='+(current_page-1);
+        const loader = document.getElementById('loader');
+        loader.classList.remove('none');
+        fetch(url,{
+            method: 'GET',
+        })
+            .then(response => response.text())
+            .then(data => {
+                const content = document.getElementById('content');
+                const Tpaginationleft = document.getElementById('paginationleft');
+                const Tpaginationright = document.getElementById('paginationright');
+                const tf = document.getElementById('tableFooter');
+                const DParser = new DOMParser();
+                const DHTML = DParser.parseFromString(data, 'text/html');
+                const table = DHTML.getElementById('content');
+                const tableFooter = DHTML.getElementById('tableFooter');
+                const paginationl = DHTML.getElementById('paginationleft');
+                const paginationr = DHTML.getElementById('paginationright');
+                content.innerHTML = table.innerHTML;
+                tf.innerHTML = tableFooter.innerHTML;
+                Tpaginationleft.innerHTML = paginationl.innerHTML;
+                Tpaginationright.innerHTML = paginationr.innerHTML;
+                setTimeout(()=>{
+                    loader.classList.add('none');
+                },1000)
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    }
+
+
+
+    const SendEmail = (id)=>{
+        OpenDialogBox({
+            id:'sendEmail',
+            title:'Send Email',
+            content :`
+                <div class="d-flex gap-1 flex-column">
+                    <div class="form-group">
+                        <label for="Subject" class="w-40">Subject</label>
+                        <div class="d-flex flex-column w-100 gap-0-5">
+                            <input type="text" class="w-60 form-control" id="Subject" placeholder="Enter Subject">
+                            <span class="text-danger none" id="Subject-error"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="Body" class="w-40">Message</label>
+                        <div class="d-flex flex-column w-100 gap-0-5">
+                            <textarea class="border-radius-5" id="Body" rows="3"></textarea>
+                            <span class="text-danger none" id="Body-error"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="attachment" class="w-40">Attachment</label>
+                        <input type="file" class="w-60 form-control" id="attachment">
+                    </div>
+                </div>
+            `,
+            successBtnText:'Send',
+            successBtnAction : ()=>{
+                const form = new FormData();
+                form.append('Officer_ID',id);
+                form.append('subject',document.getElementById('Subject').value);
+                form.append('message',document.getElementById('Body').value);
+                const Attachment = document.getElementById('attachment').files[0];
+                if (Attachment){
+                    form.append('attachment',Attachment);
+                }
+                fetch('/manager/mngMedicalOfficer/sendEmail',{
+                    method:'POST',
+                    body:form
+                }).then(res=>res.json())
+                    .then((data)=>{
+                        if (data.status) {
+                            CloseDialogBox();
+                            ShowToast({
+                                title:'Success',
+                                message:data.message,
+                                type:'success'
+                            })
+                        }else{
+                            if (data.errors){
+                                for (const [key, value] of Object.entries(data.errors)) {
+                                    console.log(key,value)
+                                    const element = document.getElementById(key+'-error');
+                                    element.innerText=value;
+                                    element.classList.remove('none');
+
+                                }
                             }
+                            ShowToast({
+                                title:'Error',
+                                message:data.message,
+                                type:'danger'
+                            })
+                        }
                     })
-                } else {
-                    const searchBox = document.getElementById('Search');
-                    searchBox.classList.add('border-danger')
-                    searchBox.focus();
-                }
             }
         })
-    }
-
-    function DeactivateDonorByNIC() {
-        OpenDialogBox({
-            id: 'deactivate-donor',
-            title: 'Deactivate Donor',
-            content: "<label for='Search'>Enter NIC </label><input class='text-center border-radius-6' id='Search' type='text' name='Search'>",
-            successBtnAction: () => {
-                // Todo : Check whether Donor exist on the particular NIC number
-                const SearchText = document.getElementsByName('Search')[0].value;
-                if (SearchText.trim() !== '') {
-                    // window.location.href="/manager/mngDonors/deactivate?nic="+SearchText
-                    // View the donor details and ask for confirmation
-                    const form = new FormData();
-                    form.append('format','json');
-                    form.append('nic',SearchText);
-                    fetch('/manager/mngDonors/find',{
-                        method:'POST',
-                        body:form
-                    }).then(res=>res.json())
-                        .then((data)=>{
-                            if (data.status===200){
-                                CloseDialogBox('deactivate-donor');
-                                OpenDialogBox({
-                                    id: 'deactivate-donor-confirm',
-                                    popupOrder: 2,
-                                    title: 'Deactivate Donor',
-                                    content: "<div class='d-flex flex-column'>" +
-                                        "<div class='text-center'>Donor Name : "+data.name+"</div>" +
-                                        "<div class='text-center'>Donor NIC : "+SearchText+"</div>" +
-                                        "<div class='text-center'>Are you sure you want to deactivate this donor?</div>" +
-                                        "</div>"
-                                    ,
-                                    successBtnAction: () => {
-                                        // Todo : Check whether Donor exist on the particular NIC number
-                                        const SearchText = document.getElementsByName('Search')[0].value;
-                                        if (SearchText.trim() !== '') {
-
-                                            window.location.href = "/manager/mngDonors/deactivate?nic=" + SearchText
-                                            CloseDialogBox('deactivate-donor-confirm');
-                                        } else {
-                                            const searchBox = document.getElementById('Search');
-                                            searchBox.classList.add(' border-danger')
-                                            searchBox.focus();
-                                        }
-                                        CloseDialogBox('deactivate-donor-confirm');
-                                        CloseDialogBox('find-donor');
-                                    },
-                                    cancelBTNAction: () => {
-                                        CloseDialogBox('deactivate-donor-confirm');
-                                    }
-                                })
-                            }
-                            else{
-                                ShowToast({
-                                    message: data.message,
-                                    type: 'danger',
-                                    timeout: 2000
-                                })
-                                const searchBox = document.getElementById('Search');
-                                searchBox.classList.add('border-danger')
-                                searchBox.focus();
-                            }
-                        })
-
-
-                } else {
-                    const searchBox = document.getElementById('Search');
-                    searchBox.classList.add('border-danger')
-                    searchBox.focus();
-                }
-            }
-        })
-
-    }
-
-    function DisabledDonor() {
-        OpenDialogBox({
-            id: 'disabled-donor',
-            title: 'Disabled Donor',
-            content: "<label for='Search'>Enter NIC </label><input class='text-center border-radius-6' id='Search' type='text' name='Search'>",
-            successBtnAction: () => {
-                // Todo : Check whether Donor exist on the particular NIC number
-                const SearchText = document.getElementsByName('Search')[0].value;
-                if (SearchText.trim() !== '') {
-                    // window.location.href="/manager/mngDonors/deactivate?nic="+SearchText
-                    // View the donor details and ask for confirmation
-                    const form = new FormData();
-                    form.append('format', 'json');
-                    form.append('nic', SearchText);
-                    fetch('/manager/mngDonors/find', {
-                        method: 'POST',
-                        body: form
-                    }).then(res => res.json())
-                        .then((data) => {
-                            if (data.status === 200) {
-                                CloseDialogBox('disabled-donor');
-                                OpenDialogBox({
-                                    id: 'disabled-donor-confirm',
-                                    popupOrder: 2,
-                                    title: 'Disabled Donor',
-                                    content: "<div class='d-flex flex-column'>" +
-                                        "<div class='text-center'>Donor Name : " + data.name + "</div>" +
-                                        "<div class='text-center'>Donor NIC : " + SearchText + "</div>" +
-                                        "<div class='text-center'>Are you sure you want to disabled this donor?</div>" +
-                                        "</div>"
-                                    ,
-                                    successBtnAction: () => {
-                                        // Todo : Check whether Donor exist on the particular NIC number
-                                        if (SearchText.trim() !== '') {
-
-                                            window.location.href = "/manager/mngDonors/disabled?nic=" + SearchText
-                                            CloseDialogBox('disabled-donor-confirm');
-                                        } else {
-                                            const searchBox = document.getElementById('Search');
-                                            searchBox.classList.add(' border-danger')
-                                            searchBox.focus();
-                                        }
-                                        CloseDialogBox('disabled-donor-confirm');
-                                        CloseDialogBox('find-donor');
-                                    },
-                                    cancelBTNAction: () => {
-                                        CloseDialogBox('disabled-donor-confirm');
-                                    }
-                                })
-                            } else {
-                                ShowToast({
-                                    message: data.message,
-                                    type: 'danger',
-                                    timeout: 2000
-                                })
-                                const searchBox = document.getElementById('Search');
-                                searchBox.classList.add('border-danger')
-                                searchBox.focus();
-                            }
-                        })
-                } else {
-                    const searchBox = document.getElementById('Search');
-                    searchBox.classList.add('border-danger')
-                    searchBox.focus();
-                }
-            }
-        })
-
-    }
-
-    function ReportedDonors() {
-        window.location.href = "/manager/mngDonors/reportedDonor"
-    }
-
-    function InformDonors() {
-        window.location.href = "/manager/mngDonors/informDonor"
-    }
-
-    function VerifyDonors() {
-        window.location.href = "/manager/mngDonors/verify"
     }
 
 </script>
-
