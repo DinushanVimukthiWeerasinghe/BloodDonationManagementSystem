@@ -50,6 +50,8 @@ $Sidelnk = function () {
     <link rel="stylesheet" href="https://printjs-4de6.kxcdn.com/print.min.css">
     <script src="  https://printjs-4de6.kxcdn.com/print.min.js"></script>
     <script src="/public/scripts/index.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.5.141/pdf.min.js" integrity="sha512-BagCUdQjQ2Ncd42n5GGuXQn1qwkHL2jCSkxN5+ot9076d5wAI8bcciSooQaI3OG3YLj6L97dKAFaRvhSXVO0/Q==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
 </head>
 <body class="d-flex">
 <?= $navbar;?>
@@ -231,18 +233,20 @@ $Sidelnk = function () {
     const getNotification = ()=>{
         const url = '/manager/notification';
         fetch(url,{
-            method: 'GET',
+            method: 'POST',
         }).then(res=>res.json())
             .then(data=>{
+                console.log(data)
                 if(data.status){
                         OpenDialogBox({
                             id: 'notification',
                             title: 'Notification',
+                            titleClass: 'text-center bg-dark text-white',
                             content: `
                             <div class="d-flex flex-column gap-1">
                                    <div id="notification" class="d-flex flex-column gap-1">
                                         <div class="d-flex flex-column gap-1 overflow-y-scroll max-h-80vh">
-                                            ${data.notifications.map(notification=>`
+                                            ${data.notifications.length>0 ? data.notifications.map(notification=>`
                                                         <div class="d-flex flex-column gap-1 border-2 px-2 py-0-5">
                                                             <div class="d-flex justify-content-between border-bottom-2 py-0-5">
                                                                 <img src="/public/icons/${notification.Notification_Type==="1" ?"CampaignAssign.svg":(notification.Notification_Type==="2" ? "TaskComplete.svg" :"TaskAssign.svg")}" alt="" width="24px">
@@ -254,7 +258,7 @@ $Sidelnk = function () {
                                                             </div>
                                                         </div>
 
-                                            `).join('')}
+                                            `).join('') : `<div class="d-flex justify-content-center align-items-center text-center text-sm">No New Notification</div>`}
                                         </div>
                                    </div>
                             </div>

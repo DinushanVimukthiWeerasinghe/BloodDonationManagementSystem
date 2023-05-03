@@ -344,6 +344,21 @@ class MedicalOfficer extends Person
 
     }
 
+    public function getAllCampaigns(): ?array
+    {
+        /** @var TeamMembers[] $Teams */
+        /** @var TeamMembers $Team */
+        $Teams = TeamMembers::RetrieveAll(false,[],true,['Member_ID' => $this->Officer_ID]);
+        if ($Teams) {
+            $Campaigns = [];
+            foreach ($Teams as $Team) {
+                $Campaigns[] = $Team->getCampaign();
+            }
+            return $Campaigns;
+        }else{
+            return null;
+        }
+    }
 
 
     private function saveRealtion(string $table1,string $table2){

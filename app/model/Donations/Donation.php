@@ -3,6 +3,7 @@
 namespace App\model\Donations;
 
 use App\model\database\dbModel;
+use App\model\users\Donor;
 
 class Donation extends dbModel
 {
@@ -204,5 +205,29 @@ class Donation extends dbModel
             'Status',
             'Officer_ID',
         ];
+    }
+
+    public function getBloodVolume()
+    {
+        /** @var $ApprovedDonation AcceptedDonations*/
+        if ($this->Status == self::STATUS_BLOOD_STORED) {
+            $ApprovedDonation = AcceptedDonations::findOne(['Donation_ID' => $this->Donation_ID]);
+            if ($ApprovedDonation) {
+                return $ApprovedDonation->getVolume();
+            }
+        }
+        return 0;
+    }
+
+    public function getBloodGroup()
+    {
+        /** @var $Donor Donor*/
+        if ($this->Status == self::STATUS_BLOOD_STORED) {
+            $Donor = Donor::findOne(['Donor_ID' => $this->Donor_ID]);
+            if ($Donor) {
+                return $Donor->getBloodGroup();
+            }
+        }
+        return 0;
     }
 }

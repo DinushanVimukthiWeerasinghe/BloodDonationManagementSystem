@@ -115,7 +115,7 @@ class SponsorshipRequest extends \App\model\database\dbModel
      */
     public function getTransferred(): ?string
     {
-        return $this->Transferred;
+        return $this->Transferred ?? "Not Transferred";
     }
 
     /**
@@ -131,7 +131,7 @@ class SponsorshipRequest extends \App\model\database\dbModel
      */
     public function getTransferredAt(): ?string
     {
-        return $this->Transferred_At;
+        return $this->Transferred_At ?? "N/A";
     }
 
     /**
@@ -179,8 +179,10 @@ class SponsorshipRequest extends \App\model\database\dbModel
     /**
      * @return string
      */
-    public function getSponsorshipAmount(): string
+    public function getSponsorshipAmount(bool $Readable=false): string
     {
+        if ($Readable)
+            return "LKR ".number_format($this->Sponsorship_Amount,2);
         return $this->Sponsorship_Amount;
     }
 
@@ -211,8 +213,10 @@ class SponsorshipRequest extends \App\model\database\dbModel
     /**
      * @return string
      */
-    public function getSponsorshipStatus(): string
+    public function getSponsorshipStatus(bool $Readable=false): string
     {
+        if($Readable)
+            return $this->getReadableSponsorshipStatus();
         return $this->Sponsorship_Status;
     }
 
@@ -401,5 +405,27 @@ class SponsorshipRequest extends \App\model\database\dbModel
         else
             return $this->Sponsorship_Amount;
 
+    }
+
+    public function getSponsorCampaign(): bool|array
+    {
+        return CampaignsSponsor::RetrieveAll(false,[],true,['Sponsorship_ID'=>$this->Sponsorship_ID,'Status'=>CampaignsSponsor::PAYMENT_STATUS_PAID]);
+    }
+
+    public function getTotalSponsoredAmount(bool $Readable): float|int | string
+    {
+        /** @var $Sponsor CampaignsSponsor*/
+        $Total = 0;
+        $CampaignSponsor = CampaignsSponsor::RetrieveAll(false,[],true,['Sponsorship_ID'=>$this->Sponsorship_ID,'Status'=>CampaignsSponsor::PAYMENT_STATUS_PAID]);
+        if ($CampaignSponsor) {
+            foreach ($CampaignSponsor as $Sponsor)
+                $Total += $Sponsor->getSponsoredAmount();
+            if ($Readable)
+                return "LKR ".number_format($Total,2);
+            return $Total;
+        }
+        else {
+            return 0;
+        }
     }
 }

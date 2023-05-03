@@ -664,7 +664,7 @@ class medicalOfficerController extends \Core\Controller
                 return json_encode(['status'=>false,'message'=>'Donation not started!']);
             }
             $DonorQueue->setDonor_Status(CampaignDonorQueue::STAGE_4);
-            $Donation->setStatus(Donation::STATUS_BLOOD_RETRIEVED);
+            $Donation->setStatus(Donation::STATUS_BLOOD_STORED);
             $Donation->setEndAt(date('Y-m-d H:i:s'));
             $BloodPacket = new BloodPackets();
             $BloodPacket->loadData($request->getBody());
@@ -812,6 +812,27 @@ class medicalOfficerController extends \Core\Controller
                         ]
                     ]);
                 }
+            }
+        }
+    }
+
+    public function UploadDonorNICFront(Request $request,Response $response)
+    {
+        if ($request->isPost()){
+
+            $DonorID = $request->getBody()['DonorID'];
+            $File = $request->getBody()['NICFront'];
+            /** @var Donor $Donor */
+
+            $Donor = Donor::findOne(['Donor_ID'=>$DonorID],false);
+            if (!$Donor){
+                return json_encode([
+                    'status'=>false,
+                    'message'=>'Invalid Donor ID!'
+                ]);
+            }
+            if(!$Donor->getNICFront()) {
+                $File->setFileName($Donor->getNICFront());
             }
         }
     }

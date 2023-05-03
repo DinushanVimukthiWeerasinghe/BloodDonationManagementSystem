@@ -25,16 +25,15 @@ $getParams = function ($params) {
 <div class="d-flex w-100 flex-column align-items-center bg-white p-1 border-radius-10 m-1">
     <div class="d-flex w-100 flex-row">
         <div class="d-flex bg-white-0-7 p-1 text-dark justify-content-between align-items-center w-100 flex-row gap-0-5 justify-content-center border-bottom-2 mb-1">
-            <div class="d-flex align-items-center gap-1 w-20">
-            </div>
-            <div id="Search" class="d-flex gap-0-5 align-items-center w-30">
+            <div></div>
+            <div id="Search" class="d-flex gap-1 align-items-center">
                 <label for="search" class="search">Search </label>
-                <input class="form-control" name="search" id="search" onkeyup="Search('/manager/mngDonors/Search')">
-            </div st>
-            <div id="Filters" class="d-flex gap-1 w-40 justify-content-end">
-                <div class="form-group w-80 jus">
-                    <label for="BloodFilter" class="search w-80 text-right">Blood Group</label>
-                    <select class="form-control w-20" name="BloodFilter" id="BloodFilter" onchange="FilterFromBloodGroup()">
+                <input class="form-control" style="width: 20vw" name="search" id="search" onkeyup="Search('/manager/mngDonors/Search')">
+            </div>
+            <div id="Filters" class="d-flex gap-1">
+                <div class="form-group">
+                    <label for="BloodFilter" class="search">Blood Group</label>
+                    <select class="form-control" style="width: 20vw" name="BloodFilter" id="BloodFilter" onchange="FilterFromBloodGroup()">
                         <option value="All" >All</option>
                         <?php
                         foreach($BloodTypes as $BloodType):
@@ -109,6 +108,10 @@ $getParams = function ($params) {
         <div class="d-flex">
             <div class="d-flex align-items-center justify-content-center">
                 <div class="d-flex gap-1 align-items-center">
+                    <div class="none">
+                        <span id="total_pages"><?=$total_pages?></span>
+                        <span id="current_page"><?=$current_page?></span>
+                    </div>
                     <label for="rpp" class="search">Record Per Page</label>
                     <select class="px-2 py-0-5" name="page" id="rpp" onchange="ChangeRecordsPerPage()">
                         <?php
@@ -132,16 +135,16 @@ $getParams = function ($params) {
                     </select>
                 </div>
             </div>
-            <div class="d-flex align-items-center justify-content-center bg-white border-radius-10 <?= ($current_page <= 1)? 'disabled':''?>" style="padding: 0.3rem 0.6rem">
-                <a href="<?=$getParams($_GET)?>page=<?=$current_page-1?>">
+            <div onclick="prevData()" id="paginationleft" class="d-flex align-items-center justify-content-center bg-white border-radius-10 <?= ($current_page <= 1)? 'disabled':''?>" style="padding: 0.3rem 0.6rem">
+                <span>
                     <img src="/public/icons/chevron-left.svg" width="20rem">
-                </a>
+                </span>
             </div>
-            <div class="d-flex align-items-center justify-content-center bg-white-0-5 border-radius-10 <?= ($total_pages<=$current_page)? 'disabled':''?>" style="padding: 0.3rem 0.6rem">
-                <a href="<?=$getParams($_GET)?>page=<?=$current_page+1?>">
+            <div onclick="nextData()" id="paginationright" class="d-flex align-items-center justify-content-center bg-white-0-5 border-radius-10 <?= ($total_pages<=$current_page)? 'disabled':''?>" style="padding: 0.3rem 0.6rem">
+                <span>
 
                     <img src="/public/icons/chevron-right.svg" width="20rem">
-                </a>
+                </span>
             </div>
         </div>
     </div>
@@ -151,7 +154,30 @@ $getParams = function ($params) {
 
     const FilterFromBloodGroup = ()=>{
         const BloodGroup=document.getElementById('BloodFilter').value;
-        window.location.href = "?BloodGroup="+BloodGroup
+        const url = "/manager/mngDonors?BloodGroup="+BloodGroup;
+        fetch(url,{
+            method:'GET',
+        }).then(response=>response.text()).then(data=>{
+            const content = document.getElementById('content');
+            const Tpaginationleft = document.getElementById('paginationleft');
+            const Tpaginationright = document.getElementById('paginationright');
+            const tf = document.getElementById('tableFooter');
+            const DParser = new DOMParser();
+            const DHTML = DParser.parseFromString(data, 'text/html');
+            const table = DHTML.getElementById('content');
+            const tableFooter = DHTML.getElementById('tableFooter');
+            const paginationl = DHTML.getElementById('paginationleft');
+            const paginationr = DHTML.getElementById('paginationright');
+            content.innerHTML = table.innerHTML;
+            tf.innerHTML = tableFooter.innerHTML;
+            Tpaginationleft.innerHTML = paginationl.innerHTML;
+            Tpaginationright.innerHTML = paginationr.innerHTML;
+            setTimeout(()=>{
+                loader.classList.add('none');
+            },1000)
+        }).catch(error=>{
+            console.log(error);
+        })
     }
 
     const ViewDonor = (id)=>{
@@ -168,8 +194,122 @@ $getParams = function ($params) {
 
     const ChangeRecordsPerPage = ()=>{
         const RecordsPerPage=document.getElementById('rpp').value;
-        window.location.href="?rpp="+RecordsPerPage
+        const BloodGroup=document.getElementById('BloodFilter').value;
+        const url = '/manager/mngDonors?BloodGroup='+BloodGroup+'&rpp='+RecordsPerPage;
+        const loader = document.getElementById('loader');
+        loader.classList.remove('none');
+        fetch(url,{
+            method: 'GET',
+        })
+            .then(response => response.text())
+            .then(data => {
+                const content = document.getElementById('content');
+                const Tpaginationleft = document.getElementById('paginationleft');
+                const Tpaginationright = document.getElementById('paginationright');
+                const tf = document.getElementById('tableFooter');
+                const DParser = new DOMParser();
+                const DHTML = DParser.parseFromString(data, 'text/html');
+                const table = DHTML.getElementById('content');
+                const tableFooter = DHTML.getElementById('tableFooter');
+                const paginationl = DHTML.getElementById('paginationleft');
+                const paginationr = DHTML.getElementById('paginationright');
+                content.innerHTML = table.innerHTML;
+                tf.innerHTML = tableFooter.innerHTML;
+                Tpaginationleft.innerHTML = paginationl.innerHTML;
+                Tpaginationright.innerHTML = paginationr.innerHTML;
+                setTimeout(()=>{
+                    loader.classList.add('none');
+                },1000)
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
     }
+    const nextData = ()=>{
+        const current_page = parseInt(document.getElementById('current_page').innerText)
+        const total_pages = parseInt(document.getElementById('total_pages').innerText)
+        if (current_page>=total_pages){
+            ShowToast({
+                message: 'No More Data',
+                type: 'danger',
+            })
+            return;
+        }
+        const RecordsPerPage=document.getElementById('rpp').value;
+        const BloodGroup=document.getElementById('BloodFilter').value;
+        const url = '/manager/mngDonors?BloodGroup='+BloodGroup+'&rpp='+RecordsPerPage+'&page='+(current_page+1);
+        const loader = document.getElementById('loader');
+        loader.classList.remove('none');
+        fetch(url,{
+            method: 'GET',
+        })
+            .then(response => response.text())
+            .then(data => {
+                const content = document.getElementById('content');
+                const Tpaginationleft = document.getElementById('paginationleft');
+                const Tpaginationright = document.getElementById('paginationright');
+                const tf = document.getElementById('tableFooter');
+                const DParser = new DOMParser();
+                const DHTML = DParser.parseFromString(data, 'text/html');
+                const table = DHTML.getElementById('content');
+                const tableFooter = DHTML.getElementById('tableFooter');
+                const paginationl = DHTML.getElementById('paginationleft');
+                const paginationr = DHTML.getElementById('paginationright');
+                content.innerHTML = table.innerHTML;
+                tf.innerHTML = tableFooter.innerHTML;
+                Tpaginationleft.innerHTML = paginationl.innerHTML;
+                Tpaginationright.innerHTML = paginationr.innerHTML;
+                setTimeout(()=>{
+                    loader.classList.add('none');
+                },1000)
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    }
+    const prevData = ()=>{
+        const current_page = parseInt(document.getElementById('current_page').innerText)
+        const total_pages = parseInt(document.getElementById('total_pages').innerText)
+        if (current_page<=1){
+            ShowToast({
+                message: 'You are on First Page',
+                type: 'danger',
+            })
+            return;
+        }
+        const RecordsPerPage=document.getElementById('rpp').value;
+        const BloodGroup=document.getElementById('BloodFilter').value;
+        const url = '/manager/mngDonors?BloodGroup='+BloodGroup+'&rpp='+RecordsPerPage+'&page='+(current_page-1);
+        const loader = document.getElementById('loader');
+        loader.classList.remove('none');
+        fetch(url,{
+            method: 'GET',
+        })
+            .then(response => response.text())
+            .then(data => {
+                const content = document.getElementById('content');
+                const Tpaginationleft = document.getElementById('paginationleft');
+                const Tpaginationright = document.getElementById('paginationright');
+                const tf = document.getElementById('tableFooter');
+                const DParser = new DOMParser();
+                const DHTML = DParser.parseFromString(data, 'text/html');
+                const table = DHTML.getElementById('content');
+                const tableFooter = DHTML.getElementById('tableFooter');
+                const paginationl = DHTML.getElementById('paginationleft');
+                const paginationr = DHTML.getElementById('paginationright');
+                content.innerHTML = table.innerHTML;
+                tf.innerHTML = tableFooter.innerHTML;
+                Tpaginationleft.innerHTML = paginationl.innerHTML;
+                Tpaginationright.innerHTML = paginationr.innerHTML;
+                setTimeout(()=>{
+                    loader.classList.add('none');
+                },1000)
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    }
+
 
 
     const SendEmail = (id)=>{

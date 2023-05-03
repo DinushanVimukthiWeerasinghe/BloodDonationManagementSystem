@@ -9,9 +9,15 @@ use Core\Response;
 
 class Donor extends Person
 {
+
+    public const AVAILABILITY_AVAILABLE = 1;
+    public const AVAILABILITY_TEMPORARY_UNAVAILABLE = 2;
+    public const AVAILABILITY_PERMANENT_UNAVAILABLE = 3;
     public const REPORTED_DONOR=1;
     public const AVAILABLE = 1;
     public const UNAVAILABLE = 2;
+    const DEFAULT_NIC_FRONT = '/public/upload/NIC/NIC_Upload_Front.png';
+    const DEFAULT_NIC_BACK = '/public/upload/NIC/NIC_Upload_Back.png';
     const VERIFIED = 2;
     const PENDING = 1;
     const NOT_VERIFIED = 3;
@@ -19,6 +25,7 @@ class Donor extends Person
     protected string $Donor_ID = '';
     protected string $Nearest_Bank = '';
     protected int $Donation_Availability = 0;
+    protected ?string $Donation_Availability_Date='';
     protected int $Verified=0;
     protected ?string $Verified_At='';
     protected ?string $Verified_By=Null;
@@ -67,6 +74,24 @@ class Donor extends Person
     {
         $this->BloodGroup = $BloodGroup;
     }
+
+    /**
+     * @return string|null
+     */
+    public function getDonationAvailabilityDate(): ?string
+    {
+        return $this->Donation_Availability_Date;
+    }
+
+    /**
+     * @param string|null $Donation_Availability_Date
+     */
+    public function setDonationAvailabilityDate(?string $Donation_Availability_Date): void
+    {
+        $this->Donation_Availability_Date = $Donation_Availability_Date;
+    }
+
+
 
     public function getID(): string
     {
@@ -246,11 +271,11 @@ class Donor extends Person
     }
 
     /**
-     * @return string|null
+     * @return string|null| bool
      */
-    public function getNICFront(): ?string
+    public function getNICFront(): string | bool | null
     {
-        return $this->NIC_Front;
+        return $this->NIC_Front ?? false;
     }
 
     /**
@@ -380,7 +405,8 @@ class Donor extends Person
             'NIC_Back',
             'BloodDonation_Book_1',
             'BloodDonation_Book_2',
-            'BloodGroup'
+            'BloodGroup',
+            'Donation_Availability_Date'
         ];
     }
 

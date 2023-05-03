@@ -1,0 +1,36 @@
+*{
+    margin: 0;
+    padding: 0;
+    text-decoration: none;
+}
+body{
+    background: var(--body-bg);
+}
+
+.content{
+    position: fixed;
+    right: 0;
+    top: 8vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    max-width: 85vw;
+    min-width: 85vw;
+    height: 100%;
+}
+.content-expand{
+    max-width: 95vw;
+    min-width: 95vw;
+}
+
+@media only screen and (max-width: 500px){
+    .content{
+        top: 4vh;
+    }
+    .content-expand{
+        max-width: 100vw;
+        min-width: 100vw;
+    }
+}

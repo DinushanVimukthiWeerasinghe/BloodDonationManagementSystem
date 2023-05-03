@@ -70,26 +70,26 @@ $getParams = function ($params) {
                 $id = $value->getRequestID();
             ?>
             <tr>
-                <td><?= $i++;?></td>
-                <td><?php echo $value->getRequestedBy()?></td>
+                <td data-label=" No "><?= $i++;?></td>
+                <td data-label=" Requested By "><?php echo $value->getRequestedBy()?></td>
                 <?php
                 if ($value->getAction()===BloodRequest::REQUEST_STATUS_PENDING):
                 ?>
-                <td><?php echo $value->getActionText()?></td>
+                <td data-label="Current Status"><?php echo $value->getActionText()?></td>
                 <?php
                 elseif ($value->getAction()===BloodRequest::REQUEST_STATUS_FULFILLED):
                 ?>
-                <td class="text-success font-bold"><?php echo $value->getActionText()?></td>
+                <td data-label="Current Status" class="text-success font-bold"><?php echo $value->getActionText()?></td>
                 <?php
                 elseif ($value->getAction()===BloodRequest::REQUEST_STATUS_SENT_TO_DONOR):
                 ?>
-                <td class="text-danger font-bold"><?php echo $value->getActionText()?></td>
+                <td data-label="Current Status" class="text-danger font-bold"><?php echo $value->getActionText()?></td>
                 <?php
                 endif;
                 ?>
-                <td><?php echo Date::GetProperDate($value->getRequestedAt())?></td>
-                <td><?php echo $value->getType()?></td>
-                <td><?php echo $value->getBloodGroup()?></td>
+                <td data-label="Date"><?php echo Date::GetProperDate($value->getRequestedAt())?></td>
+                <td data-label="Type"><?php echo $value->getType()?></td>
+                <td data-label=" Blood Group "><?php echo $value->getBloodGroup()?></td>
                 <?php
                 if ($value->getAction()===BloodRequest::REQUEST_STATUS_PENDING):
                 ?>

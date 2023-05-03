@@ -149,6 +149,7 @@ abstract class dbModel extends Model
             foreach ($conditions as $key => $value) {
                 $statement->bindValue(":$key", $value);
             }
+
             $statement->execute();
             return $statement->fetchAll(PDO::FETCH_CLASS,static::class);
         } else {

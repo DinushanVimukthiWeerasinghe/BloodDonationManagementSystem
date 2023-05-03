@@ -1,0 +1,55 @@
+/*Border Radius*/
+.border-radius-0 {
+    border-radius: 0;
+}
+.border-radius-1 {
+    border-radius: 0.25rem;
+}
+.border-radius-2 {
+    border-radius: 0.5rem;
+}
+.border-radius-3 {
+    border-radius: 0.75rem;
+}
+.border-radius-4 {
+    border-radius: 1rem;
+}
+.border-radius-5 {
+    border-radius: 1.25rem;
+}
+.border-radius-6 {
+    border-radius: 1.5rem !important;
+}
+.border-radius-7 {
+    border-radius: 1.75rem;
+}
+.border-radius-8 {
+    border-radius: 2rem;
+}
+.border-radius-9 {
+    border-radius: 2.25rem;
+}
+.border-radius-10 {
+    border-radius: 2.5rem;
+}
+.border-radius-11 {
+    border-radius: 2.75rem;
+}
+.border-radius-12 {
+    border-radius: 3rem;
+}
+.border-radius-13 {
+    border-radius: 3.25rem;
+}
+.border-radius-14 {
+    border-radius: 3.5rem;
+}
+.border-radius-15 {
+    border-radius: 3.75rem;
+}
+.border-radius-50{
+    border-radius: 50%;
+}
+.border-radius-10p{
+    border-radius: 5% !important;
+}

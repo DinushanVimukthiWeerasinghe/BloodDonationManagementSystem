@@ -47,7 +47,7 @@ FlashMessage::RenderFlashMessages();
             <div id="Filters" class="d-flex gap-1">
                 <div class="form-group">
                     <label for="filter" class="search ">Position</label>
-                    <select class="form-control" name="filter" id="filter">
+                    <select class="form-control" name="filter" id="FilterByStatus">
                         <option value="All">All</option>
                         <option value="Active">Active</option>
                         <option value="Inactive">Inactive</option>
@@ -107,7 +107,7 @@ FlashMessage::RenderFlashMessages();
                     <td data-label="Gender"><?php echo $gender?></td>
                     <td data-label="Position"><?php echo $position ?></td>
                     <td data-label="Nationality"><?php echo $nationality?></td>
-                    <td class="d-flex justify-content-center gap-1 align-items-center">
+                    <td class="d-flex last-td-child justify-content-center gap-1 align-items-center">
                         <button class="text-dark btn gap-0-5 btn-outline-success d-flex align-items-center justify-content-center" onclick="EditMedicalOfficer('<?php echo $id ?>')" ><img src="/public/icons/edit.png" width="24px" alt="">Edit</button>
                         <button class="text-dark btn gap-0-5 btn-outline-info d-flex align-items-center justify-content-center" onclick="SendEmail('<?php echo $id ?>')" ><img src="/public/icons/mail.png" width="24px" alt="">Send Email</button>
                     </td>

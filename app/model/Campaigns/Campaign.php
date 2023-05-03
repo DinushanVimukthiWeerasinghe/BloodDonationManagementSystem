@@ -152,6 +152,15 @@ class Campaign extends dbModel
         return $this->Campaign_Date;
     }
 
+    public function getOrganizationType(): string
+    {
+//        Randomly return the organization type "NGO" or "Social Club"
+        return match (rand(0,1)){
+            0 => 'NGO',
+            1 => 'Social Club'
+        };
+    }
+
     /**
      * @param string $Campaign_Date
      */
@@ -464,5 +473,10 @@ class Campaign extends dbModel
     public function getNoOfDonors()
     {
         return '100';
+    }
+
+    public function getOrganization() : Organization
+    {
+        return Organization::findOne(['Organization_ID'=>$this->Organization_ID]);
     }
 }

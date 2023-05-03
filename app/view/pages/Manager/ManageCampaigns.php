@@ -70,7 +70,7 @@ $getParams = function ($params) {
                     <td data-label="Venue"><?php echo $value->getVenue()?></td>
                     <td data-label="Organization Name"><?php echo $value->getOrganizationName()?></td>
                     <td data-label="Campaign Status"><?php echo $value->getCampaignStatus()?></td>
-                    <td>
+                    <td class="gap-0-5">
                         <button class="btn btn-outline-info" onclick="ViewCampaignRequest('<?php echo $value->getCampaignID()?>')">View</button>
                         <?php
                         if (!$value->IsRejected()):

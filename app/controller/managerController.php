@@ -8,6 +8,7 @@ use App\model\Blood\BloodGroup;
 use App\model\BloodBankBranch\BloodBank;
 use App\model\Campaigns\ApprovedCampaigns;
 use App\model\Campaigns\Campaign;
+use App\model\Campaigns\CampaignStatistics;
 use App\model\Campaigns\RejectedCampaign;
 use App\model\Donations\AcceptedDonations;
 use App\model\Donations\Donation;
@@ -22,6 +23,7 @@ use App\model\Notification\OrganizationNotification;
 use App\model\Requests\BloodRequest;
 use App\model\Requests\SponsorshipRequest;
 //use App\model\sponsor\SponsorshipPackages;
+use App\model\sponsor\CampaignsSponsor;
 use App\model\users\Donor;
 use App\model\users\Hospital;
 use App\model\users\Manager;
@@ -83,7 +85,6 @@ class managerController extends Controller
                 'notifications'=>$Notifications
             ]);
         }
-        return "";
     }
 
     public function AssignTeam(Request $request,Response $response)
@@ -1371,6 +1372,290 @@ class managerController extends Controller
         return $this->render('Manager/ManageRequest/EmergencyRequest');
     }
 
+    public function FinishedCampaignReport(Request $request,Response $response)
+    {
+        /** @var $ApprovedCampaigns array*/
+        /** @var $ApprovedCampaign ApprovedCampaigns*/
+        /** @var $Campaign Campaign*/
+        /** @var $SponsorshipRequest SponsorshipRequest*/
+        /** @var $Team MedicalTeam*/
+
+        $Year = $request->getBody()['Year'] ?? date('Y');
+        $Month = $request->getBody()['Month'] ?? 'all';
+        $UserID = Application::$app->getUser()->getID();
+        $ApprovedCampaigns =ApprovedCampaigns::RetrieveAll(false,[],true,['Approved_By'=>$UserID]);
+        if (!$ApprovedCampaigns){
+            return json_encode(['status'=>true,'message'=>'No Campaigns Found']);
+        }
+//        Sort the Campaigns
+        $ApprovedCampaigns = array_filter($ApprovedCampaigns,function ($Campaign){
+            /** @var $Campaign ApprovedCampaigns*/
+            return $Campaign->getCampaign()->getStatus()===Campaign::CAMPAIGN_STATUS_FINISHED;
+        });
+        $ApprovedCampaigns = array_filter($ApprovedCampaigns,function ($Campaign) use ($Year) {
+            /** @var $Campaign ApprovedCampaigns*/
+            $CampaignDate =$Campaign->getCampaign()->getCampaignDate();
+            return date('Y',strtotime($CampaignDate))==$Year;
+        });
+        if ($Month!=='all'){
+            $ApprovedCampaigns = array_filter($ApprovedCampaigns,function ($Campaign) use ($Month) {
+                /** @var $Campaign ApprovedCampaigns*/
+                $CampaignDate =$Campaign->getCampaign()->getCampaignDate();
+                return date('m',strtotime($CampaignDate))==$Month;
+            });
+        }
+        usort($ApprovedCampaigns,function ($a,$b){
+            /** @var $a ApprovedCampaigns */
+            /** @var $b ApprovedCampaigns */
+            return $a->getCampaign()->getCampaignDate()<$b->getCampaign()->getCampaignDate();
+        });
+//        TODO : Remove this
+        $Data = [];
+        $i=0;
+        foreach ($ApprovedCampaigns as $ApprovedCampaign) {
+            /** @var $ApprovedCampaign ApprovedCampaigns */
+            /** @var $Stat CampaignStatistics */
+            $Campaign = $ApprovedCampaign->getCampaign();
+            $Data[$i]['CampaignName'] = $Campaign->getCampaignName();
+            $Data[$i]['CampaignDate'] = $Campaign->getCampaignDate();
+            $Data[$i]['CampaignLocation'] = $Campaign->getVenue();
+            $Data[$i]['CampaignDescription'] = $Campaign->getCampaignDescription();
+
+            $Organization = $Campaign->getOrganization();
+            $Data[$i]['OrganizationName'] = $Organization->getOrganizationName();
+            $Data[$i]['OrganizationType'] = $Organization->getType();
+
+            $Stat = CampaignStatistics::findOne(['Campaign_ID' => $Campaign->getCampaignID()]);
+            if ($Stat){
+                $Data[$i]['SuccessfulDonation'] = $Stat->getNoOfSuccessfulDonations();
+                $Data[$i]['RejectedDonation'] = $Stat->getNoOfAbortedDonations();
+            }
+
+            $Donations = Donation::RetrieveAll(false, [], true, ['Campaign_ID' => $Campaign->getCampaignID(),'Status'=>Donation::STATUS_BLOOD_STORED]);
+            if ($Donations) {
+                $Data[$i]['BloodCollected'] = 0;
+                foreach ($Donations as $Donation) {
+                    /** @var $Donation Donation */
+                    $Data[$i]['BloodCollected'] += $Donation->getBloodVolume();
+                }
+            } else {
+                $Data[$i]['BloodCollected'] = 0;
+            }
+            $Team = MedicalTeam::findOne(['Campaign_ID' => $Campaign->getCampaignID()]);
+            if ($Team) {
+                $Data[$i]['TeamID'] = $Team->getTeamIDDummy();
+                $Data[$i]['TeamLeader'] = MedicalOfficer::findOne(['Officer_ID'=>$Team->getTeamLeader()])->getFullName();
+                $Data[$i]['NoTeamMembers'] = count($Team->getTeamMembers());
+            } else {
+                $Data[$i]['TeamID'] = 'N/A';
+                $Data[$i]['TeamLeader'] = 'N/A';
+                $Data[$i]['NoTeamMembers'] = 0;
+            }
+            $SponsorshipRequest = SponsorshipRequest::findOne(['Campaign_ID' => $Campaign->getCampaignID(),'Sponsorship_Status'=>SponsorshipRequest::STATUS_APPROVED],false);
+            if ($SponsorshipRequest){
+                $Data[$i]['RequestedAmount'] = $SponsorshipRequest->getSponsorshipAmount();
+                $Data[$i]['TransferredDate'] = $SponsorshipRequest->getTransferredAt();
+                $CampaignSponsors = CampaignsSponsor::RetrieveAll(false,[],true,['Sponsorship_ID'=>$SponsorshipRequest->getSponsorshipID(),'Status'=>CampaignsSponsor::PAYMENT_STATUS_PAID]);
+                if ($CampaignSponsors) {
+                    $Data[$i]['SponsorshipAmount'] = 0;
+                    foreach ($CampaignSponsors as $CampaignSponsor) {
+                        /** @var $CampaignSponsor CampaignsSponsor */
+                        $Data[$i]['SponsorshipAmount'] += $CampaignSponsor->getSponsoredAmount();
+                    }
+
+                }
+            }
+            $i++;
+
+        }
+        header('Content-Type: application/json');
+        return json_encode(['status'=>true,'data'=>$Data,'year'=>$Year,'month'=>$Month]);
+    }
+
+    public function DonationReport(Request $request,Response $response)
+    {
+        /** @var $ApprovedCampaigns array*/
+        /** @var $ApprovedCampaign ApprovedCampaigns*/
+        /** @var $Campaign Campaign*/
+        /** @var $SponsorshipRequest SponsorshipRequest*/
+        /** @var $Team MedicalTeam*/
+        if ($request->isPost()) {
+
+            $Year = $request->getBody()['Year'] ?? date('Y');
+            $Month = $request->getBody()['Month'] ?? 'all';
+            $UserID = Application::$app->getUser()->getID();
+            $ApprovedCampaigns = ApprovedCampaigns::RetrieveAll(false, [], true, ['Approved_By' => $UserID]);
+            if (!$ApprovedCampaigns) {
+                return json_encode(['status' => true, 'message' => 'No Campaigns Found']);
+            }
+//        Sort the Campaigns
+            $ApprovedCampaigns = array_filter($ApprovedCampaigns, function ($Campaign) {
+                /** @var $Campaign ApprovedCampaigns */
+                return $Campaign->getCampaign()->getStatus() === Campaign::CAMPAIGN_STATUS_FINISHED;
+            });
+            $ApprovedCampaigns = array_filter($ApprovedCampaigns, function ($Campaign) use ($Year) {
+                /** @var $Campaign ApprovedCampaigns */
+                $CampaignDate = $Campaign->getCampaign()->getCampaignDate();
+                return date('Y', strtotime($CampaignDate)) == $Year;
+            });
+            if ($Month !== 'all') {
+                $ApprovedCampaigns = array_filter($ApprovedCampaigns, function ($Campaign) use ($Month) {
+                    /** @var $Campaign ApprovedCampaigns */
+                    $CampaignDate = $Campaign->getCampaign()->getCampaignDate();
+                    return date('m', strtotime($CampaignDate)) == $Month;
+                });
+            }
+            usort($ApprovedCampaigns, function ($a, $b) {
+                /** @var $a ApprovedCampaigns */
+                /** @var $b ApprovedCampaigns */
+                return $a->getCampaign()->getCampaignDate() < $b->getCampaign()->getCampaignDate();
+            });
+            $BloodGroups = ['A+' => 0, 'A-' => 0, 'B+' => 0, 'B-' => 0, 'AB+' => 0, 'AB-' => 0, 'O+' => 0, 'O-' => 0];
+            foreach ($ApprovedCampaigns as $approvedCampaign) {
+                /** @var $approvedCampaign ApprovedCampaigns */
+                $Campaign = $approvedCampaign->getCampaign();
+                /** @var Donation $Donations */
+                $Donations = Donation::RetrieveAll(false, [], true, ['Campaign_ID' => $Campaign->getCampaignID()]);
+                foreach ($Donations as $Donation) {
+                    /** @var $Donation Donation */
+                    if ($Donation->getStatus() === Donation::STATUS_BLOOD_STORED) {
+                        $BloodGroups[$Donation->getBloodGroup()] += $Donation->getBloodVolume();
+                    }
+                }
+            }
+//        header('Content-Type: application/json');
+            return json_encode(['status' => true, 'data' => $BloodGroups, 'year' => $Year, 'month' => $Month]);
+        }
+    }
+
+    public function OfficerReport(Request $request,Response $response)
+    {
+        /** @var $User Manager*/
+        /** @var $MedicalOfficers MedicalOfficer[]*/
+        $User = Application::$app->getUser();
+        $BranchID = $User->getBloodBankID();
+        $Data = [];
+        $MedicalOfficers = MedicalOfficer::RetrieveAll(false,[],true,['Branch_ID'=>$BranchID]);
+        /** @var MedicalOfficer $MedicalOfficer */
+        foreach ($MedicalOfficers as $MedicalOfficer){
+            $MedicalOfficerCampaigns = $MedicalOfficer->getAllCampaigns();
+            $Campaign = [];
+            if ($MedicalOfficerCampaigns){
+                $MedicalOfficerCampaigns = array_filter($MedicalOfficerCampaigns,function ($Campaign){
+                    /** @var $Campaign Campaign*/
+                    return $Campaign->getStatus() === Campaign::CAMPAIGN_STATUS_FINISHED;
+                });
+                foreach ($MedicalOfficerCampaigns as $medicalOfficerCampaign){
+                    /** @var Campaign $camp */
+                    $Campaign[] = [
+                        'Campaign_Name'=>$medicalOfficerCampaign->getCampaignName(),
+                        'Campaign_Date'=>$medicalOfficerCampaign->getCampaignDate(),
+                        'Campaign_Venue'=>$medicalOfficerCampaign->getVenue(),
+                        'Task'=>MedicalOfficer::getTaskOfCampaign($MedicalOfficer->getOfficerID(),$medicalOfficerCampaign->getCampaignID()),
+                        'Role'=>MedicalOfficer::getRoleOfCampaign($MedicalOfficer->getOfficerID(),$medicalOfficerCampaign->getCampaignID())
+                    ];
+                }
+            }
+            $Data[] = [
+                'FullName'=>$MedicalOfficer->getFullName(),
+                'Email'=>$MedicalOfficer->getEmail(),
+                'Phone'=>$MedicalOfficer->getContactNo(),
+                'Address'=>$MedicalOfficer->getAddress(),
+                'NIC'=>$MedicalOfficer->getNIC(),
+                'Gender'=>$MedicalOfficer->getGender(),
+                'Nationality'=>$MedicalOfficer->getNationality(),
+                'Position'=>$MedicalOfficer->getPosition(),
+                'TotalCampaigns'=> $MedicalOfficerCampaigns ? count($MedicalOfficerCampaigns) : 0,
+                'Campaign'=>$Campaign,
+
+            ];
+        }
+
+
+
+        header('Content-Type: application/json');
+        return json_encode(['status'=>true,'data'=>$Data]);
+
+    }
+
+    public function SponsorshipReport(Request $request,Response $response)
+    {
+
+        $Year = $request->getBody()['Year'] ?? date('Y');
+        $Month = $request->getBody()['Month'] ?? 'all';
+        $UserID = Application::$app->getUser()->getID();
+        $ApprovedCampaigns = ApprovedCampaigns::RetrieveAll(false, [], true, ['Approved_By' => $UserID]);
+        if (!$ApprovedCampaigns) {
+            return json_encode(['status' => true, 'message' => 'No Campaigns Found']);
+        }
+//        Sort the Campaigns
+        $ApprovedCampaigns = array_filter($ApprovedCampaigns, function ($Campaign) {
+            /** @var $Campaign ApprovedCampaigns */
+            return $Campaign->getCampaign()->getStatus() === Campaign::CAMPAIGN_STATUS_FINISHED;
+        });
+        $ApprovedCampaigns = array_filter($ApprovedCampaigns, function ($Campaign) use ($Year) {
+            /** @var $Campaign ApprovedCampaigns */
+            $CampaignDate = $Campaign->getCampaign()->getCampaignDate();
+            return date('Y', strtotime($CampaignDate)) == $Year;
+        });
+        if ($Month !== 'all') {
+            $ApprovedCampaigns = array_filter($ApprovedCampaigns, function ($Campaign) use ($Month) {
+                /** @var $Campaign ApprovedCampaigns */
+                $CampaignDate = $Campaign->getCampaign()->getCampaignDate();
+                return date('m', strtotime($CampaignDate)) == $Month;
+            });
+        }
+        usort($ApprovedCampaigns, function ($a, $b) {
+            /** @var $a ApprovedCampaigns */
+            /** @var $b ApprovedCampaigns */
+            return $a->getCampaign()->getCampaignDate() < $b->getCampaign()->getCampaignDate();
+        });
+        $ApprovedCampaigns = array_merge(...array_fill(0, 100, $ApprovedCampaigns));
+        $Data = [];
+        foreach ($ApprovedCampaigns as $approvedCampaign) {
+            /** @var $approvedCampaign ApprovedCampaigns */
+            $Campaign = $approvedCampaign->getCampaign();
+            /** @var $SponsorshipRequest SponsorshipRequest */
+            $SponsorshipRequest = SponsorshipRequest::findOne(['Campaign_ID' => $Campaign->getCampaignID()]);
+            if ($SponsorshipRequest){
+                $SponsorCampaigns = $SponsorshipRequest->getSponsorCampaign();
+                $SponsoredDetails = [];
+                if ($SponsorCampaigns){
+                    foreach ($SponsorCampaigns as $sponsorCampaign){
+                        /** @var $sponsorCampaign CampaignsSponsor */
+                        $Sponsor = $sponsorCampaign->getSponsor();
+                        if (!$Sponsor){
+                            $SponsoredDetails[] = "No Sponsor Found";
+                        }else {
+                            $SponsoredDetails[] = [
+                                'SponsorName' => $Sponsor->getSponsorName(),
+                                'SponsorEmail' => $Sponsor->getEmail(),
+                                'SponsorAmount' => $sponsorCampaign->getSponsoredAmount(),
+                                'SponsorDate' => $sponsorCampaign->getSponsoredAt(),
+                                'SponsorshipStatus' => $SponsorshipRequest->getSponsorshipStatus(true),
+                            ];
+                        }
+                    }
+                }
+
+                $Data[] = [
+                    'CampaignName' => $Campaign->getCampaignName(),
+                    'CampaignDate' => $Campaign->getCampaignDate(),
+                    'SponsorshipAmount' => $SponsorshipRequest->getSponsorshipAmount(true),
+                    'SponsorshipDate' => $SponsorshipRequest->getSponsorshipDate(),
+                    'SponsorshipStatus' => $SponsorshipRequest->getSponsorshipStatus(true),
+                    'Transferred'=> $SponsorshipRequest->getTransferred(),
+                    'TransferredDate'=> $SponsorshipRequest->getTransferredAt(),
+                    'TotalSponsoredAmount' => $SponsorshipRequest->getTotalSponsoredAmount(true),
+                    'SponsoredDetails' => $SponsoredDetails,
+                    'Report'=> $SponsorshipRequest->getReport()
+                ];
+            }
+        }
+        header('Content-Type: application/json');
+        return json_encode(['status' => true, 'data' => $Data, 'year' => $Year, 'month' => $Month]);
+    }
+
     public function DonationCampaignReport(Request $request,Response $response)
     {
         $Month=date('m');
@@ -1392,6 +1677,8 @@ class managerController extends Controller
 //                TODO : Check if the campaign is Finished
                 if ($Campaign->getStatus()===Campaign::APPROVED){
                     $Data = [];
+                    $Data['CampaignName'] = $Campaign->getCampaignName();
+                    $Data['CampaignDate'] = $Campaign->getCampaignDate();
                     $Donations = Donation::RetrieveAll(false,[],true,['Campaign_ID'=>$CampaignID]);
                     if ($Donations){
                         $Data['TotalDonations'] = count($Donations);

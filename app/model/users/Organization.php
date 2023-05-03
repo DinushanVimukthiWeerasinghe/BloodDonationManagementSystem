@@ -81,7 +81,7 @@ class Organization extends Person
      */
     public function getType(): string
     {
-        return $this->Type;
+        return $this->Type ?? 'Social_Welfare';
     }
 
     /**

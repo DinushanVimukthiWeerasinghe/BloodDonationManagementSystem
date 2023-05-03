@@ -2,6 +2,7 @@
 
 namespace App\model\sponsor;
 
+use App\model\users\Sponsor;
 use App\model\Utils\Security;
 
 class CampaignsSponsor extends \App\model\database\dbModel
@@ -197,6 +198,11 @@ class CampaignsSponsor extends \App\model\database\dbModel
     public function setDescription(string $Description): void
     {
         $this->Description = $Description;
+    }
+
+    public function getSponsor() : Sponsor | bool
+    {
+        return Sponsor::findOne(['Sponsor_ID'=>$this->Sponsor_ID]);
     }
 
 

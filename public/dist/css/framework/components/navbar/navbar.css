@@ -1,0 +1,351 @@
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+}
+html, body {
+    min-width: 100vw;
+    min-height: 100vh;
+    max-height: 100vh;
+    max-width: 100vw;
+    margin: 0;
+    overflow: hidden
+}
+body{
+    position: relative;
+    overflow-x: hidden;
+    display: flex;
+    align-content: center;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    /*background-color: rgb(76, 1, 4);*/
+}
+
+/* ========= BIG SCREEN STYLES ================== */
+header {
+    z-index: 999;
+    position: fixed;
+    /*position: absolute;*/
+    top: 0;
+    width: 100%;
+    min-height: 8vh;
+    max-height: 8vh;
+    background-color: var(--nav-bar-bg);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+nav{
+    display: flex;
+    justify-content: space-between;
+    align-content: center;
+    width: 100%;
+    background-color: inherit;
+    color: rgb(2, 0, 0);
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+}
+
+.link-sm{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    background: rgba(255, 255, 255, 0.5);
+    padding: 0.5rem 1rem;
+    min-width: 100%;
+    border-radius: 50px;
+    color: black;
+}
+.link-sm .link-text{
+    padding: 1rem;
+    font-weight: bold;
+}
+
+nav .logo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+    font-size: 38px;
+    letter-spacing: 5px;
+}
+
+nav .logo:hover{
+    cursor: pointer;
+}
+
+
+
+.profile{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+}
+
+.profile .logout{
+    margin-right: 0.5rem;
+    cursor: pointer;
+}
+
+
+.profile-sm{
+    display: none;
+    gap: 1rem;
+    padding: 0.5rem;
+}
+
+.profile-sm .logout{
+    display:flex;
+    justify-content: center;
+    text-align: center;
+    padding: 0.6rem;
+    background: #e81c34;
+    color: white;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 0 5px rgba(0,0,0,0.2);
+}
+
+.profile-sm .navProfile{
+    border-radius: 50%;
+}
+.profile-sm .navProfile .profile{
+    max-width: 40px;
+    max-height: 40px;
+    min-height: 40px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.navProfile{
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    border: 2px solid #00da0b;
+    border-radius: 100px;
+}
+
+.navProfile img{
+    width: inherit;
+    height: inherit;
+    object-fit: cover;
+    border-radius: 50%;
+}
+.navProfileName{
+    width: 100%;
+    text-align: center;
+    font-weight: bold;
+}
+
+.navProfile:hover{
+    cursor: pointer;
+}
+
+.profile-sm .profile-icon{
+    display: flex;
+}
+
+.navList {
+    font-size: 17px;
+    text-transform: uppercase;
+    list-style: none;
+    display: flex;
+    align-items: center;
+}
+
+.navLi{
+    text-align: center;
+    margin: 0 10px;
+    border-radius: 50px;
+    background: #a00000;
+    color: white;
+    padding: 1rem;
+    border: 1px solid #a00000;
+    font-weight: bold;
+}
+
+.navLi:hover{
+    cursor: pointer;
+    background: #ffffff;
+    color: #9e0000;
+    border: 1px solid red;
+
+}
+
+
+.navLi span{
+    text-align: center;
+    text-transform: none;
+}
+
+nav a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.navBtn {
+    display: none;
+    cursor: pointer;
+    margin-right: 3vw;
+}
+
+.title{
+    font-size: 2.5rem;
+    font-weight: bold;
+}
+
+/* 3divs for 3line button */
+.navBtn div {
+    width: 30px;
+    height: 2px;
+    margin: 5px;
+    background-color: rgb(4, 0, 0);
+    border-radius: 2px;
+    transition: all 0.5s ease-in;
+}
+
+/* ============ SMALL SCREEN STYLES ============= */
+@media screen and (max-width: 500px) {
+    .navBtn div{
+        width: 25px;
+    }
+    .profile{
+        display: none;
+    }
+
+    .profile-sm{
+        display: flex;
+        flex-direction: column;
+        justify-items: center;
+        align-items: center;
+    }
+
+    .title{
+        font-size: 1.5rem;
+    }
+
+    .logo span{
+        display: none;
+    }
+    .logo img{
+        width: 50px;
+        height: 50px;
+    }
+    nav {
+        align-items: center;
+    }
+
+    .navList {
+        z-index: 2;
+        /* stick the ul (navList) to a window just below navbar  */
+        position: absolute;
+        right: 0;
+        height: 100vh;
+        top: clamp(0px, 0vh, 7vh);
+        /* li from row to column */
+        flex-direction: column;
+        gap: 3vh;
+        align-items: center;
+        /* make it a bit pretty :) */
+        padding: 5vh 5vw;
+        background-color: rgba(255, 255, 255, 0.6);
+        font-size: 1rem;
+        letter-spacing: 1px;
+        /* blur the background */
+        backdrop-filter: blur(5px);
+        /* will move container off the screen temporarly :)*/
+        transform: translate(100%);
+        transition: transform 0.5s ease-out;
+    }
+
+    .navLi {
+        opacity: 0;
+        margin: 0;
+        padding: 0.4rem 0.5rem;
+        /* transform: translate(250px, 0); */
+        /* transition: all 0.4s ease-in 0.1s; */
+    }
+
+    /* showing navBtn button */
+    .navBtn {
+        z-index: 3;
+        display: block;
+    }
+}
+@media screen and (max-width: 320px){
+
+    .navBtn div{
+        width: 20px;
+    }
+
+    nav .title{
+        font-size: 1.0rem;
+    }
+
+    .logo span{
+        /*display: block;*/
+        /*font-size: 2rem;*/
+    }
+    .logo img{
+        width: 40px;
+    }
+}
+
+/*@media screen and (min-width:500px){*/
+/*    .logo span{*/
+/*        font-size: 1.6rem;*/
+/*    }*/
+/*    .logo img{*/
+/*        width: 60px;*/
+/*    }*/
+/*}*/
+
+.navActive {
+    display: flex;
+    flex-direction: column;
+    transform: translate(0%);
+}
+
+@keyframes SlideIn {
+    from {
+        opacity: 0;
+        transform: translate(250px, 0);
+    }
+
+    to {
+        opacity: 1;
+        transform: translate(0, 0);
+    }
+}
+
+.navBtnToggle .line1 {
+    transform: rotate(-45deg) translate(-4px, 6px);
+}
+
+.navBtnToggle .line2 {
+    transform: scale(0) translate(10px, 0);
+}
+
+.navBtnToggle .line3 {
+    transform: rotate(45deg) translate(-4px, -6px);
+}
+
+.footer{
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 3vh;
+    background: rgba(255, 255, 255, 1);
+    color: #000000;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}

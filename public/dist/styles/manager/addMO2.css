@@ -1,0 +1,23 @@
+form{
+    display: flex;
+}
+
+input{
+    padding: 0.5rem 1rem;
+}
+
+form .input-row
+{
+    display: flex;
+}
+
+form .input-row .form-input
+{
+    display: flex;
+    align-items: center;
+}
+
+form .input-row .form-input label{
+    color: #ffffff;
+    /*margin-left: -100px;*/
+}
