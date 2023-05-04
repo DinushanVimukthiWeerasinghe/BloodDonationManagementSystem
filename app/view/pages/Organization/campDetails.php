@@ -145,15 +145,15 @@ FlashMessage::RenderFlashMessages();
                     <div class="w-40">Status </div>
                     <div class="font-bold w-60 d-flex align-items-center justify-content-start text-right">
                     <?php
-                    $CampaignStatus =$campaign->getVerified();
-                    if($CampaignStatus === Campaign::NOT_VERIFIED): ?>
-                        <div class="font-bold bg-yellow-10 py-0-5 px-1 border-radius-10 text-white intro" >Pending Approval</div>
-                    <?php elseif($CampaignStatus === Campaign::VERIFIED): ?>
-                        <div class="font-bold bg-green-6 py-0-5 px-1 border-radius-10 text-white intro">Campaign Approved</div>
-                    <?php elseif($CampaignStatus === 'Rejected'): ?>
-                        <div class="font-bold bg-red-6 py-0-5 px-1 border-radius-10 text-white intro">Campaign Rejected</div>
-                    <?php endif;
-//                    ?>
+                    $CampaignStatus =$campaign->getCampaignStatus();
+                    ?>
+                        <div class="font-bold bg-yellow-10 py-0-5 px-1 border-radius-10 text-white intro" ><?= $CampaignStatus ?></div>
+<!--                    --><?php //elseif($CampaignStatus === Campaign::APPROVED): ?>
+<!--                        <div class="font-bold bg-green-6 py-0-5 px-1 border-radius-10 text-white intro">Campaign Approved</div>-->
+<!--                    --><?php //elseif($CampaignStatus === Campaign::REJECTED): ?>
+<!--                        <div class="font-bold bg-red-6 py-0-5 px-1 border-radius-10 text-white intro">Campaign Rejected</div>-->
+<!--                    --><?php //endif;
+////                    ?>
                     </div>
                 </div>
                 <div class="d-flex flex-column w-100 justify-content-between gap-1 intro" id="Campaign_Date">
@@ -418,7 +418,7 @@ FlashMessage::RenderFlashMessages();
                         })
                     }else{
                         ShowToast({
-                            message:'Please Add Bank Details to Request Sponsorship',
+                            message:'Please Add Bank Details in the Profile Page to Request Sponsorship',
                             type:'danger'
                         })
                     }

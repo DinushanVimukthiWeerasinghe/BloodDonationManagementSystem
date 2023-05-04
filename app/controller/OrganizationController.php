@@ -211,15 +211,16 @@ class OrganizationController extends Controller
         $expired = 0;
         $params = [];
         foreach ($result as $res){
-            if($res->getCampaignDate() < date("Y-m-d")){
+            if($res->getCampaignDate() < date("Y-m-d") || $res->getCampaignStatus() === 'Rejected'){
                 $params[] = [
                     'Campaign_Name' => $res->getCampaignName(),
                     'Campaign_Date' => $res->getCampaignDate(),
-                    'Status' => $res->getVerified(),
+                    'Status' => $res->getCampaignStatus(),
                     'Campaign_ID' => Security::Encrypt($res->getCampaignID())
                 ];
             }
         }
+
 //        $campaign = Campaign::findOne(['Organization_ID' => $_SESSION['Email']]);
 //        $params=[
 //            'Campaign_Name'=> $campaign->getName(),

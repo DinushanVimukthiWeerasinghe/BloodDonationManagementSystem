@@ -272,7 +272,7 @@ $User = Application::$app->getUser();
                                 title: 'Success',
                                 message: 'Bank Details '+ (edit ? 'Update' :'Added') +' Successfully',
                                 type: 'success'
-                            })
+                            });
                             CloseDialogBox('addBankDetails');
                             CloseDialogBox('profile');
                         }else{

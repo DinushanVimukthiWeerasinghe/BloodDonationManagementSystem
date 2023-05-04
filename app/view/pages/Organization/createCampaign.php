@@ -18,11 +18,84 @@ $navbar = new AuthNavbar('Create Campaign', '#', '/public/images/icons/navbar/be
 echo $navbar;
 echo $background;
 ?>
-<div class=" d-flex flex-column bg-white-0-7 border-radius-10 align-item-center justify-content-center w-50 p-1 h-100">
+<style>
+    /*br{*/
+    /*    display: none;*/
+    /*}*/
+    @media only screen and (max-width:541px) {
+        .cre{
+            width: 500px;
+        }
+
+    }
+    @media only screen and (max-width:413px) {
+        .cre{
+            height: 500px;
+            width: 400px;
+        }
+        .mapbtn{
+            width: 60px;
+            font-size: 5pt;
+            margin-left: 10px;
+        }
+        .sel{
+            display: none;
+        }
+    }
+    @media only screen and (max-width:361px) {
+        .cre{
+            height: 500px;
+            width: 350px;
+        }
+        .cre form{
+            height: 700px;
+        }
+        .mapbtn{
+            width: 60px;
+            font-size: 5pt;
+            margin-left: 10px;
+        }
+        .sel{
+            display: none;
+        }
+
+
+    }
+    @media only screen and (min-width: 766px) and (max-width: 913px){
+        .cre{
+            width: 800px;
+
+        }
+    }
+    @media only screen and (max-width: 1025px) {
+        .cre form{
+            height: 400px;
+        }
+        .details{
+            margin-top: -50px;
+            font-size: 12pt;
+        }
+        .name label{
+            font-size: 10pt;
+        }
+        .name input{
+            height: 25px;
+            font-size: 10pt;
+        }
+        #NearestBloodBank{
+            font-size: 10pt;
+        }
+        #opt{
+            font-size: 10pt;
+        }
+
+    }
+</style>
+<div class=" d-flex flex-column bg-white-0-7 border-radius-10 align-item-center justify-content-center w-50 p-1 h-100 mt-5 cre">
     <form id="form" action="create" method="post" class="d-flex flex-column p-3 text-xl w-100 gap-1">
-        <div class="bg-dark py-0-5 px-2 text-center text-white"> Fill Campaign Details</div>
+        <div class="bg-dark py-0-5 px-2 text-center text-white details"> Fill Campaign Details</div>
         <div class="d-flex text-center flex-column gap-0-5 w-100">
-            <div class="form-group w-100">
+            <div class="form-group w-100 name">
                 <label class="w-40" for="CampaignName">Campaign Name</label>
                 <input type="text" id="CampaignName" class="form-control w-60" name="Campaign_Name" placeholder="Eg :- Suwasahana Blood Campaign" required>
             </div>
@@ -30,36 +103,36 @@ echo $background;
 <!--                <label class="w-40">Campaign Description</label>-->
 <!--                <textarea class="form-textarea" name="Campaign_Description" required></textarea>-->
 <!--            </div>-->
-            <div class="form-group">
+            <div class="form-group name">
                 <label class="w-40" for="CampaignDate">Campaign Date</label>
                 <input type="date" id="CampaignDate" class="form-date" name="Campaign_Date" min= "<?php echo date("Y-m-d", strtotime($Date.'+ 30days')) ?>" required style="border-radius: 50px;padding-left: 10px;padding-right: 10px">
             </div>
-            <div class="form-group">
+            <div class="form-group name camp">
                 <label class="w-40" for="CampaignVenue">Venue</label>
-                <input type="text" id="CampaignVenue" class="form-control w-20" name="Venue" required style="width: 70%"  placeholder="Eg :- Sugatharamaya, Kirulapone">
-                <button class="btn btn-info d-flex gap-0-5 align-items-center justify-content-center" type="button" id="SelectLocationBtn" onclick="SelectLocation()">
-                    <img src="/public/icons/location.svg" alt="map" class="invert-100" style="width: 20px; height: 20px;">
-                    <span class="ms-1">Select on Map</span>
-                </button>
+                    <input type="text" id="CampaignVenue" class="form-control w-20" name="Venue" required style="width: 70%"  placeholder="Eg :- Sugatharamaya, Kirulapone">
+                    <button class="btn btn-info d-flex gap-0-5 align-items-center justify-content-center mapbtn" type="button" id="SelectLocationBtn" onclick="SelectLocation()">
+                        <img src="/public/icons/location.svg" alt="map" class="invert-100" style="width: 20px; height: 20px;">
+                        <span class="ms-1 sel">Select on Map</span>
+                    </button>
             </div>
-            <div class="form-group">
+            <div class="form-group name">
                 <label class="w-40" for="NearestCity">Nearest City</label>
                 <input type="text" id="NearestCity" class="form-control" name="Nearest_City"  required  placeholder="Eg :- Nugegoda">
             </div>
-            <div class="form-group">
+            <div class="form-group name">
                 <label class="w-40" for="NearestBloodBank">Nearest Blood Bank</label>
                 <select id="NearestBloodBank" class="form-select w-40" name="Nearest_BloodBank">
                     <?php /** @var array $banks */
                         /** @var BloodBank $bank */
                     foreach ($banks as $bank){ ?>
-                    <option value="<?= $bank->getBloodBankID() ?>"><?= $bank->getBankName() ?></option>
+                    <option value="<?= $bank->getBloodBankID() ?>"  id="opt"><?= $bank->getBankName() ?></option>
                     <?php } ?>
                 </select>
             </div>
             <input type="hidden" id="Latitude" name="Latitude">
             <input type="hidden" id="Longitude" name="Longitude">
             <input type="hidden" id="Agreed" name="Agreed">
-            <div class="form-group" style="justify-content: flex-start;align-items: flex-start">
+            <div class="form-group name" style="justify-content: flex-start;align-items: flex-start" >
                 <label class="w-40" for="CampaignDescription">Campaign Description</label>
                 <textarea class="form-control w-60" id="CampaignDescription" name="Campaign_Description" rows="3" placeholder="Campaign Description" required style="border: none;height: 120px;padding:10px;font-size: 1rem;border-radius: 10px" maxlength="300"></textarea>
             </div>
@@ -68,7 +141,7 @@ echo $background;
     </form>
         <div class="d-flex align-items-center justify-content-center gap-2">
             <button class="btn btn-success w-25" id="button" value="Create" onclick="AcceptGuidelines()"> Create </button>
-            <button class="btn btn-danger w-25" id="button" value="Cancel"> Cancel </button>
+            <button class="btn btn-danger w-25" id="button" value="Cancel" onclick="history.back()"> Cancel </button>
         </div>
 
 <!--    <div class="w-40 d-flex justify-content-center flex-column align-items-center gap-1 bg-white border-radius-10 p-1 m-1">-->
