@@ -2,6 +2,7 @@
 
 namespace App\model\Donations;
 
+use App\model\Campaigns\Campaign;
 use App\model\database\dbModel;
 use App\model\users\Donor;
 
@@ -128,6 +129,11 @@ class Donation extends dbModel
         return $this->End_At;
     }
 
+    public function getDonatedAt()
+    {
+        return $this->Start_At;
+    }
+
     /**
      * @param string $End_At
      */
@@ -137,10 +143,25 @@ class Donation extends dbModel
     }
 
     /**
-     * @return int
+     * @param bool $Readable
+     * @return int|string
      */
-    public function getStatus(): int
+    public function getStatus($Readable=false): int | string
     {
+        if ($Readable) {
+            switch ($this->Status) {
+                case self::STATUS_BLOOD_DONATION_PENDING:
+                    return 'Pending';
+                case self::STATUS_BLOOD_RETRIEVING:
+                    return 'Retrieving';
+                case self::STATUS_BLOOD_RETRIEVED:
+                    return 'Retrieved';
+                case self::STATUS_BLOOD_STORED:
+                    return 'Stored';
+                case self::STATUS_BLOOD_DONATION_ABORTED:
+                    return 'Aborted';
+            }
+        }
         return $this->Status;
     }
 
@@ -217,6 +238,11 @@ class Donation extends dbModel
             }
         }
         return 0;
+    }
+
+    public function getCampaignName()
+    {
+        return Campaign::findOne(['Campaign_ID' => $this->Campaign_ID])->getCampaignName();
     }
 
     public function getBloodGroup()

@@ -6,6 +6,7 @@ use App\model\Donor\ReportedDonor;
 use App\model\Notification\DonorNotification;
 use Core\Request;
 use Core\Response;
+use DateTime;
 
 class Donor extends Person
 {
@@ -73,6 +74,61 @@ class Donor extends Person
     public function setBloodGroup(?string $BloodGroup): void
     {
         $this->BloodGroup = $BloodGroup;
+    }
+
+    public function getAge(): ?int
+    {
+        $nicNumber=$this->getNIC();
+        $nicNumber = preg_replace('/\D/', '', $nicNumber);
+
+        // Extract the year, month, and date from the NIC number
+        $year = substr($nicNumber, 0, 4);
+        $days = substr($nicNumber, 4, 3);
+        $days = ltrim($days, '0');
+        $days = (int)$days;
+        $days = $days - 1;
+        $month = 0;
+        $year = (int)$year;
+        while ($days > 0) {
+            $month++;
+            if ($days <= 31) {
+                break;
+            }
+            if ($days <= 59) {
+                if ($year % 4 == 0) {
+                    $days -= 29;
+                } else {
+                    $days -= 28;
+                }
+            } else if ($days <= 90) {
+                $days -= 31;
+            } else if ($days <= 120) {
+                $days -= 30;
+            } else if ($days <= 151) {
+                $days -= 31;
+            } else if ($days <= 181) {
+                $days -= 30;
+            } else if ($days <= 212) {
+                $days -= 31;
+            } else if ($days <= 243) {
+                $days -= 31;
+            } else if ($days <= 273) {
+                $days -= 30;
+            } else if ($days <= 304) {
+                $days -= 31;
+            } else if ($days <= 334) {
+                $days -= 30;
+            } else if ($days <= 365) {
+                $days -= 31;
+            }
+        }
+        $DateOfBirth = $year . '-' . $month . '-' . $days;
+        $DateOfBirth = new DateTime($DateOfBirth);
+        $today = new DateTime('today');
+        $age = $DateOfBirth->diff($today)->y;
+        return $age;
+
+
     }
 
     /**

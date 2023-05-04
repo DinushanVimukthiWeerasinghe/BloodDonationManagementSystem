@@ -566,6 +566,7 @@ $getParams = function ($params) {
         OpenDialogBox({
             id: 'rejectCampaignRequest',
             title: 'Reject Campaign Request',
+            titleClass: 'bg-dark text-white',
             content: `
             <div class="d-flex flex-column justify-content-center align-items-center">
                 <div class="form-group">

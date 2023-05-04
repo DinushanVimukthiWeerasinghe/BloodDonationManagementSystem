@@ -286,6 +286,7 @@ FlashMessage::RenderFlashMessages();
         OpenDialogBox({
             id:'AddMedicalOfficer',
             title:'Add Medical Officer',
+            titleClass:'text-white bg-dark',
             content :`
                 <div class="d-flex flex-column gap-1">
                     <div class="d-flex gap-1">
@@ -448,7 +449,8 @@ FlashMessage::RenderFlashMessages();
                     const data =res.data;
                     OpenDialogBox({
                         id:'AddMedicalOfficer',
-                        title:'Add Medical Officer',
+                        title:'Edit Medical Officer -'+data.First_Name+' '+data.Last_Name,
+                        titleClass: 'text-white bg-dark',
                         content :`
                 <div class="d-flex flex-column gap-1">
                     <div class="d-flex gap-1">
@@ -602,6 +604,7 @@ FlashMessage::RenderFlashMessages();
         OpenDialogBox({
             id:'sendEmail',
             title:'Send Email',
+            titleClass:'text-white bg-dark',
             content :`
                 <div class="d-flex gap-1 flex-column">
                     <div class="form-group">
