@@ -1,0 +1,4 @@
+<br />
+<b>Warning</b>:  filesize(): stat failed for C:\xampp\htdocs\BDMS/BDMS/public/ in <b>C:\xampp\htdocs\BDMS\core\Router.php</b> on line <b>68</b><br />
+<br />
+<b>Warning</b>:  readfile(C:\xampp\htdocs\BDMS/BDMS/public/): Failed to open stream: No such file or directory in <b>C:\xampp\htdocs\BDMS\core\Response.php</b> on line <b>48</b><br />

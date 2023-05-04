@@ -6,6 +6,7 @@ use App\model\database\dbModel;
 
 abstract class Person extends dbModel
 {
+    public const USER_NOT_VERIFIED = 0;
     public const USER_DELETED = 3;
     public const DONOR='Donor';
     public const MEDICAL_OFFICER='MedicalOfficer';
@@ -34,9 +35,17 @@ abstract class Person extends dbModel
     protected string $Status='';
 
     /**
-     * @return string
+     * @return array
      */
 
+    public function toArray(): array
+    {
+        $array = [];
+        foreach ($this as $key => $value) {
+            $array[$key] = $value;
+        }
+        return $array;
+    }
 
 
     /**
@@ -49,6 +58,28 @@ abstract class Person extends dbModel
             'M' => 'Male',
             default => 'Other',
         };
+    }
+
+    public function setGenderFromNIC()
+    {
+        $nic=trim($this->NIC);
+        if (!empty($nic)) {
+            if (preg_match('/^([0-9]{9}[x|X|v|V]|[0-9]{12})$/', $nic)) {
+                if (strlen($nic) === 10) {
+                    if ($nic[2] < 5) {
+                        $this->Gender = "M";
+                    } else {
+                        $this->Gender = "F";
+                    }
+                } else {
+                    if ($nic[4] < 5):
+                        $this->Gender = "M";
+                    else:
+                        $this->Gender = "F";
+                    endif;
+                }
+            }
+        }
     }
 
     public function getAccountStatus()
@@ -110,6 +141,10 @@ abstract class Person extends dbModel
     }
 
     public function getFullName(): string
+    {
+        return $this->First_Name.' '.$this->Last_Name;
+    }
+    public function getNameWithInitial(): string
     {
         return $this->First_Name.' '.$this->Last_Name;
     }
@@ -215,7 +250,10 @@ abstract class Person extends dbModel
      */
     public function getContactNo(): string
     {
-        return $this->Contact_No;
+        if ($this->Contact_No){
+            return $this->Contact_No;
+        }
+        return 'Not Available';
     }
 
     /**
@@ -273,6 +311,8 @@ abstract class Person extends dbModel
     {
         $this->Availability = $Availability;
     }
+
+
 
 
 

@@ -1,0 +1,76 @@
+*{
+    padding: 0px;
+    margin: 0px;
+    box-sizing: border-box;
+    color: black;
+}
+html{
+    font-size: 95%;
+    background-color: #880808;
+
+}
+
+main{
+    max-width: 1500px;
+    width: 95%;
+    margin: 30px auto;
+    display: flex;
+    flex-wrap: wrap;
+    /*justify-content: space-between;*/
+    margin: auto;
+}
+main .card{
+    border-radius: 20px;
+    max-width: 350px;
+    flex: 1 1 210px;
+    text-align: center;
+    height: 500px;
+    border: 1px solid lightgray;
+    margin-top: 100px;
+    margin-left: 10px;
+    background-color: #3fc3ee;
+    box-shadow: 5px 10px;
+}
+main .card .image{
+    height: 40%;
+    margin-bottom: 20px;
+}
+
+main .card .image img{
+    width: 80%;
+    height:80%;
+    object-fit: contain;
+}
+
+main .card .caption{
+    font-family:'Roboto Mono', monospace;
+    padding-left: 1em;
+    text-align: justify;
+    margin-left: 10%;
+    line-height: 3em;
+    height: 25%;
+}
+main .card .caption .p{
+    font-size: 2rem;
+}
+main .card:hover{
+    background-color: #D9D9D9;
+}
+button{
+    font-size: 15pt;
+    margin-top: 1%;
+    margin-left: 70%;
+    border-radius: 5px;
+    padding-left: 5px;
+    padding-right: 5px;
+    padding-top: 15px;
+    padding-bottom: 10px;
+    width: 20%;
+    color: #D9D9D9;
+    background-color: black;
+    cursor: pointer;
+}
+button:hover{
+    background-color: #e14e53;
+    color: #D9D9D9;
+}

@@ -129,19 +129,19 @@ class Application
         $this->view = new View();
         $this->db = new Database($config['db']);
         $this->forbiddenRoute = new forbiddenRoute();
-
         self::$ROOT_DIR = $path;
         $this->request = new Request();
         $this->response = new Response();
         $this->session = new Session();
         $this->router = new Router($this->request, $this->response);
         $this->email = new BaseEmail($config['email']);
+//        Set Timezone to Asia/Colombo
+        date_default_timezone_set('Asia/Colombo');
 //        $this->db->applyMigrations();
-
         if(isset($_SESSION['user']))
         {
+//            unset($_SESSION['user']);
             $UserClass=$_SESSION['user']->getSessionData()['UserClass'];
-
             $UserID=$_SESSION['user']->getSessionData()['UID'];
             $this->user = $UserClass::findOne([$UserClass::PrimaryKey()=>$UserID]);
         }
@@ -151,54 +151,56 @@ class Application
         }
     }
 
+    /**
+     * @throws Exception
+     */
     public function login(Login $user): bool
     {
         $Role=$user->getRole();
         $ID = $user->getID();
         $AuthCode = new OTPCode();
-        if ($Role === User::MANAGER)
-        {
-            $this->user = Manager::findOne(['Manager_ID' => $ID]);
+//        print_r($user);
+//        exit();
+//        Role == 'Manager
+        if ($user->IsUserVerified()) {
+            if ($Role === User::MANAGER) {
+                $this->user = Manager::findOne(['Manager_ID' => $ID]);
 
-        }else if ($Role === User::MEDICAL_OFFICER)
-        {
-            $this->user = MedicalOfficer::findOne(['Officer_ID' => $ID]);
-        }else if ($Role === User::ADMIN)
-        {
-            $this->user = Admin::findOne(['Admin_ID' => $ID]);
-        }else if ($Role === User::DONOR)
-        {
-            $this->user = Donor::findOne(['Donor_ID' => $ID]);
-        }else if ($Role === User::HOSPITAL)
-        {
-            $this->user = Hospital::findOne(['Hospital_ID' => $ID]);
-        } else if ($Role === User::ORGANIZATION) {
-            $this->user = Organization::findOne(['Organization_ID' => $ID]);
-        } else if ($Role === User::SPONSOR) {
-            $this->user = Sponsor::findOne(['Sponsor_ID' => $ID]);
-        } else {
-            return false;
-        }
-        if ($this->user === null) {
-            return false;
-        }
+            } else if ($Role === User::MEDICAL_OFFICER) {
+                $this->user = MedicalOfficer::findOne(['Officer_ID' => $ID]);
+            } else if ($Role === User::ADMIN) {
+                $this->user = Admin::findOne(['Admin_ID' => $ID]);
+            } else if ($Role === User::DONOR) {
+                $this->user = Donor::findOne(['Donor_ID' => $ID]);
+                if ($this->user === null) {
+                    $this->user = new Donor();
+                }
+            } else if ($Role === User::HOSPITAL) {
+                $this->user = Hospital::findOne(['Hospital_ID' => $ID]);
+            } else if ($Role === User::ORGANIZATION) {
+                $this->user = Organization::findOne(['Organization_ID' => $ID]);
+            } else if ($Role === User::SPONSOR) {
+                $this->user = Sponsor::findOne(['Sponsor_ID' => $ID]);
+            } else {
+                throw new Exception('Invalid Role');
+            }
+            if ($this->user === null) {
+                return false;
+            }
+            $primaryKey = $user->primaryKey();
 
-        $primaryKey = $user->primaryKey();
-
-        $primaryValue = $user->getID();
-//        Create Login Sessions
-
-        //TODO Update the minutes to 30
-        $this->session->set('user', ['UID' => $primaryValue, 'UserClass' => get_class($this->user)], 60);
-        $this->session->setFlash('success', 'Welcome Back ' . $user->getEmail());
-        $login = new LoggingHistory();
-        $login->setSessionID($this->session->get('user')->getSessionID());
-        $login->setUserID($primaryValue);
-        $login->setSessionEnd(date('Y-m-d H:i:s'));
-        $login->setSessionStart(date('Y-m-d H:i:s'));
-        if (!$login->save(['Session_End']))
-        {
-            return false;
+            $primaryValue = $user->getID();
+            $this->session->set('user', ['UID' => $primaryValue, 'UserClass' => get_class($this->user)], 60);
+            $this->session->setFlash('success', 'Welcome Back ' . $user->getEmail());
+            $login = new LoggingHistory();
+            $login->setSessionID($this->session->get('user')->getSessionID());
+            $login->setUserID($primaryValue);
+            $login->setSessionEnd(date('Y-m-d H:i:s'));
+            $login->setSessionStart(date('Y-m-d H:i:s'));
+            if (!$login->save(['Session_End']))
+            {
+                return false;
+            }
         }
         return true;
     }
@@ -208,8 +210,10 @@ class Application
         try {
             echo self::$app->router->resolve();
         }catch (Exception $e){
-            self::Redirect('/login');
-//            throw $e;
+//            Set Status Code to 500
+//            http_response_code(404);
+//            self::Redirect('/');
+            var_dump($e->getMessage());
         }
     }
 

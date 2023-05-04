@@ -15,6 +15,7 @@ $donation_Image='/public/images/donation.png';
 $donation_History='/public/images/Icons/icons8-order-history-80.png';
 $donation_Guideline = '/public/images/Icons/icons8-more-details-50.png';
 $nearby_Donations = '/public/images/Icons/icons8-nearby-32.png';
+$blood_Requests = '';
 
 /* @var string $firstName */
 /* @var string $lastName */
@@ -26,12 +27,21 @@ $Image=new \App\view\components\Image\GeneralImage("/public/images/logo.png", "H
 $c1 = new \App\view\components\Card\ClickableCard("Donation Guideline", $donation_Guideline,"Donation Guideline");
 $c2 = new \App\view\components\Card\ClickableCard("Donation History", $donation_History,"Donation History");
 $c3 = new \App\view\components\Card\ClickableCard("Nearby Donations", $nearby_Donations,"Nearby Donations");
+$c4 = new \App\view\components\Card\ClickableCard("Blood Requests", $blood_Requests,"Blood Requests");
 
 $navbar = new DonorNavbar('Donor Board', '/donor/profile', '/public/images/icons/user.png', true,$firstName . ' ' . $lastName,false );
 echo $navbar;
 
 //$notification = new Notification;
 //echo $notification->getNotification('Notification', 'Are you sure you want to', 'Notification', 'Are you sure', 'Are you sure', 'Are you sure', 'Are you sure', 'Are you sure');
+$alert = new \App\view\components\ResponsiveComponent\Alert\FlashMessage();
+
+if ($state == 0){
+    echo $alert->ErrorAlert("You Cannot Donate Blood at this time Moment");
+}else{
+    echo $alert->SuccessAlert("You Can Donate Blood at this time Moment");
+}
+
 ?>
 
 
@@ -74,8 +84,48 @@ echo $navbar;
             echo $c3->render();
 
             ?></a>
+        <a href="/donor/request"> <?php
+            echo $c4->render();
+            ?>
+        </a>
     </div>
 </div>
 
 <script src="/public/scripts/home.js"></script>
+<script>
+    <?php echo $alert->DestroyAlert() ?>;
 
+    window.onload = () => {onLoadTrigger(<?php echo $_SESSION['pop']; ?>)};
+
+    function onLoadTrigger(trigger){
+        if (trigger === 0){
+        OpenDialogBox({
+            title: 'Quick Data Collection About You',
+            id : 'dataPop',
+            content: `<form action="/donor/profile/loginPrompt" method="post" id='donorDataCollection'>
+                        <label>Are you?</label>
+                        <ul class="" style="text-align: left">
+                        <li class="">Patient of serious disease condition.</li>
+                        <li class="">Pregnant</li>
+                        <li class="">Homosexual.</li>
+                        <li class="">Sex worker or their client.</li>
+                        <li class="">Drug addict.</li>
+                        <li class="">Engaging in sex with any of the above.</li>
+                        <li class="">Having more than one sexual partner.</li>
+                        </ul><br>
+                        <input type="checkbox" name="agree" id='agree' value='0'> &emsp; I am free from all of above</input>
+                                                  </form>`,
+            successBtnText: 'Submit',
+            successBtnAction: () => {
+                document.getElementById('donorDataCollection').submit();
+                CloseDialogBox();
+            },
+            cancelBtnAction: () => {
+                <?php $_SESSION['pop'] = 1; ?>
+                CloseDialogBox();
+            }
+        })
+            // CloseDialogBox();
+        }
+    }
+</script>

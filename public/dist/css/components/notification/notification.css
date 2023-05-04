@@ -1,0 +1,136 @@
+
+a{
+    text-decoration: none;
+}
+.outer-notifications{
+    margin-top: 8vh;
+    width: 90%;
+    min-height: 88vh;
+    background: rgba(0,0,0,0.3);
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.outer-notifications .notifications-footer{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.outer-notifications .notifications-footer .navigations{
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+}
+
+.outer-notifications .notifications-footer .navigations .nav-numbers{
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    align-items: center;
+}
+
+.outer-notifications .notifications-footer .navigations .nav-numbers .nav-number{
+    padding: 0.4rem 0.7rem;
+    background: rgba(255,255,255,0.7);
+    border-radius: 50px;
+}
+
+.outer-notifications .notifications-footer .navigations .nav-numbers .active{
+    background: rgb(135, 0, 0);
+    color: white;
+}
+
+
+.outer-notifications .notifications-footer .navigations .nav-btn{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 1rem;
+
+}
+
+.outer-notifications .notifications{
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+    /*flex-direction: column;*/
+    justify-content: center;
+    align-items: center;
+    text-align: left;
+    gap: 1rem;
+    margin: 1rem;
+}
+
+.outer-notifications .notifications .notification{
+    background: rgba(255,255,255,0.3);
+    padding: 1rem;
+    border-radius: 20px;
+    width: 48%;
+    min-width: 40%; 
+    min-height: 130px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.outer-notifications .notifications .notification .notification-logo{
+    padding: 0.5rem;
+    margin: 0 0.5rem 0 0;
+}
+
+.outer-notifications .notifications .notification .notification-timestamp{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.notification-action{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.outer-notifications .notifications .notification .notification-content{
+    width: 90%;
+}
+.outer-notifications .notifications .notification .notification-timestamp{
+    color: white;
+    font-weight: bold;
+    float: right;
+}
+
+.outer-notifications .notifications .notification .notification-content .notification-title{
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #fff;
+}
+
+.outer-notifications .notifications .notification .notification-content .notification-body{
+    font-size: 1.2rem;
+    font-weight: 400;
+    color: #fff;
+}
+
+.status-1{
+    /*background: #1ece00 ;*/
+}
+
+.btn{
+    background: #fff;
+    color: #000;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    border: none;
+    font-size: 1.2rem;
+    font-weight: 600;
+    cursor: pointer;
+    margin: 1rem;
+    text-decoration: none;
+}

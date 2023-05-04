@@ -12,6 +12,11 @@ class Response
         header('Location: ' . $url);
     }
 
+    public function SendJson(bool $status, array $data): bool|string
+    {
+        header('Content-Type: application/json');
+        return json_encode(['status' => $status, 'data' => $data]);
+    }
     public function getContentType(string $path): string
     {
         $ext = pathinfo($path, PATHINFO_EXTENSION);
@@ -43,9 +48,10 @@ class Response
 
     }
 
-    public function sendFile(string $string): bool|int
+    public function sendFile(string $string): string
     {
-        return readfile($string);
+        readfile($string);
+        return "";
     }
 
     public function setContentType(string $string): void
@@ -62,6 +68,5 @@ class Response
     {
         header('Content : ' . $json_encode);
     }
-
 
 }

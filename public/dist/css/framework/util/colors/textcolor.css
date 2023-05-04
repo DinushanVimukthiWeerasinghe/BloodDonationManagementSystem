@@ -1,0 +1,40 @@
+/*Primary Text*/
+.text-primary {
+    color: var(--primary);
+}
+/*Secondary Text*/
+.text-secondary {
+    color: var(--secondary);
+}
+/*Success Text*/
+.text-success {
+    color: var(--success);
+}
+/*Danger Text*/
+.text-danger {
+    color: var(--danger);
+}
+/*Warning Text*/
+.text-warning {
+    color: var(--warning);
+}
+/*Info Text*/
+.text-info {
+    color: var(--info);
+}
+/*Light Text*/
+.text-light {
+    color: var(--light);
+}
+/*Dark Text*/
+.text-dark {
+    color: var(--dark);
+}
+/*White Text*/
+.text-white {
+    color: var(--white);
+}
+/*Black Text*/
+.text-black {
+    color: var(--black);
+}

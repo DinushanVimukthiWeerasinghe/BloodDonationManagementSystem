@@ -1,0 +1,118 @@
+table{
+    border-collapse:collapse;
+    border-spacing: 0;
+    /*border-spacing: 0 0.5rem;*/
+    width: 100%;
+    color: var(--black);
+    text-align: center;
+    min-width: max-content;
+    /*table-layout: fixed;*/
+    /*display: flow-root;*/
+    /*border: 1px solid;*/
+}
+thead{
+    z-index: 22;
+}
+thead tr{
+
+    background-color: var(--white);
+}
+th{
+    /*box-shadow: 1px solid var(--black);*/
+    /*display: flex;*/
+    /*border: 1px solid;*/
+    position: sticky;
+    top: 0;
+}
+
+
+
+tbody tr{
+    box-shadow: 1px 1px 2px #979797;
+    /*display: flex;*/
+    /*box-shadow: 1px 1px 5px 1px black;*/
+    background-color: var(--white);
+    /*border-radius: 50px;*/
+}
+
+tbody tr:nth-child(odd){
+    background-color: var(--gray-2);
+}
+tbody{
+    padding-top: 1rem;
+    /*display: flex;*/
+    /*gap: 0.2rem;*/
+    flex-direction: column;
+}
+
+
+th, td {
+    padding: 0.5rem;
+}
+
+
+@media only screen and (max-width: 1420px) {
+    table thead{
+        position: sticky;
+        top: 0;
+        z-index: 2;
+    }
+    tbody{
+        overflow-x: scroll;
+    }
+    tr td:nth-child(1),tr th:nth-child(1){
+        /*overflow-x: hidden;*/
+        overflow-x: visible;
+        background: var(--white);
+        position: sticky;
+        top: 0;
+        left: 0;
+        /*z-index: 2;*/
+    }
+    tr td:nth-child(2), tr th:nth-child(2){
+        overflow-x: visible;
+        background: var(--white);
+        position: sticky;
+        top: 0;
+        left: 38px;
+    }
+    tr th:nth-child(1),tr th:nth-child(2){
+        z-index: 22;
+    }
+    tr th:last-child, tr td:last-child{
+        background: var(--white);
+        position: sticky;
+        right: 0;
+        top: 0;
+        /*z-index: 2;*/
+    }
+}
+@media only screen and (max-width: 920px) {
+    table thead{
+        display: none;
+    }
+    tr td:nth-child(2),tbody tr td:nth-child(1), tbody tr td:last-child,tr th:nth-child(2),tbody tr th:nth-child(1), tbody tr th:last-child{
+        position: relative;
+        background: none;
+        left: auto;
+    }
+    tbody tr{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0;
+    }
+    td{
+        display: flex;
+        justify-content: space-evenly;
+    }
+    td:before{
+        float: left;
+        content: attr(data-label) ": "
+    }
+    td:last-child:before{
+        content: none;
+    }
+
+    
+}
