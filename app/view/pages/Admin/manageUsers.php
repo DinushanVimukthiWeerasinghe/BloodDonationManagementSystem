@@ -18,36 +18,44 @@ use App\model\users\User;
 /** @var int $TotalBanned */
 //print_r($users);
 ?>
-<div class="d-flex h-100 w-100 justify-content-between">
-<div class="d-flex h-100 bg-white align-self-start mr-1" style="width: 5%;min-width: 5%;">
-    <div class="d-flex flex-column w-100 justify-content-center gap-1 align-items-center" id="UserCategory">
+
+
+<div class="d-flex bg-white align-self-start mr-1" style="width: 100%;min-width: 5%">
+    <div class="d-flex flex-row justify-content-center gap-1 align-items-center" id="UserCategory" style="width: 75%">
         <div class="d-flex flex-column w-95 justify-content-center align-items-center  border-radius-5" id="Donor" onclick="ViewUser('Donor')">
             <img src="/public/images/icons/user/donor.png" class="w-90 bg-primary border-radius-50" id="DonorIcon" alt="" style="padding: 8px;" width="64px">
-<!--            <span class="text-white mt-1">Donor</span>-->
+                        <span class="text-black mt-1">Donor</span>
         </div>
         <div class="d-flex flex-column w-95 justify-content-center align-items-center bg-white border-radius-5" id="Organization"  onclick="ViewUser('Organization')" >
             <img src="/public/images/icons/user/organization.png" class="w-90 bg-accent border-radius-50" id="OrganizationIcon" alt="" style="padding: 8px;" width="64px">
-<!--            <span class="text-white mt-1">Officer</span>-->
+                        <span class="text-black mt-1">Organization</span>
         </div>
         <div class="d-flex flex-column w-95 justify-content-center align-items-center bg-white border-radius-5"  id="MedicalOfficer" onclick="ViewUser('MedicalOfficer')" >
             <img src="/public/images/icons/user/medicalOfficer.png" class="w-90 bg-accent border-radius-50" id="MedicalOfficerIcon" alt="" style="padding: 8px;" width="64px">
-<!--            <span class="text-white mt-1">Organization</span>-->
+                        <span class="text-black mt-1">Medical Officer</span>
         </div>
         <div class="d-flex flex-column w-95 justify-content-center align-items-center bg-white border-radius-5" id="Hospital" onclick="ViewUser('Hospital')" >
             <img src="/public/images/icons/user/hospital.png" class="w-90 bg-accent border-radius-50" id="HospitalIcon" alt="" style="padding: 8px;" width="64px">
-<!--            <span class="text-white mt-1">Sponsors</span>-->
+                        <span class="text-black mt-1">Hospital</span>
         </div>
         <div class="d-flex flex-column w-95 justify-content-center align-items-center bg-white border-radius-5" id="Sponsor" onclick="ViewUser('Sponsor')" >
             <img src="/public/images/icons/user/sponsor.png" class="w-90 bg-accent border-radius-50" id="SponsorIcon" alt="" style="padding: 8px;" width="64px">
-<!--            <span class="text-white mt-1">Hospital</span>-->
+                        <span class="text-black mt-1">Sponsor</span>
         </div>
         <div class="d-flex flex-column w-95 justify-content-center align-items-center bg-white border-radius-5" id="Manager" onclick="ViewUser('Manager')" >
             <img src="/public/images/icons/user/manager.png" class="w-90 bg-accent border-radius-50" id="ManagerIcon" alt="" style="padding: 8px;" width="64px">
-<!--            <span class="text-white mt-1">Hospital</span>-->
+                        <span class="text-black mt-1">Manager</span>
         </div>
     </div>
 
 </div>
+
+
+
+<div class="d-flex h-100 w-100 justify-content-between">
+<!--<div class="">-->
+<!--</div>-->
+
 
 <div class="d-flex justify-content-center align-self-baseline flex-column " >
     <div class="d-flex justify-content-center align-items-center my-2">
@@ -55,6 +63,7 @@ use App\model\users\User;
             <label for="Search" class="text-dark text-xl font-bold">Search</label>
             <input type="text" class="form-control" name="Search" placeholder="Search" onkeyup="SearchUser('<?=$Role?>')">
         </div>
+        <button id="addNewUser" class="btn btn-success" hidden="hidden">
     </div>
 <!--    <div class="title">Donor</div>-->
     <div class="d-flex justify-content-center align-items-center cards flex-wrap" id="userTable">
@@ -79,7 +88,7 @@ use App\model\users\User;
                             } elseif ($user instanceof (Organization::class)) {
                                 echo $user->getOrganizationName();
                             } elseif ($user instanceof (Sponsor::class)) {
-                                echo $user->getFirstName() . " " . $user->getLastName();
+                                echo $user->getSponsorName();
                             } elseif ($user instanceof (Hospital::class)) {
                                 echo $user->getHospitalName();
                             }
@@ -91,6 +100,9 @@ use App\model\users\User;
                         <div class=""><?php echo $user->getEmail(); ?></div>
                         <div class=""><?php echo $user->getRole(); ?></div>
                         <div class=""><?php echo $user->getLastActive(); ?></div>
+                        <div class=""><?php if($user instanceof (Manager::class)){
+                                echo \App\model\BloodBankBranch\BloodBank::findOne(['BloodBank_ID'=>$user->getBloodBankID()])->getBankName();
+                            } ?></div>
                     </div>
                     <div class="card-action gap-1">
                         <?php if ($user->getAccountStatus() == User::TEMPORARY_DEACTIVATED): ?>

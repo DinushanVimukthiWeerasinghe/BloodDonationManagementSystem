@@ -3,14 +3,20 @@
 namespace App\controller;
 use App\middleware\sponsorMiddleware;
 use App\model\Authentication\Login;
+use App\model\Campaigns\ApprovedCampaigns;
+use App\model\Campaigns\RejectedCampaign;
+use App\model\Notification\OrganizationNotification;
+use App\model\Notification\SponsorNotification;
 use App\model\Requests\AttendanceAcceptedRequest;
-use App\model\sponsor\campaigns_sponsors;
-use App\model\sponsor\sponsorship_packages;
+use App\model\Requests\SponsorshipRequest;
+use App\model\sponsor\CampaignsSponsor;
+//use App\model\sponsor\SponsorshipPackages;
 use App\model\users\organization;
 use App\model\Campaigns\Campaign;
 use App\model\users\Sponsor;
 use App\model\users\User;
 use App\model\Utils\Notification;
+use App\model\Utils\Security;
 use Core\Application;
 use Core\BaseMiddleware;
 use Core\Controller;
@@ -20,6 +26,9 @@ use Core\middleware\ManagerMiddleware;
 use Core\Request;
 use Core\Response;
 use Core\SessionObject;
+use Stripe\Checkout\Session;
+use Stripe\Exception\ApiErrorException;
+use Stripe\Stripe;
 
 
 class sponsorController extends Controller
@@ -37,6 +46,151 @@ class sponsorController extends Controller
     {
         $user=Application::$app->getUser();
         return $this->render('organization/profile',['user'=>$user]);
+    }
+
+    /**
+     * @throws ApiErrorException
+     * @throws \Exception
+     */
+    public function MakePayment(Request $request, Response $response)
+    {
+        /** @var $SponsorshipRequest SponsorshipRequest*/
+        if ($request->isPost()){
+            $RequestID = $request->getBody()['Request'];
+            $Amount = $request->getBody()['Amount'];
+            $Description = $request->getBody()['Description'];
+
+            if (!isset($Amount) || !isset($Description) || !isset($RequestID)){
+                $this->setFlashMessage('error','Invalid Request');
+                Application::Redirect('/sponsor/sponsor');
+                exit();
+            }
+//            Check Amount
+            if (!is_numeric($Amount)){
+                $Amount = intval($Amount);
+            }
+
+            if ($Amount <= 0){
+                $this->setFlashMessage('error','Invalid Amount');
+                Application::Redirect('/sponsor/sponsor');
+                exit();
+            }
+
+            $SponsorshipRequest = SponsorshipRequest::findOne(['Sponsorship_ID' => $RequestID]);
+            if (!$SponsorshipRequest){
+                $this->setFlashMessage('error','Invalid Request');
+                Application::Redirect('/sponsor/sponsor');
+                exit();
+            }
+
+            if ($SponsorshipRequest->getToBeSponsoredAmount() < $Amount){
+                $Amount = $SponsorshipRequest->getToBeSponsoredAmount();
+            }
+
+
+            $SponsorshipRequestedAmount = intval($SponsorshipRequest->getSponsorshipAmount());
+            $CampaignName = $SponsorshipRequest->getCampaignName();
+
+            $SponsorshipRequest = SponsorshipRequest::findOne(['Sponsorship_ID' => $RequestID]);
+            $RequestID = Security::Encrypt($RequestID);
+            $RequestID = urlencode($RequestID);
+
+            $stripe = new \Stripe\StripeClient($_ENV['STRIPE_SECRET_KEY']);
+            $line_items[] = [
+                'price_data' => [
+                    'currency' => 'lkr',
+                    'unit_amount' => $Amount * 100,
+                    'product_data' => [
+                        'name' => 'Sponsorship for '.$CampaignName,
+                    ],
+                ],
+                'quantity' => 1,
+            ];
+            $EncAmount = Security::Encrypt($Amount);
+            $EncAmount = urlencode($Amount);
+            $Description =Security::Encrypt($Description);
+            $Description = urlencode($Description);
+            /** @var $SponsorshipRequest SponsorshipRequest*/
+            $UserID = Application::$app->getUser()->getID();
+
+            Stripe::setApiKey($_ENV['STRIPE_SECRET_KEY']);
+            $checkout_session = Session::create([
+                'payment_method_types' => ['card'],
+                'line_items' => $line_items,
+                'mode' => 'payment',
+                'success_url' => HOST . '/sponsor/makePayment?success=true&RequestID='.$RequestID.'&Amount='.$EncAmount.'&Description='.$Description.'&session_id='.'{CHECKOUT_SESSION_ID}' ,
+                'cancel_url' => HOST . '/sponsor/makePayment?success=false',
+                'custom_text'=>[
+                    'submit' =>[
+                        'message' => 'We\'ll send you an email with a link to download your receipt.'
+                    ]
+                ]
+            ]);
+
+            $SessionID = $checkout_session->id;
+            $SponsorshipRequest->sponsor($UserID,$Amount,$SessionID,$Description);
+            return json_encode(['status'=>true,'redirect'=>$checkout_session->url]);
+        }else if ($request->isGet()){
+            /** @var $SponsorshipRequest SponsorshipRequest*/
+            $status = $request->getBody()['success'];
+            if ($status==='true'){
+                $RequestID = $request->getBody()['RequestID'];
+                $Amount = $request->getBody()['Amount'];
+                $Description = $request->getBody()['Description'];
+                $SessionID = $request->getBody()['session_id'];
+                $RequestID = Security::Decrypt($RequestID);
+                $Amount = Security::Decrypt($Amount);
+                $Description = Security::Decrypt($Description);
+                /** @var $SponsorshipRequest CampaignsSponsor*/
+                $SponsorshipRequest = CampaignsSponsor::RetrieveAll(false,[],false,['Sponsorship_ID'=>$RequestID],['Sponsored_At'=>'DESC']);
+                if (!$SponsorshipRequest){
+                    $this->setFlashMessage('error','Invalid Request');
+                    Application::Redirect('/sponsor/sponsor');
+                    exit();
+                }
+                if (count($SponsorshipRequest)>=1){
+                    $SponsorshipRequest = $SponsorshipRequest[0];
+                }
+                if ($SponsorshipRequest->IsSessionValid($SessionID)){
+                    $SponsorshipRequest->setStatus(CampaignsSponsor::PAYMENT_STATUS_PAID);
+//                    var_dump("Hello");
+//                    exit();
+                    $SponsorshipRequest->update($SponsorshipRequest->getSponsorshipID(),[],['Status'],['Session_ID'=>Security::HashData($SessionID)]);
+                    $this->setFlashMessage('success','Payment Successful!');
+                    Application::Redirect('/sponsor/sponsor');
+                }else{
+                    $this->setFlashMessage('error','Transaction Failed');
+                    Application::Redirect('/sponsor/sponsor');
+                    exit();
+                }
+            }else{
+                $this->setFlashMessage('error','Transaction Failed');
+                Application::Redirect('/sponsor/sponsor');
+                exit();
+            }
+        }
+    }
+
+    public function MakeDonation(Request $request,Response $response): string
+    {
+        /** @var SponsorshipRequest $SponsorshipRequests */
+        /* @var Sponsor $sponsor*/
+        $SponsorshipRequests = SponsorshipRequest::RetrieveAll(false,[],true,['Sponsorship_Status' => SponsorshipRequest::STATUS_APPROVED]);
+        array_filter($SponsorshipRequests,function ($campaign){
+            return $campaign->getCampaignDate() >= date('Y-m-d');
+        });
+        return $this->render('sponsors/ViewCampaigns',[
+            'SponsorshipRequests' => $SponsorshipRequests,
+        ]);
+    }
+
+    public function Test(Request $request, Response $response)
+    {
+        $user = Application::$app->getUser();
+        $params = [
+            'user' => $user,
+        ];
+        return $this->render('sponsors/test', $params);
     }
 
 
@@ -87,7 +241,6 @@ class sponsorController extends Controller
             'sponsor_Name'=> $sponsor->getSponsorName(),
         ];
 
-        Application::$app->session->setFlash('success','Welcome Back!'.' '.$sponsor->getSponsorName());
         return $this->render('sponsors/sponsorBoard',$params);
     }
 
@@ -117,25 +270,9 @@ class sponsorController extends Controller
         Application::$app->session->setFlash('success','You Successfully Created a Campaign! Please Wait for the Admin Approval.');
         return $this->render('Organization/create');
     }
-    public function donation()
-    {
-        /* @var Campaign $campaign */
-        $today = date("Y-m-d");
-//        $conditions = [$campaign->getStatus() => 0];
-        $result = Campaign::RetrieveAll(false, [], false);
-        $params = [];
-        foreach ($result as $campaign) {
-            $params[] = [
-                'Campaign_Name'=> $campaign->getCampaignName(),
-                'Campaign_Date' => $campaign->getCampaignDate(),
-                'Venue'=> $campaign->getVenue(),
-                'Status'=> $campaign->getStatus(),
-                'Campaign_ID'=> $campaign->getCampaignID(),
-            ];
-        }
 
-        return $this->render('sponsors/donation',$params);
-    }
+
+
     public function report()
     {
 
@@ -147,7 +284,7 @@ class sponsorController extends Controller
 
         $id = Application::$app->getUser()->getID();
         $conditions = ['Sponsor_ID' => Application::$app->getUser()->getID()];
-        $campaigns = campaigns_sponsors::RetrieveAll(false,[],true, $conditions);
+        $campaigns = CampaignsSponsor::RetrieveAll(false,[],true, $conditions);
 
 //        $mycampaign = array_filter($campaigns,function ($campaign)use($id){
 //            return $campaign->getSponsorID()==$id;
@@ -196,22 +333,50 @@ class sponsorController extends Controller
 
         return $this->render('sponsors/guideline');
     }
+
+    public function GetCampaignDetails(Request $request,Response $response)
+    {
+        if ($request->isPost()){
+            $id=$request->getBody()['id'];
+            /* @var $campaign Campaign*/
+            $campaign = Campaign::findOne(['Campaign_ID' => $id]);
+            $Org_ID=$campaign->getOrganizationID();
+            $Org=Organization::findOne(['Organization_ID' => $Org_ID]);
+
+            if ($campaign){
+                /** @var $SponsorshipRequests SponsorshipRequest*/
+                if ($campaign->IsVerified()){
+                    $ApprovedDetails = ApprovedCampaigns::findOne(['Campaign_ID' => $id]);
+                    $SponsorshipRequests = SponsorshipRequest::findOne(['Campaign_ID' => $id,'Sponsorship_Status'=>SponsorshipRequest::STATUS_APPROVED],false);
+                    if ($SponsorshipRequests){
+                        $data = $SponsorshipRequests->toArray();
+                        $data['remaining'] = $SponsorshipRequests->getToBeSponsoredAmount();
+                        return json_encode(['status'=>true,'data'=>$campaign->toArray(),'org'=>$Org->toArray(),'approved'=>$ApprovedDetails->toArray(),'sponsorship'=>$data]);
+                    }
+                    return json_encode(['status'=>true,'data'=>$campaign->toArray(),'org'=>$Org->toArray(),'approved'=>$ApprovedDetails->toArray()]);
+                }
+                if ($campaign->IsRejected()){
+                    $RejectedDetails = RejectedCampaign::findOne(['Campaign_ID' => $id]);
+                    return json_encode(['status'=>true,'data'=>$campaign->toArray(),'org'=>$Org->toArray(),'rejected'=>$RejectedDetails->toArray()]);
+                }
+                return json_encode(['status'=>true,'data'=>$campaign->toArray(),'org'=>$Org->toArray()]);
+            }
+        }
+
+    }
     public function campDetails()
     {
         /* @var Campaign $campaign */
-        /* @var sponsorship_packages $para */
         $id = $_GET['id'];
         $campaign = Campaign::findOne(['Campaign_ID'=> $id]);
-        $para = sponsorship_packages::findOne(['Package_ID'=>$campaign->getPackageID()]);
-
+        $SponsoredDetails =SponsorshipRequest::findOne(['Campaign_ID'=> $id]);
         $params= [
-            'Campaign_Name'=> $campaign->getName(),
-            'Campaign_Date' => $campaign->getDate(),
+            'Campaign_Name'=> $campaign->getCampaignName(),
+            'Campaign_Date' => $campaign->getCampaignDate(),
             'Venue'=> $campaign->getVenue(),
             'Status'=> $campaign->getStatus(),
-            'Campaign_ID'=> $campaign->getID(),
+            'Campaign_ID'=> $campaign->getCampaignID(),
             'id' => $id,
-            'Package_Name' => $para->getPackageName(),
         ];
         return $this->render('sponsors/campDetails',$params);
     }
@@ -226,7 +391,21 @@ class sponsorController extends Controller
         $notification = Notification::RetrieveAll(true,[$initial,$limit],true,['Target_User' => $id]);
         return $this->render('Manager/Notification',['model'=>$notification,'total_pages'=>$total_pages,'current_page'=>$page]);
     }
-
+    public function GetNotification(Request $request,Response $response): string
+    {
+        if ($request->isPost()){
+            $Notifications=SponsorNotification::RetrieveAll(false,[],true,['Target_ID'=>Application::$app->getUser()->getId()],['Notification_Date'=>'ASC']);
+            if ($Notifications){
+                $Notifications = array_map(function ($object) {
+                    return $object->toArray();
+                }, $Notifications);
+            }
+            return json_encode([
+                'status'=>true,
+                'notifications'=>$Notifications
+            ]);
+        }
+    }
     public function upload(Request $request, Response $response)
     {
         $folderPath = Application::$ROOT_DIR."/public/upload/test/";
@@ -239,5 +418,42 @@ class sponsorController extends Controller
         file_put_contents($file, $image_base64);
         return json_encode($file);
     }
+    public function ChangeProfileImage(Request $request,Response $response)
+    {
+        /* @var $sponsor Sponsor*/
 
+        if($request->isPost()){
+
+            $UserID= Application::$app->getUser()->getId();
+            $sponsor = Sponsor::findOne(['Sponsor_ID'=>$UserID]);
+            $ExistingFile = $sponsor->getProfileImage();
+            $File=$request->getBody()['profileImage'];
+            if($File) {
+                $File->setPath('Profile/Sponsor');
+                $filename = $File->GenerateFileName('SPN_');
+                $sponsor->setProfileImage($filename);
+                if ($sponsor->update($sponsor->getID(), [], ['Profile_Image'])){
+                    $File->saveFile();
+                    File::DeleteFileByPath($ExistingFile);
+                    return json_encode([
+                        'status' => true,
+                        'filename' => $filename,
+                        'data' => $File,
+                        'message' => 'File Selected!'
+                    ]);
+                }else{
+                    return json_encode([
+                        'status'=>false,
+                        'message'=>'File Not Selected!'
+                    ]);
+                }
+            }else{
+                return json_encode([
+                    'status'=>false,
+                    'message'=>'No File Selected!'
+                ]);
+            }
+        }
+
+    }
 }

@@ -20,4 +20,5 @@
 {{content}}
 </body>
 <script src="/public/js/components/dialog-box/dialog-box.js"></script>
+<script src="/public/js/components/toasts/toast.js"></script>
 </html>

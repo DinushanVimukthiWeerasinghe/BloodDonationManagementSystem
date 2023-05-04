@@ -7,6 +7,16 @@ class Hospital extends Person
     protected string $Hospital_ID='';
     protected string $Hospital_Name='';
 
+    /**
+     * @return string
+     */
+    public function getHospitalID(): string
+    {
+        return $this->Hospital_ID;
+    }
+
+
+
 
     /**
      * @return string
@@ -50,8 +60,8 @@ class Hospital extends Person
             'Email'=>'Email',
             'City'=>'City',
             'Contact_No'=>'Contact No',
-            'Type'=>'Type',
-            'Profile_Image'=>'Profile Image'
+//            'Type'=>'Type',
+//            'Profile_Image'=>'Profile Image'
         ];
     }
 
@@ -65,8 +75,8 @@ class Hospital extends Person
             'Email'=>[self::RULE_REQUIRED],
             'City'=>[self::RULE_REQUIRED],
             'Contact_No'=>[self::RULE_REQUIRED],
-            'Type'=>[self::RULE_REQUIRED],
-            'Profile_Image'=>[self::RULE_REQUIRED]
+//            'Type'=>[self::RULE_REQUIRED],
+//            'Profile_Image'=>[self::RULE_REQUIRED]
         ];
     }
 
@@ -95,8 +105,8 @@ class Hospital extends Person
             'Email',
             'City',
             'Contact_No',
-            'Type',
-            'Profile_Image'
+//            'Type',
+//            'Profile_Image'
         ];
     }
 

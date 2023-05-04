@@ -6,6 +6,7 @@ use App\model\database\dbModel;
 
 abstract class Person extends dbModel
 {
+    public const USER_NOT_VERIFIED = 0;
     public const USER_DELETED = 3;
     public const DONOR='Donor';
     public const MEDICAL_OFFICER='MedicalOfficer';
@@ -47,7 +48,6 @@ abstract class Person extends dbModel
     }
 
 
-
     /**
      * @return string
      */
@@ -80,7 +80,6 @@ abstract class Person extends dbModel
                 }
             }
         }
-
     }
 
     public function getAccountStatus()
@@ -142,6 +141,10 @@ abstract class Person extends dbModel
     }
 
     public function getFullName(): string
+    {
+        return $this->First_Name.' '.$this->Last_Name;
+    }
+    public function getNameWithInitial(): string
     {
         return $this->First_Name.' '.$this->Last_Name;
     }
@@ -247,7 +250,10 @@ abstract class Person extends dbModel
      */
     public function getContactNo(): string
     {
-        return $this->Contact_No;
+        if ($this->Contact_No){
+            return $this->Contact_No;
+        }
+        return 'Not Available';
     }
 
     /**
@@ -305,6 +311,8 @@ abstract class Person extends dbModel
     {
         $this->Availability = $Availability;
     }
+
+
 
 
 

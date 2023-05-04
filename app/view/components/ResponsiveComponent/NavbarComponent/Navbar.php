@@ -34,10 +34,15 @@ class Navbar
 
     private function getLinks(): string
     {
+
         $links = '';
         foreach ($this->links as $key => $value) {
+            $id=substr($value,1).'Link';
+            if ($value==='/home')
+                $value='/';
+
             $links .= <<<HTML
-                <li class="navLi" onclick="Redirect('$value')"><a href="$value">$key</a></li>
+                <li class="navLi"  onclick="Redirect('$value')"><a id="$id" href="$value">$key</a></li>
             HTML;
         }
         return $links;
@@ -86,7 +91,7 @@ class Navbar
         return <<<HTML
             <header>
                 <nav>
-                    <div class="logo" onclick="Redirect('/')"><img src="/public/images/logo.png" width="80rem" alt=""><span>Be Positive</span></div>
+                    <div class="logo" id="Brand" onclick="Redirect('/')"><img src="/public/images/logo.png" id="BrandIcon" width="80rem" alt=""><span class="BrandText">Be Positive</span></div>
                     <!-- nav List -->
                     <ul class="navList">
                         <div class="profile-sm">

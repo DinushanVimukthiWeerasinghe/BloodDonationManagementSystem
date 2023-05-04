@@ -72,8 +72,8 @@ class Router
 
         $callback=$this->route[$method][$path] ?? false;
         if(!$callback){
-            Application::Redirect('/login');
-//            throw new Exception();
+//            Application::Redirect('/login');
+            throw new Exception();
         }
 //        if (is_string($callback)) {
 //            Application::$app->view->renderView($callback);
@@ -92,8 +92,14 @@ class Router
 //        echo '<pre>';
 //        print_r($callback);
 //        exit();
+//        print_r($callback);
         return call_user_func($callback,$this->request,$this->response);
 
+    }
+
+    public function getRoutes(): array
+    {
+        return $this->route;
     }
 
     private function loadAssets(mixed $path)
