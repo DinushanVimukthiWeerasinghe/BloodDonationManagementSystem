@@ -208,6 +208,7 @@ $app->router->post('/user/change-password', [authController::class, 'ChangePassw
     $app->router->get('/manager/mngSponsors', [managerController::class, 'ManageSponsors']);
     $app->router->post('/manager/mngSponsors', [managerController::class, 'ManageSponsors']);
     $app->router->post('/manager/mngSponsors/search', [managerController::class, 'SearchSponsors']);
+    $app->router->post('/manager/mngSponsors/find', [managerController::class, 'FindSponsors']);
 
     $app->router->get('/manager/mngSponsorship', [managerController::class, 'ManageSponsorship']);
     $app->router->post('/manager/mngSponsorship', [managerController::class, 'ManageSponsorship']);

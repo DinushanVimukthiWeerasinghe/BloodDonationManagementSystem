@@ -192,6 +192,7 @@ $getParams = function ($params) {
             console.log(data)
             if (data.status){
                 const donor = data.data;
+
                 const Donations = donor.Donations;
                 let tbody = '';
                 if (Donations){
@@ -261,7 +262,7 @@ $getParams = function ($params) {
                                     </div>
                                 </div>
                                 <div class="d-flex flex-column gap-1 w-100">
-                                    <div class="font-bold bg-dark px-2 py-1 text-white">Donation Details</div>
+                                    <div class="font-bold bg-dark px-2 py-1 text-white">Sponsor Details</div>
                                     <div class="d-flex overflow-y-overlay" style="max-height: 50vh">
                                         <table class="table">
                                             <thead class="sticky top-0">

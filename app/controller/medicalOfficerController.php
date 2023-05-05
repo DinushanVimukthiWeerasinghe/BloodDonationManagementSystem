@@ -40,9 +40,14 @@ class medicalOfficerController extends \Core\Controller
     {
         $Notifications=MedicalOfficerNotification::RetrieveAll(false,[],true,['Target_ID'=>Application::$app->getUser()->getId()],['Notification_Date'=>'ASC']);
 //        Convert values to array
+        $Notifications=array_merge(...array_fill(0,100,$Notifications));
         $Notifications = array_map(function ($object) {
             return $object->toArray();
         }, $Notifications);
+//        Change the date format to a readable format
+        foreach ($Notifications as $key=>$value){
+            $Notifications[$key]['Notification_Date']=date('Y-M-d h:i:s',strtotime($value['Notification_Date']));
+        }
         return json_encode([
             'status'=>true,
             'notifications'=>$Notifications

@@ -428,4 +428,9 @@ class SponsorshipRequest extends \App\model\database\dbModel
             return 0;
         }
     }
+
+    public function getCampaign()
+    {
+        return Campaign::findOne(['Campaign_ID'=>$this->Campaign_ID]);
+    }
 }

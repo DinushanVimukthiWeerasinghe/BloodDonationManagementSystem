@@ -47,7 +47,9 @@
 @import "components/tooltip/tooltip.css";
 /*Import Badges*/
 @import "components/badge/badge.css";
-
+/*Import Percentage Circle*/
+@import "components/percentage/percentage_circle.css";
+/*Import Calender*/
 @import "util/colors/base.css";
 
 /*Import Animation */

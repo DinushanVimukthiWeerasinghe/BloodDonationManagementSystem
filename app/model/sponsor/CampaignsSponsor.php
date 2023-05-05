@@ -2,6 +2,7 @@
 
 namespace App\model\sponsor;
 
+use App\model\Requests\SponsorshipRequest;
 use App\model\users\Sponsor;
 use App\model\Utils\Security;
 
@@ -182,6 +183,13 @@ class CampaignsSponsor extends \App\model\database\dbModel
     public function setSponsorshipID(string $Sponsorship_ID): void
     {
         $this->Sponsorship_ID = $Sponsorship_ID;
+    }
+
+    public function getCampaign()
+    {
+        /** @var SponsorshipRequest $SponsorshipRequest */
+        $SponsorshipRequest = SponsorshipRequest::findOne(['Sponsorship_ID'=>$this->Sponsorship_ID]);
+        return $SponsorshipRequest->getCampaign();
     }
 
     /**

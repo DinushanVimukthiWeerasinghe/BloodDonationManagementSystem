@@ -383,6 +383,47 @@ FlashMessage::RenderFlashMessages();
             footer : `<div id="error" class="text-sm none text-danger"> Hello </div>`,
             successBtnText:'Add',
             successBtnAction : ()=>{
+                const FirstName = document.getElementById('FirstName');
+                const LastName = document.getElementById('LastName');
+                const email = document.getElementById('email');
+                const contact = document.getElementById('contact');
+                const nic = document.getElementById('nic');
+                const RegNo = document.getElementById('RegNo');
+                const RegDate = document.getElementById('RegDate');
+                const Address1 = document.getElementById('Address1');
+                const Address2 = document.getElementById('Address2');
+                const City = document.getElementById('City');
+                const image = document.getElementById('image');
+                const Branch_ID = document.getElementById('Branch_ID');
+                const Position = document.getElementById('Position');
+
+                let Error = false;
+
+                 // Validate
+                for (const input of [FirstName,LastName,email,contact,nic,RegNo,RegDate,Address1,Address2,City,image,Branch_ID,Position]) {
+                    if (input.value.trim() === '') {
+                        // Add error text below the input
+                        ShowToast({
+                            title: 'Error',
+                            message: 'Please fill all fields',
+                            type: 'error'
+                        })
+                        Error = true;
+                        input.classList.add('border-danger');
+                        const element = document.getElementsByName(input.name)[0];
+                        element.classList.add('border-danger');
+                        element.classList.add('text-danger');
+                        input.addEventListener('input', () => {
+                            input.classList.remove('border-danger');
+                            element.classList.remove('text-danger');
+                        })
+                        break;
+                    }
+                }
+                if (Error) {
+                    return;
+                }
+
                  const error=document.getElementById('error');
                  const form = new FormData();
                     form.append('First_Name',document.getElementById('FirstName').value);
@@ -411,12 +452,16 @@ FlashMessage::RenderFlashMessages();
                                 location.reload();
                             }else{
                                 if (data.errors){
-                                    console.log(data.errors)
                                     for (const [key, value] of Object.entries(data.errors)) {
                                         console.log(key,value)
                                         const element = document.getElementsByName(key)[0];
                                         element.classList.add('border-danger');
                                         element.classList.add('text-danger');
+                                        ShowToast({
+                                            title:'Error',
+                                            message:value,
+                                            type:'error'
+                                        })
                                     }
                                 }
                                 ShowToast({
