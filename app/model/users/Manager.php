@@ -14,6 +14,56 @@ class Manager extends Person
     protected string $Branch_ID='';
     protected string $Joined_Date='';
 
+    /**
+     * @return string
+     */
+    public function getManagerID(): string
+    {
+        return $this->Manager_ID;
+    }
+
+    /**
+     * @param string $Manager_ID
+     */
+    public function setManagerID(string $Manager_ID): void
+    {
+        $this->Manager_ID = $Manager_ID;
+    }
+
+    /**
+     * @return string
+     */
+    public function getJoinedAt(): string
+    {
+        return $this->Joined_At;
+    }
+
+    /**
+     * @param string $Joined_At
+     */
+    public function setJoinedAt(string $Joined_At): void
+    {
+        $this->Joined_At = $Joined_At;
+    }
+
+    /**
+     * @return string
+     */
+    public function getJoinedDate(): string
+    {
+        return $this->Joined_Date;
+    }
+
+    /**
+     * @param string $Joined_Date
+     */
+    public function setJoinedDate(string $Joined_Date): void
+    {
+        $this->Joined_Date = $Joined_Date;
+    }
+
+
+
 
 
 
@@ -117,7 +167,8 @@ class Manager extends Person
             'City',
 //            'ImageURL',
             'Contact_No',
-            'BloodBank_ID'
+            'BloodBank_ID',
+            'Profile_Image',
 //            'Position'
         ];
     }
@@ -144,5 +195,11 @@ class Manager extends Person
     public function setID(string $ID): void
     {
         $this->Manager_ID = $ID;
+    }
+
+    public function getBloodBank()
+    {
+        $bloodBankID=$this->getBloodBankID();
+        return BloodBank::findOne(['BloodBank_ID'=>$bloodBankID]);
     }
 }

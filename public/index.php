@@ -172,10 +172,13 @@ $app->router->post('/user/change-password', [authController::class, 'ChangePassw
 
 //Manager Dashboard
     $app->router->get('/manager/dashboard', [managerController::class, 'dashboard']);
+    $app->router->post('/manager/updateNotice', [managerController::class, 'ManagerNotice']);
     $app->router->get('/manager/profile', [managerController::class, 'Profile']);
 
 
     $app->router->get('/manager/mngMedicalOfficer', [managerController::class, 'ManageMedicalOfficer']);
+    $app->router->post('/manager/changeProfile', [managerController::class, 'ChangeProfileImage']);
+    $app->router->post('/manager/changePassword', [managerController::class, 'ChangePassword']);
 
     $app->router->get('/manager/mngMedicalOfficer/add', [managerController::class, 'AddMedicalOfficer']);
     $app->router->post('/manager/mngMedicalOfficer/add', [managerController::class, 'AddMedicalOfficer']);

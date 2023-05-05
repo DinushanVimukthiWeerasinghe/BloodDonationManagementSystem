@@ -26,13 +26,11 @@
             <div class="header-title">Officer Reports</div>
         </div>
     </div>
-    <!--    <div class="card nav-card">-->
-    <!--        <div class="card-header">-->
-    <!--            <img src="/public/images/icons/manager/manageReport/health-report.png" alt="">-->
-    <!--            <div class="header-title">Transfusion Reports</div>-->
-    <!--        </div>-->
-    <!--    </div>-->
 </div>
+<style>
+
+
+</style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.debug.js"
         integrity="sha384-NaWTHo/8YCBYJ59830LTz/P4aQZK1sS0SneOgAvhsIl3zBu8r9RevNg5lHCHAuQ/"
         crossorigin="anonymous"></script>
@@ -305,10 +303,11 @@
     function ViewSponsors(index) {
         const url = "/manager/mngReport/SponsorshipReport";
         fetch(url, {
-            method: 'GET',
+            method: 'POST',
 
         }).then((response) => response.json())
             .then((data) => {
+                console.log(data)
                 if (data.status) {
                     const val = data.data[index];
                     let tbody = "";

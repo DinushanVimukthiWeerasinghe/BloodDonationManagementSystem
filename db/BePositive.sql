@@ -133,9 +133,11 @@ CREATE TABLE IF NOT EXISTS Hospitals
     Email         VARCHAR(100) UNIQUE,
     City          VARCHAR(100) NOT NULL,
     Contact_No    VARCHAR(100) UNIQUE,
+    Nearest_Blood_Bank VARCHAR(20) NOT NULL,
     Type          INT          NOT NULL DEFAULT 1,
     Profile_Image VARCHAR(100) NOT NULL DEFAULT '/public/upload/profile/hospitalDefault.png',
-    FOREIGN KEY (Hospital_ID) REFERENCES Users (UID)
+    FOREIGN KEY (Hospital_ID) REFERENCES Users (UID),
+    FOREIGN KEY (Nearest_Blood_Bank) REFERENCES BloodBanks (BloodBank_ID)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8;
 
@@ -440,6 +442,7 @@ CREATE TABLE IF NOT EXISTS Blood_Requests (
     Requested_By VARCHAR(20) NOT NULL,
     BloodGroup VARCHAR(3) NOT NULL,
     Requested_At TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    Request_From TIMESTAMP NOT NULL,
     Type INT NOT NULL DEFAULT 1,
     Volume DECIMAL(10,2) NOT NULL CHECK ( Volume BETWEEN 0 AND 1000),
     Status INT NOT NULL DEFAULT 1,
@@ -447,7 +450,8 @@ CREATE TABLE IF NOT EXISTS Blood_Requests (
     Remarks VARCHAR(100) NULL,
     FullFilled_By VARCHAR(20) NULL,
     FOREIGN KEY (Requested_By) REFERENCES Hospitals(Hospital_ID),
-    FOREIGN KEY (BloodGroup) REFERENCES BloodGroups(BloodGroup_ID)
+    FOREIGN KEY (BloodGroup) REFERENCES BloodGroups(BloodGroup_ID),
+    FOREIGN KEY (Request_From) REFERENCES BloodBanks(BloodBank_ID)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS Hospital_Blood_Donations;
@@ -856,6 +860,18 @@ CREATE TABLE IF NOT EXISTS campaigns_sponsors
     FOREIGN KEY (Sponsorship_ID) REFERENCES Sponsorship_Requests (Sponsorship_ID)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8;
+
+DROP TABLE IF EXISTS `Manager_Notices`;
+CREATE TABLE IF NOT EXISTS `Manager_Notices` (
+  Notice_ID VARCHAR(20) NOT NULL PRIMARY KEY,
+    Manager_ID VARCHAR(20) NOT NULL,
+    Notice_Title VARCHAR(100) NOT NULL,
+    Notice_Content TEXT NOT NULL,
+    Notice_Date DATE NOT NULL,
+    Notice_Status INT NOT NULL,
+    Notice_Action INT NOT NULL,
+    FOREIGN KEY (Manager_ID) REFERENCES Managers (Manager_ID)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 

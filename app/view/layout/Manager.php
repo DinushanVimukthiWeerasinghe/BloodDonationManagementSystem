@@ -1,11 +1,16 @@
 <?php
 
+use App\model\BloodBankBranch\BloodBank;
+use App\model\users\Manager;
 use App\view\components\ResponsiveComponent\Alert\FlashMessage;
 use App\view\components\ResponsiveComponent\ImageComponent\BackGroundImage;
 use App\view\components\ResponsiveComponent\NavbarComponent\AuthNavbar;
+use Core\Application;
 
 $navbar = new AuthNavbar('Manager Board', '/manager', '/public/images/icons/user.png', true,false );
 $background = new BackGroundImage();
+/** @var Manager $User */
+$User = Application::$app->getUser();
 $Sidelnk = function () {
     $RequestURI = $_SERVER['REQUEST_URI'];
     if (str_contains($RequestURI, '/manager/mngDonors')) {
@@ -272,7 +277,228 @@ $Sidelnk = function () {
 
     }
     const getProfile = ()=>{
-        console.log('getProfile')
+        OpenDialogBox({
+            id: 'profile',
+            title: 'Profile',
+            titleClass: 'text-center bg-dark text-white',
+            content: `
+                <div class="d-flex flex-column gap-1 w-100">
+                     <div id="profile" class="d-flex flex-column w-100">
+                            <div class="d-flex flex-column flex-center gap-1 max-h-80vh w-100">
+                                <div class="d-flex w-100 justify-content-center">
+                                    <img id="profileImage" src="<?= $User->getProfileImage()?>" alt="" width=300px height=300px class="border-1 border-radius-50 " style="object-fit:cover"/>
+                                 </div>
+                                 <button class="btn btn-success d-flex align-items-center font-bold" onclick="ChangeProfileImage()"><span><img src="/public/icons/camera.svg" alt="" width="24px" class="cursor invert-100" onclick="EditProfile()"></span> &nbsp;Change Profile Image</button>
+                                <div class="bg-dark w-100 text-center text-white py-0-5 px-1"> Profile Details</div>
+                                    <div class="d-flex w-100 align-items-center justify-content-evenly gap-1">
+                                         <div class="d-flex w-50 justify-content-center">
+                                            <div class="d-flex font-bold"> Full Name : </div>
+                                            <div class="d-flex "> <?= $User->getFullName() ?></div>
+                                        </div>
+                                         <div class="d-flex w-50 justify-content-center">
+                                            <div class="d-flex font-bold">City : </div>
+                                            <div class="d-flex "> <?= $User->getCity() ?></div>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex w-100 align-items-center justify-content-evenly gap-1">
+                                         <div class="d-flex w-50 justify-content-center">
+                                            <div class="d-flex font-bold">Email : </div>
+                                            <div class="d-flex "><?= $User->getEmail() ?></div>
+                                        </div>
+                                        <div class="d-flex w-50 justify-content-center">
+                                            <div class="d-flex font-bold">Contact Number : </div>
+                                            <div class="d-flex "><?= $User->getContactNo() ?></div>
+                                        </div>
+
+                                    </div>
+                                    <div class="d-flex w-100 align-items-center justify-content-evenly gap-1">
+                                        <div class="d-flex w-50 justify-content-center">
+                                            <div class="d-flex "><button class="btn btn-outline-danger" onclick="ChangePassword()">Change Password</button></div>
+                                        </div>
+
+                                    </div>
+                                <div class="bg-dark w-100 text-center text-white py-0-5 px-1"> Assigned Blood Bank Details</div>
+                                <?php
+            /** @var $BloodBank BloodBank*/
+            $BloodBank= $User->getBloodBank();
+            ?>
+                                <div class="d-flex w-100 align-items-center justify-content-evenly gap-1">
+                                    <div class="d-flex w-50 justify-content-center">
+                                        <div class="d-flex font-bold"> Bank Name : </div>
+                                        <div class="d-flex "><?= $BloodBank->getBankName() ?></div>
+                                    </div>
+                                    <div class="d-flex w-50 justify-content-center">
+                                        <div class="d-flex font-bold">City : </div>
+                                        <div class="d-flex "><?= $BloodBank->getLocation() ?></div>
+                                    </div>
+                                </div>
+                            </div>
+                       </div>
+                </div>
+            `,
+            showSuccessButton: false,
+            cancelBtnText: 'Close',
+            cancelBtnAction: () => {
+                window.location.reload();
+                CloseDialogBox('profile');
+            }
+        })
+    }
+    const ChangeProfileImage = ()=>{
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = 'image/*';
+        input.onchange = _ => {
+            // you can use this method to get file and perform respective operations
+            let files =   Array.from(input.files);
+            const url="/manager/changeProfile";
+            const formData = new FormData();
+            formData.append('profileImage',files[0]);
+            fetch(url, {
+                method: 'POST',
+                body: formData
+            }).then(response => response.json())
+                .then(data => {
+                    console.log(data)
+                    if (data.status){
+                        const profileImage = document.querySelector('#profileImage');
+                        const NavProfileImage = document.querySelector('#NavProfileImage');
+                        profileImage.src = data.filename;
+                        NavProfileImage.src = data.filename;
+                        ShowToast({
+                            title: 'Success',
+                            message: 'Profile Image Changed Successfully',
+                            type: 'success',
+                            duration: 3000
+                        });
+
+                    }else{
+                        ShowToast({
+                            title: 'Error',
+                            message: 'Profile Image Change Failed',
+                            type: 'error',
+                            duration: 3000
+                        });
+                    }
+                })
+        };
+        input.click();
+    }
+
+    const ChangePassword = ()=>{
+        OpenDialogBox({
+            id: 'changePassword',
+            title: 'Change Password',
+            popupOrder: 1,
+            content: `
+                <div class="d-flex flex-column gap-1 w-100">
+                     <div id="changePassword" class="d-flex flex-column gap-1">
+                         <div class="form-group">
+                            <label for="oldPassword" class="w-50">Old Password</label>
+                            <div class="d-flex flex-column w-50">
+                                 <input type="password" class="form-control w-100" min="8" max="30" id="oldPassword" placeholder="Enter Old Password">
+                                 <span class="text-danger" style="margin-top: 0.5rem" id="CurrentPasswordError"> </span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="newPassword" class="w-50">New Password</label>
+                            <div class="d-flex flex-column w-50">
+                                 <input type="password" class="form-control w-100" min="8" max="30" id="newPassword" placeholder="Enter New Password">
+                                 <span class="text-danger" style="margin-top: 0.5rem" id="NewPasswordError"> </span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="confirmPassword" class="w-50">Confirm Password</label>
+                            <div class="d-flex flex-column w-50">
+                                 <input type="password" class="form-control w-100" min="8" max="30" id="confirmPassword" placeholder="Enter Confirm Password">
+                                 <span class="text-danger" style="margin-top: 0.5rem" id="ConfirmPasswordError"> </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>`,
+            successBtnText: 'Change Password',
+            successBtnAction: ()=>{
+                const url ='/manager/changePassword';
+                const oldPassword = document.querySelector('#oldPassword').value;
+                const newPassword = document.querySelector('#newPassword').value;
+                const confirmPassword = document.querySelector('#confirmPassword').value;
+                if (oldPassword.length === 0){
+                    document.querySelector('#CurrentPasswordError').innerText = 'Old Password is Required';
+                    return;
+                }
+                if (newPassword.length === 0){
+                    document.querySelector('#NewPasswordError').innerText = 'New Password is Required';
+                    return;
+                }
+                if (confirmPassword.length === 0){
+                    document.querySelector('#ConfirmPasswordError').innerText = 'Confirm Password is Required';
+                    return;
+                }
+                if (newPassword.length < 8){
+                    document.querySelector('#NewPasswordError').innerText = 'Password must be at least 8 characters';
+                    return;
+                }
+                if (newPassword.length > 30){
+                    document.querySelector('#NewPasswordError').innerText = 'Password must be at most 30 characters';
+                    return;
+                }
+                if (confirmPassword.length < 8){
+                    document.querySelector('#ConfirmPasswordError').innerText = 'Password must be at least 8 characters';
+                    return;
+                }
+                if (confirmPassword.length > 30){
+                    document.querySelector('#ConfirmPasswordError').innerText = 'Password must be at most 30 characters';
+                    return;
+                }
+                if (newPassword !== confirmPassword){
+                    document.querySelector('#ConfirmPasswordError').innerText = 'Confirm Password is not Matched';
+                    return;
+                }
+
+                const formData = new FormData();
+                formData.append('CurrentPassword',oldPassword);
+                formData.append('NewPassword',newPassword);
+                formData.append('ConfirmPassword',confirmPassword);
+                fetch(url, {
+                    method: 'POST',
+                    body: formData
+                }).then(response => response.json())
+                    .then(data => {
+                        console.log(data)
+                        if (data.status){
+                            ShowToast({
+                                title: 'Success',
+                                message: 'Password Changed Successfully',
+                                type: 'success',
+                                duration: 3000
+                            });
+                            CloseDialogBox('changePassword');
+                        }else{
+                            ShowToast({
+                                title: 'Error',
+                                message: data.message,
+                                type: 'danger',
+                                duration: 3000
+                            });
+                            const Filed = data.field;
+                            const CurrentPasswordInput = document.querySelector('#oldPassword');
+                            const NewPasswordInput = document.querySelector('#newPassword');
+                            const ConfirmPasswordInput = document.querySelector('#confirmPassword');
+
+                            if (Filed === 'CurrentPassword'){
+                                CurrentPasswordInput.classList.add('border-danger');
+                                document.querySelector('#CurrentPasswordError').innerHTML = data.message;
+                            }else if (Filed === 'NewPassword'){
+                                NewPasswordInput.classList.add('border-danger');
+                                document.querySelector('#NewPasswordError').innerHTML = data.message;
+                            }else if (Filed === 'ConfirmPassword'){
+                                ConfirmPasswordInput.classList.add('border-danger');
+                                document.querySelector('#ConfirmPasswordError').innerHTML = data.message;
+                            }
+                        }
+                    })
+            }
+        })
     }
 </script>
 </html>

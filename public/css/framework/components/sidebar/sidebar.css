@@ -227,6 +227,7 @@
 
 }
 @media screen and (max-width: 920px) {
+
     #sidePanel{
         width: 100px;
     }
@@ -297,4 +298,5 @@
         max-width: calc(100vw - 80px) !important;
         left: 80px !important;
     }
+
 }

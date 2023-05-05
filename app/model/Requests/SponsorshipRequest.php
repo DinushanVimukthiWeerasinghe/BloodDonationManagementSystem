@@ -412,7 +412,7 @@ class SponsorshipRequest extends \App\model\database\dbModel
         return CampaignsSponsor::RetrieveAll(false,[],true,['Sponsorship_ID'=>$this->Sponsorship_ID,'Status'=>CampaignsSponsor::PAYMENT_STATUS_PAID]);
     }
 
-    public function getTotalSponsoredAmount(bool $Readable): float|int | string
+    public function getTotalSponsoredAmount(bool $Readable=false): float|int | string
     {
         /** @var $Sponsor CampaignsSponsor*/
         $Total = 0;

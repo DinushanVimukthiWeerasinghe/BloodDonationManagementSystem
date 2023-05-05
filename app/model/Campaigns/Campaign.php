@@ -4,6 +4,7 @@ namespace App\model\Campaigns;
 
 use App\model\database\dbModel;
 use App\model\MedicalTeam\MedicalTeam;
+use App\model\Requests\SponsorshipRequest;
 use App\model\users\Organization;
 
 class Campaign extends dbModel
@@ -150,6 +151,11 @@ class Campaign extends dbModel
     public function getCampaignDate(): string
     {
         return $this->Campaign_Date;
+    }
+
+    public function getSponsorshipRequest()
+    {
+        return SponsorshipRequest::findOne(['Campaign_ID'=>$this->Campaign_ID]);
     }
 
     public function getOrganizationType(): string

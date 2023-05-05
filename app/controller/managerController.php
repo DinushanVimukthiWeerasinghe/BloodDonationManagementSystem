@@ -3,6 +3,7 @@
 namespace App\controller;
 
 use App\middleware\managerMiddleware;
+use App\model\Audits\ManagerNotice;
 use App\model\Authentication\Login;
 use App\model\Blood\BloodGroup;
 use App\model\BloodBankBranch\BloodBank;
@@ -32,6 +33,7 @@ use App\model\users\Organization;
 use App\model\users\Person;
 use App\model\users\Sponsor;
 use App\model\users\User;
+use App\model\Utils\Date;
 use App\model\Utils\Notification;
 use Core\Application;
 use Core\BaseMiddleware;
@@ -65,43 +67,177 @@ class managerController extends Controller
         $ID=Application::$app->getUser()->getID();
         $manager = Manager::findOne(['Manager_ID' => Application::$app->getUser()->getID()]);
         $Data = [
-            'Total_Campaigns'=>0,
-            'Total_Donations'=>[
+            'Campaigns'=>[
                 'Successful'=>0,
                 'Percentage'=>0,
                 'Total'=>0,
             ],
+            'Donations'=>[
+                'Successful'=>0,
+                'Percentage'=>0,
+                'Total'=>0,
+            ],
+            'Sponsorships'=>[
+                'Received'=>0,
+                'Percentage'=>0,
+                'Total'=>0,
+            ],
+            'Requests'=>[
+                'Supplied'=>0,
+                'Percentage'=>0,
+                'Total'=>0,
+            ],
+            'MedicalOfficers'=>[
+                'Total'=>110,
+                'Percentage'=>50,
+            ],
         ];
         /** @var ApprovedCampaigns[] $ApproveCampaigns */
+        /** @var BloodRequest[] $Requests */
         /** @var $Campaign Campaign */
+        /** @var $SponsorshipRequest SponsorshipRequest */
         $ApproveCampaigns = ApprovedCampaigns::RetrieveAll(false, [], true, ['Approved_By' => $ID]);
-        echo '<pre>';
+        $RejectedCampaigns = RejectedCampaign::RetrieveAll(false,[],true,['Rejected_By'=>$ID]);
+        $BloodBank = $manager->getBloodBankID();
+        $Requests = BloodRequest::RetrieveAll(false,[],true,['Request_From'=>$BloodBank]);
+        foreach ($Requests as $request){
+            if ($request->getAction()===BloodRequest::REQUEST_STATUS_FULFILLED){
+                $Data['Requests']['Supplied']++;
+            }
+            $Data['Requests']['Total']++;
+        }
+
+        foreach ($RejectedCampaigns as $rejectedCampaign){
+            $Campaign = Campaign::findOne(['Campaign_ID' => $rejectedCampaign->getCampaignID()]);
+            $CampaignYear = date('Y', strtotime($Campaign->getCampaignDate()));
+            $CurrentYear = date('Y');
+            if ($CampaignYear == $CurrentYear) {
+                $Data['Campaigns']['Total']++;
+            }
+        }
+
         foreach ($ApproveCampaigns as $campaign) {
             $Campaign = Campaign::findOne(['Campaign_ID' => $campaign->getCampaignID()]);
             $CampaignYear = date('Y', strtotime($Campaign->getCampaignDate()));
             $CurrentYear = date('Y');
+            $SponsorshipRequest = $Campaign->getSponsorshipRequest();
+            if ($SponsorshipRequest){
+                $Data['Sponsorships']['Total'] += $SponsorshipRequest->getSponsorshipAmount();
+                $CampaignSponsor =$SponsorshipRequest->getTotalSponsoredAmount();
+                $Data['Sponsorships']['Received'] += $CampaignSponsor;
+            }
             if ($CampaignYear == $CurrentYear) {
-                $Data['Total_Campaigns']++;
+                $Data['Campaigns']['Successful']++;
+                $Data['Campaigns']['Total']++;
             }
             if ($Campaign->getStatus()===Campaign::CAMPAIGN_STATUS_FINISHED){
                 $Donations = Donation::RetrieveAll(false,[],true,['Campaign_ID'=>$Campaign->getCampaignID()]);
                 foreach ($Donations as $donation){
                     if ($donation->getStatus()===Donation::STATUS_BLOOD_STORED){
-                        $Data['Total_Donations']['Successful']++;
+                        $Data['Donations']['Successful']++;
                     }
-                    $Data['Total_Donations']['Total']++;
+                    $Data['Donations']['Total']++;
                 }
             }
         }
-        $Data['Total_Donations']['Percentage']=intval(($Data['Total_Donations']['Successful']/$Data['Total_Donations']['Total'])*100);
-        print_r($Data);
-        exit();
+        $Data['Donations']['Percentage']=round(floatval(($Data['Donations']['Successful']/$Data['Donations']['Total'])*100),1);
+        $Data['Campaigns']['Percentage']=round(floatval(($Data['Campaigns']['Successful']/$Data['Campaigns']['Total'])*100),1);
+        $Data['Sponsorships']['Percentage']=round(floatval(($Data['Sponsorships']['Received']/$Data['Sponsorships']['Total'])*100),1);
+        $Data['Requests']['Percentage']=round(floatval(($Data['Requests']['Supplied']/$Data['Requests']['Total'])*100),1);
+
+        $now = date('Y-m-d');
+        $ApproveCampaigns = array_filter($ApproveCampaigns,function ($campaign) use ($now){
+            /** @var $campaign ApprovedCampaigns */
+            /** @var $Campaign Campaign */
+            $Campaign = Campaign::findOne(['Campaign_ID' => $campaign->getCampaignID()]);
+            return $Campaign->getCampaignDate() > $now;
+        });
+        usort($Requests,function ($a,$b){
+            /** @var $a BloodRequest */
+            /** @var $b BloodRequest */
+            return $a->getRequestedAt() < $b->getRequestedAt();
+        });
+
+        usort($ApproveCampaigns,function ($a,$b){
+            /** @var $a ApprovedCampaigns */
+            /** @var $b ApprovedCampaigns */
+            /** @var $CampaignA Campaign */
+            /** @var $CampaignB Campaign */
+            $CampaignA = Campaign::findOne(['Campaign_ID' => $a->getCampaignID()]);
+            $CampaignB = Campaign::findOne(['Campaign_ID' => $b->getCampaignID()]);
+            return $CampaignA->getCampaignDate() > $CampaignB->getCampaignDate();
+        });
+//        Get First 5 Campaigns
+        $ApproveCampaigns = array_slice($ApproveCampaigns,0,5);
+        $Requests = array_slice($Requests,0,5);
+
+        $managerNotices = ManagerNotice::RetrieveAll(false,[],true,['Manager_ID'=>$ID,'Notice_Action'=>ManagerNotice::ACTION_PENDING]);
+        usort($managerNotices,function ($a,$b){
+            /** @var $a ManagerNotice */
+            /** @var $b ManagerNotice */
+            return $a->getNoticeStatus() < $b->getNoticeStatus();
+        });
+
+
+//        echo '<pre>';
+//        print_r($Data);
+//        exit();
         $params=[
             'page'=>'dashboard',
             'firstName'=>$manager->getFirstName(),
-            'lastName'=>$manager->getLastName()
+            'lastName'=>$manager->getLastName(),
+            'Data'=>$Data,
+            'Campaigns'=>$ApproveCampaigns,
+            'Requests'=>$Requests,
+            'Notices'=>$managerNotices,
         ];
         return $this->render('Manager/managerBoard',$params);
+    }
+
+    public function ManagerNotice(Request $request,Response $response)
+    {
+        if ($request->isPost()){
+            $NoticeID = $request->getBody()['ID'];
+            $Action = $request->getBody()['Action'] ?? null;
+            if (!$Action || !$NoticeID){
+                return json_encode([
+                    'status'=>false,
+                    'message'=>'Invalid Request'
+                ]);
+            }
+            $ID = Application::$app->getUser()->getID();
+            /** @var ManagerNotice $Notice */
+            $Notice = ManagerNotice::findOne(['Notice_ID'=>$NoticeID,'Manager_ID'=>$ID]);
+            if (!$Notice){
+                return json_encode([
+                    'status'=>false,
+                    'message'=>'Invalid Request'
+                ]);
+            }
+            $Action = intval($Action);
+            if ($Action===ManagerNotice::ACTION_RESOLVED) {
+                $Notice->setNoticeAction(ManagerNotice::ACTION_RESOLVED);
+                $Notice->setNoticeStatus(ManagerNotice::STATUS_COMPLETED);
+                $Notice->update($Notice->getNoticeID(), [], ['Notice_Action', 'Notice_Status']);
+                return json_encode([
+                    'status' => true,
+                    'message' => 'Notice Accepted'
+                ]);
+            }else if ($Action===ManagerNotice::ACTION_IGNORED){
+                $Notice->setNoticeAction(ManagerNotice::ACTION_IGNORED);
+                $Notice->setNoticeStatus(ManagerNotice::STATUS_COMPLETED);
+                $Notice->update($Notice->getNoticeID(), [], ['Notice_Action', 'Notice_Status']);
+                return json_encode([
+                    'status' => true,
+                    'message' => 'Notice Ignored'
+                ]);
+            }else{
+                return json_encode([
+                    'status'=>false,
+                    'message'=>'Invalid Request'
+                ]);
+            }
+        }
     }
 
     public function ManageNotification(Request $request,Response $response): bool|string
@@ -1229,6 +1365,18 @@ class managerController extends Controller
             $total_rows = Campaign::getCount(false,['Status'=>Campaign::PENDING]);
             $total_pages = ceil ($total_rows / $limit);
             $data= Campaign::RetrieveAll(true,[$initial,$limit],true,['Status'=>Campaign::PENDING]);
+            $data=array_filter($data,function ($item){
+                /** @var $item Campaign*/
+                $date = new DateTime($item->getCampaignDate());
+                $now = new DateTime();
+                $interval = $date->diff($now);
+                $days = $interval->format('%d');
+                $days = intval($days);
+                if ($days>14){
+                    return true;
+                }
+                return false;
+            });
         }else if ($CampaignStatus===2){
             $total_rows = Campaign::getCount();
             $total_pages = ceil ($total_rows / $limit);
@@ -1239,27 +1387,7 @@ class managerController extends Controller
             $total_pages = ceil ($total_rows / $limit);
             $data= Campaign::RetrieveAll(true,[$initial,$limit],true,['Status'=>Campaign::REJECTED,'Verified'=>Campaign::REJECTED]);
         }
-//        Filter the $data array that Campaign Date is not greater than 12 hours from now
-        /**
-         * @throws \Exception
-         */
-        $data=array_filter(/**
-         * @throws \Exception
-         */ /**
-         * @throws \Exception
-         */ /**
-         */ $data,function ($item){
-            /** @var $item Campaign*/
-            $date = new DateTime($item->getCampaignDate());
-            $now = new DateTime();
-            $interval = $date->diff($now);
-            $days = $interval->format('%d');
-            $days = intval($days);
-            if ($days>14){
-                return true;
-            }
-            return false;
-        });
+
         return $this->render('Manager/ManageCampaigns',
             [
                 'page'=>'mngCampaign',
@@ -1732,6 +1860,162 @@ class managerController extends Controller
 
     }
 
+    public function ChangePassword(Request $request,Response $response)
+    {
+        if ($request->isPost()){
+            $CurrentPassword = $request->getBody()['CurrentPassword'];
+            $NewPassword = $request->getBody()['NewPassword'];
+            $ConfirmPassword = $request->getBody()['ConfirmPassword'];
+            if (empty($CurrentPassword) || empty($NewPassword) || empty($ConfirmPassword)){
+                if (empty($CurrentPassword)){
+                    return json_encode([
+                        'status'=>false,
+                        'message'=>'Current Password is required!',
+                        'field'=>'CurrentPassword'
+                    ]);
+                }
+                if (empty($NewPassword)){
+                    return json_encode([
+                        'status'=>false,
+                        'message'=>'New Password is required!',
+                        'field'=>'NewPassword'
+                    ]);
+                }
+                if (empty($ConfirmPassword)){
+                    return json_encode([
+                        'status'=>false,
+                        'message'=>'Confirm Password is required!',
+                        'field'=>'ConfirmPassword'
+                    ]);
+                }
+            }
+            if (strlen($NewPassword)<8){
+                return json_encode([
+                    'status'=>false,
+                    'message'=>'Password must be at least 8 characters long!',
+                    'field'=>'NewPassword'
+                ]);
+            }
+
+//            if (preg_match('/[A-Z]/', $NewPassword)===0){
+//                return json_encode([
+//                    'status'=>false,
+//                    'message'=>'Password must contain at least one uppercase letter!'
+//                ]);
+//            }
+//
+//            if (preg_match('/[a-z]/', $NewPassword)===0){
+//                return json_encode([
+//                    'status'=>false,
+//                    'message'=>'Password must contain at least one lowercase letter!'
+//                ]);
+//            }
+//
+//            if (preg_match('/[0-9]/', $NewPassword)===0){
+//                return json_encode([
+//                    'status'=>false,
+//                    'message'=>'Password must contain at least one number!'
+//                ]);
+//            }
+//
+//            if (preg_match('/[^a-zA-Z\d]/', $NewPassword)===0){
+//                return json_encode([
+//                    'status'=>false,
+//                    'message'=>'Password must contain at least one special character!'
+//                ]);
+//            }
+//
+//            if (preg_match('/\s/', $NewPassword)===1){
+//                return json_encode([
+//                    'status'=>false,
+//                    'message'=>'Password must not contain any whitespace!'
+//                ]);
+//            }
+
+            if ($ConfirmPassword!==$NewPassword){
+                return json_encode([
+                    'status'=>false,
+                    'message'=>'New Password and Confirm Password does not match!',
+                    'field'=>'ConfirmPassword'
+                ]);
+            }
+
+            if ($CurrentPassword===$NewPassword){
+                return json_encode([
+                    'status'=>false,
+                    'message'=>'New Password and Current Password cannot be same!',
+                    'field'=>'NewPassword'
+                ]);
+            }
+
+
+            $User = User::findOne(['UID'=>Application::$app->getUser()->getId()]);
+            if (password_verify($CurrentPassword,$User->getPassword())){
+                if ($NewPassword===$ConfirmPassword){
+                    $User->setPassword(password_hash($NewPassword,PASSWORD_DEFAULT));
+                    if ($User->update($User->getID(),[],['Password'])){
+                        return json_encode([
+                            'status'=>true,
+                            'message'=>'Password Changed Successfully!'
+                        ]);
+                    }else{
+                        return json_encode([
+                            'status'=>false,
+                            'message'=>'Password Not Changed!'
+                        ]);
+                    }
+                }else{
+                    return json_encode([
+                        'status'=>false,
+                        'message'=>'New Password and Confirm Password does not match!'
+                    ]);
+                }
+            }else{
+                return json_encode([
+                    'status'=>false,
+                    'message'=>'Current Password is incorrect!'
+                ]);
+            }
+        }
+
+    }
+
+    public function ChangeProfileImage(Request $request,Response $response)
+    {
+        /** @var $File File*/
+        /** @var $Manager Manager*/
+        $UserID= Application::$app->getUser()->getId();
+        $Manager = Manager::findOne(['Manager_ID'=>$UserID]);
+        $ExistingFile = $Manager->getProfileImage();
+        $File=$request->getBody()['profileImage'];
+        if($File) {
+            $File->setPath('Profile/Manager');
+            $filename = $File->GenerateFileName('MNG_');
+            $Manager->setProfileImage($filename);
+            if ($Manager->update($Manager->getID(), [], ['Profile_Image'])){
+                $File->saveFile();
+                File::DeleteFileByPath($ExistingFile);
+                return json_encode([
+                    'status' => true,
+                    'filename' => $filename,
+                    'data' => $File,
+                    'message' => 'File Selected!'
+                ]);
+            }else{
+                return json_encode([
+                    'status'=>false,
+                    'message'=>'File Not Selected!'
+                ]);
+            }
+        }else{
+            return json_encode([
+                'status'=>false,
+                'message'=>'No File Selected!'
+            ]);
+        }
+    }
+
+
     public function SponsorshipReport(Request $request,Response $response)
     {
 
@@ -1785,7 +2069,7 @@ class managerController extends Controller
                                 'SponsorName' => $Sponsor->getSponsorName(),
                                 'SponsorEmail' => $Sponsor->getEmail(),
                                 'SponsorAmount' => $sponsorCampaign->getSponsoredAmount(),
-                                'SponsorDate' => $sponsorCampaign->getSponsoredAt(),
+                                'SponsorDate' => Date::GetProperDate($sponsorCampaign->getSponsoredAt()),
                                 'SponsorshipStatus' => $SponsorshipRequest->getSponsorshipStatus(true),
                             ];
                         }
@@ -1794,9 +2078,9 @@ class managerController extends Controller
 
                 $Data[] = [
                     'CampaignName' => $Campaign->getCampaignName(),
-                    'CampaignDate' => $Campaign->getCampaignDate(),
+                    'CampaignDate' =>Date::GetProperDate($Campaign->getCampaignDate()),
                     'SponsorshipAmount' => $SponsorshipRequest->getSponsorshipAmount(true),
-                    'SponsorshipDate' => $SponsorshipRequest->getSponsorshipDate(),
+                    'SponsorshipDate' => Date::GetProperDate($SponsorshipRequest->getSponsorshipDate()),
                     'SponsorshipStatus' => $SponsorshipRequest->getSponsorshipStatus(true),
                     'Transferred'=> $SponsorshipRequest->getTransferred(),
                     'TransferredDate'=> $SponsorshipRequest->getTransferredAt(),
