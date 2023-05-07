@@ -292,6 +292,7 @@ $app->router->get('/mofficer/searchdonor', [medicalOfficerController::class, 'Se
 $app->router->post('/mofficer/registerDonor', [medicalOfficerController::class, 'RegisterDonor']);
 $app->router->post('/mofficer/registerDonorForCampaign', [medicalOfficerController::class, 'RegisterDonorForCampaign']);
 $app->router->post('/mofficer/uploadNICFront', [medicalOfficerController::class, 'UploadDonorNICFront']);
+$app->router->post('/mofficer/uploadNICBack', [medicalOfficerController::class, 'UploadDonorNICBack']);
 
 //$app->router->get('/mofficer/campaigns', [medicalOfficerController::class, 'VerifyDonor']);
     $app->router->post('/medicalofficer/get-donor', [medicalOfficerController::class, 'FindDonor']);

@@ -58,6 +58,9 @@ class medicalOfficerController extends \Core\Controller
     public function Dashboard(Request $request, Response $response)
     {
         $Campaign=MedicalOfficer::getAssignedCampaign();
+        $Campaign = array_filter($Campaign, function ($object) {
+            return $object->getCampaignDate() >= date('Y-m-d');
+        });
         $User = Application::$app->getUser();
 //        $Campaign = Campaign::RetrieveAll(false,[],false,[],['Campaign_Date'=>'ASC']);
         return $this->render('/MedicalOfficer/MedicalOfficerdashboard',
@@ -384,6 +387,10 @@ class medicalOfficerController extends \Core\Controller
                                 $this->setFlashMessage('error','Donor not found! Ask the donor to register first.');
                                 Application::Redirect('/mofficer/take-donation');
                             }
+                            if ($Donor->getDonationAvailability()!==Donor::AVAILABILITY_AVAILABLE){
+                                $this->setFlashMessage('error','Donor not available for donation!');
+                                Application::Redirect('/mofficer/take-donation');
+                            }
                             $IsDonorInQueue= CampaignDonorQueue::findOne(['Campaign_ID' => $Campaign->getCampaignID(), 'Donor_ID' => $Donor->getDonorID(),'Donor_Status'=>CampaignDonorQueue::STAGE_2],false);
 
                             if (!$IsDonorInQueue) {
@@ -404,7 +411,11 @@ class medicalOfficerController extends \Core\Controller
                             }
                         }
                         else{
+                            /** @var CampaignDonorQueue[] $DonorForCheckBlood */
                             $DonorForCheckBlood= CampaignDonorQueue::RetrieveAll(false,[],true,['Campaign_ID'=>$Campaign->getCampaignID(),'Donor_Status'=>CampaignDonorQueue::STAGE_2]);
+                            $DonorForCheckBlood = array_filter($DonorForCheckBlood, function ($DonorForCheckBlood) {
+                                return $DonorForCheckBlood->getDonor()->getDonationAvailability()===Donor::AVAILABILITY_AVAILABLE;
+                            });
                             $model['DonorForCheckBlood']=$DonorForCheckBlood;
                             return $this->render('/MedicalOfficer/BloodCheckQueue', $model);
                         }
@@ -481,13 +492,18 @@ class medicalOfficerController extends \Core\Controller
                 if ($DonorQueue){
                     $CampaignID=$DonorQueue->getCampaignID();
                     $DonorCheckHealth->setCampaignID($CampaignID);
+                    $UserID = Application::$app->getUser()->getID();
+                    $DonorCheckHealth->setRecommendBy($UserID);
                     //TODO : CHECK IF THE DONOR IS ELIGIBLE TO DONATE
                     $DonorCheckHealth->IsEligible();
                     if ($DonorCheckHealth->validate() && $DonorCheckHealth->save()){
                         $DonorQueue->setDonor_Status(CampaignDonorQueue::STAGE_2);
                         $DonorQueue->update($DonorCheckHealth->getDonorID(),[],['Donor_Status']);
 
-                        $this->setFlashMessage('success','Donor Health Check Up Completed!');
+                        $this->setFlashMessage(key: 'success',message: 'Donor Health Check Up Completed!');
+                        if ($DonorCheckHealth->getEligible()===DonorHealthCheckUp::NOT_ELIGIBLE){
+                            $this->setFlashMessage(key: 'error',message: "Donor Cannot Donate the Blood");
+                        }
                         Application::Redirect('/mofficer/take-donation');
                     }else{
                         $this->setFlashMessage('error','Donor Health Check Up Failed!');
@@ -787,12 +803,34 @@ class medicalOfficerController extends \Core\Controller
             $Status = $request->getBody()['Status'];
             $DonorID = $request->getBody()['DonorID'];
             $CampaignID = $request->getBody()['CampaignID'];
+            if (!$Status || !$DonorID || !$CampaignID){
+                return json_encode([
+                    'status'=>false,
+                    'message'=>'Invalid Data!'
+                ]);
+            }
+            /** @var Donor $Donor */
+            $Donor = Donor::findOne(['Donor_ID'=>$DonorID],false);
+            $Campaign = Campaign::findOne(['Campaign_ID'=>$CampaignID],false);
+            if (!$Donor || !$Campaign){
+                return json_encode([
+                    'status'=>false,
+                    'message'=>'Invalid Data!'
+                ]);
+            }
+
             if ($Status==='1'){
                 $OngoingDonationVerification = CampaignDonorQueue::findOne(['Donor_ID'=>$DonorID,'Campaign_ID'=>$CampaignID],false);
                 if ($OngoingDonationVerification){
                     return json_encode([
                         'status'=>false,
                         'message'=>'Donor already registered for this campaign!'
+                    ]);
+                }
+                if (!$Donor->getNICFront() || !$Donor->getNICBack()){
+                    return json_encode([
+                        'status'=>false,
+                        'message'=>'Donor NIC Front and Back images are required!'
                     ]);
                 }
                 $OngoingDonationVerification = new CampaignDonorQueue();
@@ -828,6 +866,7 @@ class medicalOfficerController extends \Core\Controller
             $DonorID = $request->getBody()['DonorID'];
             $File = $request->getBody()['NICFront'];
             /** @var Donor $Donor */
+            /** @var File $File */
 
             $Donor = Donor::findOne(['Donor_ID'=>$DonorID],false);
             if (!$Donor){
@@ -836,9 +875,64 @@ class medicalOfficerController extends \Core\Controller
                     'message'=>'Invalid Donor ID!'
                 ]);
             }
+            $File->setFileName('Donor/NIC/'.$DonorID.'/'.uniqid("NICFront_").".".$File->getExtension());
+            $Donor->setNICFront($File->getFileName());
+            if ($Donor->validate(true)) {
+                $Donor->update($Donor->getID(),[],['NIC_Front']);
+                $File->saveFile();
+                return json_encode([
+                    'status' => true,
+                    'message' => 'NIC Front Uploaded Successfully!'
+                ]);
+            }else{
+                return json_encode([
+                    'status'=>false,
+                    'message'=>'Invalid Data!',
+                    'errors'=>[
+                        'Donor'=>$Donor->errors,
+                    ]
+                ]);
+            }
             if(!$Donor->getNICFront()) {
                 $File->setFileName($Donor->getNICFront());
             }
+        }
+    }
+    public function UploadDonorNICBack(Request $request,Response $response)
+    {
+        if ($request->isPost()){
+
+            $DonorID = $request->getBody()['DonorID'];
+            $File = $request->getBody()['NICBack'];
+            /** @var Donor $Donor */
+            /** @var File $File */
+
+            $Donor = Donor::findOne(['Donor_ID'=>$DonorID],false);
+            if (!$Donor){
+                return json_encode([
+                    'status'=>false,
+                    'message'=>'Invalid Donor ID!'
+                ]);
+            }
+            $File->setFileName('Donor/NIC/'.$DonorID.'/'.uniqid("NICBack_").".".$File->getExtension());
+            $Donor->setNICBack($File->getFileName());
+            if ($Donor->validate(true)) {
+                $Donor->update($Donor->getID(),[],['NIC_Back']);
+                $File->saveFile();
+                return json_encode([
+                    'status' => true,
+                    'message' => 'NIC Back Uploaded Successfully!'
+                ]);
+            }else{
+                return json_encode([
+                    'status'=>false,
+                    'message'=>'Invalid Data!',
+                    'errors'=>[
+                        'Donor'=>$Donor->errors,
+                    ]
+                ]);
+            }
+
         }
     }
 

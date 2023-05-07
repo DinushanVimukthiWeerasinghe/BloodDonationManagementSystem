@@ -9,7 +9,10 @@ use App\view\components\ResponsiveComponent\Alert\FlashMessage;
 ?>
 
 <?php FlashMessage::RenderFlashMessages();?>
-<div class="d-flex w-100 justify-content-center align-items-center bg-white m-1 border-radius-10">
+<div class="d-flex w-100 flex-column justify-content-start align-items-center bg-white m-1 border-radius-10">
+    <div class="bg-dark mt-1 px-2 py-1 text-white text-center w-90">
+
+    </div>
     <div class="d-flex w-80 overflow-y-scroll ">
         <table class="w-100 ">
             <thead class="sticky top-0">

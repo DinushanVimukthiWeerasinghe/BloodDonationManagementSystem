@@ -110,8 +110,8 @@ CREATE TABLE IF NOT EXISTS Donors
     BloodDonation_Book_1  VARCHAR(100) NULL,
     BloodDonation_Book_2  VARCHAR(100) NULL,
     Status                VARCHAR(50)  NOT NULL,
-    Donation_Availability INT          NOT NULL DEFAULT 0,
-    Verified              INT          NOT NULL DEFAULT 0,
+    Donation_Availability INT          NOT NULL DEFAULT 1,
+    Verified              INT          NOT NULL DEFAULT 1,
     Verified_At           TIMESTAMP    NULL,
     Verified_By           VARCHAR(20)  NULL,
     Verification_Remarks  VARCHAR(100) NULL,
@@ -275,8 +275,11 @@ CREATE TABLE IF NOT EXISTS Donor_Health_Checkup
     Teeth_Removed            INT          NOT NULL CHECK ( Teeth_Removed BETWEEN 1 AND 2),
     Antibiotics_And_Aspirins INT          NOT NULL CHECK ( Antibiotics_And_Aspirins BETWEEN 1 AND 2),
     Eligible                 INT          NOT NULL CHECK ( Eligible BETWEEN 1 AND 2),
+    Recommendation          INT         NOT NULL CHECK ( Recommendation BETWEEN 1 AND 2),
+    Recommend_By             VARCHAR(20)  NULL,
     Remarks                  VARCHAR(100) NULL,
     FOREIGN KEY (Donor_ID) REFERENCES Donors (Donor_ID),
+    FOREIGN KEY (Recommend_By) REFERENCES MedicalOfficers (Officer_ID),
     FOREIGN KEY (Campaign_ID) REFERENCES Campaign (Campaign_ID),
     PRIMARY KEY (Donor_ID, Campaign_ID)
 ) ENGINE = InnoDB

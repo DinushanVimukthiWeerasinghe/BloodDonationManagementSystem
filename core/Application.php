@@ -158,10 +158,7 @@ class Application
     {
         $Role=$user->getRole();
         $ID = $user->getID();
-        $AuthCode = new OTPCode();
-//        print_r($user);
-//        exit();
-//        Role == 'Manager
+
         if ($user->IsUserVerified()) {
             if ($Role === User::MANAGER) {
                 $this->user = Manager::findOne(['Manager_ID' => $ID]);
@@ -178,6 +175,7 @@ class Application
             } else if ($Role === User::HOSPITAL) {
                 $this->user = Hospital::findOne(['Hospital_ID' => $ID]);
             } else if ($Role === User::ORGANIZATION) {
+
                 $this->user = Organization::findOne(['Organization_ID' => $ID]);
             } else if ($Role === User::SPONSOR) {
                 $this->user = Sponsor::findOne(['Sponsor_ID' => $ID]);
@@ -201,6 +199,9 @@ class Application
             {
                 return false;
             }
+        }else{
+            var_dump($Role);
+            exit();
         }
         return true;
     }

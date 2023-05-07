@@ -6,6 +6,44 @@ use App\model\users\Donor;
 
 class DonorHealthCheckUp extends \App\model\database\dbModel
 {
+    public const TIME_PERIOD_1_MONTHS = 5;
+    public const TIME_PERIOD_3_MONTHS = 1;
+    public const TIME_PERIOD_UNTIL_NEXT_CAMPAIGN = 2;
+    public const TIME_PERIOD_6_MONTHS = 3;
+    public const TIME_PERIOD_12_MONTHS = 4;
+    public const TIME_PERIOD_EVER = 6;
+    public const Doctor_Recommend = 2;
+    public const Doctor_Not_Recommend = 1;
+    public const ELIGIBLE = 2;
+    public const NOT_ELIGIBLE = 1;
+    public const GOOD_HEALTH = 1;
+    public const NOT_GOOD_HEALTH = 2;
+    public const VACCINATED = 1;
+    public const NOT_VACCINATED = 2;
+    public const TATTOOED = 1;
+    public const NOT_TATTOOED = 2;
+    public const PREGNANT = 1;
+    public const NOT_PREGNANT = 2;
+    public const PIERCED = 1;
+    public const NOT_PIERCED = 2;
+
+    public const PRISONED = 1;
+    public const NOT_PRISONED = 2;
+    public const DONATED_TO_PARTNER = 1;
+    public const NOT_DONATED_TO_PARTNER = 2;
+    public const WENT_ABROAD = 1;
+    public const NOT_WENT_ABROAD = 2;
+    public const MALARIA_INFECTED = 1;
+    public const NOT_MALARIA_INFECTED = 2;
+    public const DENGUE_INFECTED = 1;
+    public const NOT_DENGUE_INFECTED = 2;
+    public const CFEVER_INFECTED = 1;
+    public const NOT_CFEVER_INFECTED = 2;
+    public const TEETH_REMOVED = 1;
+    public const NOT_TEETH_REMOVED = 2;
+    public const ANTIBIOTICS_AND_ASPIRINS = 1;
+    public const NOT_ANTIBIOTICS_AND_ASPIRINS = 2;
+
     protected string $Donor_ID;
     protected string $Campaign_ID;
     protected string $Diseases;
@@ -23,6 +61,8 @@ class DonorHealthCheckUp extends \App\model\database\dbModel
     protected int $Teeth_Removed;
     protected int $Antibiotics_And_Aspirins;
     protected int $Eligible;
+    protected int $Recommendation;
+    protected string $Recommend_By;
     protected ?string $Remarks=null;
 
     /**
@@ -291,11 +331,148 @@ class DonorHealthCheckUp extends \App\model\database\dbModel
         $this->Eligible = $Eligible;
     }
 
+    /**
+     * @return int
+     */
+    public function getRecommendation(): int
+    {
+        return $this->Recommendation;
+    }
+
+    /**
+     * @param int $Recommendation
+     */
+    public function setRecommendation(int $Recommendation): void
+    {
+        $this->Recommendation = $Recommendation;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRecommendBy(): string
+    {
+        return $this->Recommend_By;
+    }
+
+    /**
+     * @param string $Recommend_By
+     */
+    public function setRecommendBy(string $Recommend_By): void
+    {
+        $this->Recommend_By = $Recommend_By;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getRemarks(): ?string
+    {
+        return $this->Remarks;
+    }
+
+    /**
+     * @param string|null $Remarks
+     */
+    public function setRemarks(?string $Remarks): void
+    {
+        $this->Remarks = $Remarks;
+    }
+
+
+
     public function IsEligible()
     {
         //TODO : Check if the donor is eligible to donate blood
-        $this->setEligible(2);
+        $this->Eligible = self::ELIGIBLE;
+        $TimePeriod = null;
+        if(trim($this->getDiseases()) !== "None"){
+            $this->setEligible(self::NOT_ELIGIBLE);
+        }
+        if($this->getGoodHealth() == self::NOT_GOOD_HEALTH){
+            $TimePeriod =self::TIME_PERIOD_UNTIL_NEXT_CAMPAIGN;
+            $this->setEligible(self::NOT_ELIGIBLE);
+        }
+        if($this->getVaccinated() == self::VACCINATED){
+            $TimePeriod =self::TIME_PERIOD_12_MONTHS;
+            $this->setEligible(self::NOT_ELIGIBLE);
+        }
+        if($this->getTattooed() == self::TATTOOED){
+            $TimePeriod =self::TIME_PERIOD_12_MONTHS;
+            $this->setEligible(self::NOT_ELIGIBLE);
+        }
+        if($this->getPregnant() == self::PREGNANT){
+            $TimePeriod =self::TIME_PERIOD_12_MONTHS;
+            $this->setEligible(self::NOT_ELIGIBLE);
+        }
+        if($this->getPierced() == self::PIERCED){
+            $TimePeriod =self::TIME_PERIOD_12_MONTHS;
+            $this->setEligible(self::NOT_ELIGIBLE);
+        }
+        if($this->getPrisoned() == self::PRISONED){
+            $TimePeriod =self::TIME_PERIOD_12_MONTHS;
+            $this->setEligible(self::NOT_ELIGIBLE);
+        }
+        if($this->getDonatedToPartner() == self::DONATED_TO_PARTNER){
+            $TimePeriod =self::TIME_PERIOD_12_MONTHS;
+            $this->setEligible(self::NOT_ELIGIBLE);
+        }
+        if($this->getWentAbroad() == self::WENT_ABROAD){
+            $TimePeriod =self::TIME_PERIOD_12_MONTHS;
+            $this->setEligible(self::NOT_ELIGIBLE);
+        }
+        if($this->getMalariaInfected() == self::MALARIA_INFECTED){
+            $TimePeriod =self::TIME_PERIOD_12_MONTHS;
+            $this->setEligible(self::NOT_ELIGIBLE);
+        }
+        // Time Period for Below Diseases is 6 Months
+        if($this->getDengueInfected() == self::DENGUE_INFECTED){
+            $TimePeriod =self::TIME_PERIOD_6_MONTHS;
+            $this->setEligible(self::NOT_ELIGIBLE);
+        }
+        if($this->getCFeverInfected() == self::CFEVER_INFECTED){
+            $TimePeriod =self::TIME_PERIOD_6_MONTHS;
+            $this->setEligible(self::NOT_ELIGIBLE);
+        }
+        if($this->getTeethRemoved() == self::TEETH_REMOVED){
+            $TimePeriod =self::TIME_PERIOD_6_MONTHS;
+            $this->setEligible(self::NOT_ELIGIBLE);
+        }
+        if($this->getAntibioticsAndAspirins() == self::ANTIBIOTICS_AND_ASPIRINS){
+            $TimePeriod =self::TIME_PERIOD_6_MONTHS;
+            $this->setEligible(self::NOT_ELIGIBLE);
+        }
+        if($this->getEligible() ===self::ELIGIBLE){
+            if ($this->getRecommendation()===self::Doctor_Not_Recommend){
+                $TimePeriod =self::TIME_PERIOD_UNTIL_NEXT_CAMPAIGN;
+                $this->setEligible(self::NOT_ELIGIBLE);
+            }
+        }
+        if ($this->getEligible()===self::NOT_ELIGIBLE){
+            /** @var Donor $Donor */
+            $Donor = Donor::findOne(['Donor_ID'=>$this->getDonorID()]);
+            if ($TimePeriod === self::TIME_PERIOD_EVER){
+                $Donor->setDonationAvailability(Donor::AVAILABILITY_PERMANENT_UNAVAILABLE);
+            }else{
+                $Donor->setDonationAvailability(Donor::AVAILABILITY_TEMPORARY_UNAVAILABLE);
+                $Donor->setDonationAvailabilityDate($this->getDonationAvailableTime($TimePeriod));
+            }
+            $Donor->update($Donor->getDonorID(),[],['Donation_Availability','Donation_Availability_Date']);
+            return false;
+        }
         return true;
+    }
+
+    public function getDonationAvailableTime($TimePeriod)
+    {
+        return match ($TimePeriod) {
+            self::TIME_PERIOD_6_MONTHS => date('Y-m-d', strtotime('+6 months')),
+            self::TIME_PERIOD_12_MONTHS => date('Y-m-d', strtotime('+12 months')),
+            self::TIME_PERIOD_3_MONTHS => date('Y-m-d', strtotime('+3 months')),
+            self::TIME_PERIOD_1_MONTHS => date('Y-m-d', strtotime('+1 months')),
+            self::TIME_PERIOD_EVER => date('Y-m-d', strtotime('+100 years')),
+            default => date('Y-m-d', strtotime('+1 days')),
+        };
     }
 
     public function labels(): array
@@ -317,6 +494,8 @@ class DonorHealthCheckUp extends \App\model\database\dbModel
             'CFever_Infected' => 'CFever Infected',
             'Teeth_Removed' => 'Teeth Removed',
             'Antibiotics_And_Aspirins' => 'Antibiotics And Aspirins',
+            'Recommendation' => 'Recommendation',
+            'Recommendation_By' => 'Recommendation By',
         ];
     }
 
@@ -377,7 +556,9 @@ class DonorHealthCheckUp extends \App\model\database\dbModel
             'Teeth_Removed',
             'Antibiotics_And_Aspirins',
             'Eligible',
-            'Remarks'
+            'Remarks',
+            'Recommendation',
+            'Recommend_By',
         ];
     }
 

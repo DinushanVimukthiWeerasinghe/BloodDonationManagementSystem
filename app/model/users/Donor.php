@@ -14,6 +14,7 @@ class Donor extends Person
     public const AVAILABILITY_AVAILABLE = 1;
     public const AVAILABILITY_TEMPORARY_UNAVAILABLE = 2;
     public const AVAILABILITY_PERMANENT_UNAVAILABLE = 3;
+
     public const REPORTED_DONOR=1;
     public const AVAILABLE = 1;
     public const UNAVAILABLE = 2;
@@ -199,10 +200,14 @@ class Donor extends Person
     }
 
     /**
-     * @return int
+     * @param bool $Readable
+     * @return int|string
      */
-    public function getDonationAvailability(): int
+    public function getDonationAvailability(bool $Readable=false): int | string
     {
+        if ($Readable):
+            return $this->Donation_Availability == 1? "Available":"Not Available";
+        endif;
         return $this->Donation_Availability;
     }
 

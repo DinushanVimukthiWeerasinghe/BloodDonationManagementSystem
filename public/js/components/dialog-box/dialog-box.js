@@ -92,7 +92,14 @@ const OpenDialogBox= (props) => {
         secondaryBtnElement.className= 'btn ';
         secondaryBtnElement.innerHTML= secondaryBtnText;
         if (secondaryBtnColor) {
-            secondaryBtnElement.classList.add(secondaryBtnColor);
+            // Check if the Secondary Button Color is array or not
+            if (Array.isArray(secondaryBtnColor)) {
+                secondaryBtnColor.forEach((color) => {
+                    secondaryBtnElement.classList.add(color);
+                });
+            }else{
+                secondaryBtnElement.classList.add(secondaryBtnColor);
+            }
         }else{
             secondaryBtnElement.classList.add('btn-outline-secondary');
         }
