@@ -26,34 +26,133 @@ echo $background;
 FlashMessage::RenderFlashMessages();
 ?>
 <style>
+    .container{
+        flex-wrap: wrap;
+    }
+    .buttons{
+        display: flex;
+        flex-direction: row;
+        text-align: center;
+        margin-top: -150px;
+        padding: 10px;
+
+    }
+    form{
+        height: 80vh;
+        width: 100vw;
+        padding: 1000px;
+    }
+    textarea{
+        /*max-width: 700px;*/
+        /*min-width: 600px;*/
+        min-height: 200px;
+        max-width: 100%;
+        background-color: #9089cc;
+        border-radius: 10px;
+    }
+    textarea::placeholder{
+        color: whitesmoke;
+    }
+    /*@media only screen and (max-width: 1690px)  {*/
+    /*    form{*/
+    /*        height: 50vh;*/
+    /*    }*/
+    /*    */
+    /*}*/
     @media only screen and (max-width: 376px) {
         h1{
             color: red;
         }
+        form{
+            background-color: black;
+        }
+    }
+    @media only screen and (max-width: 700px){
+        .buttons{
+            display: flex;
+            flex-direction: column;
+        }
+    }
+    @media only screen and (max-width: 294px){
+        textarea::placeholder{
+            font-size: 8pt;
+            line-height: 30px;
+        }
+        /*.form-title{*/
+        /*    width: 100%;*/
+        /*}*/
     }
 </style>
 <link rel="stylesheet" href="/public/css/components/form/index2.css">
 <link rel="stylesheet" href="/public/css/framework/util/border/border-radius.css">
 <link rel="stylesheet" href="/public/css/fontawesome/fa.css">
-<div class="container p-5" style="height: 10px;margin-top: -500px">
-    <form action="inform?id=<?php echo $_GET['id'] ?>" method="post" class="form-column p-3" enctype="multipart/form-data">
-        <h1 class="form-title mt-0">Inform Donors</h1>
-        <div class="form-entity mt-2">
-            <label class="form-label">Your Message</label><br><br>
+<div class="container w-60" style="margin-top: 80px;">
+    <form action="inform?id=<?php echo $_GET['id'] ?>" method="post" class="form-column max-h-15" enctype="multipart/form-data">
+        <h1 class="form-title">Inform Donors</h1>
+        <div class="form-entity mt-1">
+            <label class="form-label">Your Message</label><br>
 <!--            <input type="text" class="form-input" name="Message" style="padding: 50px;" required>-->
-            <textarea name="Message" style="max-height: 50vh;border-radius: 10px;background-color: rgb(255,255,255,0);border: 2px solid black;max-width: 30vw;" class="fa fa-1" required></textarea>
-        </div><br>
-        <label class="form-label" style="color: red;font-size: 15pt;"><?php echo $inform->getFirstError('Message') ?></label>
-        <div class="form-entity mt-3">
-            <label class="form-label">Message Type</label><br><br>
-            <select class="form-select fa fa-1" name="Type" required>
-                <option class="fa fa-1" value="1">Urgent</option>
-                <option  class="fa fa-1" value="2">Not Urgent</option>
-            </select>
-        </div><br><br>
-        <div class="form-row">
-            <input type="submit" class="btn btn-success mr-2" >
-            <input type="reset" class="btn btn-dark">
-         <div>
+            <textarea name="Message"  class="fa fa-1 text-center" id="Message" placeholder="Your Message must contains at least 20 Characters."></textarea>
+        </div>
     </form>
+    <div class="gap-1 buttons" style=" justify-content: center;position: center">
+        <button class="btn btn-success" onclick="inform()" id="sub">Inform</button>
+        <button value="cancel" class="btn btn-dark" onclick="back()">Cancel</button>
+    </div>
 </div>
+
+<script>
+    const back = (event) => {
+
+        OpenDialogBox({
+            title: 'Cancel',
+            content: 'Are You Sure You want to cancel the informing Donors?',
+            cancelBtnText: 'No',
+            successBtnText : 'Yes',
+
+            successBtnAction : () => {
+                window.location.href = "/organization/campDetails?id=<?php echo $_GET['id'] ?>"
+            },
+        });
+    }
+    const inform = (e)=>{
+
+        messages = document.getElementById('Message').value.trim();
+
+        if(messages.length === 0 ){
+            ShowToast({
+                message : 'Message Cannot be Empty',
+                type : 'danger',
+            });
+
+        }
+        else if(messages.length < 20){
+            ShowToast({
+                message: 'You Must include at least 20 Characters in the Message',
+                type: 'danger',
+            });
+        }
+        else {
+
+            OpenDialogBox({
+                title: 'Inform Confirmation',
+                content: 'Are You Sure You want to Inform Donors?',
+                successBtnText: 'Yes',
+                cancelBtnText: 'NO',
+
+                successBtnAction: () => {
+
+                     document.querySelector('form').submit();
+                     ShowToast({
+                         message : 'Message Sent Successfully',
+                         type : 'success',
+
+                     });
+                },
+
+            });
+
+        }
+        e.preventDefault();
+    };
+</script>

@@ -8,6 +8,7 @@ use App\model\Authentication\OrganizationBankAccount;
 use App\model\BloodBankBranch\BloodBank;
 use App\model\database\dbModel;
 use App\model\inform\informDonors;
+use App\model\Notification\DonorNotification;
 use App\model\Notification\OrganizationNotification;
 use App\model\Requests\additional_sponsorship_request;
 use App\model\Requests\AttendanceAcceptedRequest;
@@ -28,6 +29,7 @@ use Core\middleware\ManagerMiddleware;
 use Core\Request;
 use Core\Response;
 use Core\SessionObject;
+use MongoDB\BSON\UTCDateTime;
 
 class OrganizationController extends Controller
 {
@@ -79,18 +81,7 @@ class OrganizationController extends Controller
     public function dashboard(): string
     {
         /* @var Organization $organization*/
-
         $organization = Organization::findOne(['Organization_ID' => Application::$app->getUser()->getID()]);
-
-       $params=[
-            'organization_Name'=> $organization->getOrganizationName(),
-        ];
-        return $this->render('Organization/organizationBoard',$params);
-    }
-
-    public function manage()
-    {
-        /* @var Campaign $campaign */
         $ID=Application::$app->getUser()->getID();
         $AlreadyCreatedCampaign=Campaign::RetrieveAll(false,[],true,['Organization_ID'=>$ID,'Status'=> Campaign::PENDING]);
         $AlreadyCreatedCampaigns=Campaign::RetrieveAll(false,[],true,['Organization_ID'=>$ID,'Status'=> Campaign::APPROVED]);
@@ -114,18 +105,44 @@ class OrganizationController extends Controller
                 }
             }
         }
-//        $identity = Security::Encrypt($identity);
-//        print_r($identity);
-//        exit();
-//        print_r($identity);
-//        exit();
-//        echo '<pre>';
-//        print_r($AlreadyCreatedCampaign);
-//        exit();
-        return $this->render('Organization/manageCampaign',[
-            'campaign_exist'=>$Exist,'id' => $ID,'identity' => $identity
-        ]);
+
+       $params=[
+            'organization_Name'=> $organization->getOrganizationName(),
+        ];
+        return $this->render('Organization/organizationBoard',[$params,'campaign_exist'=>$Exist,'id' => $ID,'identity' => $identity]);
     }
+
+//    public function manage()
+//    {
+//        /* @var Campaign $campaign */
+//        $ID=Application::$app->getUser()->getID();
+//        $AlreadyCreatedCampaign=Campaign::RetrieveAll(false,[],true,['Organization_ID'=>$ID,'Status'=> Campaign::PENDING]);
+//        $AlreadyCreatedCampaigns=Campaign::RetrieveAll(false,[],true,['Organization_ID'=>$ID,'Status'=> Campaign::APPROVED]);
+//
+//        $Exist=false;
+//        $identity = 0;
+////        $params = [];
+//        if($AlreadyCreatedCampaign){
+//            foreach ($AlreadyCreatedCampaign as $camp) {
+//                if ($camp && $camp->getCampaignDate() >= date('Y-m-d')) {
+//                    $Exist = true;
+//                    $identity = $camp->getCampaignID();
+//                }
+//            }
+//        }
+//        if($AlreadyCreatedCampaigns) {
+//            foreach ($AlreadyCreatedCampaigns as $camp) {
+//                if ($camp && $camp->getCampaignDate() >= date('Y-m-d')) {
+//                    $Exist = true;
+//                    $identity = $camp->getCampaignID();
+//                }
+//            }
+//        }
+//
+//        return $this->render('Organization/manageCampaign',[
+//            'campaign_exist'=>$Exist,'id' => $ID,'identity' => $identity
+//        ]);
+//    }
 
     public function CreateCampaign(Request $request,Response $response): string
     {
@@ -155,7 +172,7 @@ class OrganizationController extends Controller
         }
         if($Exist === true) {
             Application::$app->session->setFlash('error', 'Already Created Campaign is in Progress!');
-            Application::Redirect('/organization/manage');
+            Application::Redirect('/organization/dashboard');
 
         }
 
@@ -216,7 +233,7 @@ class OrganizationController extends Controller
                     'Campaign_Name' => $res->getCampaignName(),
                     'Campaign_Date' => $res->getCampaignDate(),
                     'Status' => $res->getCampaignStatus(),
-                    'Campaign_ID' => Security::Encrypt($res->getCampaignID())
+                    'Campaign_ID' => $res->getCampaignID()
                 ];
             }
         }
@@ -247,23 +264,53 @@ class OrganizationController extends Controller
     }
 
 
-    public function inform(Request $request, Response $response)
-    {
+//    public function inform(Request $request, Response $response)
+//    {
+//        $id = $_GET['id'];
+//        if ($request->isPost()) {
+//            $informdonor = new informDonors();
+//            $informdonor->loadData($request->getBody());
+//            $informdonor->setMessageID(uniqid('Msg_'));
+//            if ($informdonor->save()) {
+//                Application::Redirect('/organization/campDetails?id='.$id);
+//                return json_encode(['status' => true, 'message' => 'sending success']);
+//            } else {
+//                return json_encode(['status' => false, 'message' => 'Something went wrong!']);
+//            }
+//        }
+//
+//        return $this->render('Organization/inform');
+//
+//    }
+public function inform(Request $request, Response $response)
+{
+    $id = $_GET['id'];
+    $donors = AttendanceAcceptedRequest::RetrieveAll(false,[],true,['Campaign_ID' => $id]);
+    if($donors) {
         if ($request->isPost()) {
+
             $informdonor = new informDonors();
             $informdonor->loadData($request->getBody());
             $informdonor->setMessageID(uniqid('Msg_'));
-            if ($informdonor->save()) {
-//                Application::Redirect('/organization/campDetails?id='.$id);
-                return json_encode(['status' => true, 'message' => 'sending success']);
-            } else {
-                return json_encode(['status' => false, 'message' => 'Something went wrong!']);
+            foreach ($donors as $donor){
+                $donornotification = new DonorNotification();
+                $donornotification->setNotificationID(uniqid('Not_'));
+                $donornotification->setNotificationMessage($informdonor->getMessage());
+                $donornotification->setNotificationDate(date('Y-m-d'));
+                $donornotification->setTargetID($donor->getDonorID());
+                $donornotification->setNotificationState(1);
+                $donornotification->save();
             }
-        } else {
-            return json_encode(['status' => false, 'message' => 'Something went wrong!']);
+                Application::Redirect('/organization/campDetails?id=' . $id);
         }
-
+        //    print_r($informdonor);
+        return $this->render('Organization/inform', ['informdonor' => $informdonor ?? null]);
+    }  else{
+        Application::$app->session->setFlash('error','You do not have any Donors Yet.');
+        Application::Redirect('/organization/campDetails?id='. $id);
     }
+
+}
 
     public function ChangeProfileImage(Request $request,Response $response)
     {
@@ -468,17 +515,6 @@ class OrganizationController extends Controller
         $condition = ['Campaign_ID' => $id];
         $count = $attendance::getCount(false,$condition);
             return $this->render('Organization/campDetails',['campaign'=>$Campaign, 'disable' => $disable, 'expired' => $expired,'ReceivedAmount'=>$ReceivedAmount,'count'=>$count]);
-    }
-    public function Notification(Request $request, Response $response): string
-    {
-        $limit = 10;
-        $page = $request->getBody()['page'] ?? 1;
-        $initial = ($page - 1) * $limit;
-        $id=Application::$app->getUser()->getID();
-        $total_rows = Notification::getCount(false,['Target_User' => $id]);
-        $total_pages = ceil ($total_rows / $limit);
-        $notification = Notification::RetrieveAll(true,[$initial,$limit],true,['Target_User' => $id]);
-        return $this->render('Manager/Notification',['model'=>$notification,'total_pages'=>$total_pages,'current_page'=>$page]);
     }
 
     public function upload(Request $request, Response $response)

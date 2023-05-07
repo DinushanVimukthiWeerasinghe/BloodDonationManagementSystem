@@ -5,7 +5,6 @@
 use App\model\Campaigns\Campaign;
 use App\model\Utils\Date;
 use App\view\components\ResponsiveComponent\Alert\FlashMessage;
-use App\view\components\ResponsiveComponent\CardGroup\CardGroup;
 use App\view\components\ResponsiveComponent\ImageComponent\BackGroundImage;
 use App\view\components\ResponsiveComponent\NavbarComponent\AuthNavbar;
 
@@ -124,10 +123,9 @@ FlashMessage::RenderFlashMessages();
     }
 </style>
 
-<button class="btn btn-info w-10 back" style="position: absolute;margin-top:-500px;margin-left: -1300px;" onclick="history.back()">Go Back</button>
+<button class="btn btn-info w-10 back" style="position: absolute;margin-top:-500px;margin-left: -1350px;" onclick="history.back()">Go Back</button>
 <div class="d-flex flex-column w-90  p-1 mt-4" style="overflow-y: scroll;margin-left: 10vw">
-<!--    <div class="d-flex text-xl w-100 align-items-center justify-content-center bg-dark px-2 py-0-5 text-white font-bold" style="font-size: 1.8rem">--><?php //=$campaign->getCampaignName(); ?><!--</div>-->
-        <div class="d-flex bg-white-0-3 p-2 gap-2 details w-100 justify-content-center" style="flex-wrap: wrap;">
+        <div class="d-flex p-2 gap-2 details w-100 justify-content-center" style="flex-wrap: wrap;">
             <div class="text-xl d-flex flex-column justify-content-center align-items-center w-50 bg-white border-radius-10 gap-1 p-3 mt-3"  id="Campaign_Detail" style="flex-wrap: wrap;">
                 <div class="d-flex justify-content-between w-100 intro " id="Campaign_Name">
                     <div class="w-40">Campaign Name </div>
@@ -148,12 +146,7 @@ FlashMessage::RenderFlashMessages();
                     $CampaignStatus =$campaign->getCampaignStatus();
                     ?>
                         <div class="font-bold bg-yellow-10 py-0-5 px-1 border-radius-10 text-white intro" ><?= $CampaignStatus ?></div>
-<!--                    --><?php //elseif($CampaignStatus === Campaign::APPROVED): ?>
-<!--                        <div class="font-bold bg-green-6 py-0-5 px-1 border-radius-10 text-white intro">Campaign Approved</div>-->
-<!--                    --><?php //elseif($CampaignStatus === Campaign::REJECTED): ?>
-<!--                        <div class="font-bold bg-red-6 py-0-5 px-1 border-radius-10 text-white intro">Campaign Rejected</div>-->
-<!--                    --><?php //endif;
-////                    ?>
+
                     </div>
                 </div>
                 <div class="d-flex flex-column w-100 justify-content-between gap-1 intro" id="Campaign_Date">
@@ -162,17 +155,6 @@ FlashMessage::RenderFlashMessages();
                         <?=$campaign->getCampaignDescription(); ?>
                     </div>
                 </div>
-
-<!--                --><?php //if(isset($expired) &&  $expired== 1) { ?>
-<!--                <div class="d-flex gap-6" id="Campaign_Status">-->
-<!--                    <div class="">Received Income</div>-->
-<!--                    <div class="font-bold" style="padding: 0 5px "></div>-->
-<!--                </div>-->
-<!--                <div class="d-flex gap-6" id="Campaign_Status">-->
-<!--                    <div class="">Donor Participation</div>-->
-<!--                    <div class="font-bold" style="padding: 0 5px "></div>-->
-<!--                </div>-->
-<!--                --><?php //} ?>
                 <?php if($campaign->getVerified() === Campaign::NOT_VERIFIED) {?>
                     <div class="links">
                         <a href="/organization/campaign/updateCampaign?id=<?php echo \App\model\Utils\Security::Encrypt($campaign->getCampaignID())?>"><button class="btn btn-success w-100">Update Campaign</button></a>
@@ -182,8 +164,8 @@ FlashMessage::RenderFlashMessages();
             </div>
             <div id="Map" class="bg-red-1 mt-5" style="width: 500px;height: 300px;"></div>
         </div>
+
     <?php if($campaign->getVerified()===Campaign::VERIFIED && !$expired) { ?>
-        <div class="d-flex flex-wrap cards justify-content-center bg-white-0-3 py-1">
         <div class="d-flex cards text-center  reqcards" style="margin-top: -10px;flex-wrap: wrap">
             <div class="card nav-card bg-white text-dark" onclick="RequestSponsorship()">
                 <div class="card-header">
@@ -197,9 +179,6 @@ FlashMessage::RenderFlashMessages();
             </div>
             <div class="card nav-card bg-orange-10 text-dark">
                 <div class="card-header">
-<!--                    <div class="card-header-img">-->
-<!--                        <img src="/public/images/icons/organization/campaignDetails/received.png" alt="Received" width="100px">-->
-<!--                    </div>-->
                     <div class="card-title">
                         <h3 style="color: whitesmoke">You have Received <span class="bg-warning fa fa-1x p-1 " style="color: #0b0000">LKR. <?php echo $ReceivedAmount ?></span></h3>
                     </div>
@@ -212,7 +191,7 @@ FlashMessage::RenderFlashMessages();
                     </div>
                 </div>
             </div>
-            <div class="card nav-card bg-white text-dark" onclick="inform()">
+            <div class="card nav-card bg-white text-dark" onclick="informing()">
                 <div class="card-header">
                     <div class="card-header-img">
                         <img src="/public/images/icons/organization/campaignDetails/inform.png" alt="Inform" width="100px">
@@ -256,7 +235,6 @@ FlashMessage::RenderFlashMessages();
         </div>
           <?php } ?>
     <?php } ?>
-</div>
 <script>
     const ReceivedSponsorship = () =>{
         const url = '/organization/received';
@@ -461,104 +439,13 @@ FlashMessage::RenderFlashMessages();
     content :`Are You Sure You Want to Delete Details? This Action Cannot be Undone.`,
     successBtnText:'Yes',
     successBtnAction : ()=>{
-        window.location.href = "/organization/campaign/deleteCampaign?id=<?php echo \App\model\Utils\Security::Encrypt($campaign->getCampaignID()); ?>"
+        window.location.href = "/organization/campaign/deleteCampaign?id=<?php echo $campaign->getCampaignID(); ?>"
     },
 
     });
     }
     document.getElementById('delete').addEventListener('click', del);
 
-    //const inform = (event)=>{
-    //    alert('Hi');
-    //    event.preventDefault();
-    //    OpenDialogBox({
-    //        // id:'sendEmail',
-    //        title:'Delete Confirmation',
-    //        content :`Are You Sure You Want to Delete Details? This Action Cannot be Undone.`,
-    //        successBtnText:'Yes',
-    //        successBtnAction : ()=>{
-    //            window.location.href = "/organization/campaign/deleteCampaign?id=<?php //echo $campaign->getCampaignID(); ?>//"
-    //        },
-    //
-    //    });
-    //}
-
-    // const inform = (event)=>{
-    //                     OpenDialogBox({
-    //                         id:'inform Donors',
-    //                         title:'Request Sponsorship',
-    //                         titleClass:'text-center bg-dark text-white px-2 py-1',
-    //                         content :`<div class="d-flex flex-column gap-1">
-    //                     <div class="d-flex flex-column gap-0-5">
-    //                         <label for="Message" class="form-label">Expected Amount</label>
-    //                         <input type="text" class="form-control" name="Message" id="Message" placeholder="Message">
-    //                     </div>
-    //                     <div class="d-flex flex-column gap-1">
-    //                         <label for="Message_Type" class="form-label">Mesage Type</label>
-    //                         <select class="form-select Message_Type">
-    //                             <option value="1">Urgent</option>
-    //                             <option value="2">Not Urgent</option>
-    //                         </select>
-    //
-    //                     </div>
-    //                     </div>
-    //         `,
-    //                         successBtnText:'Inform',
-    //                         successBtnAction:()=>{
-    //                             const Message = document.getElementById('Message').value;
-    //                             const Type = document.getElementById('Message_Type').value;
-    //
-    //                             //     Validate
-    //                             if (Message === ""){
-    //                                 ShowToast({
-    //                                     message:'Please Enter Message',
-    //                                     type:'danger'
-    //                                 })
-    //                                 return;
-    //                             }
-    //                             if (Type === ""){
-    //                                 ShowToast({
-    //                                     message:'Please Select Message Type',
-    //                                     type:'danger'
-    //                                 })
-    //                                 return;
-    //                             }
-    //                             const formData = new FormData();
-    //                             formData.append('Message',Message);
-    //                             formData.append('Type',Message_Type);
-    //                             const url = '/organization/inform';
-    //                             fetch(url,{
-    //                                 method:'POST',
-    //                                 body:formData,
-    //                                 headers:{
-    //                                     'enctype':'multipart/form-data'
-    //                                 }
-    //                             }).then(res=>res.json())
-    //                                 .then((data)=>{
-    //                                     if (data.status){
-    //                                         ShowToast({
-    //                                             message:'Sponsorship Requested Successfully',
-    //                                             type:'success'
-    //                                         })
-    //                                         CloseDialogBox('RequestSponsorship')
-    //                                     }else{
-    //                                         ShowToast({
-    //                                             message:data.message,
-    //                                             type:'danger'
-    //                                         })
-    //                                         setTimeout(()=>{
-    //                                             CloseDialogBox('RequestSponsorship')
-    //                                             window.location.reload()
-    //                                         },2000)
-    //                                     }
-    //                                 })
-    //                         }
-    //                     })
-    //                 }
-    //             }
-    //
-    //         })
-    // }
     const inform= () =>{
        OpenDialogBox({
            id : 'inform',
@@ -620,5 +507,8 @@ FlashMessage::RenderFlashMessages();
                    });
            }
         });
+    }
+    function informing(){
+        window.location.href = "inform?id=<?php echo $_GET['id']?>"
     }
 </script>

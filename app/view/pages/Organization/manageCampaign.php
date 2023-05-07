@@ -29,7 +29,6 @@ use App\model\users\Organization;
 use App\view\components\WebComponent\Card\NavigationCard;
 
 
-$NearByCampaigns = new NavigationCard('/organization/near', '/public/images/icons/organization/manage/nearby.png', 'Nearby Campaigns','near');
 $CreateCampaigns = new NavigationCard('/organization/create', '/public/images/icons/organization/manage/create.png', 'Create Campaign','create');
 $ViewCampaign = new NavigationCard('/organization/campDetails?id='.$identity, '/public/images/icons/organization/manage/donation.png', 'View Ongoing Campaigns','ongoing');
 //$ViewApprovedCampaign = new NavigationCard('/organization/campaign/view', '/public/images/icons/organization/manage/create.png', 'View Campaign');
@@ -39,7 +38,7 @@ $background = new BackGroundImage();
 echo $background;
 FlashMessage::RenderFlashMessages();
 echo CardGroup::CardPanel();
-echo $NearByCampaigns;
+
 if (!$campaign_exist){
     echo $CreateCampaigns;
 }else{
