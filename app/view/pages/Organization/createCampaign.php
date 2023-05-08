@@ -141,7 +141,7 @@ echo $background;
     </form>
         <div class="d-flex align-items-center justify-content-center gap-2">
             <button class="btn btn-success w-25" id="button" value="Create" onclick="AcceptGuidelines()"> Create </button>
-            <button class="btn btn-danger w-25" id="button" value="Cancel" onclick="history.back()"> Cancel </button>
+            <button class="btn btn-danger w-25" id="button" value="Cancel" onclick="cancellation()"> Cancel </button>
         </div>
 
 <!--    <div class="w-40 d-flex justify-content-center flex-column align-items-center gap-1 bg-white border-radius-10 p-1 m-1">-->
@@ -399,6 +399,18 @@ echo $background;
                 }
             })
         }
+    }
+    const cancellation = (e) => {
+        OpenDialogBox({
+            title : 'Cancel',
+            content : 'Are You Sure You Want to Cancel the Creating Campaign?',
+            successBtnText : 'Yes',
+            cancelBtnText : 'No',
+            successBtnAction:() => {
+                history.back();
+            }
+
+        });
     }
 </script>
 

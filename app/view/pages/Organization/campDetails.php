@@ -123,7 +123,7 @@ FlashMessage::RenderFlashMessages();
     }
 </style>
 
-<button class="btn btn-info w-10 back" style="position: absolute;margin-top:-500px;margin-left: -1350px;" onclick="history.back()">Go Back</button>
+<!--<button class="btn btn-info w-10 back" style="position: absolute;margin-top:-500px;margin-left: -1350px;" onclick="history.back()">Go Back</button>-->
 <div class="d-flex flex-column w-90  p-1 mt-4" style="overflow-y: scroll;margin-left: 10vw">
         <div class="d-flex p-2 gap-2 details w-100 justify-content-center" style="flex-wrap: wrap;">
             <div class="text-xl d-flex flex-column justify-content-center align-items-center w-50 bg-white border-radius-10 gap-1 p-3 mt-3"  id="Campaign_Detail" style="flex-wrap: wrap;">
@@ -236,18 +236,18 @@ FlashMessage::RenderFlashMessages();
           <?php } ?>
     <?php } ?>
 <script>
-    const ReceivedSponsorship = () =>{
-        const url = '/organization/received';
-        fetch(url,{
-            method: 'POST',
-        }).then(res=>res.json())
-            .then((data)=> {
-                let Sponsorship_Amount = "";
-                if (data.status) {
-                    console.log(data);
-                }
-            })
-    }
+    // const ReceivedSponsorship = () =>{
+    //     const url = '/organization/received';
+    //     fetch(url,{
+    //         method: 'POST',
+    //     }).then(res=>res.json())
+    //         .then((data)=> {
+    //             let Sponsorship_Amount = "";
+    //             if (data.status) {
+    //                 console.log(data);
+    //             }
+    //         })
+    // }
     const RequestSponsorship = ()=>{
         const url ='/organization/getBankDetails';
         fetch(url,{
@@ -446,68 +446,68 @@ FlashMessage::RenderFlashMessages();
     }
     document.getElementById('delete').addEventListener('click', del);
 
-    const inform= () =>{
-       OpenDialogBox({
-           id : 'inform',
-           title : 'Inform Donors',
-           content :`<div class="d-flex flex-column gap-0-5" >
-                            <label for="message" class="form-label">Message</label>
-                            <textarea class="form-control text-center" name="message" id="message" placeholder="Message" style="height: 200px;"></textarea>
-                        </div>
-                        <div class="d-flex flex-column gap-1">
-                            <label for="type" class="form-label">Message Type</label>
-                            <select class="form-select" name="type" id="type">
-                                <option value="1">Urgent</option>
-                                <option value="2">Not Urgent</option>
-                            </select>
-                        </div>`,
-           successBtnText:'Inform',
-           successBtnAction:()=>{
-               let message = document.getElementById('message').value;
-               let type = document.getElementById('type').value;
-               if(message === ''){
-                   ShowToast({
-                       message:'Message Cannot be Empty',
-                       type : 'danger',
-                   })
-                   return;
-               }
-               const formData = new FormData();
-               formData.append('Message',message);
-               formData.append('Type',type);
-               const url = '/organization/inform';
-               fetch(url,{
-                   method:'POST',
-                   body:formData,
-                   headers:{
-                       'enctype':'multipart/form-data'
-                   }
-               }).then(res=>res.json())
-                   .then((data)=>{
-                       console.log(data);
-                       if (data.status){
-                           ShowToast({
-                               message:'Message Sent Successfully',
-                               type:'success'
-                           });
-                           setTimeout(()=>{
-                                CloseDialogBox('inform')
-                                window.location.reload();
-                           },2000);
-                       }else{
-                           ShowToast({
-                               message:data.message,
-                               type:'danger'
-                           });
-                           setTimeout(()=>{
-                                CloseDialogBox('inform')
-                               window.location.reload();
-                           },2000);
-                       }
-                   });
-           }
-        });
-    }
+    //const inform= () =>{
+    //   OpenDialogBox({
+    //       id : 'inform',
+    //       title : 'Inform Donors',
+    //       content :`<div class="d-flex flex-column gap-0-5" >
+    //                        <label for="message" class="form-label">Message</label>
+    //                        <textarea class="form-control text-center" name="message" id="message" placeholder="Message" style="height: 200px;"></textarea>
+    //                    </div>
+    //                    <div class="d-flex flex-column gap-1">
+    //                        <label for="type" class="form-label">Message Type</label>
+    //                        <select class="form-select" name="type" id="type">
+    //                            <option value="1">Urgent</option>
+    //                            <option value="2">Not Urgent</option>
+    //                        </select>
+    //                    </div>`,
+    //       successBtnText:'Inform',
+    //       successBtnAction:()=>{
+    //           let message = document.getElementById('message').value;
+    //           let type = document.getElementById('type').value;
+    //           if(message === ''){
+    //               ShowToast({
+    //                   message:'Message Cannot be Empty',
+    //                   type : 'danger',
+    //               })
+    //               return;
+    //           }
+    //           const formData = new FormData();
+    //           formData.append('Message',message);
+    //           formData.append('Type',type);
+    //           const url = '/organization/inform';
+    //           fetch(url,{
+    //               method:'POST',
+    //               body:formData,
+    //               headers:{
+    //                   'enctype':'multipart/form-data'
+    //               }
+    //           }).then(res=>res.json())
+    //               .then((data)=>{
+    //                   console.log(data);
+    //                   if (data.status){
+    //                       ShowToast({
+    //                           message:'Message Sent Successfully',
+    //                           type:'success'
+    //                       });
+    //                       setTimeout(()=>{
+    //                            CloseDialogBox('inform')
+    //                            window.location.reload();
+    //                       },2000);
+    //                   }else{
+    //                       ShowToast({
+    //                           message:data.message,
+    //                           type:'danger'
+    //                       });
+    //                       setTimeout(()=>{
+    //                            CloseDialogBox('inform')
+    //                           window.location.reload();
+    //                       },2000);
+    //                   }
+    //               });
+    //       }
+    //    });
+    //}
     function informing(){
         window.location.href = "inform?id=<?php echo $_GET['id']?>"
     }

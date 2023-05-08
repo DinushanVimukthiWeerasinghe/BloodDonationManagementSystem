@@ -30,6 +30,7 @@ use Core\SessionObject;
 use Stripe\Checkout\Session;
 use Stripe\Exception\ApiErrorException;
 use Stripe\Stripe;
+use PHPMailer\PHPMailer\Exception;
 
 
 class sponsorController extends Controller
@@ -85,8 +86,8 @@ class sponsorController extends Controller
                 exit();
             }
 
-            if ($SponsorshipRequest->getToBeSponsoredAmount() < $Amount){
-                $Amount = $SponsorshipRequest->getToBeSponsoredAmount();
+            if ($SponsorshipRequest->getNeededAmount() < $Amount){
+                $Amount = $SponsorshipRequest->getNeededAmount();
             }
 
 
@@ -158,15 +159,18 @@ class sponsorController extends Controller
 //                    var_dump("Hello");
 //                    exit();
                     $SponsorshipRequest->update($SponsorshipRequest->getSponsorshipID(),[],['Status'],['Session_ID'=>Security::HashData($SessionID)]);
-                    $this->setFlashMessage('success','Payment Successful!');
+//
+                    $this->setFlashMessage('success','Payment Successful! Thanks for Your Payment.');
                     Application::Redirect('/sponsor/sponsor');
                 }else{
+                    $SponsorshipRequest->setStatus(CampaignsSponsor::PAYMENT_STATUS_FAILED);
                     $this->setFlashMessage('error','Transaction Failed');
                     Application::Redirect('/sponsor/sponsor');
                     exit();
                 }
             }else{
-//                $SponsorshipRequest->setToBeSponsoredAmount($preAmount);
+
+//                $SponsorshipRequest->getToBeSponsoredAmount();
                 $this->setFlashMessage('error','Transaction Failed');
                 Application::Redirect('/sponsor/sponsor');
                 exit();
@@ -183,10 +187,27 @@ class sponsorController extends Controller
 //        exit();
 //        print_r($SponsorshipRequests);
 //        exit();
-        array_filter($SponsorshipRequests,function ($campaign){
-            return ($campaign->getCampaignDate() >= date('Y-m-d'));
-
-        });
+        $para = [];
+        foreach ($SponsorshipRequests as $requests){
+            $camps = Campaign::findOne(['Campaign_ID' => $requests->getCampaignID()]);
+            if($camps->getCampaignDate() >= date('Y-m-d') && $requests->getNeededAmount() > 0){
+                $para [] =[
+                    'Campaign_Name' => $camps->getCampaignName(),
+                    'Campaign_Date' => $camps->getCampaignDate(),
+                    'Campaign_Venue' => $camps->getVenue(),
+                    'Campaign_Description' => $camps->getCampaignDescription(),
+                    'Needed_Amount' => $requests->getNeededAmount(),
+                    'Sponsorship_ID' => $requests->getSponsorshipID(),
+                    'Campaign_ID' => $camps->getCampaignID(),
+                    'longitude' => $camps->getLongitude(),
+                    'latitude'  => $camps->getLatitude()
+                ];
+            }
+        }
+//        array_filter($SponsorshipRequests,function ($campaign){
+//            return ($campaign->getCampaignDate() >= date('Y-m-d'));
+//
+//        });
 //        $para = [];
 //        foreach ($SponsorshipRequests as $sponse){
 //            $para[]=[
@@ -197,7 +218,7 @@ class sponsorController extends Controller
 //        print_r($para);
 //        exit();
         return $this->render('sponsors/ViewCampaigns',[
-            'SponsorshipRequests' => $SponsorshipRequests,
+            'SponsorshipRequests' => $para,
         ]);
     }
 
@@ -270,26 +291,16 @@ class sponsorController extends Controller
 
 
         $id = Application::$app->getUser()->getID();
-//        print_r($id);
-//        exit();
-        $conditions = ['Sponsor_ID' => Application::$app->getUser()->getID()];
+
+        $conditions = ['Sponsor_ID' => Application::$app->getUser()->getID(), 'Status' => CampaignsSponsor::PAYMENT_STATUS_PAID];
         $campaigns = CampaignsSponsor::RetrieveAll(false,[],true, $conditions);
 
-//        print_r($campaigns);
-//        exit();
-//        $mycampaign = array_filter($campaigns,function ($campaign)use($id){
-//            return $campaign->getSponsorID()==$id;
-//        });
-//        var_dump($id);
-//        echo '<pre>';
-//        print_r($campaigns);
-//        exit();
+
         $para = [];
         foreach ($campaigns as $campaign) {
             $camp = SponsorshipRequest::findOne(['Sponsorship_ID' => $campaign->getSponsorshipID()]);
             $cam = Campaign::findOne(['Campaign_ID' => $camp->getCampaignID()]);
-//            print_r($camp);
-//            exit();
+
             $para[]=[
                 'Campaign_Name' => $cam->getCampaignName(),
                 'Sponsored_Amount' => $campaign->getSponsoredAmount(),
@@ -298,11 +309,6 @@ class sponsorController extends Controller
             ];
 
         }
-//        echo '<pre>';
-//        print_r($para);
-//        exit();
-//        print_r($campaigns);
-//        exit();
         return $this->render('sponsors/history',['para'=>$para]);
     }
 
@@ -342,46 +348,54 @@ class sponsorController extends Controller
             $id=$request->getBody()['id'];
             /* @var $campaign Campaign*/
             $campaign = Campaign::findOne(['Campaign_ID' => $id]);
-            $Org_ID=$campaign->getOrganizationID();
-            $Org=Organization::findOne(['Organization_ID' => $Org_ID]);
+//            $Org_ID=$campaign->getOrganizationID();
+//            $Org=Organization::findOne(['Organization_ID' => $Org_ID]);
 
             if ($campaign){
                 /** @var $SponsorshipRequests SponsorshipRequest*/
-                if ($campaign->IsVerified()){
-                    $ApprovedDetails = ApprovedCampaigns::findOne(['Campaign_ID' => $id]);
+//                    $ApprovedDetails = Campaign::findOne(['Campaign_ID' => $id]);
                     $SponsorshipRequests = SponsorshipRequest::findOne(['Campaign_ID' => $id,'Sponsorship_Status'=>SponsorshipRequest::STATUS_APPROVED],false);
                     if ($SponsorshipRequests){
                         $data = $SponsorshipRequests->toArray();
-                        $data['remaining'] = $SponsorshipRequests->getToBeSponsoredAmount();
-                        return json_encode(['status'=>true,'data'=>$campaign->toArray(),'org'=>$Org->toArray(),'approved'=>$ApprovedDetails->toArray(),'sponsorship'=>$data]);
+                        $data['remaining'] = $SponsorshipRequests->getNeededAmount();
+                        return json_encode(['status'=>true,'data'=>$campaign->toArray(),'sponsorship'=>$data]);
                     }
-                    return json_encode(['status'=>true,'data'=>$campaign->toArray(),'org'=>$Org->toArray(),'approved'=>$ApprovedDetails->toArray()]);
-                }
-                if ($campaign->IsRejected()){
-                    $RejectedDetails = RejectedCampaign::findOne(['Campaign_ID' => $id]);
-                    return json_encode(['status'=>true,'data'=>$campaign->toArray(),'org'=>$Org->toArray(),'rejected'=>$RejectedDetails->toArray()]);
-                }
-                return json_encode(['status'=>true,'data'=>$campaign->toArray(),'org'=>$Org->toArray()]);
+                    return json_encode(['status'=>true,'data'=>$campaign->toArray()]);
             }
         }
 
     }
-//    public function campDetails()
+//    public function GetCampaignDetails(Request $request,Response $response)
 //    {
-//        /* @var Campaign $campaign */
-//        $id = $_GET['id'];
-//        $campaign = Campaign::findOne(['Campaign_ID'=> $id]);
-//        $SponsoredDetails =SponsorshipRequest::findOne(['Campaign_ID'=> $id]);
-//        $params= [
-//            'Campaign_Name'=> $campaign->getCampaignName(),
-//            'Campaign_Date' => $campaign->getCampaignDate(),
-//            'Venue'=> $campaign->getVenue(),
-//            'Status'=> $campaign->getStatus(),
-//            'Campaign_ID'=> $campaign->getCampaignID(),
-//            'id' => $id,
-//        ];
-//        return $this->render('sponsors/campDetails',$params);
+//        if ($request->isPost()){
+//            $id=$request->getBody()['id'];
+//            /* @var $campaign Campaign*/
+//            $campaign = Campaign::findOne(['Campaign_ID' => $id]);
+//            $Org_ID=$campaign->getOrganizationID();
+//            $Org=Organization::findOne(['Organization_ID' => $Org_ID]);
+//
+//            if ($campaign){
+//                /** @var $SponsorshipRequests SponsorshipRequest*/
+//                if ($campaign->IsVerified()){
+//                    $ApprovedDetails = Campaign::findOne(['Campaign_ID' => $id]);
+//                    $SponsorshipRequests = SponsorshipRequest::findOne(['Campaign_ID' => $id,'Sponsorship_Status'=>SponsorshipRequest::STATUS_APPROVED],false);
+//                    if ($SponsorshipRequests){
+//                        $data = $SponsorshipRequests->toArray();
+//                        $data['remaining'] = $SponsorshipRequests->getToBeSponsoredAmount();
+//                        return json_encode(['status'=>true,'data'=>$campaign->toArray(),'org'=>$Org->toArray(),'approved'=>$ApprovedDetails->toArray(),'sponsorship'=>$data]);
+//                    }
+//                    return json_encode(['status'=>true,'data'=>$campaign->toArray(),'org'=>$Org->toArray(),'approved'=>$ApprovedDetails->toArray()]);
+//                }
+//                if ($campaign->IsRejected()){
+//                    $RejectedDetails = RejectedCampaign::findOne(['Campaign_ID' => $id]);
+//                    return json_encode(['status'=>true,'data'=>$campaign->toArray(),'org'=>$Org->toArray(),'rejected'=>$RejectedDetails->toArray()]);
+//                }
+//                return json_encode(['status'=>true,'data'=>$campaign->toArray(),'org'=>$Org->toArray()]);
+//            }
+//        }
+//
 //    }
+
     public function Notification(Request $request, Response $response): string
     {
         $limit = 10;

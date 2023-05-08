@@ -613,10 +613,12 @@ class authController extends Controller
         if (Application::$app->isGuest())
         {
 //            Application::$app->response->redirect('/');
+                Application::$app->session->setFlash('error','Please Login for Logout.');
                 Application::$app->response->redirect('/login');
         }else{
             Application::$app->logout();
 //            Application::$app->response->redirect('/');
+            Application::$app->session->setFlash('success','You have Successfully Logged Out.');
             Application::$app->response->redirect('/login');
         }
     }
