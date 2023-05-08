@@ -152,10 +152,13 @@ CREATE TABLE IF NOT EXISTS Organizations
     Contact_No         VARCHAR(100) NOT NULL,
     City               VARCHAR(100) NOT NULL,
     Status             VARCHAR(50)  NOT NULL,
+    Verified_By        VARCHAR(20)  NULL,
+    Verified_At        TIMESTAMP    NULL,
     Profile_Image      VARCHAR(100) NOT NULL DEFAULT '/public/upload/organizationDefault.png',
     Created_At         TIMESTAMP             DEFAULT CURRENT_TIMESTAMP,
     Updated_At         TIMESTAMP             DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (Organization_ID) REFERENCES Users (UID)
+    FOREIGN KEY (Organization_ID) REFERENCES Users (UID),
+    FOREIGN KEY (Verified_By) REFERENCES MedicalOfficers (Officer_ID)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8;
 
@@ -206,7 +209,7 @@ CREATE TABLE IF NOT EXISTS Campaign
     Campaign_Date        DATE         NOT NULL,
     Venue                VARCHAR(100) NOT NULL,
     Nearest_City         VARCHAR(100) NOT NULL,
-    Status               INT          NOT NULL CHECK ( Status Between 1 AND 4),
+    Status               INT          NOT NULL CHECK ( Status Between 1 AND 5),
     Latitude             VARCHAR(100) NOT NULL,
     Longitude            VARCHAR(100) NOT NULL,
     Nearest_BloodBank    VARCHAR(20)  NOT NULL,
@@ -876,6 +879,19 @@ CREATE TABLE IF NOT EXISTS `Manager_Notices` (
     FOREIGN KEY (Manager_ID) REFERENCES Managers (Manager_ID)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+DROP TABLE IF EXISTS `Reported_Campaigns`;
+CREATE TABLE IF NOT EXISTS `Reported_Campaigns` (
+    Campaign_ID VARCHAR(20) NOT NULL,
+    Report_Reason INT NOT NULL,
+    Report_Description VARCHAR(100) NULL,
+    Reported_By VARCHAR(20) NOT NULL,
+    Reported_At TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (Campaign_ID, Reported_By),
+    FOREIGN KEY (Campaign_ID) REFERENCES Campaign (Campaign_ID),
+    FOREIGN KEY (Reported_By) REFERENCES MedicalOfficers(Officer_ID)
+
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 
 
 
@@ -1009,6 +1025,8 @@ DROP TRIGGER IF EXISTS `Campaign_Audit_Donor_Successful_Blood_Donation`$$
         END IF;
     END $$
 DELIMITER ;
+
+
 
 
 # Create Event Scheduler

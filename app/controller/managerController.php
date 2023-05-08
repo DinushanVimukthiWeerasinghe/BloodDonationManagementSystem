@@ -567,7 +567,7 @@ class managerController extends Controller
                 $ApprovedCampaign->setRemarks($remarks);
                 if ($ApprovedCampaign->validate() && $ApprovedCampaign->save()){
                     $campaign->setVerified(Campaign::VERIFIED);
-                    $campaign->setStatus(Campaign::APPROVED);
+                    $campaign->setStatus(Campaign::CAMPAIGN_STATUS_APPROVED);
                     $MedicalTeam = new MedicalTeam();
                     $MedicalTeam->generateTeamID();
                     $MedicalTeam->setCampaignID($campaign->getCampaignID());
@@ -602,8 +602,8 @@ class managerController extends Controller
                 if (!$RejectedCampaign->validate())
                     return json_encode(['status'=>false,'message'=>'Error on Server','data'=>$RejectedCampaign->errors]);
                 $RejectedCampaign->save();
-                $campaign->setStatus(Campaign::REJECTED);
-                $campaign->setVerified(Campaign::REJECTED);
+                $campaign->setStatus(Campaign::CAMPAIGN_STATUS_REJECTED);
+                $campaign->setVerified(Campaign::CAMPAIGN_STATUS_REJECTED);
                 $campaign->update($campaign->getCampaignID(),[],['Status','Verified']);
                 return json_encode(['status'=>true,'message'=>'Campaign Rejected Successfully !']);
             }
@@ -1362,9 +1362,9 @@ class managerController extends Controller
             $total_pages = ceil ($total_rows / $limit);
             $data= Campaign::RetrieveAll(true,[$initial,$limit]);
         }else if ($CampaignStatus===1){
-            $total_rows = Campaign::getCount(false,['Status'=>Campaign::PENDING]);
+            $total_rows = Campaign::getCount(false,['Status'=>Campaign::CAMPAIGN_STATUS_PENDING]);
             $total_pages = ceil ($total_rows / $limit);
-            $data= Campaign::RetrieveAll(true,[$initial,$limit],true,['Status'=>Campaign::PENDING]);
+            $data= Campaign::RetrieveAll(true,[$initial,$limit],true,['Status'=>Campaign::CAMPAIGN_STATUS_PENDING]);
             $data=array_filter($data,function ($item){
                 /** @var $item Campaign*/
                 $date = new DateTime($item->getCampaignDate());
@@ -1380,12 +1380,12 @@ class managerController extends Controller
         }else if ($CampaignStatus===2){
             $total_rows = Campaign::getCount();
             $total_pages = ceil ($total_rows / $limit);
-            $data= Campaign::RetrieveAll(true,[$initial,$limit],true,['Status'=>Campaign::APPROVED,'Verified'=>Campaign::VERIFIED]);
+            $data= Campaign::RetrieveAll(true,[$initial,$limit],true,['Status'=>Campaign::CAMPAIGN_STATUS_APPROVED,'Verified'=>Campaign::VERIFIED]);
         }
         else if ($CampaignStatus===3){
             $total_rows = Campaign::getCount(true);
             $total_pages = ceil ($total_rows / $limit);
-            $data= Campaign::RetrieveAll(true,[$initial,$limit],true,['Status'=>Campaign::REJECTED,'Verified'=>Campaign::REJECTED]);
+            $data= Campaign::RetrieveAll(true,[$initial,$limit],true,['Status'=>Campaign::CAMPAIGN_STATUS_REJECTED,'Verified'=>Campaign::CAMPAIGN_STATUS_REJECTED]);
         }
 
         return $this->render('Manager/ManageCampaigns',
@@ -2113,7 +2113,7 @@ class managerController extends Controller
             $Campaign = Campaign::findOne(['Campaign_ID' => $CampaignID]);
             if ($Campaign){
 //                TODO : Check if the campaign is Finished
-                if ($Campaign->getStatus()===Campaign::APPROVED){
+                if ($Campaign->getStatus()===Campaign::CAMPAIGN_STATUS_APPROVED){
                     $Data = [];
                     $Data['CampaignName'] = $Campaign->getCampaignName();
                     $Data['CampaignDate'] = $Campaign->getCampaignDate();

@@ -5,16 +5,20 @@ namespace App\model\Campaigns;
 use App\model\database\dbModel;
 use App\model\MedicalTeam\MedicalTeam;
 use App\model\Requests\SponsorshipRequest;
+use App\model\users\MedicalOfficer;
 use App\model\users\Organization;
+use Core\Application;
 
 class Campaign extends dbModel
 {
-    public const PENDING = 1;
-    public const APPROVED = 2;
-    public const REJECTED = 3;
+    public const CAMPAIGN_STATUS_PENDING = 1;
+    public const CAMPAIGN_STATUS_APPROVED = 2;
+    public const CAMPAIGN_STATUS_REJECTED = 3;
+    public const CAMPAIGN_STATUS_FINISHED = 4;
+    public const CAMPAIGN_STATUS_REPORTED = 5;
     public const NOT_VERIFIED = 1;
     public const VERIFIED = 2;
-    const CAMPAIGN_STATUS_FINISHED = 4;
+
     protected string $Campaign_ID='';
     protected string $Organization_ID='';
     protected ?string $Expected_Amount=null;
@@ -45,7 +49,7 @@ class Campaign extends dbModel
 
     public function IsApproved(): bool
     {
-        return $this->Status == self::APPROVED;
+        return $this->Status == self::CAMPAIGN_STATUS_APPROVED;
     }
 
     /**
@@ -182,7 +186,7 @@ class Campaign extends dbModel
 
     public function IsRejected(): bool
     {
-        return $this->Status == self::REJECTED;
+        return $this->Status == self::CAMPAIGN_STATUS_REJECTED;
     }
 
     /**
@@ -229,9 +233,9 @@ class Campaign extends dbModel
     public function getCampaignStatus():string
     {
         return match ($this->Status){
-            self::PENDING =>'Pending',
-            self::APPROVED => 'Approved',
-            self::REJECTED => 'Rejected',
+            self::CAMPAIGN_STATUS_PENDING =>'Pending',
+            self::CAMPAIGN_STATUS_APPROVED => 'Approved',
+            self::CAMPAIGN_STATUS_REJECTED => 'Rejected',
             default => 'Unknown'
         };
     }
@@ -484,5 +488,72 @@ class Campaign extends dbModel
     public function getOrganization() : Organization
     {
         return Organization::findOne(['Organization_ID'=>$this->Organization_ID]);
+    }
+
+    public function IsReported(): bool
+    {
+        return $this->getStatus() === self::CAMPAIGN_STATUS_REPORTED;
+    }
+
+    public function getReportedBy() : MedicalOfficer | string
+    {
+        if ($this->IsReported()) {
+            /** @var ReportedCampaign $ReportedCampaign */
+            $ReportedCampaign = ReportedCampaign::findOne(['Campaign_ID' => $this->Campaign_ID]);
+            if ($ReportedCampaign)
+                return MedicalOfficer::findOne(['Officer_ID' => $ReportedCampaign->getReportedBy()]);
+            else
+                return 'Not Reported';
+        }
+        else{
+            return 'Not Reported';
+        }
+
+    }
+
+    public function getReportedDate(): string
+    {
+        if ($this->IsReported()) {
+            /** @var ReportedCampaign $ReportedCampaign */
+            $ReportedCampaign = ReportedCampaign::findOne(['Campaign_ID' => $this->Campaign_ID]);
+            if ($ReportedCampaign)
+                return date('d-F-Y',strtotime($ReportedCampaign->getReportedAt()));
+            else
+                return 'Not Reported';
+        }
+        else{
+            return 'Not Reported';
+        }
+    }
+
+    public function getReportedReason()
+    {
+        if ($this->IsReported()) {
+            /** @var ReportedCampaign $ReportedCampaign */
+            $ReportedCampaign = ReportedCampaign::findOne(['Campaign_ID' => $this->Campaign_ID]);
+            if ($ReportedCampaign)
+                return $ReportedCampaign->getReportReason(true);
+            else
+                return 'Not Reported';
+        }
+        else{
+            return 'Not Reported';
+        }
+    }
+
+    public function IsReportedByMe(): bool
+    {
+        if ($this->IsReported()) {
+            /** @var ReportedCampaign $ReportedCampaign */
+            $ReportedBy = $this->getReportedBy();
+            $UserID = Application::$app->getUser()->getID();
+            if ($ReportedBy instanceof MedicalOfficer)
+                return $ReportedBy->getID() === $UserID;
+            else
+                return false;
+        }
+        else{
+            return false;
+        }
     }
 }

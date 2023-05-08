@@ -98,7 +98,7 @@ class SponsorshipRequest extends \App\model\database\dbModel
 
     public function getToBeSponsoredAmount(): float|int
     {
-        $CampaignSponsors = CampaignsSponsor::RetrieveAll(false,[],true,['Sponsorship_ID'=>$this->Sponsorship_ID]);
+        $CampaignSponsors = CampaignsSponsor::RetrieveAll(false,[],true,['Sponsorship_ID'=>$this->Sponsorship_ID,'Status'=>CampaignsSponsor::PAYMENT_STATUS_PAID]);
         if (count($CampaignSponsors) == 0)
             return $this->Sponsorship_Amount;
         $SponsoredAmount = array_sum(array_map(function ($CampaignSponsor){

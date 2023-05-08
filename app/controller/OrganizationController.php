@@ -94,8 +94,8 @@ class OrganizationController extends Controller
     {
         /* @var Campaign $campaign */
         $ID=Application::$app->getUser()->getID();
-        $AlreadyCreatedCampaign=Campaign::RetrieveAll(false,[],true,['Organization_ID'=>$ID,'Status'=> Campaign::PENDING]);
-        $AlreadyCreatedCampaign=Campaign::RetrieveAll(false,[],true,['Organization_ID'=>$ID,'Status'=> Campaign::APPROVED]);
+        $AlreadyCreatedCampaign=Campaign::RetrieveAll(false,[],true,['Organization_ID'=>$ID,'Status'=> Campaign::CAMPAIGN_STATUS_PENDING]);
+        $AlreadyCreatedCampaign=Campaign::RetrieveAll(false,[],true,['Organization_ID'=>$ID,'Status'=> Campaign::CAMPAIGN_STATUS_APPROVED]);
 
         $Exist=false;
         $identity = 0;
@@ -126,8 +126,8 @@ class OrganizationController extends Controller
     public function CreateCampaign(Request $request,Response $response): string
     {
         $ID = Application::$app->getUser()->getID();
-        $AlreadyCreatedCampaign = Campaign::RetrieveAll(false, [], true, ['Organization_ID' => $ID, 'Status' => Campaign::PENDING]);
-        $AlreadyCreatedCampaign = Campaign::RetrieveAll(false, [], true, ['Organization_ID' => $ID, 'Status' => Campaign::APPROVED]);
+        $AlreadyCreatedCampaign = Campaign::RetrieveAll(false, [], true, ['Organization_ID' => $ID, 'Status' => Campaign::CAMPAIGN_STATUS_PENDING]);
+        $AlreadyCreatedCampaign = Campaign::RetrieveAll(false, [], true, ['Organization_ID' => $ID, 'Status' => Campaign::CAMPAIGN_STATUS_APPROVED]);
         $Exist=false;
         $identity = 0;
 //        $params = [];
@@ -152,7 +152,7 @@ class OrganizationController extends Controller
                 $campaign->loadData($request->getBody());
                 $campaign->setOrganizationID(Application::$app->getUser()->getID());
                 $campaign->setCampaignDate(date("Y-m-d H:i:s"));
-                $campaign->setStatus(Campaign::PENDING);
+                $campaign->setStatus(Campaign::CAMPAIGN_STATUS_PENDING);
                 $campaign->setVerified(Campaign::NOT_VERIFIED);
                 $campaign->setCreatedAt(date("Y-m-d H:i:s"));
                 $id = uniqid("Camp_");
@@ -511,7 +511,7 @@ class OrganizationController extends Controller
             $ReceivedAmount = "Not Received Yet";
         }
 
-                if ($Campaign->getCampaignStatus() === Campaign::PENDING) {
+                if ($Campaign->getCampaignStatus() === Campaign::CAMPAIGN_STATUS_PENDING) {
                     $disable = 1;
                 }
                 if ($Campaign->getCampaignDate() < date("Y-m-d")) {

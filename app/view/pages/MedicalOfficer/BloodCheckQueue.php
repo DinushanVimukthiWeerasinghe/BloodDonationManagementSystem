@@ -9,13 +9,14 @@ use App\view\components\ResponsiveComponent\Alert\FlashMessage;
 ?>
 
 <?php FlashMessage::RenderFlashMessages();?>
-<div class="d-flex w-100 flex-column justify-content-start align-items-center bg-white m-1 border-radius-10">
+<div class="d-flex w-100 gap-1 flex-column justify-content-start align-items-center bg-white m-1 border-radius-10">
     <div class="bg-dark mt-1 px-2 py-1 text-white text-center w-90">
+        Blood Check - Queue (<?=$Campaign->getCampaignName()?>)
 
     </div>
     <div class="d-flex w-80 overflow-y-scroll ">
         <table class="w-100 ">
-            <thead class="sticky top-0">
+            <thead class="sticky top-0 border-1 border-dark">
             <tr>
                 <th>No</th>
                 <th>Full Name</th>
@@ -50,7 +51,7 @@ use App\view\components\ResponsiveComponent\Alert\FlashMessage;
             else:
                 ?>
                 <tr class="bg-white-0-7" id="no-data">
-                    <td colspan="9" class="text-center">No Data</td>
+                    <td colspan="9" class="text-center">No Donor in Queue</td>
                 </tr>
             <?php
             endif;
@@ -60,4 +61,22 @@ use App\view\components\ResponsiveComponent\Alert\FlashMessage;
     </div>
 </div>
 
+<script>
+    const AutoReload = ()=>{
+        const url ="/mofficer/take-donation";
+        fetch(url)
+            .then(response => response.text())
+            .then(data => {
+                console.log("Auto Reload");
+                const DomParser = new DOMParser();
+                const Doc = DomParser.parseFromString(data, 'text/html');
+                const table = Doc.querySelector("table tbody").innerHTML;
+                document.querySelectorAll("table tbody")[0].innerHTML=table;
+            })
+            .catch(error => {
+                console.log(error);
+            });
+    }
+    setInterval(AutoReload, 3000);
+</script>
 

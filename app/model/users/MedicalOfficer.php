@@ -438,7 +438,7 @@ class MedicalOfficer extends Person
         }
         if (count($AssignedCampaigns) > 0) {
             $AssignedCampaigns = array_filter($AssignedCampaigns, function ($AssignedCampaign)  {
-                return $AssignedCampaign->getStatus() == Campaign::APPROVED;
+                return $AssignedCampaign->getStatus() == Campaign::CAMPAIGN_STATUS_APPROVED || $AssignedCampaign->getStatus() == Campaign::CAMPAIGN_STATUS_REPORTED;
             });
             if (trim($Date) == '') {
                 // Sort the array by date

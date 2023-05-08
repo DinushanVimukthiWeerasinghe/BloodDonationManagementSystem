@@ -158,6 +158,7 @@ class Application
     {
         $Role=$user->getRole();
         $ID = $user->getID();
+        $Email = $user->getEmail();
 
         if ($user->IsUserVerified()) {
             if ($Role === User::MANAGER) {
@@ -187,21 +188,32 @@ class Application
             }
             $primaryKey = $user->primaryKey();
 
-            $primaryValue = $user->getID();
-            $this->session->set('user', ['UID' => $primaryValue, 'UserClass' => get_class($this->user)], 60);
-            $this->session->setFlash('success', 'Welcome Back ' . $user->getEmail());
-            $login = new LoggingHistory();
-            $login->setSessionID($this->session->get('user')->getSessionID());
-            $login->setUserID($primaryValue);
-            $login->setSessionEnd(date('Y-m-d H:i:s'));
-            $login->setSessionStart(date('Y-m-d H:i:s'));
-            if (!$login->save(['Session_End']))
-            {
-                return false;
-            }
+
         }else{
-            var_dump($Role);
-            exit();
+            if ($Role === User::ORGANIZATION){
+                    $Organization = Organization::CreateEmptyOrganization($Email);
+                    $Organization->setOrganizationID($ID);
+                    if ($Organization->validate() && $Organization->save()) {
+                        $this->session->setFlash('success', 'Organization Created Successfully');
+                    }else{
+                        echo "<pre>";
+                        var_dump($Organization->getErrors());
+                    }
+
+                    $this->user = Organization::findOne(['Organization_ID' => $ID]);
+            }
+        }
+        $primaryValue = $user->getID();
+        $this->session->set('user', ['UID' => $primaryValue, 'UserClass' => get_class($this->user)], 60);
+        $this->session->setFlash('success', 'Welcome Back ' . $user->getEmail());
+        $login = new LoggingHistory();
+        $login->setSessionID($this->session->get('user')->getSessionID());
+        $login->setUserID($primaryValue);
+        $login->setSessionEnd(date('Y-m-d H:i:s'));
+        $login->setSessionStart(date('Y-m-d H:i:s'));
+        if (!$login->save(['Session_End']))
+        {
+            return false;
         }
         return true;
     }

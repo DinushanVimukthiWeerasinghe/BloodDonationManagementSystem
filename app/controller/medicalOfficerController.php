@@ -8,6 +8,7 @@ use App\model\Blood\BloodPackets;
 use App\model\Blood\DonorBloodCheck;
 use App\model\Campaigns\Campaign;
 use App\model\Campaigns\CampaignDonorQueue;
+use App\model\Campaigns\ReportedCampaign;
 use App\model\Donations\AcceptedDonations;
 use App\model\Donations\Donation;
 use App\model\Donations\RejectedDonations;
@@ -135,24 +136,36 @@ class medicalOfficerController extends \Core\Controller
 
     public function ViewReport(Request $request,Response $response)
     {
-        /** @var $Campaigns Campaign*/
+        /** @var $Campaigns Campaign[]*/
+        /** @var $Campaign Campaign*/
         $UserID = Application::$app->getUser()->getId();
         $Campaigns = MedicalOfficer::GetAllCampaign($UserID);
+        $CampaignID = $request->getBody()['campaignID'];
         if (!empty($Campaigns)){
             header('Content-Type: application/json');
-            $CampaignArray=[];
-            foreach ($Campaigns as $Campaign){
-                $CampaignArray[]=[
-                    'CampaignName'=>$Campaign->getCampaignName(),
-                    'CampaignDate'=>$Campaign->getCampaignDate(),
-                    'Venue'=>$Campaign->getVenue(),
-                    'Role'=>MedicalOfficer::getRoleOfCampaign($UserID,$Campaign->getCampaignID()),
-                    'Task'=>MedicalOfficer::getTaskOfCampaign($UserID,$Campaign->getCampaignID()),
-                ];
+            $Campaign = array_filter($Campaigns, function ($object) use ($CampaignID) {
+                return $object->getCampaignID() == $CampaignID;
+            });
+            if (count($Campaign)<=0){
+                return json_encode([
+                    'status'=>false,
+                    'message'=>'No Campaigns Found!'
+                ]);
             }
+            // Make the array index 0
+            $Campaign = array_values($Campaign);
+            $Campaign = $Campaign[0];
+            /**@var $Campaign Campaign*/
             return json_encode([
                 'status'=>true,
-                'campaigns'=>$CampaignArray
+                'campaigns'=>[
+                    'Campaign_Name'=>$Campaign->getCampaignName(),
+                    'Campaign_Date'=>$Campaign->getCampaignDate(),
+                    'Campaign_Description'=>$Campaign->getCampaignDescription(),
+                    'Venue'=>$Campaign->getVenue(),
+                    'Latitude'=>$Campaign->getLatitude(),
+                    'Longitude'=>$Campaign->getLongitude(),
+                ]
             ]);
         }else{
             return json_encode([
@@ -893,9 +906,6 @@ class medicalOfficerController extends \Core\Controller
                     ]
                 ]);
             }
-            if(!$Donor->getNICFront()) {
-                $File->setFileName($Donor->getNICFront());
-            }
         }
     }
     public function UploadDonorNICBack(Request $request,Response $response)
@@ -934,6 +944,133 @@ class medicalOfficerController extends \Core\Controller
             }
 
         }
+    }
+
+    /**
+     * @param Request $request
+     * @param Response $response
+     * @return false|string
+     */
+    public function VerifyOrganization(Request $request, Response $response)
+    {
+        if ($request->isPost()){
+            $status = $request->getBody()['Status'];
+            $OrganizationID = $request->getBody()['OrganizationID'];
+            /** @var Organization $Organization */
+            $Organization = Organization::findOne(['Organization_ID'=>$OrganizationID],false);
+            if (!$Organization){
+                return json_encode([
+                    'status'=>false,
+                    'message'=>'Invalid Operation!'
+                ]);
+            }
+            $ID = Application::$app->getUser()->getID();
+            $status= strtolower($status);
+            $message = "";
+            if ($status==="verify"){
+                $Organization->setStatus(Organization::ORGANIZATION_VERIFIED);
+                $Organization->setVerifiedBy($ID);
+                $Organization->setVerifiedAt(date('Y-m-d H:i:s'));
+                $message = "Organization Verified Successfully!";
+            }elseif ($status==="reject"){
+                $Organization->setVerifiedBy($ID);
+                $Organization->setVerifiedAt(date('Y-m-d H:i:s'));
+                $Organization->setStatus(Organization::ORGANIZATION_REJECTED);
+                $message = "Organization Rejected Successfully!";
+            }else{
+                return json_encode([
+                    'status'=>false,
+                    'message'=>'Invalid Operation!'
+                ]);
+            }
+            $Organization->update($Organization->getID(),[],['Status','Verified_By','Verified_At']);
+            return json_encode([
+                'status'=>true,
+                'message'=>$message
+            ]);
+        }
+        return json_encode([
+            'status'=>true,
+            'message'=>'Organization Verified Successfully!'
+        ]);
+    }
+    public function ReportCampaign(Request $request,Response $response)
+    {
+        if ($request->isPost()){
+            $CampaignID = $request->getBody()['CampaignID'];
+            $Reason = $request->getBody()['Reason'] ?? 0;
+            $Description = $request->getBody()['Description'];
+            if ($Reason===0){
+                return json_encode([
+                    'status'=>false,
+                    'message'=>'Invalid Operation!'
+                ]);
+            }
+            /** @var Campaign $Campaign */
+            $Campaign = Campaign::findOne(['Campaign_ID'=>$CampaignID],false);
+            if (!$Campaign){
+                return json_encode([
+                    'status'=>false,
+                    'message'=>'Invalid Operation!'
+                ]);
+            }
+
+
+            $Reason = intval($Reason);
+            if ($Reason===5){
+                if (empty($Description)){
+                    return json_encode([
+                        'status'=>false,
+                        'message'=>'Description is required!'
+                    ]);
+                }
+            }
+            $Campaign->setStatus(Campaign::CAMPAIGN_STATUS_REPORTED);
+            if ($Reason===5){
+                ReportedCampaign::ReportCampaign($CampaignID,$Reason,$Description);
+            }else{
+                ReportedCampaign::ReportCampaign($CampaignID,$Reason);
+            }
+            $Campaign->update($Campaign->getCampaignID(),[],['Status']);
+            return json_encode([
+                'status'=>true,
+                'message'=>'Campaign Reported Successfully!'
+            ]);
+        }
+
+    }
+
+    public function UndoReportCampaign(Request $request,Response $response)
+    {
+        if ($request->isPost()){
+            $CampaignID = $request->getBody()['CampaignID'];
+            /** @var Campaign $Campaign */
+            $Campaign = Campaign::findOne(['Campaign_ID'=>$CampaignID],false);
+            if (!$Campaign){
+                return json_encode([
+                    'status'=>false,
+                    'message'=>'Invalid Operation!'
+                ]);
+            }
+            /** @var ReportedCampaign $ReportedCampaign */
+            $ReportedCampaign = ReportedCampaign::findOne(['Campaign_ID'=>$CampaignID],false);
+            $UserID = Application::$app->getUser()->getID();
+            if ($ReportedCampaign->getReportedBy() !== $UserID){
+                return json_encode([
+                    'status'=>false,
+                    'message'=>'Invalid Operation!'
+                ]);
+            }
+            $Campaign->setStatus(Campaign::CAMPAIGN_STATUS_APPROVED);
+            ReportedCampaign::UndoReportCampaign($CampaignID);
+
+            $Campaign->update($Campaign->getCampaignID(),[],['Status']);
+            return json_encode([
+                'status'=>true,
+                'message'=>'Campaign Reported Undo Successfully!'
+            ]);
+        }
+
     }
 
     public function AssignTasks(Request $request,Response $response)
