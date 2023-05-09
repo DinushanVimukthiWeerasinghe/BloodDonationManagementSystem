@@ -94,6 +94,8 @@ else:
                <div class="card-title" >Reject Blood Donation</div>
            </div>
        </div>
+        <?php
+        ?>
 
     </div>
 </div>
@@ -103,6 +105,7 @@ endif;
 
 <script>
     <?php
+
     if (isset($BloodRetrievingStarted)):
         ?>
 
