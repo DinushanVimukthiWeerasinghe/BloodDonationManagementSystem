@@ -273,6 +273,9 @@ $User = Application::$app->getUser();
                                 message: 'Bank Details '+ (edit ? 'Update' :'Added') +' Successfully',
                                 type: 'success'
                             })
+                            setTimeout(()=>{
+                                window.location.reload();
+                            },1000)
                             CloseDialogBox('addBankDetails');
                             CloseDialogBox('profile');
                         }else{

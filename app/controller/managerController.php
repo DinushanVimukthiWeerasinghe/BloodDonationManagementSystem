@@ -2141,8 +2141,6 @@ class managerController extends Controller
                             }
                         }
                     }
-                    var_dump($Data);
-                    exit();
                 }
             }
 //            header('Content-Type: application/json');

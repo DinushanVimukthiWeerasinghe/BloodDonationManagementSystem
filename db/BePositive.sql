@@ -221,9 +221,6 @@ CREATE TABLE IF NOT EXISTS Campaign
     FOREIGN KEY (Organization_ID) REFERENCES Organizations (Organization_ID)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8;
 
-# select all Constraint of Campaign Table with name
-SELECT * FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS WHERE TABLE_NAME = 'Campaign';
-
 
 # Create Table for Approved Campaigns
 DROP TABLE IF EXISTS Approved_Campaigns;
@@ -448,7 +445,7 @@ CREATE TABLE IF NOT EXISTS Blood_Requests (
     Requested_By VARCHAR(20) NOT NULL,
     BloodGroup VARCHAR(3) NOT NULL,
     Requested_At TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    Request_From TIMESTAMP NOT NULL,
+    Request_From VARCHAR(20) NOT NULL,
     Type INT NOT NULL DEFAULT 1,
     Volume DECIMAL(10,2) NOT NULL CHECK ( Volume BETWEEN 0 AND 1000),
     Status INT NOT NULL DEFAULT 1,
@@ -983,8 +980,8 @@ VALUES ('Org_01', 'Organization', 'organization@test.com', '0777123123', 'Addres
 INSERT INTO Sponsors (SPONSOR_ID, Sponsor_Name, Email, ADDRESS1, ADDRESS2, CITY, STATUS)
 VALUES ('Spn_01', 'Sponsor', 'sponsor@test.com', 'Address1', 'Address2', 'Colombo', 0);
 # Make Default Hospital for Testing
-INSERT INTO Hospitals (Hospital_ID, Hospital_Name, Email, Address1, Address2, City, Contact_No)
-VALUES ('Hos_01', 'Hospital', 'hospital@test.com', 'Address1', 'Address2', 'Colombo', '0111234567');
+INSERT INTO Hospitals (Hospital_ID, Hospital_Name, Email, Address1, Address2, City, Contact_No,Nearest_Blood_Bank)
+VALUES ('Hos_01', 'Hospital', 'hospital@test.com', 'Address1', 'Address2', 'Colombo', '0111234567','BB_01');
 
 
 # Make Default Organization Member for Testing

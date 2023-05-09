@@ -95,7 +95,7 @@ class OrganizationController extends Controller
         /* @var Campaign $campaign */
         $ID=Application::$app->getUser()->getID();
         $AlreadyCreatedCampaign=Campaign::RetrieveAll(false,[],true,['Organization_ID'=>$ID,'Status'=> Campaign::CAMPAIGN_STATUS_PENDING]);
-        $AlreadyCreatedCampaign=Campaign::RetrieveAll(false,[],true,['Organization_ID'=>$ID,'Status'=> Campaign::CAMPAIGN_STATUS_APPROVED]);
+        $AlreadyCreatedCampaign=array_merge($AlreadyCreatedCampaign,Campaign::RetrieveAll(false,[],true,['Organization_ID'=>$ID,'Status'=> Campaign::CAMPAIGN_STATUS_APPROVED]));
 
         $Exist=false;
         $identity = 0;
