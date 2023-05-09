@@ -37,7 +37,12 @@
     public function dashboard():string
     {
      /* @var Hospital $hospital */
-     $requests=BloodRequest::RetrieveAll(false,[],true,['Requested_By'=>Application::$app->getUser()->getID()]);
+        $limit = 10;
+        $page = Application::$app->request->getBody()['page'] ?? 1;
+        $initial = ($page - 1) * $limit;
+        $total_rows= BloodRequest::getCount(true, ['Requested_By' => Application::$app->getUser()->getID()]);
+        $total_pages = ceil($total_rows / $limit);
+        $requests=BloodRequest::RetrieveAll(true,[$initial,$limit],true,['Requested_By'=>Application::$app->getUser()->getID()]);
 //     print_r($requests);
 //     exit();
         $reqData=array();
@@ -52,10 +57,11 @@
                 'Status'=>$request->getStatus(),
                 'Volume'=>$request->getVolume(),
                 'Remarks'=>$request->getRemarks(),
+
             ];
         }
         //print_r($reqData);
-     return $this->render('Hospital/dashboard',['data'=>$reqData]);
+     return $this->render('Hospital/dashboard',['data'=>$reqData,'total_pages'=>$total_pages,'current_page'=>$page]);
     }
 
     public function notification(Request $request, Response $response): string
@@ -124,5 +130,11 @@
             }
             $response->redirect('/hospital/dashboard');
         }
+    }
+    public function takeBlood(Request $request, Response $response)
+    {
+        $data = $request->getBody();
+
+        return $this->render('Hospital/HospitalBloodDonation', ['data' => $data]);
     }
 }

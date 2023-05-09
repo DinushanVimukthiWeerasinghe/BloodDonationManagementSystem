@@ -356,6 +356,8 @@ $app->router->post('/donor/profile/loginPrompt', [donorController::class, 'login
     $app->router->post('/hospital/bloodRequest/addRequest', [hospitalController::class, 'addBloodRequest']);
     $app->router->get('/hospital/bloodRequest/history', [hospitalController::class, 'bloodRequestHistory']);
     $app->router->post('/hospital/bloodRequest/history', [hospitalController::class, 'bloodRequestHistory']);
+    $app->router->get ('/hospital/takeBlood',[hospitalController::class,'takeBlood']);
+    $app->router->post ('/hospital/takeBlood',[hospitalController::class,'takeBlood']);
 
 
 //Blogs

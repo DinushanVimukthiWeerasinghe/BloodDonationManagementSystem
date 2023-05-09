@@ -2,6 +2,7 @@
 <?php
 /* @var string $data */
 
+use App\model\Requests\BloodRequest;
 use App\model\users\Hospital;
 use App\view\components\ResponsiveComponent\Alert\FlashMessage;
 use App\view\components\ResponsiveComponent\CardGroup\CardGroup;
@@ -26,8 +27,9 @@ echo $background;
 
 $table = new \App\view\components\Table\DetailTable(['Request ID', 'Blood Group', 'Requested At', 'Type', 'Status','Quantity (In Pints)','Remarks'], $data);
 echo $table->render("table");
-//print_r($data);
-//exit();
+/** @var int $total_pages */
+/** @var int $current_page */
+echo BloodRequest::NavigationFooter($total_pages,$current_page);
 
 ?>
 
@@ -97,7 +99,7 @@ echo $table->render("table");
     }
 </script>
 
-<div id="button" class="d-flex align-items-center gap-1 btn btn-outline-success" onclick="AddDonation()" style="
+<a href="/hospital/takeBlood" id="button" class="d-flex align-items-center gap-1 btn btn-outline-success"  style="
         background-color: white;
         color: black;
         border: 1px solid black;
@@ -110,26 +112,10 @@ echo $table->render("table");
         z-index: 100;">
     <img src="/public/icons/blood-bag-svgrepo-com.svg" width="24" alt=""/>
     <span class=" font-bold">Take New Donation</span>
-</div>
+</a>
 <style>
     #button:hover{
         background-color: var(--primary)!important;
         color: white;
     }
 </style>
-
-<script>
-    const AddDonation = () =>{
-        OpenDialogBox({
-            id:'TakeNewDonation',
-            title: 'Take New Donation',
-            content: `
-            p
-            `,
-            successBtnText: 'Add',
-            successBtnAction:()=>{
-                document.getElementById('form').submit();
-            }
-        })
-    }
-</script>
