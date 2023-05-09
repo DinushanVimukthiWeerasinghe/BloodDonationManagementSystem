@@ -5,6 +5,7 @@ namespace App\controller;
 use App\middleware\adminMiddleware;
 use App\model\Authentication\AuthenticationCode;
 use App\model\Authentication\PasswordReset;
+use App\model\Blood\BloodPackets;
 use App\model\BloodBankBranch\BloodBank;
 use App\model\Email\BaseEmail;
 use App\model\Requests\SponsorshipRequest;
@@ -85,7 +86,12 @@ class adminController extends \Core\Controller
         $layout=$request->getBody()['layout'] ?? 'admin';
 //        $re=AuthenticationCode::Verify('321763','user_01');
         $this->layout=$layout;
-        return $this->render('Admin/adminBoard');
+        $data = [
+        'donorsCount' => $donors = Donor::getCount(),
+        'bloodBanksCount' => $bloodBanks = BloodBank::getCount(),
+        'bloodPacketsCount' => $bloodPackets = BloodPackets::getCount()
+        ];
+        return $this->render('Admin/adminBoard', $data);
     }
 
     public function manageUsers(Request $request, Response $response): string

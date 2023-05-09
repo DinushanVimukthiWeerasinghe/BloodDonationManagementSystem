@@ -27,7 +27,7 @@ $Image=new \App\view\components\Image\GeneralImage("/public/images/logo.png", "H
 $c1 = new \App\view\components\Card\ClickableCard("Donation Guideline", $donation_Guideline,"Donation Guideline");
 $c2 = new \App\view\components\Card\ClickableCard("Donation History", $donation_History,"Donation History");
 $c3 = new \App\view\components\Card\ClickableCard("Nearby Donations", $nearby_Donations,"Nearby Donations");
-$c4 = new \App\view\components\Card\ClickableCard("Blood Requests", $blood_Requests,"Blood Requests");
+//$c4 = new \App\view\components\Card\ClickableCard("Blood Requests", $blood_Requests,"Blood Requests");
 
 $navbar = new DonorNavbar('Donor Board', '/donor/profile', '/public/images/icons/user.png', true,$firstName . ' ' . $lastName,false );
 echo $navbar;
@@ -84,10 +84,10 @@ if ($state == 0){
             echo $c3->render();
 
             ?></a>
-        <a href="/donor/request"> <?php
-            echo $c4->render();
-            ?>
-        </a>
+<!--        <a href="/donor/request"> --><?php
+//            echo $c4->render();
+//            ?>
+<!--        </a>-->
     </div>
 </div>
 
@@ -98,6 +98,7 @@ if ($state == 0){
     window.onload = () => {onLoadTrigger(<?php echo $_SESSION['pop']; ?>)};
 
     function onLoadTrigger(trigger){
+        CloseDialogBox();
         if (trigger === 0){
         OpenDialogBox({
             title: 'Quick Data Collection About You',
@@ -117,7 +118,8 @@ if ($state == 0){
                                                   </form>`,
             successBtnText: 'Submit',
             successBtnAction: () => {
-                document.getElementById('donorDataCollection').submit();
+                // document.getElementById('donorDataCollection').submit();
+                <?php $_SESSION['pop'] = 1; ?>
                 CloseDialogBox();
             },
             cancelBtnAction: () => {
