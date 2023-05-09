@@ -4,6 +4,7 @@
 /* @var string $Venue */
 use App\model\Campaigns\Campaign;
 use App\model\Utils\Date;
+use App\model\Utils\Security;
 use App\view\components\ResponsiveComponent\Alert\FlashMessage;
 use App\view\components\ResponsiveComponent\ImageComponent\BackGroundImage;
 use App\view\components\ResponsiveComponent\NavbarComponent\AuthNavbar;
@@ -157,7 +158,7 @@ FlashMessage::RenderFlashMessages();
                 </div>
                 <?php if($campaign->getVerified() === Campaign::NOT_VERIFIED) {?>
                     <div class="links">
-                        <a href="/organization/campaign/updateCampaign?id=<?php echo $campaign->getCampaignID()?>"><button class="btn btn-success w-100">Update Campaign</button></a>
+                        <a href="/organization/campaign/updateCampaign?id=<?php echo urlencode(Security::Encrypt($campaign->getCampaignID()))?>"><button class="btn btn-success w-100">Update Campaign</button></a>
                         <a href="" id="delete"><button class="btn btn-danger w-100" onclick="del()">Delete Campaign</button></a>
                     </div>
                 <?php } ?>
@@ -183,7 +184,7 @@ FlashMessage::RenderFlashMessages();
                 </div>
             <?php } ?>
             <?php if($bank) {?>
-                <div class="card nav-card bg-white text-dark" onclick="RequestSponsorship('<?= \App\model\Utils\Security::Decrypt($bank->getAccountNumber()) ?>' , '<?= $bank->getAccountName() ?>' , '<?= $bank->getBankName() ?>' , '<?= $bank->getBranchName() ?>' )">
+                <div class="card nav-card bg-white text-dark" onclick="RequestSponsorship('<?= Security::Decrypt($bank->getAccountNumber()) ?>' , '<?= $bank->getAccountName() ?>' , '<?= $bank->getBankName() ?>' , '<?= $bank->getBranchName() ?>' )">
                     <div class="card-header">
                         <div class="card-header-img">
                             <img src="/public/images/icons/organization/campaignDetails/request.png" alt="Request" width="100px">

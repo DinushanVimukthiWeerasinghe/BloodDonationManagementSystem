@@ -97,7 +97,7 @@ class AuthNavbar
            return <<<HTML
                 <div class="profile">
                         $lnk
-                        <a onclick="confirmation() class="logout"><img src="/public/icons/log-out.svg" alt="" width="30rem"> </a>
+                        <a onclick="confirmation()" class="logout"><img src="/public/icons/log-out.svg" alt="" width="30rem"> </a>
                         <button  href="$profileLnk" class="navProfile" onclick="getProfile()"><img class="profile-icon" id="NavProfileImage" src="$profilePicture" width="40rem" alt="profile"></button>
                         <div class="navProfileName"><span>{$profileName}</span></div>
                 </div>
@@ -108,6 +108,7 @@ class AuthNavbar
                             content : 'Are You Sure You Want To Log Out?',
                             successBtnText : 'Yes',
                             cancelBtnText : 'No',
+                            titleClass: 'bg-dark text-white text-center',
                             successBtnAction:()=>{
                                 window.location.href = "/logout"
                             }
