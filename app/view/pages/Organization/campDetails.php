@@ -157,7 +157,7 @@ FlashMessage::RenderFlashMessages();
                 </div>
                 <?php if($campaign->getVerified() === Campaign::NOT_VERIFIED) {?>
                     <div class="links">
-                        <a href="/organization/campaign/updateCampaign?id=<?php echo \App\model\Utils\Security::Encrypt($campaign->getCampaignID())?>"><button class="btn btn-success w-100">Update Campaign</button></a>
+                        <a href="/organization/campaign/updateCampaign?id=<?php echo $campaign->getCampaignID()?>"><button class="btn btn-success w-100">Update Campaign</button></a>
                         <a href="" id="delete"><button class="btn btn-danger w-100" onclick="del()">Delete Campaign</button></a>
                     </div>
                 <?php } ?>
@@ -167,16 +167,33 @@ FlashMessage::RenderFlashMessages();
 
     <?php if($campaign->getVerified()===Campaign::VERIFIED && !$expired) { ?>
         <div class="d-flex cards text-center  reqcards" style="margin-top: -10px;flex-wrap: wrap">
-            <div class="card nav-card bg-white text-dark" onclick="RequestSponsorship()">
-                <div class="card-header">
-                    <div class="card-header-img">
-                        <img src="/public/images/icons/organization/campaignDetails/request.png" alt="Request" width="100px">
+            <?php if(!$bank) {?>
+                <div class="card nav-card bg-white card-disabled text-dark">
+                    <div class="disable-text bg-white-0-7 py-2 px-1 font-bold absolute"  style="color: red">
+                        Sponsorship Request is not available until You Enter Your Bank details
                     </div>
-                    <div class="card-title">
-                        <h3>Request Sponsorship</h3>
+                    <div class="card-header">
+                        <div class="card-header-img">
+                            <img src="/public/images/icons/organization/campaignDetails/request.png" alt="Request" width="100px">
+                        </div>
+                        <div class="card-title">
+                            <h3>Request Sponsorship</h3>
+                        </div>
                     </div>
                 </div>
-            </div>
+            <?php } ?>
+            <?php if($bank) {?>
+                <div class="card nav-card bg-white text-dark" onclick="RequestSponsorship('<?= \App\model\Utils\Security::Decrypt($bank->getAccountNumber()) ?>' , '<?= $bank->getAccountName() ?>' , '<?= $bank->getBankName() ?>' , '<?= $bank->getBranchName() ?>' )">
+                    <div class="card-header">
+                        <div class="card-header-img">
+                            <img src="/public/images/icons/organization/campaignDetails/request.png" alt="Request" width="100px">
+                        </div>
+                        <div class="card-title">
+                            <h3>Request Sponsorship</h3>
+                        </div>
+                    </div>
+                </div>
+            <?php } ?>
             <div class="card nav-card bg-orange-10 text-dark">
                 <div class="card-header">
                     <div class="card-title">
@@ -236,40 +253,26 @@ FlashMessage::RenderFlashMessages();
           <?php } ?>
     <?php } ?>
 <script>
-    // const ReceivedSponsorship = () =>{
-    //     const url = '/organization/received';
-    //     fetch(url,{
-    //         method: 'POST',
-    //     }).then(res=>res.json())
-    //         .then((data)=> {
-    //             let Sponsorship_Amount = "";
-    //             if (data.status) {
-    //                 console.log(data);
-    //             }
-    //         })
-    // }
-    const RequestSponsorship = ()=>{
-        const url ='/organization/getBankDetails';
-        fetch(url,{
-            method:'POST',
-        }).then(res=>res.json())
-            .then((data)=>{
-                let bankName = "";
-                let bankAccountNumber = "";
-                let bankAccountName = "";
-                let bankBranch = "";
-                if (data.status){
-                    console.log(data)
-                    if (data.data && Object.keys(data.data).length > 0){
-                        bankName = data.data.BankName;
-                        bankAccountNumber = data.data.BankAccountNumber;
-                        bankAccountName = data.data.BankAccountName;
-                        bankBranch = data.data.BankBranch;
-                        OpenDialogBox({
-                            id:'RequestSponsorship',
-                            title:'Request Sponsorship',
-                            titleClass:'text-center bg-dark text-white px-2 py-1',
-                            content :`<div class="d-flex flex-column gap-1">
+
+const ReceivedSponsorship = () =>{
+    const url = '/organization/received';
+    fetch(url,{
+        method: 'POST',
+    }).then(res=>res.json())
+        .then((data)=> {
+            let Sponsorship_Amount = "";
+            if (data.status) {
+                console.log(data);
+            }
+        })
+}
+const RequestSponsorship = (bankAccountNumber,bankAccountName,bankName,bankBranch)=>{
+
+                    OpenDialogBox({
+                        id:'RequestSponsorship',
+                        title:'Request Sponsorship',
+                        titleClass:'text-center bg-dark text-white px-2 py-1',
+                        content :`<div class="d-flex flex-column gap-1">
                         <div class="d-flex flex-column gap-0-5">
                             <label for="SponsorshipAmount" class="form-label">Expected Amount</label>
                             <input type="number" class="form-control" name="SponsorshipAmount" id="SponsorshipAmount" placeholder="Sponsorship Amount">
@@ -311,100 +314,91 @@ FlashMessage::RenderFlashMessages();
                         </div>
                     </div>
             `,
-                            successBtnText:'Request',
-                            successBtnAction:()=>{
-                                const SponsorshipAmount = document.getElementById('SponsorshipAmount').value;
-                                const SponsorshipDescription = document.getElementById('SponsorshipDescription').value;
-                                const BudgetReport = document.getElementById('BudgetReport').files[0];
+                        successBtnText:'Request',
+                        successBtnAction:()=>{
+                            const SponsorshipAmount = document.getElementById('SponsorshipAmount').value;
+                            const SponsorshipDescription = document.getElementById('SponsorshipDescription').value;
+                            const BudgetReport = document.getElementById('BudgetReport').files[0];
 
                             //     Validate
-                                if (SponsorshipAmount === ""){
-                                    ShowToast({
-                                        message:'Please Enter Sponsorship Amount',
-                                        type:'danger'
-                                    })
-                                    return;
-                                }
-                                if (SponsorshipDescription === ""){
-                                    ShowToast({
-                                        message:'Please Enter Sponsorship Description',
-                                        type:'danger'
-                                    })
-                                    return;
-                                }
-                                if (BudgetReport === undefined){
-                                    ShowToast({
-                                        message:'Please Upload Budget Report',
-                                        type:'danger',
-                                    })
-                                    return;
-                                }
-                                // Check if the file is pdf and size is less than 8MB
-                                if (BudgetReport.type !== 'application/pdf'){
-                                    ShowToast({
-                                        message:'Only PDF files are allowed',
-                                        type:'danger'
-                                    })
-                                    return;
-                                }
-                                if (SponsorshipAmount < 10000){
-                                    ShowToast({
-                                        message:'Sponsorship Amount should be greater than 10,000',
-                                        type:'danger'
-                                    })
-                                    return;
-                                }
-                                if (BudgetReport.size > 8000000){
-                                    ShowToast({
-                                        message:'File size should be less than 8MB',
-                                        type:'danger'
-                                    })
-                                    return;
-                                }
-                                const formData = new FormData();
-                                formData.append('Sponsorship_Amount',SponsorshipAmount);
-                                formData.append('Description',SponsorshipDescription);
-                                formData.append('BudgetReport',BudgetReport);
-                                console.log(BudgetReport)
-                                const url = '/organization/requestSponsorship?id=<?php echo $campaign->getCampaignID() ?>';
-                                fetch(url,{
-                                    method:'POST',
-                                    body:formData,
-                                    headers:{
-                                        'enctype':'multipart/form-data'
-                                    }
-                                }).then(res=>res.json())
-                                    .then((data)=>{
-                                        if (data.status){
-                                            ShowToast({
-                                                message:'Sponsorship Requested Successfully',
-                                                type:'success'
-                                            })
-                                            CloseDialogBox('RequestSponsorship')
-                                        }else{
-                                            ShowToast({
-                                                message:data.message,
-                                                type:'danger'
-                                            })
-                                            setTimeout(()=>{
-                                                CloseDialogBox('RequestSponsorship')
-                                                window.location.reload()
-                                            },2000)
-                                        }
-                                    })
+                            if (SponsorshipAmount === ""){
+                                ShowToast({
+                                    message:'Please Enter Sponsorship Amount',
+                                    type:'danger'
+                                })
+                                return;
                             }
-                        })
-                    }else{
-                        ShowToast({
-                            message:'Please Add Bank Details in the Profile Page to Request Sponsorship',
-                            type:'danger'
-                        })
-                    }
-                }
+                            if (SponsorshipDescription === ""){
+                                ShowToast({
+                                    message:'Please Enter Sponsorship Description',
+                                    type:'danger'
+                                })
+                                return;
+                            }
+                            if (BudgetReport === undefined){
+                                ShowToast({
+                                    message:'Please Upload Budget Report',
+                                    type:'danger',
+                                })
+                                return;
+                            }
+                            // Check if the file is pdf and size is less than 8MB
+                            if (BudgetReport.type !== 'application/pdf'){
+                                ShowToast({
+                                    message:'Only PDF files are allowed',
+                                    type:'danger'
+                                })
+                                return;
+                            }
+                            if (SponsorshipAmount < 10000){
+                                ShowToast({
+                                    message:'Sponsorship Amount should be greater than 10,000',
+                                    type:'danger'
+                                })
+                                return;
+                            }
+                            if (BudgetReport.size > 8000000){
+                                ShowToast({
+                                    message:'File size should be less than 8MB',
+                                    type:'danger'
+                                })
+                                return;
+                            }
+                            const formData = new FormData();
+                            formData.append('Sponsorship_Amount',SponsorshipAmount);
+                            formData.append('Description',SponsorshipDescription);
+                            formData.append('BudgetReport',BudgetReport);
+                            console.log(BudgetReport)
+                            const url = '/organization/requestSponsorship?id=<?php echo $campaign->getCampaignID() ?>';
+                            fetch(url,{
+                                method:'POST',
+                                body:formData,
+                                headers:{
+                                    'enctype':'multipart/form-data'
+                                }
+                            }).then(res=>res.json())
+                                .then((data)=>{
+                                    if (data.status){
+                                        ShowToast({
+                                            message:'Sponsorship Requested Successfully',
+                                            type:'success'
+                                        })
+                                        CloseDialogBox('RequestSponsorship')
+                                    }else{
+                                        ShowToast({
+                                            message:data.message,
+                                            type:'danger'
+                                        })
+                                        setTimeout(()=>{
+                                            CloseDialogBox('RequestSponsorship')
+                                            window.location.reload()
+                                        },2000)
+                                    }
+                                })
+                        }
+                    })
 
-            })
-    }
-
+}
     function initMap(){
         const Campaign = {lat: <?php echo $campaign->getLatitude()?>, lng: <?php echo $campaign->getLongitude()?>};
         // console.log(Campaign)

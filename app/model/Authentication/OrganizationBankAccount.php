@@ -47,7 +47,7 @@ class OrganizationBankAccount extends \App\model\database\dbModel
      */
     public function getAccountNumber(): string
     {
-        return $this->Account_Number = openssl_decrypt($this->Account_Number,$_ENV["ENCRYPTION_METHOD"],$_ENV["ENCRYPTION_KEY"]);
+        return $this->Account_Number;
     }
 
     /**
@@ -55,7 +55,8 @@ class OrganizationBankAccount extends \App\model\database\dbModel
      */
     public function setAccountNumber(string $Account_Number): void
     {
-        $this->Account_Number = openssl_encrypt($Account_Number,$_ENV["ENCRYPTION_METHOD"],$_ENV["ENCRYPTION_KEY"]);
+//        $this->Account_Number = openssl_encrypt($Account_Number,$_ENV["ENCRYPTION_METHOD"],$_ENV["ENCRYPTION_KEY"]);
+         $this->Account_Number = $Account_Number;
     }
 
     /**

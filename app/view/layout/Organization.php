@@ -133,18 +133,12 @@ $User = Application::$app->getUser();
                                         </div>
                                     </div>
                                 <div class="d-flex align-items-center bg-dark w-100 text-center justify-content-between text-white py-0-5 px-1">
-                                    <?php
-                                        if ($User->getBankAccount()):
-                                    ?>
-                                    <div></div>
-                                    <?php
-                                        endif;
-                                    ?>
+
                                     <div>Bank Details</div>
                                     <?php
                                         if ($User->getBankAccount()):
                                     ?>
-                                    <div class="d-flex flex-center cursor" onclick="AddBankDetails(true)"><img src="/public/icons/edit.png" class="invert-100" width=20></div>
+                                    <div class="d-flex flex-center cursor" onclick="UpdateBankDetails()"><img src="/public/icons/edit.png" class="invert-100" width=20></div>
                                     <?php
                                         endif;
                                     ?>
@@ -192,61 +186,244 @@ $User = Application::$app->getUser();
             }
         })
     }
-    const AddBankDetails = (edit=false)=>{
-        let BankName ="";
-        let BranchName ="";
-        let AccountNo ="";
-        let AccountName ="";
+    //const AddBankDetails = (edit=false)=>{
+    //    let BankName ="";
+    //    let BranchName ="";
+    //    let AccountNo ="";
+    //    let AccountName ="";
+<!--        --><?php
+//            if ($User->getBankAccount()):
+//        ?>
+//        if (edit){
+//            BankName = "value='<?php //= $User->getBankName() ?>//'";
+//            BranchName = "value='<?php //= $User->getBranchName() ?>//'";
+//            AccountNo = "value='<?php //= $User->getBankAccountNo() ?>//'";
+//            AccountName = "value='<?php //= $User->getBankAccountName() ?>//'";
+//        }
+//        <?php
+//            endif;
+//        ?>
+    //    OpenDialogBox({
+    //        id: 'addBankDetails',
+    //        title: (edit ? 'Edit' : 'Add') + ' Bank Details',
+    //        titleClass: 'bg-dark text-white py-0-5 px-1 text-center',
+    //        popupOrder: 2,
+    //        content: `
+    //            <div class="d-flex flex-column gap-1 w-100">
+    //                 <div id="addBankDetails" class="d-flex flex-column w-100">
+    //                        <div class="d-flex flex-column flex-center gap-1 max-h-80vh w-100">
+    //                                     <div class="d-flex w-80 align-items-center justify-content-center">
+    //                                        <div class="d-flex font-bold w-40">Bank Name : </div>
+    //                                        <div class="d-flex w-60"><input type="text" id="bankName" ${BankName} class="form-control"></div>
+    //                                    </div>
+    //                                    <div class="d-flex w-80 align-items-center justify-content-center">
+    //                                        <div class="d-flex font-bold w-40">Branch : </div>
+    //                                        <div class="d-flex w-60"><input type="text" id="branchName" ${BranchName} class="form-control"></div>
+    //                                    </div>
+    //                                     <div class="d-flex w-80 align-items-center justify-content-center">
+    //                                        <div class="d-flex font-bold w-40">Account Number : </div>
+    //                                        <div class="d-flex w-60"><input type="text" id="bankAccountNo" ${AccountNo} class="form-control"></div>
+    //                                    </div>
+    //                                     <div class="d-flex w-80 align-items-center justify-content-center">
+    //                                        <div class="d-flex font-bold w-40">Account Holder Name : </div>
+    //                                        <div class="d-flex w-60"><input type="text" id="bankAccountName" ${AccountName} class="form-control"></div>
+    //                                    </div>
+    //                        </div>
+    //                   </div>
+    //            </div>
+    //        `,
+    //        showSuccessButton: true,
+    //        successBtnText: (edit ? 'Update' : 'Add') + ' Bank Details' ,
+    //        successBtnAction: () => {
+    //            const bankName = document.querySelector('#bankName').value;
+    //            const branchName = document.querySelector('#branchName').value;
+    //            const bankAccountNo = document.querySelector('#bankAccountNo').value;
+    //            const bankAccountName = document.querySelector('#bankAccountName').value;
+    //
+    //        //     Validate Form
+    //            if (bankName === '' || branchName === '' || bankAccountNo === '' || bankAccountName === ''){
+    //                ShowToast({
+    //                    title: 'Error',
+    //                    message: 'Please Fill All The Fields',
+    //                    type: 'error'
+    //                })
+    //                return;
+    //            }
+    //            const url = '/organization/addBankDetails';
+    //            const formData = new FormData();
+    //            formData.append('bankName',bankName);
+    //            formData.append('branchName',branchName);
+    //            formData.append('bankAccountNo',bankAccountNo);
+    //            formData.append('bankAccountName',bankAccountName);
+    //            fetch(url, {
+    //                method: 'POST',
+    //                body: formData
+    //            }).then(response => response.json())
+    //                .then(data => {
+    //                    console.log(data)
+    //                    if (data.status){
+    //                        ShowToast({
+    //                            title: 'Success',
+    //                            message: 'Bank Details '+ (edit ? 'Update' :'Added') +' Successfully',
+    //                            type: 'success'
+    //                        });
+    //                        CloseDialogBox('addBankDetails');
+    //                        CloseDialogBox('profile');
+    //                    }else{
+    //                        ShowToast({
+    //                            title: 'Error',
+    //                            message: data.message,
+    //                            type: 'error'
+    //                        })
+    //                    }
+    //                })
+    //        },
+    //    })
+    //}
+    const AddBankDetails = ()=>{
+
+            OpenDialogBox({
+                id: 'addBankDetails',
+                title: 'Add Bank Details',
+                titleClass: 'bg-dark text-white py-0-5 px-1 text-center',
+                popupOrder: 2,
+                content: `
+                    <div class="d-flex flex-column gap-1 w-100">
+                         <div id="addBankDetails" class="d-flex flex-column w-100">
+                                <div class="d-flex flex-column flex-center gap-1 max-h-80vh w-100">
+                                             <div class="d-flex w-80 align-items-center justify-content-center">
+                                                <div class="d-flex font-bold w-40">Bank Name : </div>
+                                                <div class="d-flex w-60"><input type="text" id="bankName"  class="form-control"></div>
+                                            </div>
+                                            <div class="d-flex w-80 align-items-center justify-content-center">
+                                                <div class="d-flex font-bold w-40">Branch : </div>
+                                                <div class="d-flex w-60"><input type="text" id="branchName"  class="form-control"></div>
+                                            </div>
+                                             <div class="d-flex w-80 align-items-center justify-content-center">
+                                                <div class="d-flex font-bold w-40">Account Number : </div>
+                                                <div class="d-flex w-60"><input type="text" id="bankAccountNo"  class="form-control"></div>
+                                            </div>
+                                             <div class="d-flex w-80 align-items-center justify-content-center">
+                                                <div class="d-flex font-bold w-40">Account Holder Name : </div>
+                                                <div class="d-flex w-60"><input type="text" id="bankAccountName" class="form-control"></div>
+                                            </div>
+                                </div>
+                           </div>
+                    </div>
+                `,
+                showSuccessButton: true,
+                successBtnText: 'Add Bank Details' ,
+                successBtnAction: () => {
+                    const bankName = document.getElementById('bankName').value.trim();
+                    const branchName = document.getElementById('branchName').value.trim();
+                    const bankAccountNo = document.getElementById('bankAccountNo').value.trim();
+                    const bankAccountName = document.getElementById('bankAccountName').value.trim();
+
+                //     Validate Form
+                    if (bankName === '' || branchName === '' || bankAccountNo === '' || bankAccountName === ''){
+                        ShowToast({
+                            title: 'Error',
+                            message: 'Please Fill All The Fields',
+                            type: 'error'
+                        })
+                        return;
+                    }
+                    if(isNaN(bankAccountNo)){
+                        ShowToast({
+                            type : 'error',
+                            message : 'Bank Account Number must contains Numbers Only.',
+                        });
+                        return;
+                    }
+                    if(bankAccountNo.length < 8){
+                        ShowToast({
+                           message : 'Bank Account Number must contains at least 8 characters',
+                           type : 'error',
+                        });
+                        return;
+                    }
+                    const url = '/organization/addBankDetails';
+                    const formData = new FormData();
+                    formData.append('bankName',bankName);
+                    formData.append('branchName',branchName);
+                    formData.append('bankAccountNo',bankAccountNo);
+                    formData.append('bankAccountName',bankAccountName);
+                    fetch(url, {
+                        method: 'POST',
+                        body: formData
+                    }).then(response => response.json())
+                        .then(data => {
+                            if (data.status){
+                                ShowToast({
+                                    title: 'Success',
+                                    message: 'Bank Details Added Successfully',
+                                    type: 'success'
+                                });
+                                CloseDialogBox('addBankDetails');
+                                CloseDialogBox('profile');
+                                window.location.reload();
+                            }else{
+                                ShowToast({
+                                    title: 'Error',
+                                    message: data.message,
+                                    type: 'error'
+                                });
+                            }
+                        })
+                }
+            })
+        }
+    const UpdateBankDetails = ()=>{
         <?php
-            if ($User->getBankAccount()):
+        if ($User->getBankAccount()):
         ?>
-        if (edit){
             BankName = "value='<?= $User->getBankName() ?>'";
             BranchName = "value='<?= $User->getBranchName() ?>'";
             AccountNo = "value='<?= $User->getBankAccountNo() ?>'";
             AccountName = "value='<?= $User->getBankAccountName() ?>'";
-        }
+
         <?php
-            endif;
+        endif;
         ?>
+
         OpenDialogBox({
-            id: 'addBankDetails',
-            title: (edit ? 'Edit' : 'Add') + ' Bank Details',
+            id: 'updateBankDetails',
+            title: 'Update Bank Details',
             titleClass: 'bg-dark text-white py-0-5 px-1 text-center',
             popupOrder: 2,
             content: `
-                <div class="d-flex flex-column gap-1 w-100">
-                     <div id="addBankDetails" class="d-flex flex-column w-100">
-                            <div class="d-flex flex-column flex-center gap-1 max-h-80vh w-100">
-                                         <div class="d-flex w-80 align-items-center justify-content-center">
-                                            <div class="d-flex font-bold w-40">Bank Name : </div>
-                                            <div class="d-flex w-60"><input type="text" id="bankName" ${BankName} class="form-control"></div>
-                                        </div>
-                                        <div class="d-flex w-80 align-items-center justify-content-center">
-                                            <div class="d-flex font-bold w-40">Branch : </div>
-                                            <div class="d-flex w-60"><input type="text" id="branchName" ${BranchName} class="form-control"></div>
-                                        </div>
-                                         <div class="d-flex w-80 align-items-center justify-content-center">
-                                            <div class="d-flex font-bold w-40">Account Number : </div>
-                                            <div class="d-flex w-60"><input type="text" id="bankAccountNo" ${AccountNo} class="form-control"></div>
-                                        </div>
-                                         <div class="d-flex w-80 align-items-center justify-content-center">
-                                            <div class="d-flex font-bold w-40">Account Holder Name : </div>
-                                            <div class="d-flex w-60"><input type="text" id="bankAccountName" ${AccountName} class="form-control"></div>
-                                        </div>
-                            </div>
-                       </div>
-                </div>
-            `,
+                    <div class="d-flex flex-column gap-1 w-100">
+                         <div id="addBankDetails" class="d-flex flex-column w-100">
+                                <div class="d-flex flex-column flex-center gap-1 max-h-80vh w-100">
+                                             <div class="d-flex w-80 align-items-center justify-content-center">
+                                                <div class="d-flex font-bold w-40">Bank Name : </div>
+                                                <div class="d-flex w-60"><input type="text" id="bankName"  class="form-control" ${BankName}></div>
+                                            </div>
+                                            <div class="d-flex w-80 align-items-center justify-content-center">
+                                                <div class="d-flex font-bold w-40">Branch : </div>
+                                                <div class="d-flex w-60"><input type="text" id="branchName"  class="form-control" ${BranchName}></div>
+                                            </div>
+                                             <div class="d-flex w-80 align-items-center justify-content-center">
+                                                <div class="d-flex font-bold w-40">Account Number : </div>
+                                                <div class="d-flex w-60"><input type="text" id="bankAccountNo"  class="form-control" ${AccountNo}></div>
+                                            </div>
+                                             <div class="d-flex w-80 align-items-center justify-content-center">
+                                                <div class="d-flex font-bold w-40">Account Holder Name : </div>
+                                                <div class="d-flex w-60"><input type="text" id="bankAccountName" class="form-control" ${AccountName}></div>
+                                            </div>
+                                </div>
+                           </div>
+                    </div>
+                `,
             showSuccessButton: true,
-            successBtnText: (edit ? 'Update' : 'Add') + ' Bank Details' ,
+            successBtnText: 'Update Bank Details' ,
             successBtnAction: () => {
-                const bankName = document.querySelector('#bankName').value;
-                const branchName = document.querySelector('#branchName').value;
-                const bankAccountNo = document.querySelector('#bankAccountNo').value;
-                const bankAccountName = document.querySelector('#bankAccountName').value;
+                const bankName = document.getElementById('bankName').value;
+                const branchName = document.getElementById('branchName').value;
+                const bankAccountNo = document.getElementById('bankAccountNo').value;
+                const bankAccountName = document.getElementById('bankAccountName').value;
 
-            //     Validate Form
+                //     Validate Form
                 if (bankName === '' || branchName === '' || bankAccountNo === '' || bankAccountName === ''){
                     ShowToast({
                         title: 'Error',
@@ -266,24 +443,24 @@ $User = Application::$app->getUser();
                     body: formData
                 }).then(response => response.json())
                     .then(data => {
-                        console.log(data)
                         if (data.status){
                             ShowToast({
                                 title: 'Success',
-                                message: 'Bank Details '+ (edit ? 'Update' :'Added') +' Successfully',
+                                message: 'Bank Details Updated Successfully',
                                 type: 'success'
                             });
-                            CloseDialogBox('addBankDetails');
+                            CloseDialogBox('updateBankDetails');
                             CloseDialogBox('profile');
+                            window.location.reload();
                         }else{
                             ShowToast({
                                 title: 'Error',
                                 message: data.message,
                                 type: 'error'
-                            })
+                            });
                         }
                     })
-            },
+            }
         })
     }
 

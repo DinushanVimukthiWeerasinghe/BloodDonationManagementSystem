@@ -391,10 +391,12 @@ public function inform(Request $request, Response $response)
             if ($BankAccount){
                 $BankAccount->setBankName($BankName);
                 $BankAccount->setBranchName($BankBranch);
-                $BankAccount->setAccountNumber($BankAccountNumber);
+                $BankAccount->setAccountNumber(Security::Encrypt($BankAccountNumber));
                 $BankAccount->setAccountName($BankAccountName);
                 if ($BankAccount->update($BankAccount->getOrganizationID(),[],['Bank_Name','Branch_Name','Account_Number','Account_Name'])){
-                    return json_encode(['status'=>true]);
+                    return json_encode([
+                        'status'=>true,
+                    ]);
                 }else{
                     return json_encode(['status'=>false,'errors'=>$BankAccount->errors]);
                 }
@@ -402,11 +404,13 @@ public function inform(Request $request, Response $response)
                 $BankAccount = new OrganizationBankAccount();
                 $BankAccount->setBankName($BankName);
                 $BankAccount->setBranchName($BankBranch);
-                $BankAccount->setAccountNumber($BankAccountNumber);
+                $BankAccount->setAccountNumber(Security::Encrypt($BankAccountNumber));
                 $BankAccount->setAccountName($BankAccountName);
                 $BankAccount->setOrganizationID($UserID);
                 if ($BankAccount->validate() && $BankAccount->save()){
-                    return json_encode(['status'=>true]);
+                    return json_encode([
+                        'status'=>true,
+                    ]);
                 }else{
                     return json_encode(['status'=>false]);
                 }
@@ -490,36 +494,43 @@ public function inform(Request $request, Response $response)
     {
         /* @var Campaign $Campaign */
         $id = $_GET['id'];
+        $user = Application::$app->getUser()->getID();
+
+        $bank = OrganizationBankAccount::findOne(['Organization_ID' => $user]);
+
 //        $id = Security::Decrypt($id);
         $disable = 0;
         $expired = 0;
         $Campaign = Campaign::findOne(['Campaign_ID' => $id]);
-        /** @var $SponsorshipRequest SponsorshipRequest*/
+        /** @var $SponsorshipRequest SponsorshipRequest */
         $ReceivedAmount = 0;
         $SponsorshipRequest = SponsorshipRequest::findOne(['Campaign_ID' => $id]);
 
-        if ($SponsorshipRequest){
+        if ($SponsorshipRequest) {
 
-            $SponsoredDetails= CampaignsSponsor::RetrieveAll(false,[],true,['Sponsorship_ID' => $SponsorshipRequest->getSponsorshipID()]);
-            $ReceivedAmount = array_sum(array_map(function ($SponsoredDetail){
+            $SponsoredDetails = CampaignsSponsor::RetrieveAll(false, [], true, ['Sponsorship_ID' => $SponsorshipRequest->getSponsorshipID()]);
+            $ReceivedAmount = array_sum(array_map(function ($SponsoredDetail) {
                 return $SponsoredDetail->getSponsoredAmount();
-            },$SponsoredDetails));
+            }, $SponsoredDetails));
         }
 
-        if ($ReceivedAmount === 0){
+        if ($ReceivedAmount === 0) {
             $ReceivedAmount = "Not Received Yet";
         }
 
-                if ($Campaign->getCampaignStatus() === Campaign::PENDING) {
-                    $disable = 1;
-                }
-                if ($Campaign->getCampaignDate() < date("Y-m-d")) {
-                    $expired = 1;
-                }
+        if ($Campaign->getCampaignStatus() === Campaign::PENDING) {
+            $disable = 1;
+        }
+        if ($Campaign->getCampaignDate() < date("Y-m-d")) {
+            $expired = 1;
+        }
         $attendance = new AttendanceAcceptedRequest();
         $condition = ['Campaign_ID' => $id];
-        $count = $attendance::getCount(false,$condition);
-            return $this->render('Organization/campDetails',['campaign'=>$Campaign, 'disable' => $disable, 'expired' => $expired,'ReceivedAmount'=>$ReceivedAmount,'count'=>$count]);
+        $count = $attendance::getCount(false, $condition);
+
+        return $this->render('Organization/campDetails', ['campaign' => $Campaign, 'disable' => $disable, 'expired' => $expired, 'ReceivedAmount' => $ReceivedAmount, 'count' => $count, 'bank' => $bank]);
+
+
     }
 
     public function upload(Request $request, Response $response)
