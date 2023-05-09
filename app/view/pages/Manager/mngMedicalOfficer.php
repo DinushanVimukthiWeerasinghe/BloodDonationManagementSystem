@@ -47,7 +47,7 @@ FlashMessage::RenderFlashMessages();
             <div id="Filters" class="d-flex gap-1">
                 <div class="form-group">
                     <label for="filter" class="search ">Position</label>
-                    <select class="form-control" name="filter" id="filter">
+                    <select class="form-control" name="filter" id="FilterByStatus">
                         <option value="All">All</option>
                         <option value="Active">Active</option>
                         <option value="Inactive">Inactive</option>
@@ -107,7 +107,7 @@ FlashMessage::RenderFlashMessages();
                     <td data-label="Gender"><?php echo $gender?></td>
                     <td data-label="Position"><?php echo $position ?></td>
                     <td data-label="Nationality"><?php echo $nationality?></td>
-                    <td class="d-flex justify-content-center gap-1 align-items-center">
+                    <td class="d-flex last-td-child justify-content-center gap-1 align-items-center">
                         <button class="text-dark btn gap-0-5 btn-outline-success d-flex align-items-center justify-content-center" onclick="EditMedicalOfficer('<?php echo $id ?>')" ><img src="/public/icons/edit.png" width="24px" alt="">Edit</button>
                         <button class="text-dark btn gap-0-5 btn-outline-info d-flex align-items-center justify-content-center" onclick="SendEmail('<?php echo $id ?>')" ><img src="/public/icons/mail.png" width="24px" alt="">Send Email</button>
                     </td>
@@ -286,6 +286,7 @@ FlashMessage::RenderFlashMessages();
         OpenDialogBox({
             id:'AddMedicalOfficer',
             title:'Add Medical Officer',
+            titleClass:'text-white bg-dark',
             content :`
                 <div class="d-flex flex-column gap-1">
                     <div class="d-flex gap-1">
@@ -382,6 +383,47 @@ FlashMessage::RenderFlashMessages();
             footer : `<div id="error" class="text-sm none text-danger"> Hello </div>`,
             successBtnText:'Add',
             successBtnAction : ()=>{
+                const FirstName = document.getElementById('FirstName');
+                const LastName = document.getElementById('LastName');
+                const email = document.getElementById('email');
+                const contact = document.getElementById('contact');
+                const nic = document.getElementById('nic');
+                const RegNo = document.getElementById('RegNo');
+                const RegDate = document.getElementById('RegDate');
+                const Address1 = document.getElementById('Address1');
+                const Address2 = document.getElementById('Address2');
+                const City = document.getElementById('City');
+                const image = document.getElementById('image');
+                const Branch_ID = document.getElementById('Branch_ID');
+                const Position = document.getElementById('Position');
+
+                let Error = false;
+
+                 // Validate
+                for (const input of [FirstName,LastName,email,contact,nic,RegNo,RegDate,Address1,Address2,City,image,Branch_ID,Position]) {
+                    if (input.value.trim() === '') {
+                        // Add error text below the input
+                        ShowToast({
+                            title: 'Error',
+                            message: 'Please fill all fields',
+                            type: 'error'
+                        })
+                        Error = true;
+                        input.classList.add('border-danger');
+                        const element = document.getElementsByName(input.name)[0];
+                        element.classList.add('border-danger');
+                        element.classList.add('text-danger');
+                        input.addEventListener('input', () => {
+                            input.classList.remove('border-danger');
+                            element.classList.remove('text-danger');
+                        })
+                        break;
+                    }
+                }
+                if (Error) {
+                    return;
+                }
+
                  const error=document.getElementById('error');
                  const form = new FormData();
                     form.append('First_Name',document.getElementById('FirstName').value);
@@ -410,12 +452,16 @@ FlashMessage::RenderFlashMessages();
                                 location.reload();
                             }else{
                                 if (data.errors){
-                                    console.log(data.errors)
                                     for (const [key, value] of Object.entries(data.errors)) {
                                         console.log(key,value)
                                         const element = document.getElementsByName(key)[0];
                                         element.classList.add('border-danger');
                                         element.classList.add('text-danger');
+                                        ShowToast({
+                                            title:'Error',
+                                            message:value,
+                                            type:'error'
+                                        })
                                     }
                                 }
                                 ShowToast({
@@ -448,7 +494,8 @@ FlashMessage::RenderFlashMessages();
                     const data =res.data;
                     OpenDialogBox({
                         id:'AddMedicalOfficer',
-                        title:'Add Medical Officer',
+                        title:'Edit Medical Officer -'+data.First_Name+' '+data.Last_Name,
+                        titleClass: 'text-white bg-dark',
                         content :`
                 <div class="d-flex flex-column gap-1">
                     <div class="d-flex gap-1">
@@ -602,6 +649,7 @@ FlashMessage::RenderFlashMessages();
         OpenDialogBox({
             id:'sendEmail',
             title:'Send Email',
+            titleClass:'text-white bg-dark',
             content :`
                 <div class="d-flex gap-1 flex-column">
                     <div class="form-group">

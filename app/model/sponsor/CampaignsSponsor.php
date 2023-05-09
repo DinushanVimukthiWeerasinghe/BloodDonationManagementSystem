@@ -2,6 +2,8 @@
 
 namespace App\model\sponsor;
 
+use App\model\Requests\SponsorshipRequest;
+use App\model\users\Sponsor;
 use App\model\Utils\Security;
 
 class CampaignsSponsor extends \App\model\database\dbModel
@@ -183,6 +185,13 @@ class CampaignsSponsor extends \App\model\database\dbModel
         $this->Sponsorship_ID = $Sponsorship_ID;
     }
 
+    public function getCampaign()
+    {
+        /** @var SponsorshipRequest $SponsorshipRequest */
+        $SponsorshipRequest = SponsorshipRequest::findOne(['Sponsorship_ID'=>$this->Sponsorship_ID]);
+        return $SponsorshipRequest->getCampaign();
+    }
+
     /**
      * @return string
      */
@@ -197,6 +206,11 @@ class CampaignsSponsor extends \App\model\database\dbModel
     public function setDescription(string $Description): void
     {
         $this->Description = $Description;
+    }
+
+    public function getSponsor() : Sponsor | bool
+    {
+        return Sponsor::findOne(['Sponsor_ID'=>$this->Sponsor_ID]);
     }
 
 

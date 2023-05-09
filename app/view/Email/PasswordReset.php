@@ -8,22 +8,6 @@
     <title>Password Reset</title>
 </head>
 <body>
-<!--    <div class="container" style="background-color: #1ece00">-->
-<!--        <div class="row">-->
-<!--            <div class="col-md-12">-->
-<!--                <div class="card">-->
-<!--                    <div class="card-header">-->
-<!--                        <h3>Password Reset</h3>-->
-<!--                    </div>-->
-<!--                    <div class="card-body">-->
-<!--                        <p>Hi, {{UserName}}</p>-->
-<!--                        <p>Click the link below to reset your password</p>-->
-<!--                        <a href="{{Link}}">Reset Password</a>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--            </div>-->
-<!--        </div>-->
-<!--    </div>-->
 <div style="display: flex; flex-direction:column;justify-content:center;align-items: center;font-family: Poppins:sans-serif; ">
     <div style="display: flex;align-items: center;justify-content:center;">
         <div id="logo" style="display: flex;align-items: center">

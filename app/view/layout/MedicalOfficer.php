@@ -4,8 +4,9 @@ use App\view\components\ResponsiveComponent\Alert\FlashMessage;
 use App\view\components\ResponsiveComponent\NavbarComponent\AuthNavbar;
 use Core\Application;
 
+$PageTitle = $BrandTitle ?? "Medical Officer Dashboard";
 $User = Application::$app->getUser();
-$navbar = new AuthNavbar('Medical Officer Dashboard', '/mofficer', '/public/images/icons/user.png', true, false);
+$navbar = new AuthNavbar($PageTitle, '/mofficer', '/public/images/icons/user.png', true, false);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -147,7 +148,7 @@ $navbar = new AuthNavbar('Medical Officer Dashboard', '/mofficer', '/public/imag
                             content: `
                             <div class="d-flex flex-column gap-1">
                                    <div id="notification" class="d-flex flex-column gap-1">
-                                        <div class="d-flex flex-column gap-1 overflow-y-scroll max-h-80vh">
+                                        <div class="d-flex flex-column gap-1 overflow-y-overlay max-h-80vh">
                                             ${data.notifications.map(notification => `
                                                         <div class="d-flex flex-column gap-1 border-2 px-2 py-0-5">
                                                             <div class="d-flex justify-content-between border-bottom-2 py-0-5">

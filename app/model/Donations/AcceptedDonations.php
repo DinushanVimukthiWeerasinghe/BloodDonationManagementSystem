@@ -15,6 +15,7 @@ class AcceptedDonations extends dbModel
     protected string $In_Time = '';
     protected string $Out_Time = '';
     protected string $Verified_By = '';
+    protected float $Volume = 0.0;
 
     /**
      * @param string $Donation_ID
@@ -38,6 +39,22 @@ class AcceptedDonations extends dbModel
     public function setPacketID(string $Packet_ID): void
     {
         $this->Packet_ID = $Packet_ID;
+    }
+
+    /**
+     * @return float
+     */
+    public function getVolume(): float
+    {
+        return $this->Volume;
+    }
+
+    /**
+     * @param float $Volume
+     */
+    public function setVolume(float $Volume): void
+    {
+        $this->Volume = $Volume;
     }
 
     /**
@@ -142,13 +159,13 @@ class AcceptedDonations extends dbModel
             "In_Time" => "In Time",
             "Out_Time" => "Out Time",
             "Verified_By" => "Verified By",
+            "Volume" => "Volume"
         ];
 
     }
 
     public function rules(): array
     {
-        // TODO: Implement rules() method.
         return [
             "Donation_ID" => [self::RULE_REQUIRED],
             "Donor_ID" => [self::RULE_REQUIRED],
@@ -158,12 +175,12 @@ class AcceptedDonations extends dbModel
             "In_Time" => [self::RULE_REQUIRED],
             "Out_Time" => [self::RULE_REQUIRED],
             "Verified_By" => [self::RULE_REQUIRED],
+            "Volume" => [self::RULE_REQUIRED]
         ];
     }
 
     public static function getTableShort(): string
     {
-        // TODO: Implement getTableShort() method.
         return 'Accepted_Donations';
     }
 
@@ -190,7 +207,8 @@ class AcceptedDonations extends dbModel
             'Retrieved_By',
             'In_Time',
             'Out_Time',
-            'Verified_By'
+            'Verified_By',
+            'Volume'
         ];
     }
 

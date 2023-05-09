@@ -25,6 +25,13 @@ class MedicalTeam extends \App\model\database\dbModel
         return $this->Team_ID;
     }
 
+    public function getTeamIDDummy(): string
+    {
+        $hash = md5($this->Team_ID);
+        $hash = substr($hash, 0, 6);
+        return "TEAM-$hash";
+    }
+
     /**
      * @return int
      */

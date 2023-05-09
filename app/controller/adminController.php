@@ -263,14 +263,6 @@ class adminController extends \Core\Controller
                     'Manager' => Manager::Search(['Manager_ID' => $Search, 'First_Name' => $Search, 'Last_Name' => $Search, 'City' => $Search, 'Contact_No' => $Search, 'Email' => $Search]),
                     default => User::Search(['UID' => $Search, 'Email' => $Search]),
                 };
-
-
-//                $user = $userRole::Search(['UID' => $Search,'Email'=>$Search]);
-//                $FilterUser=array_filter($user,function ($user) use ($Role){
-//                    /** @var User $user */
-//                    return $user->getRole()===$Role;
-//                });
-
                 $this->layout='none';
                 return $this->render('Admin/searchUser',[
                     'users'=>$user
@@ -286,10 +278,6 @@ class adminController extends \Core\Controller
                     default => new User(),
                 };
                 $user = $userRole::Search(['Account_Status'=>$Account]);
-//                $FilterUser=array_filter($user,function ($user) use ($Role){
-//                    /** @var User $user */
-//                    return $user->getRole()===$Role;
-//                });
 
                 $this->layout='none';
                 return $this->render('Admin/searchUser',[

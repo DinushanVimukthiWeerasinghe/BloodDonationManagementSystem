@@ -1,6 +1,6 @@
 /*Primary Text*/
 .text-primary {
-    color: var(--primary);
+    color: var(--primary) !important;
 }
 /*Secondary Text*/
 .text-secondary {
@@ -37,4 +37,66 @@
 /*Black Text*/
 .text-black {
     color: var(--black);
+}
+
+.text-yellow-1{
+    color: var(--yellow-1);
+}
+.text-yellow-2{
+    color: var(--yellow-2);
+}
+.text-yellow-3{
+    color: var(--yellow-3);
+}
+.text-yellow-4{
+    color: var(--yellow-4);
+}
+.text-yellow-5{
+    color: var(--yellow-5);
+}
+.text-yellow-6{
+    color: var(--yellow-6);
+}
+.text-yellow-7{
+    color: var(--yellow-7);
+}
+.text-yellow-8{
+    color: var(--yellow-8);
+}
+.text-yellow-9{
+    color: var(--yellow-9) !important;
+}
+.text-yellow-10{
+    color: var(--yellow-10) !important;
+}
+
+.text-blue-1{
+    color: var(--blue-1);
+}
+.text-blue-2{
+    color: var(--blue-2);
+}
+.text-blue-3{
+    color: var(--blue-3);
+}
+.text-blue-4{
+    color: var(--blue-4);
+}
+.text-blue-5{
+    color: var(--blue-5);
+}
+.text-blue-6{
+    color: var(--blue-6);
+}
+.text-blue-7{
+    color: var(--blue-7);
+}
+.text-blue-8{
+    color: var(--blue-8);
+}
+.text-blue-9{
+    color: var(--blue-9);
+}
+.text-blue-10{
+    color: var(--blue-10);
 }

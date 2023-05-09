@@ -2,6 +2,8 @@
 
 namespace App\view\components\Table;
 
+use App\model\Requests\BloodRequest;
+
 class DetailTable
 {
     private array $title;
@@ -18,7 +20,7 @@ class DetailTable
         {
             return "<h1>No Data Found</h1>";
         }else{
-            $table = "<table class='table table-striped table-hover table-bordered' id='$id'style='width: 90%;'>";
+            $table = "<table class='table table-striped table-hover table-bordered' id='$id'style='width: 90%; margin-top: 10vh'>";
             $table .= "<thead style='color: var(--primary);background: rgba(255, 255, 255, 0.2);'>";
             $table .= "<tr>";
             foreach ($this->title as $title) {

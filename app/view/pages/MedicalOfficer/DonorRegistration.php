@@ -116,13 +116,25 @@ if(!empty($Donor)):
 
             </div>
             <div class="d-flex mt-2">
+                <?php
+                if ($Donor->getDonationAvailability() === 1) :
+                ?>
                 <button class="btn btn-success m-1" style="padding: 0.5rem;font-size: 1rem" onclick="RegisterDonorForCampaign('<?=$Donor->getID()?>','<?=$Campaign->getCampaignID()?>')">Register</button>
+                <?php
+                endif;
+                ?>
                 <button class="btn btn-danger m-1" style="padding: 0.5rem;font-size: 1rem" onclick="Cancel()">Cancel</button>
             </div>
 
         </div>
     </div>
     <div class="d-flex flex-column justify-content-center align-items-center w-25 ">
+        <div class="d-flex flex-center flex-column">
+            <div class="d-flex bg-dark px-2 py-1 text-center text-white">Donation Availability</div>
+            <div class="d-flex flex-column m-1 px-2 py-0-5 text-center text-white border-radius-10 <?=$Donor->getDonationAvailability()===1 ? "bg-success ": "bg-danger"?>">
+                <?= $Donor->getDonationAvailability() === 1 ? "Available" : "Not Available"?>
+            </div>
+        </div>
         <div class="d-flex flex-column m-1">
             <img src="<?=$Donor->getProfileImage();?>" alt="Avatar" class="avatar" width="192px">
             <div class="text-md text-center my-1 font-bold bg-dark text-white py-1">Profile Picture</div>
@@ -130,12 +142,41 @@ if(!empty($Donor)):
         <div class="d-flex gap-1">
             <div class="d-flex flex-column">
 <!--                TODO Donor NIC FRONT AND BACK-->
+                <?php
+                if($Donor->getNICFront() == null):
+                ?>
+                <img src="<?=Donor::DEFAULT_NIC_FRONT?>" alt="Avatar" class="avatar" width="200px" height="280px">
+
+                <div class="text-md text-center d-flex flex-center gap-1 cursor my-1 font-bold border-radius-5 bg-dark text-white py-1" onclick="UploadNICFront('<?=$Donor->getID()?>')">
+                    <img src="/public/icons/camera.svg" class="invert-100">
+                    Upload NIC <br> (Front)
+                </div>
+                <?php
+                else:
+                ?>
                 <img src="<?=$Donor->getNICFront();?>" alt="Avatar" class="avatar" width="200px" height="280px">
                 <div class="text-md text-center my-1 font-bold bg-dark text-white py-1">NIC (Front)</div>
+                <?php
+                endif;
+                ?>
             </div>
             <div class="d-flex flex-column">
+                <?php
+                if($Donor->getNICBack() == null):
+                ?>
+                <img src="<?=Donor::DEFAULT_NIC_BACK?>" alt="Avatar" class="avatar" width="200px" height="280px">
+                    <div class="text-md d-flex flex-center cursor gap-1 text-center my-1 font-bold bg-dark border-radius-5 text-white py-1" onclick="UploadNICBack('<?=$Donor->getID()?>')">
+                    <img src="/public/icons/camera.svg" class="invert-100">
+                    Upload NIC <br> (Back)
+                </div>
+                <?php
+                else:
+                ?>
                 <img src="<?=$Donor->getNICBack();?>"  alt="Avatar" class="avatar" width="200px" height="280px">
                 <div class="text-md text-center my-1 font-bold bg-dark text-white py-1">NIC (Back)</div>
+                <?php
+                endif;
+                ?>
             </div>
         </div>
     </div>
@@ -336,5 +377,88 @@ endif;
                 }
             })
     }
+
+    <?php
+        if (isset($Donor) && !$Donor->getNICFront()):
+    ?>
+    const UploadNICFront = (DonorID)=>{
+        const input = document.createElement("input");
+        input.type = "file";
+        input.accept = "image/*";
+        input.onchange = ()=>{
+            const file = input.files[0];
+            const formData = new FormData();
+            formData.append("NICFront",file);
+            formData.append("DonorID",DonorID);
+
+            fetch("/mofficer/uploadNICFront",{
+                method:"POST",
+                body:formData
+            })
+                .then(res=>res.json())
+                .then(data=>{
+                    console.log(data)
+                    if (data.status){
+                        ShowToast({
+                            title:"Success",
+                            message:"NIC Front Uploaded Successfully",
+                            type:"success"
+                        })
+                        window.location.reload();
+                    } else {
+                        ShowToast({
+                            title:"Error",
+                            message:data.message,
+                            type:"danger"
+                        })
+                    }
+                })
+        }
+        input.click();
+    }
+    <?php
+        endif;
+    ?>
+    <?php
+        if (isset($Donor) && !$Donor->getNICBack()):
+    ?>
+    const UploadNICBack = (DonorID)=>{
+        const input = document.createElement("input");
+        input.type = "file";
+        input.accept = "image/*";
+        input.onchange = ()=>{
+            const file = input.files[0];
+            const formData = new FormData();
+            formData.append("NICBack",file);
+            formData.append("DonorID",DonorID);
+
+            fetch("/mofficer/uploadNICBack",{
+                method:"POST",
+                body:formData
+            })
+                .then(res=>res.json())
+                .then(data=>{
+                    console.log(data)
+                    if (data.status){
+                        ShowToast({
+                            title:"Success",
+                            message:"NIC Back Uploaded Successfully",
+                            type:"success"
+                        })
+                        window.location.reload();
+                    } else {
+                        ShowToast({
+                            title:"Error",
+                            message:data.message,
+                            type:"danger"
+                        })
+                    }
+                })
+        }
+        input.click();
+    }
+    <?php
+        endif;
+    ?>
 
 </script>

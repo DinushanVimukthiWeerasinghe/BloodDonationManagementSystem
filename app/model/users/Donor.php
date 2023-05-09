@@ -6,12 +6,20 @@ use App\model\Donor\ReportedDonor;
 use App\model\Notification\DonorNotification;
 use Core\Request;
 use Core\Response;
+use DateTime;
 
 class Donor extends Person
 {
+
+    public const AVAILABILITY_AVAILABLE = 1;
+    public const AVAILABILITY_TEMPORARY_UNAVAILABLE = 2;
+    public const AVAILABILITY_PERMANENT_UNAVAILABLE = 3;
+
     public const REPORTED_DONOR=1;
     public const AVAILABLE = 1;
     public const UNAVAILABLE = 2;
+    const DEFAULT_NIC_FRONT = '/public/upload/NIC/NIC_Upload_Front.png';
+    const DEFAULT_NIC_BACK = '/public/upload/NIC/NIC_Upload_Back.png';
     const VERIFIED = 2;
     const PENDING = 1;
     const NOT_VERIFIED = 3;
@@ -19,6 +27,7 @@ class Donor extends Person
     protected string $Donor_ID = '';
     protected string $Nearest_Bank = '';
     protected int $Donation_Availability = 0;
+    protected ?string $Donation_Availability_Date='';
     protected int $Verified=0;
     protected ?string $Verified_At='';
     protected ?string $Verified_By=Null;
@@ -67,6 +76,79 @@ class Donor extends Person
     {
         $this->BloodGroup = $BloodGroup;
     }
+
+    public function getAge(): ?int
+    {
+        $nicNumber=$this->getNIC();
+        $nicNumber = preg_replace('/\D/', '', $nicNumber);
+
+        // Extract the year, month, and date from the NIC number
+        $year = substr($nicNumber, 0, 4);
+        $days = substr($nicNumber, 4, 3);
+        $days = ltrim($days, '0');
+        $days = (int)$days;
+        $days = $days - 1;
+        $month = 0;
+        $year = (int)$year;
+        while ($days > 0) {
+            $month++;
+            if ($days <= 31) {
+                break;
+            }
+            if ($days <= 59) {
+                if ($year % 4 == 0) {
+                    $days -= 29;
+                } else {
+                    $days -= 28;
+                }
+            } else if ($days <= 90) {
+                $days -= 31;
+            } else if ($days <= 120) {
+                $days -= 30;
+            } else if ($days <= 151) {
+                $days -= 31;
+            } else if ($days <= 181) {
+                $days -= 30;
+            } else if ($days <= 212) {
+                $days -= 31;
+            } else if ($days <= 243) {
+                $days -= 31;
+            } else if ($days <= 273) {
+                $days -= 30;
+            } else if ($days <= 304) {
+                $days -= 31;
+            } else if ($days <= 334) {
+                $days -= 30;
+            } else if ($days <= 365) {
+                $days -= 31;
+            }
+        }
+        $DateOfBirth = $year . '-' . $month . '-' . $days;
+        $DateOfBirth = new DateTime($DateOfBirth);
+        $today = new DateTime('today');
+        $age = $DateOfBirth->diff($today)->y;
+        return $age;
+
+
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getDonationAvailabilityDate(): ?string
+    {
+        return $this->Donation_Availability_Date;
+    }
+
+    /**
+     * @param string|null $Donation_Availability_Date
+     */
+    public function setDonationAvailabilityDate(?string $Donation_Availability_Date): void
+    {
+        $this->Donation_Availability_Date = $Donation_Availability_Date;
+    }
+
+
 
     public function getID(): string
     {
@@ -118,10 +200,14 @@ class Donor extends Person
     }
 
     /**
-     * @return int
+     * @param bool $Readable
+     * @return int|string
      */
-    public function getDonationAvailability(): int
+    public function getDonationAvailability(bool $Readable=false): int | string
     {
+        if ($Readable):
+            return $this->Donation_Availability == 1? "Available":"Not Available";
+        endif;
         return $this->Donation_Availability;
     }
 
@@ -246,11 +332,11 @@ class Donor extends Person
     }
 
     /**
-     * @return string|null
+     * @return string|null| bool
      */
-    public function getNICFront(): ?string
+    public function getNICFront(): string | bool | null
     {
-        return $this->NIC_Front;
+        return $this->NIC_Front ?? false;
     }
 
     /**
@@ -380,7 +466,8 @@ class Donor extends Person
             'NIC_Back',
             'BloodDonation_Book_1',
             'BloodDonation_Book_2',
-            'BloodGroup'
+            'BloodGroup',
+            'Donation_Availability_Date'
         ];
     }
 

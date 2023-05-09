@@ -2,16 +2,22 @@
 
 namespace App\model\Notification;
 //TODO : Create Admin Notification Model
-class MedicalOfficerNotification extends \App\model\database\dbModel
+use App\model\database\dbModel;
+
+class MedicalOfficerNotification extends dbModel
 {
     const CAMPAIGN_ASSIGNMENT = 1;
     const TASK_ASSIGNMENT = 2;
+    const OTHER = 3;
+    public const STATUS_UNREAD = 1;
+    public const STATUS_READ = 2;
+    public const STATUS_DELETED = 3;
 
     protected string $Notification_ID;
     protected string $Notification_Title;
     protected string $Notification_Message;
     protected string $Notification_Date;
-    protected string $Notification_Status;
+    protected string $Notification_State;
     protected string $Notification_Type;
     protected string $Target_ID;
     protected ?string $Valid_Until=null;
@@ -85,15 +91,15 @@ class MedicalOfficerNotification extends \App\model\database\dbModel
      */
     public function getNotificationStatus(): string
     {
-        return $this->Notification_Status;
+        return $this->Notification_State;
     }
 
     /**
-     * @param string $Notification_Status
+     * @param string $Notification_State
      */
-    public function setNotificationStatus(string $Notification_Status): void
+    public function setNotificationStatus(string $Notification_State): void
     {
-        $this->Notification_Status = $Notification_Status;
+        $this->Notification_State = $Notification_State;
     }
 
     /**
@@ -152,7 +158,7 @@ class MedicalOfficerNotification extends \App\model\database\dbModel
             'Notification_Title'=>'Notification Title',
             'Notification_Message'=>'Notification Message',
             'Notification_Date'=>'Notification Date',
-            'Notification_Status'=>'Notification Status',
+            'Notification_State'=>'Notification Status',
             'Notification_Type'=>'Notification Type',
             'Target_ID'=>'Target ID',
             'Valid_Until'=>'Valid Until'
@@ -166,7 +172,7 @@ class MedicalOfficerNotification extends \App\model\database\dbModel
             'Notification_Title'=>[self::RULE_REQUIRED],
             'Notification_Message'=>[self::RULE_REQUIRED],
             'Notification_Date'=>[self::RULE_REQUIRED],
-            'Notification_Status'=>[self::RULE_REQUIRED],
+            'Notification_State'=>[self::RULE_REQUIRED],
             'Notification_Type'=>[self::RULE_REQUIRED],
             'Target_ID'=>[self::RULE_REQUIRED],
         ];
@@ -189,7 +195,7 @@ class MedicalOfficerNotification extends \App\model\database\dbModel
             'Notification_Title',
             'Notification_Message',
             'Notification_Date',
-            'Notification_Status',
+            'Notification_State',
             'Notification_Type',
             'Target_ID',
             'Valid_Until'

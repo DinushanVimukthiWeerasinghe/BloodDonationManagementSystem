@@ -20,6 +20,7 @@ const OpenDialogBox= (props) => {
         contentSize,
         minWidth,
         maxWidth,
+        maxHeight
     } = props;
     const dialogBoxOuter = document.createElement('div');
     dialogBoxOuter.id = id;
@@ -31,6 +32,9 @@ const OpenDialogBox= (props) => {
     dialogBoxOuter.className = 'dialog-box-outer';
     const dialogBoxInner = document.createElement('div');
     dialogBoxInner.className = 'dialog-box';
+    if (maxHeight) {
+        dialogBoxInner.style.maxHeight = maxHeight;
+    }
     if (minWidth) {
         dialogBoxInner.style.minWidth = minWidth;
     }
@@ -88,7 +92,14 @@ const OpenDialogBox= (props) => {
         secondaryBtnElement.className= 'btn ';
         secondaryBtnElement.innerHTML= secondaryBtnText;
         if (secondaryBtnColor) {
-            secondaryBtnElement.classList.add(secondaryBtnColor);
+            // Check if the Secondary Button Color is array or not
+            if (Array.isArray(secondaryBtnColor)) {
+                secondaryBtnColor.forEach((color) => {
+                    secondaryBtnElement.classList.add(color);
+                });
+            }else{
+                secondaryBtnElement.classList.add(secondaryBtnColor);
+            }
         }else{
             secondaryBtnElement.classList.add('btn-outline-secondary');
         }

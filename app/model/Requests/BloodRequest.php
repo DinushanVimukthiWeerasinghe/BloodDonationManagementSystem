@@ -346,4 +346,39 @@ class BloodRequest extends dbModel
      }
     }
 
+    public static function NavigationFooter(int $total_pages,int $current_page)
+    {
+        $pages="";
+        $next=$current_page+1;
+        $prev=$current_page-1;
+        if ($next > $total_pages)
+        {
+            $next=$total_pages;
+        }
+        if ($prev < 1)
+        {
+            $prev=1;
+        }
+        for($i=1;$i<=$total_pages;$i++)
+        {
+            if ($i == $current_page){
+                $pages.= "<a href='?page=$i'  class='nav-number bg-primary text-white px-1 py-0-5 border-radius-10 active' style='margin: 1vw'>$i</a>";
+                continue;
+            }
+            $pages.= "<a href='?page=$i'  class='nav-number bg-white px-1 py-0-5 border-radius-10'>$i</a>";
+        }
+        return <<<HTML
+            <div class="notifications-footer mt-1">
+                <div class="navigations d-flex gap-1">
+                    <a href="?page=$prev" class="previous nav-btn"><img src="/public/images/icons/previous.png" alt=""></a>
+                    <div class="nav-numbers text-white gap-2">
+                        $pages
+                    </div>
+                    <a href="?page=$next" class="next nav-btn"> <img src="/public/images/icons/next.png" alt=""> </a>
+                </div>
+            </div>
+        HTML;
+
+    }
+
 }

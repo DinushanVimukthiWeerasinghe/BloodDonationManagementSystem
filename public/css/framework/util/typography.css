@@ -114,7 +114,7 @@
     font-size: 1.125rem;
 }
 .text-xl {
-    font-size: 1.25rem;
+    font-size: 1.25rem !important;
 }
 .text-2xl {
     font-size: 1.5rem;
@@ -153,7 +153,7 @@
 .font-bold {
     font-weight: 700;
 }
-.font-extrabold {
+.font-extraBold {
     font-weight: 800;
 }
 .font-black {
