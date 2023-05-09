@@ -10,7 +10,6 @@ use App\model\Donations\Donation;
 use App\model\Report\Report;
 use App\model\users\Donor;
 use App\model\users\User;
-use App\view\components\Card\donationDetailsCard;
 use Core\Application;
 use Core\BaseMiddleware;
 use Core\Controller;
@@ -26,7 +25,7 @@ class donorController extends Controller
     public function __construct(){
         $this->layout = "Donor";
         $this->registerMiddleware(new donorMiddleware(['dashboard'], BaseMiddleware::FORBIDDEN_ROUTES));
-        if($_SESSION['pop'] == 1){
+        if(isset($_SESSION['pop']) && $_SESSION['pop'] == 1){
             $_SESSION['pop'] = 1;
         }
         else{

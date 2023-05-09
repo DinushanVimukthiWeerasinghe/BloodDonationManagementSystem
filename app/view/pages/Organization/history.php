@@ -26,6 +26,11 @@ $navbar = new AuthNavbar('Campaign History', '#', '/public/images/icons/user.png
 echo $navbar;
 echo $background;
 ?>
+<style>
+    .btn:hover{
+        background-color: red;
+    }
+</style>
 <!--<link rel="stylesheet" href="/public/styles/index2.css">-->
 <!--<link rel="stylesheet" href="/public/css/components/cardGroup/index.css">-->
 <!--<link rel="stylesheet" href="/public/css/fontawesome/fa.css">-->
@@ -72,15 +77,14 @@ echo $background;
     ?>
     <div id="card-pane" class="card-pane" >
                 <?php foreach ($params as $key=>$row){ ?>
-                    <div class="card">
+                    <div class="card" style="width: 300px;height: 300px;">
                         <div class="card-image">
                             <img src='/public/images/icons/bloodDrop.png'alt="">
                         </div>
                         <div class="card-body">
-                            <div class="card-title fa fa-2x"><?= $row['Campaign_Name']; ?></div>
-                            <div class="card-description"><?= $row['Campaign_Date']; ?></div>
-                            <div class="card-description"><?= $row['Status']; ?></div>
-                            <a href="campDetails?id=<?php echo $row['Campaign_ID'];?>"><button class="btn btn-success">Campaign Details</button></a>
+                            <div class="card-title fa fa-1x"><?= $row['Campaign_Name']; ?></div><br><br>
+                            <div class="card-description fa fa-1x"><?= $row['Campaign_Date']; ?></div><br><br>
+                            <a href="campDetails?id=<?php echo $row['Campaign_ID'];?>"><button class="btn btn-success mt-1 w-100">Campaign Details</button></a>
                         </div>
                     </div>
                 <?php

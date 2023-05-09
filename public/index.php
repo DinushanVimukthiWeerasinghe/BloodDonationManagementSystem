@@ -96,6 +96,9 @@ try {
     $app->router->post('/admin/dashboard/manageBanks/add', [adminController::class, 'addNewBank']);
     $app->router->post('/admin/dashboard/manageBanks/search', [adminController::class, 'searchBank']);
 
+    $app->router->post('/admin/manageBanks/addManager', [authController::class, 'managerRegister']);
+    $app->router->get('/admin/manageBanks/addManager', [authController::class, 'managerRegister']);
+    $app->router->post('/admin/manageHospital/addHospital', [authController::class, 'hospitalRegister']);
 
     $app->router->post('/user/resetPassword', [adminController::class, 'ResetPassword']);
     $app->router->post('/user/removeUser', [adminController::class, 'RemoveUser']);
@@ -109,6 +112,8 @@ try {
 
     $app->router->get('/test',[siteController::class,'Test']);
 
+$app->router->get('/organization/register', [OrganizationController::class, 'register']);
+$app->router->post('/organization/register', [OrganizationController::class, 'register']);
 $app->router->get('/organization/dashboard', [OrganizationController::class, 'dashboard']);
 $app->router->get('/organization/create', [OrganizationController::class, 'CreateCampaign']);
 $app->router->get('/organization/history', [OrganizationController::class, 'history']);
@@ -128,9 +133,10 @@ $app->router->get('/organization/campDetails', [OrganizationController::class, '
 $app->router->get('/organization/received', [OrganizationController::class, 'received']);
 $app->router->get('/organization/accepted', [OrganizationController::class, 'accepted']);
 $app->router->get('/organization/profile', [OrganizationController::class, 'profile']);
+$app->router->get('/organization/campaign/view', [OrganizationController::class, 'view']);
+$app->router->get('/organization/campaign/updateCampaign', [OrganizationController::class, 'updateCampaign']);
+$app->router->post('/organization/campaign/updateCampaign', [OrganizationController::class, 'updateCampaign']);
 $app->router->get('/organization/campaign/view', [OrganizationController::class, 'ViewCampaign']);
-$app->router->get('/organization/campaign/updateCampaign', [OrganizationController::class, 'update']);
-$app->router->post('/organization/campaign/updateCampaign', [OrganizationController::class, 'update']);
 $app->router->get('/organization/campaign/deleteCampaign', [OrganizationController::class, 'delete']);
 $app->router->post('/organization/getCampaignCoordinate', [OrganizationController::class, 'GetCampaignCoordinate']);
 $app->router->post('/organization/getBankDetails', [OrganizationController::class, 'GetOrganizationBankAccountDetails']);
@@ -149,7 +155,7 @@ $app->router->post('/user/change-password', [authController::class, 'ChangePassw
     $app->router->post('/sponsor/makePayment', [sponsorController::class, 'MakePayment']);
     $app->router->get('/sponsor/history', [sponsorController::class, 'history']);
     $app->router->get('/sponsor/manage', [sponsorController::class, 'manage']);
-    $app->router->get('/sponsor/donation', [sponsorController::class, 'MakeDonation']);
+    $app->router->get('/sponsor/sponsor', [sponsorController::class, 'MakeDonation']);
     $app->router->get('/sponsor/campDetails', [sponsorController::class, 'campDetails']);
     $app->router->post('/sponsor/campaign/view', [sponsorController::class, 'GetCampaignDetails']);
     $app->router->get('/sponsor/guideline', [sponsorController::class, 'guideline']);
@@ -220,6 +226,7 @@ $app->router->post('/user/change-password', [authController::class, 'ChangePassw
 
     $app->router->get('/manager/mngReport', [managerController::class, 'ManageReport']);
     $app->router->post('/manager/mngReport', [managerController::class, 'ManageReport']);
+    $app->router->get('/manager/mngReport/save-pdf', [managerController::class, 'SaveAsPDF']);
 
 
     $app->router->post('/manager/upload', [managerController::class, 'upload']);
@@ -256,6 +263,7 @@ $app->router->post('/user/change-password', [authController::class, 'ChangePassw
 //Manage Requests
 
 $app->router->get('/mofficer/campaigns', [medicalOfficerController::class, 'ManageCampaigns']);
+$app->router->post('/mofficer/campaigns/endCampaign', [medicalOfficerController::class, 'EndCampaigns']);
 $app->router->post('/mofficer/changepassword', [medicalOfficerController::class, 'ChangePassword']);
 $app->router->post('/mofficer/stat', [medicalOfficerController::class, 'GetStatistics']);
 $app->router->post('/mofficer/changeProfile', [medicalOfficerController::class, 'ChangeProfileImage']);
@@ -273,6 +281,9 @@ $app->router->post('/mofficer/registerDonor', [medicalOfficerController::class, 
 $app->router->post('/mofficer/registerDonorForCampaign', [medicalOfficerController::class, 'RegisterDonorForCampaign']);
 //$app->router->get('/mofficer/campaigns', [medicalOfficerController::class, 'VerifyDonor']);
     $app->router->post('/medicalofficer/get-donor', [medicalOfficerController::class, 'FindDonor']);
+    $app->router->post('/medicalOfficer/ViewReport', [medicalOfficerController::class, 'ViewReport']);
+    $app->router->get('/medicalOfficer/ViewReport', [medicalOfficerController::class, 'ViewReport']);
+    $app->router->post('/medicalOfficer/ViewTeam', [medicalOfficerController::class, 'ViewTeam']);
 //$app->router->post('/manager/mngRequests/emergency', [managerController::class, 'FindRequests']);
 
 
@@ -372,7 +383,3 @@ $app->router->post('/donor/profile/loginPrompt', [donorController::class, 'login
     echo $e->getMessage();
 }
 //Application::CreateDirectories(['public/upload/Profile/Donors','public/upload/Profile/Managers','public/upload/Profile/MedicalOfficers','public/upload/Profile/Receivers']);
-
-?>
-
-

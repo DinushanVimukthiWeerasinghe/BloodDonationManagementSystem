@@ -204,7 +204,7 @@ CREATE TABLE IF NOT EXISTS Campaign
     Campaign_Date        DATE         NOT NULL,
     Venue                VARCHAR(100) NOT NULL,
     Nearest_City         VARCHAR(100) NOT NULL,
-    Status               INT          NOT NULL CHECK ( Status Between 1 AND 3),
+    Status               INT          NOT NULL CHECK ( Status Between 1 AND 4),
     Latitude             VARCHAR(100) NOT NULL,
     Longitude            VARCHAR(100) NOT NULL,
     Nearest_BloodBank    VARCHAR(20)  NOT NULL,
@@ -215,6 +215,9 @@ CREATE TABLE IF NOT EXISTS Campaign
     FOREIGN KEY (Nearest_BloodBank) REFERENCES BloodBanks (BloodBank_ID),
     FOREIGN KEY (Organization_ID) REFERENCES Organizations (Organization_ID)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8;
+
+# select all Constraint of Campaign Table with name
+SELECT * FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS WHERE TABLE_NAME = 'Campaign';
 
 
 # Create Table for Approved Campaigns
@@ -446,6 +449,19 @@ CREATE TABLE IF NOT EXISTS Blood_Requests (
     FOREIGN KEY (Requested_By) REFERENCES Hospitals(Hospital_ID),
     FOREIGN KEY (BloodGroup) REFERENCES BloodGroups(BloodGroup_ID)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS Hospital_Blood_Donations;
+CREATE TABLE IF NOT EXISTS Hospital_Blood_Donations
+(
+    Donation_ID VARCHAR(20) NOT NULL PRIMARY KEY,
+    Donor_ID    VARCHAR(20) NOT NULL,
+    Request_ID  VARCHAR(20) NOT NULL,
+    Donation_At TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    Volume      DECIMAL(10,2) NOT NULL CHECK ( Volume BETWEEN 0 AND 1000),
+    FOREIGN KEY (Request_ID) REFERENCES Blood_Requests (Request_ID),
+    FOREIGN KEY (Donor_ID) REFERENCES Donors (Donor_ID)
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8;
 
 # Create Table for Organization Members
 DROP TABLE IF EXISTS Organization_Members;
@@ -816,8 +832,10 @@ CREATE TABLE IF NOT EXISTS campaigns_sponsors
     Sponsor_ID VARCHAR(20) NOT NULL,
     Description VARCHAR(100) NOT NULL,
     Sponsored_Amount INT NOT NULL,
+    Session_ID VARCHAR(255) NOT NULL,
+    Status INT NOT NULL DEFAULT 1,
     Sponsored_At TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (Sponsorship_ID, Sponsor_ID),
+    PRIMARY KEY (Sponsorship_ID, Sponsor_ID,Sponsored_At),
     FOREIGN KEY (Sponsorship_ID) REFERENCES Sponsorship_Requests (Sponsorship_ID)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8;

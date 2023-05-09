@@ -32,6 +32,23 @@ class MedicalOfficer extends Person
         return $this->Officer_ID;
     }
 
+    public static function getTaskOfCampaign(string $UserID, $CampaignID)
+    {
+        $Team = MedicalTeam::findOne(['Campaign_ID'=>$CampaignID],false);
+        if ($Team) {
+            /** @var $TeamMember TeamMembers*/
+            $TeamMember = TeamMembers::findOne(['Team_ID' => $Team->getTeamID(), 'Member_ID' => $UserID], false);
+            if ($TeamMember) {
+                return $TeamMember->getTaskName();
+            } else {
+                return null;
+            }
+        }
+        else{
+            return null;
+        }
+    }
+
     public function setID(string $ID):void
     {
         $this->Officer_ID=$ID;
@@ -46,6 +63,46 @@ class MedicalOfficer extends Person
     public function getRole(): string
     {
         return Person::MEDICAL_OFFICER;
+    }
+
+    public static function getRoleOfCampaign($UserID,$CampaignID)
+    {
+        $Team = MedicalTeam::findOne(['Campaign_ID'=>$CampaignID],false);
+        if ($Team) {
+            $TeamMember = TeamMembers::findOne(['Team_ID' => $Team->getTeamID(), 'Member_ID' => $UserID], false);
+            if ($TeamMember) {
+                return $TeamMember->getPosition();
+            } else {
+                return null;
+            }
+        }
+        else{
+            return null;
+        }
+    }
+
+    public static function GetAllCampaign(string $OfficerID)
+    {
+        $AllTeamAsMember = TeamMembers::RetrieveAll(false,[],true,['Member_ID'=>$OfficerID]);
+        if (!empty($AllTeamAsMember)){
+            $AllTeams= [];
+            foreach ($AllTeamAsMember as $TeamMember) {
+                $AllTeams[] = MedicalTeam::findOne(['Team_ID' => $TeamMember->getTeamID()], false);
+            }
+            if (!empty($AllTeams)) {
+                $AllCampaigns = [];
+                foreach ($AllTeams as $Team) {
+                    $AllCampaigns[] = Campaign::findOne(['Campaign_ID' => $Team->getCampaignID()], false);
+                }
+                $AllCampaigns = array_filter($AllCampaigns, function ($Campaign) {
+                    return $Campaign->getStatus() == Campaign::CAMPAIGN_STATUS_FINISHED;
+                });
+                return $AllCampaigns;
+            }else{
+                return null;
+            }
+        }
+
     }
 
 
@@ -320,6 +377,9 @@ class MedicalOfficer extends Person
             }
         }
         if (count($AssignedCampaigns) > 0) {
+            $AssignedCampaigns = array_filter($AssignedCampaigns, function ($AssignedCampaign)  {
+                return $AssignedCampaign->getStatus() == Campaign::APPROVED;
+            });
             if (trim($Date) == '') {
                 // Sort the array by date
                 usort($AssignedCampaigns, function ($a, $b) {

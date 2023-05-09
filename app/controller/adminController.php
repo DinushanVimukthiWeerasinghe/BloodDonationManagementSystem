@@ -247,36 +247,22 @@ class adminController extends \Core\Controller
             $Role=trim($request->getBody()['Role']);
 
             $Account= match (strtolower($Search)){
-                'active'=>$userRole::ACTIVE,
-                'deactivated','inactive'=>$userRole::TEMPORARY_DEACTIVATED,
-                'removed', 'disabled', 'deleted' =>$userRole::PERMANENTLY_DEACTIVATED,
+                'active'=>User::ACTIVE,
+                'deactivated','inactive'=>User::TEMPORARY_DEACTIVATED,
+                'removed', 'disabled', 'deleted' =>User::PERMANENTLY_DEACTIVATED,
                 default=>5
             };
             if ($Account===5)
             {
-
-                switch ($Role) {
-                    case 'Donor':
-                        $user = Donor::Search(['City' => $Search, 'Donor_ID' => $Search, 'NIC' => $Search, 'First_Name' => $Search, 'Last_Name' => $Search, 'Email' => $Search, 'Contact_No' => $Search]);
-                        break;
-                    case 'Organization':
-                        $user = Organization::Search(['Organization_ID' => $Search, 'Organization_Name' => $Search, 'Organization_Email' => $Search, 'Contact_No' => $Search, 'City' => $Search]);
-                        break;
-                    case 'MedicalOfficer':
-                        $user = MedicalOfficer::Search(['Officer_ID' => $Search, 'First_Name' => $Search, 'Last_Name' => $Search, 'Contact_No' => $Search, 'City' => $Search, 'Email' => $Search, 'NIC' => $Search, 'Position' => $Search]);
-                        break;
-                    case 'Hospital':
-                        $user = Hospital::Search(['Hospital_ID' => $Search, 'Hospital_Name' => $Search, 'Email' => $Search, 'City' => $Search, 'Contact_No' => $Search]);
-                        break;
-                    case 'Sponsor':
-                        $user = Sponsor::Search(['Sponsor_ID' => $Search, 'Sponsor_Name' => $Search, 'Email' => $Search, 'City' => $Search]);
-                        break;
-                    case 'Manager':
-                        $user = Manager::Search(['Manager_ID' => $Search, 'First_Name' => $Search, 'Last_Name' => $Search, 'City' => $Search, 'Contact_No' => $Search, 'Email' => $Search]);
-                        break;
-                    default:
-                        $user = User::Search(['UID' => $Search,'Email'=>$Search]);
-                }
+                $user = match ($Role) {
+                    'Donor' => Donor::Search(['City' => $Search, 'Donor_ID' => $Search, 'NIC' => $Search, 'First_Name' => $Search, 'Last_Name' => $Search, 'Email' => $Search, 'Contact_No' => $Search]),
+                    'Organization' => Organization::Search(['Organization_ID' => $Search, 'Organization_Name' => $Search, 'Organization_Email' => $Search, 'Contact_No' => $Search, 'City' => $Search]),
+                    'MedicalOfficer' => MedicalOfficer::Search(['Officer_ID' => $Search, 'First_Name' => $Search, 'Last_Name' => $Search, 'Contact_No' => $Search, 'City' => $Search, 'Email' => $Search, 'NIC' => $Search, 'Position' => $Search]),
+                    'Hospital' => Hospital::Search(['Hospital_ID' => $Search, 'Hospital_Name' => $Search, 'Email' => $Search, 'City' => $Search, 'Contact_No' => $Search]),
+                    'Sponsor' => Sponsor::Search(['Sponsor_ID' => $Search, 'Sponsor_Name' => $Search, 'Email' => $Search, 'City' => $Search]),
+                    'Manager' => Manager::Search(['Manager_ID' => $Search, 'First_Name' => $Search, 'Last_Name' => $Search, 'City' => $Search, 'Contact_No' => $Search, 'Email' => $Search]),
+                    default => User::Search(['UID' => $Search, 'Email' => $Search]),
+                };
 
 
 //                $user = $userRole::Search(['UID' => $Search,'Email'=>$Search]);
@@ -384,5 +370,10 @@ class adminController extends \Core\Controller
             return json_encode($data);
         }
         return false;
+    }
+
+    function addManager(Request $request, Response $response){
+        $bank = $request->getBody();
+        print_r($bank);
     }
 }

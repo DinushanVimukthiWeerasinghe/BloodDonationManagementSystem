@@ -50,6 +50,7 @@ use App\model\users\User;
                 </thead>
                 <tbody>
                 <?php
+                if (!empty($Campaigns)):
                 $i=1;
                 foreach ($Campaigns as $campaign):
                 ?>
@@ -70,6 +71,13 @@ use App\model\users\User;
                     </tr>
                 <?php
                 endforeach;
+                else:
+                ?>
+                <tr>
+                    <td colspan="5">No Campaign Assigned!</td>
+                </tr>
+                <?php
+                endif;
                 ?>
 
                 </tbody>

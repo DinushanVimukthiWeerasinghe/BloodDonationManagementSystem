@@ -24,14 +24,13 @@ class HomePageTest extends \Codeception\Test\Unit
      * @return void
      */
     public function testNavbarComponents($page,$element,$excepted){
-        $I = new AcceptanceTester($this->getScenario());
         $this->tester->amOnPage($page);
         $this->tester->seeElement($element);
         $this->tester->click($element);
         $this->tester->seeInCurrentUrl($excepted);
     }
 
-    public function navbarComponentsProvider()
+    public function navbarComponentsProvider(): array
     {
         return [
             ['/', '#BrandIcon', '/'],

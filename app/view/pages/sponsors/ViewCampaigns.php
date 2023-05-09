@@ -176,6 +176,14 @@ FlashMessage::RenderFlashMessages();
                 Amount = parseInt(Amount);
             }
         }
+        if (Amount<1000){
+            ShowToast({
+                title : 'Error',
+                message : 'You Only Can Sponsor More Than LKR 1,000.00',
+                type : 'danger'
+            })
+            return;
+        }
         OpenDialogBox({
             title : 'Sponsor',
             titleClass : 'bg-dark text-white py-0-5 px-2 text-center',

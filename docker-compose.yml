@@ -6,7 +6,7 @@ services:
       - "80:80"
       - "443:443"
     volumes:
-      - ./app:/var/www/html
+      - .:/var/www/html
     environment:
       MYSQL_DB_CONNECTION: test
       MYSQL_DB_NAME: test

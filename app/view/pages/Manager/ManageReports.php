@@ -31,14 +31,19 @@
             <img src="/public/images/icons/manager/manageReport/health-report.png" alt="">
             <div class="header-title">Transfusion Reports</div>
         </div>
-       <script>
-           const BranchReport = ()=>{
-               OpenDialogBox({
-                   id:'branch-report',
-                   title:'Donation Campaign Report',
-                   titleClass:'text-center bg-dark text-white',
-                   minWidth:'85vw',
-                   content:`
+
+   </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.debug.js" integrity="sha384-NaWTHo/8YCBYJ59830LTz/P4aQZK1sS0SneOgAvhsIl3zBu8r9RevNg5lHCHAuQ/" crossorigin="anonymous"></script>
+<script src="/public/js/html2canvas.min.js"></script>
+<script>
+    const BranchReport = ()=>{
+        OpenDialogBox({
+            id:'branch-report',
+            title:'Donation Campaign Report',
+            titleClass:'text-center bg-dark text-white',
+            minWidth:'85vw',
+            content:`
                 <div id="branch-report" xmlns="http://www.w3.org/1999/html">
                     <div class="d-flex gap-1  justify-content-center">
                         <div class="d-flex border-2 flex-column">
@@ -324,11 +329,13 @@
                })
            }
            const PrintReport = (reportID,title)=>{
-               window.print();
+               printJS({
+                   printable: 'branch-report', // ID of the HTML element to be printed
+                   type: 'html', // Type of content to be printed
+                   documentTitle: title, // Optional document title
+                   targetStyles: ['/public/css/framework/utils.cs'], // Optional CSS file to be included
+                   style: 'table {border-collapse: collapse; width: 100%;} table, th, td {border: 1px solid black; padding: 5px; text-align: center;} table tbody tr:nth-child(even){background-color:#f2f2f2}', // Optional inline CSS
+               });
 
-           }
-       </script>
-   </div>
-</div>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.debug.js" integrity="sha384-NaWTHo/8YCBYJ59830LTz/P4aQZK1sS0SneOgAvhsIl3zBu8r9RevNg5lHCHAuQ/" crossorigin="anonymous"></script>
-<script src="/public/js/html2canvas.min.js"></script>
+    }
+</script>
