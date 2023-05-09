@@ -82,18 +82,20 @@ else:
         </div>
     </div>
     <div class="d-flex h-100 align-items-center justify-content-center m-2">
-       <div class="card cursor" onclick="StartBloodDonation('<?=$Donor->getID()?>')">
+       <div class="card cursor" onclick="StartDonation('<?=$Donor->getID()?>')">
            <div class="card-header flex-column">
                <img src="/public/icons/timer.svg" alt="A+" class="border-radius-10">
                <div class="card-title" >Start Blood Retrieving</div>
            </div>
        </div>
-       <div class="card">
+       <div class="card cursor" onclick="RejectDonation('<?=$Donor->getID()?>')">
            <div class="card-header flex-column">
                <img src="/public/icons/cancel.svg" alt="A+" class="border-radius-10">
-               <div class="card-title">Reject Blood Donation</div>
+               <div class="card-title" >Reject Blood Donation</div>
            </div>
        </div>
+        <?php
+        ?>
 
     </div>
 </div>
@@ -103,6 +105,7 @@ endif;
 
 <script>
     <?php
+
     if (isset($BloodRetrievingStarted)):
         ?>
 
@@ -143,7 +146,6 @@ endif;
             title: "Complete Donation & Store Blood",
             order: 1001,
             content: `
-
                 <div class="d-flex flex-column gap-1">
                     <div class="bg-dark w-100 p-1 text-white text-center">Donation Completed Successfully!</div>
                     <div class="form-group">
@@ -167,9 +169,30 @@ endif;
                 formData.append("Donation_ID", "<?=$Donation->getDonationID()?>");
                 formData.append("Packet_ID", document.getElementById("PacketID").value);
                 const Remarks = document.getElementById("Remarks").value;
+                let Volume = document.getElementById("Volume").value;
                 if (Remarks !== ""){
                     formData.append("Remarks", Remarks);
                 }
+                // Convert Volume to Float
+                Volume = parseFloat(Volume);
+                if(isNaN(Volume)){
+                    ShowToast({
+                        message: "Volume must be a number",
+                        type: "error",
+                        duration: 3000
+                    })
+                    return;
+                }
+                if (Volume <= 0){
+                    ShowToast({
+                        message: "Volume must be greater than 0",
+                        type: "error",
+                        duration: 3000
+                    })
+                    return;
+                }
+                formData.append("Volume", document.getElementById("Volume").value);
+
                 fetch(url, {
                     method: "POST",
                     body: formData
@@ -227,37 +250,32 @@ endif;
                     </div>
                 </div>
             `,
-            successBtnAction : ()=>{
-                const AbortDonationReason = document.getElementById("AbortDonationReason");
-                const AbortDonationReasonOther = document.getElementById("AbortDonationReasonOther");
-                const url = "/mofficer/AbortDonation";
-                const formData = new FormData();
-                formData.append("AbortDonationReason", AbortDonationReason.value);
-                if (AbortDonationReason.value === "4") {
-                    formData.append("AbortDonationReasonOther", AbortDonationReasonOther.value);
-                }
-                formData.append("DonorID", "<?=$Donor->getDonorID()?>");
-                //formData.append("DonationID", "<?php //=$Donation->getDonationID()?>//");
-                fetch(url, {
-                    method: "POST",
-                    body: formData
-                }).then((response) => {
-                    return response.text();
-                }).then((data) => {
-                    if (data.status === "success") {
-                        window.location.reload();
-                    } else {
-                        console.log(data);
-                    }
-                }).catch((error) => {
-                    console.log(error)
-                })
-            }
+
         })
     }
     <?php
     endif;
     ?>
+    const StartDonation = (id)=>{
+        OpenDialogBox({
+            id: "StartDonation",
+            title: "Start Blood Retrieving",
+            titleClass: "bg-dark text-white px-2 py-1",
+            content:`
+                <div class="d-flex flex-center gap-1 flex-column">
+                    <div class="d-flex"> Are you sure you want to start donation?</div>
+                </div>
+            `,
+            successBtnText: "Start",
+            successBtnAction: ()=>{
+                StartBloodDonation(id);
+            },
+            cancelBtnText: "Cancel",
+            cancelBtnAction: ()=>{
+                CloseDialogBox("StartDonation");
+            }
+        })
+    }
     const StartBloodDonation = (id) =>{
         const url = "/mofficer/startBloodDonation";
         const form = new FormData();
@@ -282,6 +300,71 @@ endif;
                     }, 2000);
                 }
             })
+    }
+
+    // TODO : Add More select options
+    const RejectDonation = (id)=>{
+         OpenDialogBox({
+             id: "RejectDonation",
+             title: "Reject Donation",
+             titleClass: "bg-dark text-white px-2 py-1",
+             content : `
+                <div class="d-flex">
+                    <div class="d-flex flex-column w-100">
+                        <div class="d-flex flex-column w-100 justify-content-center align-items-center gap-1">
+                            <div class="form-group">
+                                <label for="AbortDonationReason" class="form-label w-40">Reason</label>
+                                <select class="form-select w-60" id="AbortDonationReason" style="border-radius: 0;border-color: black" onchange="OtherReason()">
+                                    <option value="1">Fear of Needles</option>
+                                    <option value="2">Fainting</option>
+                                    <option value="3">High blood pressure</option>
+                                    <option value="4">Other</option>
+                                </select>
+                            </div>
+                            <div class="form-group none" id="AbortDonationReasonOtherDiv">
+                                <label for="AbortDonationReason" class="form-label w-40">Other Reason</label>
+                                <textarea class="form-control w-60" id="AbortDonationReasonOther" placeholder="Other Reason" style="height: 100px" maxlength="100"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+             `,
+             successBtnAction : ()=>{
+                 const AbortDonationReason = document.getElementById("AbortDonationReason");
+                 const AbortDonationReasonOther = document.getElementById("AbortDonationReasonOther");
+                 const url = "/mofficer/rejectBloodDonation";
+                 const formData = new FormData();
+                 formData.append("AbortDonationReason", AbortDonationReason.value);
+                 if (AbortDonationReason.value === "4") {
+                     formData.append("AbortDonationReasonOther", AbortDonationReasonOther.value);
+                 }
+                 formData.append("DonorID", "<?=$Donor->getDonorID()?>");
+                 //formData.append("DonationID", "<?php //=$Donation->getDonationID()?>//");
+                 fetch(url, {
+                     method: "POST",
+                     body: formData
+                 }).then((response) => {
+                     return response.json();
+                 }).then((data) => {
+                     if (data.status) {
+                         ShowToast({
+                             type : 'success',
+                             message: data.message
+                         })
+                         setTimeout(()=>{
+                             window.location.href = "/mofficer/take-donation";
+                         },2000);
+                     } else {
+                         ShowToast({
+                             type : 'danger',
+                             message: data.message
+                         })
+                     }
+                 }).catch((error) => {
+                     console.log(error)
+                 })
+             }
+         })
     }
 
     const OtherReason = () => {

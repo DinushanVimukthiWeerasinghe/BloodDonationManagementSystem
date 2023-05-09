@@ -70,7 +70,7 @@ $getParams = function ($params) {
                     <td data-label="Venue"><?php echo $value->getVenue()?></td>
                     <td data-label="Organization Name"><?php echo $value->getOrganizationName()?></td>
                     <td data-label="Campaign Status"><?php echo $value->getCampaignStatus()?></td>
-                    <td>
+                    <td class="gap-0-5">
                         <button class="btn btn-outline-info" onclick="ViewCampaignRequest('<?php echo $value->getCampaignID()?>')">View</button>
                         <?php
                         if (!$value->IsRejected()):
@@ -369,7 +369,6 @@ $getParams = function ($params) {
                                 <div class="d-flex w-50 flex-center">
                                     <div id="map" style="height: 300px;width: 300px"></div>
                                     <div id="infowindow-content">
-
                                     </div>
                                 </div>
 
@@ -566,6 +565,7 @@ $getParams = function ($params) {
         OpenDialogBox({
             id: 'rejectCampaignRequest',
             title: 'Reject Campaign Request',
+            titleClass: 'bg-dark text-white',
             content: `
             <div class="d-flex flex-column justify-content-center align-items-center">
                 <div class="form-group">

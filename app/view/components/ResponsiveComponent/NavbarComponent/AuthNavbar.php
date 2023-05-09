@@ -86,6 +86,7 @@ class AuthNavbar
                 $lnk.="
             <a href='{$item['link']}' class='logout'>
                 <img src='{$item['icon']}' alt='' width='30rem'>
+       
             </a>
             ";
             endif;
@@ -93,10 +94,13 @@ class AuthNavbar
 
         $profilePicture=Application::$app->getUser()->getProfileImage();
         $profileLnk=$this->profileLinks;
+        /*<a href="/logout" class="logout"><img src="/public/icons/log-out.svg" alt="" width="30rem"> </a>*/
            return <<<HTML
                 <div class="profile">
                         $lnk
-                        <a href="/logout" class="logout"><img src="/public/icons/log-out.svg" alt="" width="30rem"> </a>
+                        
+                        <a href="/logout" class="btn btn-danger d-flex flex-center gap-0-5 mx-1"><img class="invert-100" src="/public/icons/log-out.svg" alt="" width="20rem">LogOut </a>
+
                         <button  href="$profileLnk" class="navProfile" onclick="getProfile()"><img class="profile-icon" id="NavProfileImage" src="$profilePicture" width="40rem" alt="profile"></button>
                         <div class="navProfileName"><span>{$profileName}</span></div>
                 </div>

@@ -156,6 +156,7 @@ FlashMessage::RenderFlashMessages();
         OpenDialogBox({
             id:'sendEmail',
             title:'Send Email',
+            titleClass: 'bg-dark text-white',
             content :`
                 <div class="d-flex gap-1 flex-column">
                     <div class="form-group">
@@ -221,7 +222,101 @@ FlashMessage::RenderFlashMessages();
     }
 
     const ViewSponsor = (id)=>{
-        console.log("View Sponsor")
+        const url = '/manager/mngSponsors/find';
+        const form = new FormData();
+        form.append('id',id);
+        fetch(url,{
+            method:'POST',
+            body:form
+        }).then(res=>res.json())
+            .then(data=>{
+                if (data.status){
+                    const Sponsor = data.data;
+                    const Campaigns = Sponsor.Campaigns;
+                    let tbody = "";
+                    if (Campaigns.length > 0){
+                        Campaigns.forEach((campaign,index)=>{
+                            tbody += `
+                                <tr>
+                                    <td data-label="No">${index+1}</td>
+                                    <td data-label="Sponsored Date">${campaign.Sponsored_At}</td>
+                                    <td data-label="Campaign Name">${campaign.Campaign_Name}</td>
+                                    <td data-label="Sponsored Amount">${campaign.Sponsored_Amount}</td>
+
+                                </tr>
+                            `
+                        })
+                    }else{
+                        tbody = `
+                            <tr>
+                                <td colspan="4" class="text-center">No Sponsorship</td>
+                            </tr>
+                        `
+                    }
+                    OpenDialogBox({
+                        id:'viewSponsor',
+                        title:'View Sponsor',
+                        titleClass:'text-white bg-dark px-1',
+                        content: `
+                            <div class="d-flex flex-column">
+                            <div class="d-flex flex-column flex-center gap-1">
+                                <div class="d-flex flex-column gap-1 w-100">
+                                    <div class="font-bold bg-dark px-2 py-1 text-white">Sponsor Details</div>
+                                    <div class="d-flex justify-content-center gap-1">
+                                        <div class="d-flex flex-column gap-0-5 w-50">
+                                            <div class="d-flex gap-1">
+                                                <div class="font-bold">Full Name</div>
+                                                <div class="font-thin">${Sponsor.Name}</div>
+                                            </div>
+                                            <div class="d-flex gap-1">
+                                                <div class="font-bold">Contact No</div>
+                                                <div class="font-thin">${Sponsor.Contact}</div>
+                                            </div>
+
+                                        </div>
+                                        <div class="d-flex flex-column gap-0-5 w-50">
+                                            <div class="d-flex gap-1">
+                                                <div class="font-bold">Address</div>
+                                                <div class="font-thin">${Sponsor.Address}</div>
+                                            </div>
+                                            <div class="d-flex gap-1">
+                                                <div class="font-bold">Email</div>
+                                                <div class="font-thin">${Sponsor.Email}</div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="d-flex flex-column gap-1 w-100">
+                                    <div class="font-bold bg-dark px-2 py-1 text-white">Donation Details</div>
+                                    <div class="d-flex overflow-y-overlay" style="max-height: 50vh">
+                                        <table class="table">
+                                            <thead class="sticky top-0">
+                                                <tr>
+                                                    <th>No</th>
+                                                    <th>Sponsored Date</th>
+                                                    <th>Campaign Name</th>
+                                                    <th>Sponsored Amount</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                ${tbody}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div class="d-flex justify-content-end">
+                                        <div class="font-bold">Total Sponsored Amount : ${Sponsor.TotalSponsored}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        `,
+                        showSuccessButton:false,
+                        cancelBtnText:'Close',
+                    })
+                }
+            })
     }
 
     const ChangeRecordsPerPage = ()=>{

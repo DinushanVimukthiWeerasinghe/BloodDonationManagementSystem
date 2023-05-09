@@ -77,8 +77,14 @@ class File
     public function saveFile(): bool
     {
             $filePath=$this->path.$this->name;
+            $fileDirectory = dirname($filePath);
+
+
             if (!is_dir($this->path)){
                 mkdir($this->path,0777,true);
+            }
+            if (!is_dir($fileDirectory)){
+                mkdir($fileDirectory,0777,true);
             }
             if(move_uploaded_file($this->tmp_name,$filePath)){
                 return true;

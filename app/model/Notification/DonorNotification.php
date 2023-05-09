@@ -4,7 +4,7 @@ namespace App\model\Notification;
 //TODO : Create Admin Notification Model
 class DonorNotification extends \App\model\database\dbModel
 {
-    public const INFORM_ALL_DONOR = 0;
+    public const INFORM_ALL_DONOR = 1;
     public const INFORM_GROUP_OF_DONOR = 2;
     public const NOTIFICATION_STATE_UNREAD = 1;
 

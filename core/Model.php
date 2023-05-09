@@ -54,9 +54,11 @@ abstract class Model
             {
 
                 $rulename=$rule;
+
                 if(!is_string($rulename)){
                     $rulename=$rule[0];
                 }
+
                 if($rulename===self::RULE_REQUIRED && empty($value))
                 {
 

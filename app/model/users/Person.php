@@ -122,6 +122,11 @@ abstract class Person extends dbModel
         return $this->Address1.' '.$this->Address2.' '.$this->City;
     }
 
+    /**
+     * @throws \Exception
+     */
+
+
 
 
     /**

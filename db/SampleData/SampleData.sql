@@ -278,39 +278,40 @@ VALUES
     ('Hos_14', 'hos14@test.com', '$2y$10$yjcyB1lr8V/nVciydOYedu0Rnedd9JHZ3d6PqPMqM4yNJoPmltlZS', 0, 'Hospital'),
     ('Hos_15', 'hos15@test.com', '$2y$10$yjcyB1lr8V/nVciydOYedu0Rnedd9JHZ3d6PqPMqM4yNJoPmltlZS', 0, 'Hospital'),
     ('Hos_16', 'hos16@test.com', '$2y$10$yjcyB1lr8V/nVciydOYedu0Rnedd9JHZ3d6PqPMqM4yNJoPmltlZS', 0, 'Hospital');
-INSERT INTO Hospitals (Hospital_ID, Hospital_Name, Email, Address1, Address2, City, Contact_No)
+INSERT INTO Hospitals (Hospital_ID, Hospital_Name, Email, Address1, Address2, City, Contact_No,Nearest_Blood_Bank)
 VALUES
-    ('Hos_02', 'Asiri Hospital', 'hos2@test.com', 'No. 181, Kirula Road', 'Narahenpita', 'Colombo', '0114524401'),
-    ('Hos_03', 'Lanka Hospitals', 'hos3@test.com', '578, Elvitigala Mawatha', 'Narahenpita', 'Colombo', '0115530002'),
-    ('Hos_04', 'Durdans Hospital', 'hos4@test.com', '3, Alfred Place', 'Colombo 03', 'Colombo', '0112140034'),
-    ('Hos_05', 'Nawaloka Hospitals', 'hos5@test.com', '23, Deshamanya H.K. Dharmadasa Mawatha', 'Colombo 02', 'Colombo', '0115430056'),
-    ('Hos_06', 'Hemas Hospitals', 'hos6@test.com', '389, Negombo Road', 'Wattala', 'Colombo', '0117507777'),
-    ('Hos_07', 'Sri Jayawardenapura General Hospital', 'hos7@test.com', 'Hospital Road', 'Thalapathpitiya', 'Nugegoda', '0112841607'),
-    ('Hos_08', 'Apeksha Hospital', 'hos8@test.com', 'Maharagama', 'Colombo', 'Maharagama', '0112841601'),
-    ('Hos_09', 'National Hospital of Sri Lanka', 'hos9@test.com', 'Regent Street', 'Colombo 08', 'Colombo', '0112691111'),
-    ('Hos_10', 'Kalubowila Teaching Hospital', 'hos10@test.com', 'Horton Place', 'Dehiwala-Mount Lavinia', 'Dehiwala', '0112769711'),
-    ('Hos_11', 'Karapitiya Teaching Hospital', 'hos11@test.com', 'Galle', 'Galle', 'Galle', '0912232255'),
-    ('Hos_12', 'Teaching Hospital Anuradhapura', 'hos12@test.com', '670, Maithreepala Senanayake Mawatha', 'Anuradhapura', 'Anuradhapura', '0252222261'),
-    ('Hos_13', 'Teaching Hospital Batticaloa', 'hos13@test.com', 'Kallady', 'Batticaloa', 'Batticaloa', '0652222261'),
-    ('Hos_14', 'Teaching Hospital Jaffna', 'hos14@test.com', 'Hospital Road', 'Jaffna', 'Jaffna', '0212222261'),
-    ('Hos_15', 'Teaching Hospital Kandy', 'hos15@test.com', 'Srimath Kudarathwatta Mawatha', 'Kandy', 'Kandy', '0812222261'),
-    ('Hos_16', 'Teaching Hospital Karawanella', 'hos16@test.com', 'Nittambuwa Road', 'Karawanella', 'Karawanella', '0365675511');
+    ('Hos_02', 'Asiri Hospital', 'hos2@test.com', 'No. 181, Kirula Road', 'Narahenpita', 'Colombo', '0114524401','BB_01'),
+    ('Hos_03', 'Lanka Hospitals', 'hos3@test.com', '578, Elvitigala Mawatha', 'Narahenpita', 'Colombo', '0115530002','BB_01'),
+    ('Hos_04', 'Durdans Hospital', 'hos4@test.com', '3, Alfred Place', 'Colombo 03', 'Colombo', '0112140034','BB_01'),
+    ('Hos_05', 'Nawaloka Hospitals', 'hos5@test.com', '23, Deshamanya H.K. Dharmadasa Mawatha', 'Colombo 02', 'Colombo', '0115430056','BB_01'),
+    ('Hos_06', 'Hemas Hospitals', 'hos6@test.com', '389, Negombo Road', 'Wattala', 'Colombo', '0117507777','BB_01'),
+    ('Hos_07', 'Sri Jayawardenapura General Hospital', 'hos7@test.com', 'Hospital Road', 'Thalapathpitiya', 'Nugegoda', '0112841607','BB_01'),
+    ('Hos_08', 'Apeksha Hospital', 'hos8@test.com', 'Maharagama', 'Colombo', 'Maharagama', '0112841601','BB_01'),
+    ('Hos_09', 'National Hospital of Sri Lanka', 'hos9@test.com', 'Regent Street', 'Colombo 08', 'Colombo', '0112691111','BB_01'),
+    ('Hos_10', 'Kalubowila Teaching Hospital', 'hos10@test.com', 'Horton Place', 'Dehiwala-Mount Lavinia', 'Dehiwala', '0112769711','BB_01'),
+    ('Hos_11', 'Karapitiya Teaching Hospital', 'hos11@test.com', 'Galle', 'Galle', 'Galle', '0912232255','BB_01'),
+    ('Hos_12', 'Teaching Hospital Anuradhapura', 'hos12@test.com', '670, Maithreepala Senanayake Mawatha', 'Anuradhapura', 'Anuradhapura', '0252222261','BB_01'),
+    ('Hos_13', 'Teaching Hospital Batticaloa', 'hos13@test.com', 'Kallady', 'Batticaloa', 'Batticaloa', '0652222261','BB_01'),
+    ('Hos_14', 'Teaching Hospital Jaffna', 'hos14@test.com', 'Hospital Road', 'Jaffna', 'Jaffna', '0212222261','BB_01'),
+    ('Hos_15', 'Teaching Hospital Kandy', 'hos15@test.com', 'Srimath Kudarathwatta Mawatha', 'Kandy', 'Kandy', '0812222261','BB_01'),
+    ('Hos_16', 'Teaching Hospital Karawanella', 'hos16@test.com', 'Nittambuwa Road', 'Karawanella', 'Karawanella', '0365675511','BB_01');
 
 # Create Sample Data for Blood Requests
-INSERT INTO Blood_Requests(Request_ID, Requested_By, BloodGroup, Requested_At, Type, Status,Volume)
-VALUES ('Req_01', 'Hos_01', 'A+', '2023-03-06 00:00:00', 1, 1,100),
-('Req_02', 'Hos_01', 'A+', '2023-03-06 00:00:00', 1, 1,100),
-('Req_03', 'Hos_01', 'A+', '2023-03-06 00:00:00', 1, 1,100),
-('Req_04', 'Hos_01', 'A+', '2023-03-06 00:00:00', 1, 1,100),
-('Req_05', 'Hos_01', 'A+', '2023-03-06 00:00:00', 1, 1,100),
-('Req_06', 'Hos_01', 'A+', '2023-03-06 00:00:00', 1, 1,100),
-('Req_07', 'Hos_01', 'A+', '2023-03-06 00:00:00', 1, 1,100),
-('Req_08', 'Hos_01', 'A+', '2023-03-06 00:00:00', 1, 1,100),
-('Req_09', 'Hos_01', 'A+', '2023-03-06 00:00:00', 1, 1,100),
-('Req_10', 'Hos_01', 'A+', '2023-03-06 00:00:00', 1, 1,100),
-('Req_11', 'Hos_01', 'A+', '2023-03-06 00:00:00', 1, 1,100),
-('Req_12', 'Hos_01', 'A+', '2023-03-06 00:00:00', 1, 1,100),
-('Req_13', 'Hos_01', 'A+', '2023-03-06 00:00:00', 1, 1,100),
-('Req_14', 'Hos_01', 'A+', '2023-03-06 00:00:00', 1, 1,100),
-('Req_15', 'Hos_01', 'A+', '2023-03-06 00:00:00', 1,1,100);
+INSERT INTO Blood_Requests(Request_ID, Requested_By, BloodGroup, Requested_At, Type, Status,Volume,Request_From)
+VALUES
+('Req_01', 'Hos_01', 'A+', '2023-03-06 00:00:00', 1, 1,100,'BB_01'),
+('Req_02', 'Hos_01', 'A+', '2023-03-06 00:00:00', 1, 1,100,'BB_01'),
+('Req_03', 'Hos_01', 'A+', '2023-03-06 00:00:00', 1, 1,100,'BB_01'),
+('Req_04', 'Hos_01', 'A+', '2023-03-06 00:00:00', 1, 1,100,'BB_01'),
+('Req_05', 'Hos_01', 'A+', '2023-03-06 00:00:00', 1, 1,100,'BB_01'),
+('Req_06', 'Hos_01', 'A+', '2023-03-06 00:00:00', 1, 1,100,'BB_01'),
+('Req_07', 'Hos_01', 'A+', '2023-03-06 00:00:00', 1, 1,100,'BB_01'),
+('Req_08', 'Hos_01', 'A+', '2023-03-06 00:00:00', 1, 1,100,'BB_01'),
+('Req_09', 'Hos_01', 'A+', '2023-03-06 00:00:00', 1, 1,100,'BB_01'),
+('Req_10', 'Hos_01', 'A+', '2023-03-06 00:00:00', 1, 1,100,'BB_01'),
+('Req_11', 'Hos_01', 'A+', '2023-03-06 00:00:00', 1, 1,100,'BB_01'),
+('Req_12', 'Hos_01', 'A+', '2023-03-06 00:00:00', 1, 1,100,'BB_01'),
+('Req_13', 'Hos_01', 'A+', '2023-03-06 00:00:00', 1, 1,100,'BB_01'),
+('Req_14', 'Hos_01', 'A+', '2023-03-06 00:00:00', 1, 1,100,'BB_01'),
+('Req_15', 'Hos_01', 'A+', '2023-03-06 00:00:00', 1,1,100,'BB_01');
 

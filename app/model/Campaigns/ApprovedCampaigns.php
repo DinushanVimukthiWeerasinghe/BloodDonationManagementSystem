@@ -119,4 +119,9 @@ class ApprovedCampaigns extends dbModel
             'Remarks'
         ];
     }
+
+    public function getCampaign() : Campaign | null
+    {
+        return Campaign::findOne(['Campaign_ID'=>$this->Campaign_ID]);
+    }
 }

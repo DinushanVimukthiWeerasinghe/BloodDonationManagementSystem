@@ -279,10 +279,12 @@ class Login extends dbModel
 
 
         try {
+
             Application::$app->login($user);
         } catch (\Exception $e) {
             Application::$app->session->setFlash('error', $e->getMessage());
         }
+
 
         Application::$app->session->setFlash('success', 'Login Successful!');
         return true;

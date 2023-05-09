@@ -12,6 +12,11 @@ class Response
         header('Location: ' . $url);
     }
 
+    public function SendJson(bool $status, array $data): bool|string
+    {
+        header('Content-Type: application/json');
+        return json_encode(['status' => $status, 'data' => $data]);
+    }
     public function getContentType(string $path): string
     {
         $ext = pathinfo($path, PATHINFO_EXTENSION);
