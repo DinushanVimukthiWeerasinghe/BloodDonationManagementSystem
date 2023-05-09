@@ -49,7 +49,7 @@
             title: 'Add Bank',
             content: `<form id="addBankForm" action="/admin/dashboard/manageBanks/add" method="post">
                             <label for="bank_name">Bank Name</label>
-                            <input type="text" name="BankName" placeholder="Bank Name" ">
+                            <input type="text" name="BankName" placeholder="Bank Name">
                             <label for="address">Address</label>
                             <input type="text" name="Address1" placeholder="Address Line 01">
                             <input type="text" name="Address2" placeholder="Address Line 02">
@@ -68,8 +68,8 @@
                             <label for="type">Type</label>
 <!--                            <input type="text" name="Type" placeholder="Type (0/1)">-->
                             <select id="type" name="Type">
-                                <option value=2>Blood Bank Branch</option>
-                                <option value="1">Main Blood Bank</option>
+                                <option value="1">Blood Bank Branch</option>
+                                <option value="2">Main Blood Bank</option>
                             </select>
                         </form>`,
             //closeDialog,
@@ -117,11 +117,11 @@
                             <label for="numberOfStorages">Number Of Storages</label>
                             <input type="text" name="No_Of_Storages" value="${data[8]}">
                             <label for="type">Type</label>
-                            <input type="text" name="Type" value="${data[9]}">
-<!--                            <select id="type" name="Type">-->
-<!--                                <option value="0">Blood Bank Branch</option>-->
-<!--                                <option value="1">Main Blood Bank</option>-->
-<!--                            </select>-->
+                            <input type="text" name="typeSave" value="${data[9]}" id="typeSaver" disabled hidden="hidden">
+                            <select id="typeSelector" name="Type">
+                                <option value="1">Blood Bank Branch</option>
+                                <option value="2">Main Blood Bank</option>
+                            </select>
                         </form>`,
     //closeDialog,
     successBtnText: 'Save Changes',
@@ -148,7 +148,16 @@
     //showCancelButton
 }
     )
-}
+        let typeSelector = document.getElementById('typeSelector');
+        let typeSaver = document.getElementById('typeSaver');
+        // typeSelector.value = typeSaver.value;
+        // console.log(typeSelector.value);
+        if (typeSaver.value === 'Branch Blood Bank'){
+            typeSelector.value = 1;
+        }else if(typeSaver.value === 'Main Blood Bank'){
+            typeSelector.value = 2;
+        }
+    }
 
     function ToggleSideBar(){
     let sideBar = document.querySelector('.side-bar');

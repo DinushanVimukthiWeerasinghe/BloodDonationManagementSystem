@@ -52,11 +52,15 @@ const ViewUser = (type="Donor")=>{
             // Loop through the children and remove the active class
             for(let i=0; i<children.length; i++){
                 if(children[i].children[0].id===type+'Icon'){
-                    children[i].children[0].classList.remove('bg-accent');
-                    children[i].children[0].classList.add('bg-primary');
+                    children[i].classList.remove('bg-white');
+                    children[i].classList.add('bg-primary');
+                    children[i].children[1].classList.remove('text-black')
+                    children[i].children[1].classList.add('text-white');
                 }else{
-                    children[i].children[0].classList.remove('bg-primary');
-                    children[i].children[0].classList.add('bg-accent');
+                    children[i].classList.remove('bg-primary');
+                    children[i].classList.add('bg-white');
+                    children[i].children[1].classList.remove('text-white')
+                    children[i].children[1].classList.add('text-black');
                 }
             }
 

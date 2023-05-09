@@ -15,7 +15,7 @@
     </div>
     </div>
     <div id="div1" class="d-flex min-h-75 overflow-y-auto mb-3">
-        <table class="" id="bankTable">
+        <table class="overflow-x-auto" id="bankTable">
             <thead class="bg-white">
             <tr class="bg-white">
                 <th class="bg-white">Blood Bank ID</th>
@@ -57,7 +57,11 @@
                     <td><?php echo $numberOfNurses ?></td>
                     <td><?php echo $numberOfBeds ?></td>
                     <td><?php echo $numberOfStorages ?></td>
-                    <td><?php echo $type ?></td>
+                    <td><?php if($type === \App\model\BloodBankBranch\BloodBank::BRANCH){
+                        echo "Branch Blood Bank";
+                        }elseif ($type === \App\model\BloodBankBranch\BloodBank::MAIN){
+                        echo "Main Blood Bank";
+                        } ?></td>
                     <td class="d-flex flex-center">
                         <button type="button" class="btn btn-outline-success border-radius-10" onclick="editBnkData('<?php echo $id; ?>')">
                             <img src="/public/icons/edit.png" width="24px" alt="">

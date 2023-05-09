@@ -11,7 +11,17 @@
     <link rel="icon" type="image/png" sizes="16x16" href="/public/favicon/favicon-16x16.png">
     <link rel="manifest" href="/public/favicon/site.webmanifest">
 
-<!--    <link rel="stylesheet" href="/public/css/custom/admin/index.css">-->
+
+<!--    <link rel="stylesheet" href="/public/css/framework/util/width.css"-->
+
+
+    <script
+        src="https://maps.googleapis.com/maps/api/js?key=<?=$_ENV['MAP_API_KEY'];?>&callback=initMap&v=weekly&libraries=places"
+        defer
+    ></script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.2.1/dist/chart.umd.min.js"></script>
+    <link rel="stylesheet" href="/public/css/custom/admin/index.css">
     <link rel="stylesheet" href="/public/css/card.css">
     <link rel="stylesheet" href="/public/css/framework/utils.css">
     <script src="https://kit.fontawesome.com/185eb0391e.js" crossorigin="anonymous"></script>

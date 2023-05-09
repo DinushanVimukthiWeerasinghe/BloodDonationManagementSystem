@@ -4,6 +4,7 @@ namespace App\controller;
 
 use App\middleware\donorMiddleware;
 use App\model\Authentication\Login;
+use App\model\Blood\BloodPackets;
 use App\model\Campaigns\Campaign;
 use App\model\Donations\AcceptedDonations;
 use App\model\Donations\Donation;
@@ -64,6 +65,8 @@ class donorController extends Controller
         //print_r( $donor->toArray() );
         //exit();
         //$data = $donor->profile
+//        print_r($data);
+//        exit();
         return $this->render('Donor/donorProfile', $data);
     }
     public function profile1(Request $request, Response $response)
@@ -132,9 +135,18 @@ class donorController extends Controller
     }
 
     public function history(Request $request, Response $response){
-        $donor = Donor::findOne(['Donor_ID' => Application::$app->getUser()->getID()]);
-        $data = AcceptedDonations::RetrieveAll(false,[],true,['Donor_ID' => Application::$app->getUser()->getID()]);
-        //print_r($data);
+//        $donor = Donor::findOne(['Donor_ID' => Application::$app->getUser()->getID()]);
+        $donations = AcceptedDonations::RetrieveAll(false,[],true,['Donor_ID' => Application::$app->getUser()->getID()]);
+        $data = [];
+        foreach ($donations as $donation) {
+            $bloodPacket = BloodPackets::findOne(['Packet_ID' => $donation->getPacketId()]);
+            $data[] = [
+                    'DateTime' => $donation->getDonationDateTime(),
+                    'Remark' => $bloodPacket->getRemarks(),
+                ];
+        }
+//        print_r($data);
+//        exit();
         return $this->render('Donor/donationHistory',['data' => $data]);
     }
 

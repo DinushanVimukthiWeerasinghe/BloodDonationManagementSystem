@@ -6,8 +6,8 @@ use App\model\database\dbModel;
 
 class BloodBank extends dbModel
 {
-    public const BRANCH=0;
-    public const MAIN=1;
+    public const BRANCH=1;
+    public const MAIN=2;
 
     /**
      * @return string

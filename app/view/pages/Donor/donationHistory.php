@@ -29,18 +29,29 @@ echo $navbar;
 
     //$data = [];
     //print_r( $data[0]);
-    foreach($data as $i)
+    foreach($data as $donation)
     {
-        $donation = new AcceptedDonations();
-        $donation ->loadData($i);
-        $date = date($donation -> getDonationDateTime());
-        $date = explode(" ", $date)[0];
-        $date = explode("-", $date);
-        $date = implode("/", $date);
-        $card = new donationCard(['title'=>'On ' . $date , 'subtitle'=> $donation->getDonationId(), 'description'=> $donation->getPacketId()], "");
+//        $donation = new AcceptedDonations();
+//        $donation ->loadData($i);
+//        $donation = $i;
+//        print_r($i);
+//        exit();
+//        $date = date($donation -> getDonationDateTime());
+//        $date = explode(" ", $date)[0];
+//        $date = explode("-", $date);
+//        $date = implode("/", $date);
+        $card = new donationCard(['title'=>"On " . explode(' ',$donation['DateTime'])[0] ,'subtitle'=>'At ' . explode(' ',$donation['DateTime'])[1] , 'description'=> $donation['Remark']], false);
 
 
         echo $card->render();
     }
     ?>
 </div>
+
+<script>
+    let cards = document.getElementsByClassName('popLabel');
+    // console.log(cards);
+    for (let i = 0; i < cards.length; i++){
+    cards.item(i).innerHTML ='';
+    }
+</script>
