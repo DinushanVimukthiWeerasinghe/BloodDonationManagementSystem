@@ -140,10 +140,14 @@ class managerController extends Controller
                 }
             }
         }
-        $Data['Donations']['Percentage']=round(floatval(($Data['Donations']['Successful']/$Data['Donations']['Total'])*100),1);
-        $Data['Campaigns']['Percentage']=round(floatval(($Data['Campaigns']['Successful']/$Data['Campaigns']['Total'])*100),1);
-        $Data['Sponsorships']['Percentage']=round(floatval(($Data['Sponsorships']['Received']/$Data['Sponsorships']['Total'])*100),1);
-        $Data['Requests']['Percentage']=round(floatval(($Data['Requests']['Supplied']/$Data['Requests']['Total'])*100),1);
+        $Data['Donations']['Percentage']=round(floatval(($Data['Donations']['Successful']/1)*100),1);
+//        $Data['Donations']['Percentage']=round(floatval(($Data['Donations']['Successful']/$Data['Donations']['Total'])*100),1);
+//        $Data['Campaigns']['Percentage']=round(floatval(($Data['Campaigns']['Successful']/$Data['Campaigns']['Total'])*100),1);
+        $Data['Campaigns']['Percentage']=round(floatval(($Data['Campaigns']['Successful']/1)*100),1);
+        $Data['Sponsorships']['Percentage']=round(floatval(($Data['Sponsorships']['Received']/1)*100),1);
+//        $Data['Sponsorships']['Percentage']=round(floatval(($Data['Sponsorships']['Received']/$Data['Sponsorships']['Total'])*100),1);
+        $Data['Requests']['Percentage']=round(floatval(($Data['Requests']['Supplied']/1)*100),1);
+//        $Data['Requests']['Percentage']=round(floatval(($Data['Requests']['Supplied']/$Data['Requests']['Total'])*100),1);
 
         $now = date('Y-m-d');
         $ApproveCampaigns = array_filter($ApproveCampaigns,function ($campaign) use ($now){

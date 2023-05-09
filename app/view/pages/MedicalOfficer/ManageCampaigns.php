@@ -80,16 +80,17 @@ use App\model\users\Organization;
                         <div class="d-flex justify-content-start align-items-center"> <span class="font-bold text-md">Address </span> : <span class="ml-1"><?= $Organization->getAddress();?></span></div>
                         <div class="d-flex justify-content-start align-items-center"> <span class="font-bold text-md">Contact No </span> : <span class="ml-1"><?= $Organization->getContactNo();?></span></div>
                         <div class="d-flex justify-content-start align-items-center"> <span class="font-bold text-md">Email </span> : <span class="ml-1"><?= $Organization->getEmail();?></span></div>
-                        <div class="d-flex justify-content-start align-items-center"> <span class="font-bold text-md"> Verification </span> : <span class="ml-1 <?=$Organization->getVerificationStatus()===Organization::ORGANIZATION_VERIFIED ? 'bg-success' : 'bg-yellow-8'?> px-2 py-0-5 text-white text-center font-bold border-radius-10"><?= $Organization->getVerificationStatus(true);?></span></div>
+                        <div class="d-flex justify-content-start align-items-center"> <span class="font-bold text-md"> Status </span> : <span class="ml-1 <?=$Organization->getVerificationStatus()===Organization::ORGANIZATION_VERIFIED ? 'bg-success' : ($Organization->getVerificationStatus()===Organization::ORGANIZATION_REJECTED ? 'bg-red-8' :'bg-yellow-8')?> px-2 py-0-5 text-white text-center font-bold border-radius-10"><?= $Organization->getVerificationStatus(true);?> Organization</span></div>
                     </div>
                     <div class="d-flex flex-column w-30 justify-content-center gap-0-5 align-items-start">
                         <?php
-                        if (!$Organization->IsVerified()):
+                        if (!$Organization->IsVerified() && !$Organization->IsReported()):
                         ?>
+
                         <button class="btn btn-outline-success d-flex gap-1 flex-center" onclick="VerifyOrganization('<?= $Organization->getOrganizationID();?>','verify')"><i class=" font-bold text-md fa-solid fa-circle-check"></i><span class=" font-bold text-md">Verify Organization</span></button>
                         <?php
                         endif;
-                        if ($Position===MedicalTeam::TEAM_LEADER):
+                        if ($Position===MedicalTeam::TEAM_LEADER && !$Organization->IsReported()):
                         ?>
                         <button class="btn btn-outline-danger d-flex gap-1 flex-center" onclick="VerifyOrganization('<?= $Organization->getOrganizationID();?>','reject')"><i class=" font-bold text-md fa-solid fa-circle-xmark"></i><span class=" font-bold text-md">Report Organization</span></button>
                         <?php
@@ -102,6 +103,16 @@ use App\model\users\Organization;
                             <div class="d-flex justify-content-start align-items-center"> <span class="font-bold text-md">Verified By </span> : <span class="ml-1"><?= $Organization->getVerifierName()?></span></div>
                             <div class="d-flex justify-content-start align-items-center"> <span class="font-bold text-md">Verified Date </span> : <span class="ml-1"><?= $Organization->getVerifiedAt();?></span></div>
                         </div>
+                        <?php
+                        endif;
+                        ?>
+                            <?php
+                            if ($Organization->IsReported()):
+                            ?>
+                                <div class="d-flex flex-column w-100 justify-content-center align-items-start gap-0-5">
+                                    <div class="d-flex justify-content-start align-items-center"> <span class="font-bold text-md">Reported By </span> : <span class="ml-1"><?= $Organization->getReporterName()?></span></div>
+                                    <div class="d-flex justify-content-start align-items-center"> <span class="font-bold text-md">Reported At </span> : <span class="ml-1"><?= $Organization->getReporterAt();?></span></div>
+                                </div>
                         <?php
                         endif;
                         ?>
@@ -133,7 +144,6 @@ use App\model\users\Organization;
                     <tbody>
                     <?php
                     $MedicalOfficers = $MedicalTeam->getTeamMembers();
-//                    $MedicalOfficers = array_merge(...array_fill(0,100,$MedicalOfficers));
                     foreach ($MedicalOfficers as $MedicalOfficer){
                         ?>
                         <tr>
@@ -148,14 +158,22 @@ use App\model\users\Organization;
                 </table>
             </div>
             <?php
-            if ($Position===MedicalTeam::TEAM_LEADER):
+            if ($Position===MedicalTeam::TEAM_LEADER && $Organization->IsVerified() && !$Organization->IsReported()):
             $MedicalOfficers = $MedicalTeam->getTeamMembers();
+            if (!$Campaign->IsReported()):
             ?>
-            <button class="btn btn-outline-success" onclick="AllocateTask()">Allocate Task</button>
+                <button class="btn btn-outline-success" onclick="AllocateTask()">Allocate Task</button>
+                <?php
+            else:
+                ?>
+            <button class="btn btn-disabled btn-outline-success-disabled" data-disable="Task Allocation Disabled" data-btn-text="Allocate Task"></button>
+                <?php
+            endif;
+                ?>
                 <?php
                     // Check the Time is 12.00 P.M
             $now = date("H:i:s");
-                if ($now>= date("H:i:s",strtotime("12:00:00"))):
+                if ($now>= date("H:i:s",strtotime("12:00:00")) && !$Campaign->IsReported()):
                 ?>
                     <button class="btn btn-danger" onclick="EndCampaign()">End Campaign</button>
                 <?php
@@ -396,6 +414,7 @@ use App\model\users\Organization;
         form.append("Status",status);
         const contentMessage = status==='verify' ? "Are You Sure You Want To Verify This Organization?" : "Are You Sure You Want To Report This Organization?";
         const title = status==='verify' ? "Verify Organization" : "Report Organization";
+        const button = status==='verify' ? "Verify" : "Report";
         OpenDialogBox({
             id: "VerifyOrganization",
             title: title,
@@ -405,35 +424,89 @@ use App\model\users\Organization;
                         <span class="ml-1">${contentMessage}</span>
                      <div>
             `,
-            successBtnText: "Verify",
+            successBtnText: button,
             successBtnAction: ()=>{
-                fetch(url,{
-                    method: "POST",
-                    body: form
-                }).then((response)=>{
-                    if (response.ok){
-                        return response.json();
-                    }else{
-                        throw new Error("Something Went Wrong");
-                    }
-                }).then((data)=>{
-                    console.log(data)
-                    if (data.status){
-                        CloseDialogBox("VerifyOrganization");
-                        ShowToast({
-                            message: data.message,
-                            type: "success"
-                        })
-                        setTimeout(()=>{
-                            location.reload();
-                        },1000);
-                    }else{
-                        alert(data.message);
-                    }
-                }).catch((error)=>{
-                    alert(error.message);
+                if (status==="reject"){
+                    OpenDialogBox({
+                        id: "reject-reason",
+                        title : "Report Reason",
+                        titleClass: 'bg-dark px-2 py-1 text-center text-white',
+                        popupOrder: 1,
+                        content: `
+                            <div class="d-flex flex-column w-100 p-1 align-items-center">
+                                <div class="d-flex font-bold mb-1"> <span class="ml-1">Please Enter The Reason For Reporting This Organization</span></div>
+                                <div class="d-flex w-100">
+                                    <textarea id="reason" style="height: 100px;padding: 0.5rem" class="form-control" rows="5" placeholder="Enter Reason Here"></textarea>
+                                </div>
+                            </div>
+                        `,
+                        successBtnAction: ()=>{
+                            const reason = document.getElementById("reason").value;
+                            if (reason.length<5){
+                                ShowToast({
+                                    id:"Reason",
+                                    type:"error",
+                                    message:" Message Length should be greater than 5 Character "
+                                })
+                                return;
+                            }
+                            form.append("Reason",reason);
+                            fetch(url,{
+                                method: "POST",
+                                body: form
+                            }).then((response)=>{
+                                if (response.ok){
+                                    return response.json();
+                                }else{
+                                    throw new Error("Something Went Wrong");
+                                }
+                            }).then((data)=>{
+                                console.log(data)
+                                if (data.status){
+                                    CloseDialogBox("VerifyOrganization");
+                                    ShowToast({
+                                        message: data.message,
+                                        type: "success"
+                                    })
+                                    setTimeout(()=>{
+                                        location.reload();
+                                    },1000);
+                                }else{
+                                    alert(data.message);
+                                }
+                            })
+                        }
+                    })
+                }
+                else{
+                    fetch(url,{
+                        method: "POST",
+                        body: form
+                    }).then((response)=>{
+                        if (response.ok){
+                            return response.json();
+                        }else{
+                            throw new Error("Something Went Wrong");
+                        }
+                    }).then((data)=>{
+                        console.log(data)
+                        if (data.status){
+                            CloseDialogBox("VerifyOrganization");
+                            ShowToast({
+                                message: data.message,
+                                type: "success"
+                            })
+                            setTimeout(()=>{
+                                location.reload();
+                            },1000);
+                        }else{
+                            alert(data.message);
+                        }
+                    }).catch((error)=>{
+                        alert(error.message);
+                    })
+                }
 
-                })
             }
         })
     }

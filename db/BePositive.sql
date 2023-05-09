@@ -889,11 +889,22 @@ CREATE TABLE IF NOT EXISTS `Reported_Campaigns` (
     PRIMARY KEY (Campaign_ID, Reported_By),
     FOREIGN KEY (Campaign_ID) REFERENCES Campaign (Campaign_ID),
     FOREIGN KEY (Reported_By) REFERENCES MedicalOfficers(Officer_ID)
-
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-
-
+DROP TABLE IF EXISTS `Reported_Organization`;
+CREATE TABLE IF NOT EXISTS `Reported_Organization` (
+    Organization_ID VARCHAR(20) NOT NULL,
+    Report_Reason VARCHAR(100) NOT NULL,
+    Report_Description VARCHAR(100) NULL,
+    Reported_By VARCHAR(20) NOT NULL,
+    Reported_At TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    Action INT NULL,
+    Reply VARCHAR(100) NULL,
+    Reply_Action INT NULL,
+    PRIMARY KEY (Organization_ID, Reported_By),
+    FOREIGN KEY (Organization_ID) REFERENCES Organizations (Organization_ID),
+    FOREIGN KEY (Reported_By) REFERENCES MedicalOfficers(Officer_ID)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 # Insert Blood Type

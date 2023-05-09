@@ -86,7 +86,7 @@ class MedicalOfficer extends Person
         }
     }
 
-    public static function GetAllCampaign(string $OfficerID)
+    public static function GetAllCampaign(string $OfficerID, $Status = Campaign::CAMPAIGN_STATUS_FINISHED)
     {
         $AllTeamAsMember = TeamMembers::RetrieveAll(false,[],true,['Member_ID'=>$OfficerID]);
         if (!empty($AllTeamAsMember)){
@@ -99,9 +99,11 @@ class MedicalOfficer extends Person
                 foreach ($AllTeams as $Team) {
                     $AllCampaigns[] = Campaign::findOne(['Campaign_ID' => $Team->getCampaignID()], false);
                 }
-                $AllCampaigns = array_filter($AllCampaigns, function ($Campaign) {
-                    return $Campaign->getStatus() == Campaign::CAMPAIGN_STATUS_FINISHED;
-                });
+                if ($Status != Campaign::CAMPAIGN_STATUS_ALL) {
+                    $AllCampaigns = array_filter($AllCampaigns, function ($Campaign) use ($Status) {
+                        return $Campaign->getStatus() == $Status;
+                    });
+                }
                 return $AllCampaigns;
             }else{
                 return null;

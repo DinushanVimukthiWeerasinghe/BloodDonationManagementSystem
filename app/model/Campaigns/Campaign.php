@@ -18,6 +18,7 @@ class Campaign extends dbModel
     public const CAMPAIGN_STATUS_REPORTED = 5;
     public const NOT_VERIFIED = 1;
     public const VERIFIED = 2;
+    const CAMPAIGN_STATUS_ALL = 0;
 
     protected string $Campaign_ID='';
     protected string $Organization_ID='';
@@ -236,6 +237,8 @@ class Campaign extends dbModel
             self::CAMPAIGN_STATUS_PENDING =>'Pending',
             self::CAMPAIGN_STATUS_APPROVED => 'Approved',
             self::CAMPAIGN_STATUS_REJECTED => 'Rejected',
+            self::CAMPAIGN_STATUS_FINISHED => 'Finished',
+            self::CAMPAIGN_STATUS_REPORTED => 'Reported',
             default => 'Unknown'
         };
     }

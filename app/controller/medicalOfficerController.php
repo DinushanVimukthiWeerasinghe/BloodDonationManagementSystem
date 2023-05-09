@@ -16,6 +16,7 @@ use App\model\Donor\DonorHealthCheckUp;
 use App\model\MedicalTeam\MedicalTeam;
 use App\model\MedicalTeam\TeamMembers;
 use App\model\Notification\MedicalOfficerNotification;
+use App\model\Organization\ReportOrganization;
 use App\model\users\Donor;
 use App\model\users\MedicalOfficer;
 use App\model\users\Organization;
@@ -72,10 +73,18 @@ class medicalOfficerController extends \Core\Controller
             ]);
     }
 
-    public function ManageHistory()
+    public function ManageHistory(Request $request, Response $response)
     {
         $UserID = Application::$app->getUser()->getId();
+        /** @var Campaign[] $Campaigns */
         $Campaigns = MedicalOfficer::GetAllCampaign($UserID);
+        $toDate = $request->getBody()['ToDate'] ?? null;
+        $fromDate = $request->getBody()['FromDate'] ?? null;
+        if ($toDate && $fromDate) {
+            $Campaigns = array_filter($Campaigns, function ($object) use ($toDate, $fromDate) {
+                return $object->getCampaignDate() >= $fromDate && $object->getCampaignDate() <= $toDate;
+            });
+        }
         if (!empty($Campaigns)){
             return $this->render('/MedicalOfficer/OfficerHistory',[
                 'page'=>'history',
@@ -300,10 +309,33 @@ class medicalOfficerController extends \Core\Controller
                         $Month=date('F',strtotime($CampaignDate));
                         $TotalAssignmentsInMonth[$Month]++;
                     }
+                    $AllAssignedCampaigns = MedicalOfficer::GetAllCampaign($ID);
+                    $AllAssignedCampaigns = array_merge($AllAssignedCampaigns,MedicalOfficer::GetAllCampaign($ID,Campaign::CAMPAIGN_STATUS_APPROVED));
+                    $AllAssignedCampaignsArray = [];
+                    /** @var Campaign[] $AllAssignedCampaigns */
+                    foreach ($AllAssignedCampaigns as $Campaign){
+                        $AllAssignedCampaignsArray[]=[
+                            'CampaignName'=>$Campaign->getCampaignName(),
+                            'CampaignDate'=>$Campaign->getCampaignDate(),
+                            'CampaignDescription'=>$Campaign->getCampaignDescription(),
+                            'Venue'=>$Campaign->getVenue(),
+                            'Latitude'=>$Campaign->getLatitude(),
+                            'Longitude'=>$Campaign->getLongitude(),
+                            'Status'=>$Campaign->getStatus(),
+                            'CampaignStatus'=>$Campaign->getCampaignStatus(),
+                            'OrganizationName'=>$Campaign->getOrganization()->getOrganizationName(),
+                            'OrganizationCity'=>$Campaign->getOrganization()->getCity(),
+                            'OrganizationContactNo'=>$Campaign->getOrganization()->getContactNo(),
+                            'OrganizationEmail'=>$Campaign->getOrganization()->getEmail(),
+                            'TeamPosition'=>MedicalOfficer::getRoleOfCampaign($ID,$Campaign->getCampaignID())
+                        ];
+                    }
+
                     return json_encode([
                         'status'=>true,
                         'data'=>[
-                            'TotalAssignmentsInMonth'=>$TotalAssignmentsInMonth
+                            'TotalAssignmentsInMonth'=>$TotalAssignmentsInMonth,
+                            'Campaigns'=>$AllAssignedCampaignsArray
                         ]
                     ]);
 
@@ -326,6 +358,17 @@ class medicalOfficerController extends \Core\Controller
             $Date=date('Y-m-d');
             /* @var Campaign $Campaign*/
             $Campaign=MedicalOfficer::getAssignedCampaign($Date);
+            if ($Campaign->IsReported()){
+                $this->setFlashMessage('error','Campaign Is Reported!');
+                Application::Redirect('/medicalofficer/dashboard');
+                exit();
+            }
+            if ($Campaign->getOrganization()->IsReported()){
+                $this->setFlashMessage('error','Organization Is Reported!');
+                Application::Redirect('/medicalofficer/dashboard');
+                exit();
+            }
+
             if (!$Campaign){
                 $this->setFlashMessage('error','No Campaign Assigned!');
                 Application::Redirect('/medicalofficer/dashboard');
@@ -956,6 +999,7 @@ class medicalOfficerController extends \Core\Controller
         if ($request->isPost()){
             $status = $request->getBody()['Status'];
             $OrganizationID = $request->getBody()['OrganizationID'];
+            $Reason = $request->getBody()['Reason'] ?? null;
             /** @var Organization $Organization */
             $Organization = Organization::findOne(['Organization_ID'=>$OrganizationID],false);
             if (!$Organization){
@@ -973,8 +1017,19 @@ class medicalOfficerController extends \Core\Controller
                 $Organization->setVerifiedAt(date('Y-m-d H:i:s'));
                 $message = "Organization Verified Successfully!";
             }elseif ($status==="reject"){
-                $Organization->setVerifiedBy($ID);
-                $Organization->setVerifiedAt(date('Y-m-d H:i:s'));
+                if ($Reason===null){
+                    return json_encode([
+                        'status'=>false,
+                        'message'=>'Reason is required!'
+                    ]);
+                }
+                if (trim($Reason)===""){
+                    return json_encode([
+                        'status'=>false,
+                        'message'=>'Reason is required!'
+                    ]);
+                }
+                ReportOrganization::ReportOrganization($OrganizationID,$ID,$Reason);
                 $Organization->setStatus(Organization::ORGANIZATION_REJECTED);
                 $message = "Organization Rejected Successfully!";
             }else{
@@ -983,7 +1038,7 @@ class medicalOfficerController extends \Core\Controller
                     'message'=>'Invalid Operation!'
                 ]);
             }
-            $Organization->update($Organization->getID(),[],['Status','Verified_By','Verified_At']);
+            $Organization->update($Organization->getID(),[],['Status','Verified_By','Verified_At','Remarks']);
             return json_encode([
                 'status'=>true,
                 'message'=>$message

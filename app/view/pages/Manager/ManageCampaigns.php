@@ -369,7 +369,6 @@ $getParams = function ($params) {
                                 <div class="d-flex w-50 flex-center">
                                     <div id="map" style="height: 300px;width: 300px"></div>
                                     <div id="infowindow-content">
-
                                     </div>
                                 </div>
 

@@ -3,6 +3,7 @@
 namespace App\model\users;
 
 use App\model\Authentication\OrganizationBankAccount;
+use App\model\Organization\ReportOrganization;
 
 class Organization extends Person
 {
@@ -35,11 +36,29 @@ class Organization extends Person
             return match (intval($this->Status)) {
                 self::ORGANIZATION_NOT_VERIFIED => 'Not Verified',
                 self::ORGANIZATION_VERIFIED => 'Verified',
+                self::ORGANIZATION_REJECTED => 'Rejected',
                 default => 'Unknown',
             };
         }
         return intval($this->Status);
     }
+
+    /**
+     * @return string|null
+     */
+    public function getRemarks(): ?string
+    {
+        return $this->Remarks;
+    }
+
+    /**
+     * @param string|null $Remarks
+     */
+    public function setRemarks(?string $Remarks): void
+    {
+        $this->Remarks = $Remarks;
+    }
+
 
     public function getID(): string
     {
@@ -300,6 +319,15 @@ class Organization extends Person
         return uniqid("ORG_");
     }
 
+    public function IsReported() : bool
+    {
+        if (intval($this->getStatus())===self::ORGANIZATION_REJECTED){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
     public function IsVerified(): bool
     {
         if (intval($this->getStatus())===self::ORGANIZATION_VERIFIED){
@@ -307,5 +335,20 @@ class Organization extends Person
         }else{
             return false;
         }
+    }
+
+    public function getReporterName()
+    {
+        /** @var ReportOrganization $Reporter */
+        $Reporter = ReportOrganization::findOne(['Organization_ID'=>$this->getOrganizationID()]);
+        return $Reporter->getReporter()->getFullName();
+
+    }
+
+    public function getReporterAt()
+    {
+        /** @var ReportOrganization $Reporter */
+        $Reporter = ReportOrganization::findOne(['Organization_ID'=>$this->getOrganizationID()]);
+        return date("Y F d ",strtotime($Reporter->getReportedAt()));
     }
 }
