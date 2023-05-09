@@ -78,10 +78,28 @@ FlashMessage::RenderFlashMessages();
         }
 
     }
+    .sidebar{
+        position: fixed;
+        top: 0px;
+        left: 0px;
+        width: 250px;
+        height: 100%;
+        background-color: #0b0000;
+    }
 </style>
 <link rel="stylesheet" href="/public/css/components/form/index2.css">
 <link rel="stylesheet" href="/public/css/framework/util/border/border-radius.css">
 <link rel="stylesheet" href="/public/css/fontawesome/fa.css">
+<div style="display: flex; flex-direction: row">
+<div class="sidebar mt-5">
+    <div class="navBtnToggle"></div>
+    <div class="links">
+        <a href="#">Home</a>
+        <a href="#">Manage</a>
+        <a href="#">Nearby</a>
+        <a href="#">History</a>
+    </div>
+</div>
 <div style="background-size: cover; background-color: rgba(0,0,0,0.3);border-radius: 30px;min-width: fit-content" class="container p-3">
         <div class="form-entity">
             <label class="form-label fa-brands text-light" style="">Name</label><br><br>
@@ -137,4 +155,5 @@ FlashMessage::RenderFlashMessages();
                 </div>
             </div>
         </div>
+</div>
 </div>

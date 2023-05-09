@@ -25,4 +25,11 @@ class informDonorsTest extends TestCase
         $inform->setMessage('This is a Test Message.');
         $this->assertEquals($inform->getMessage(),'This is a Test Message.');
     }
+
+    public function testGetMessageStatus():void
+    {
+        $inform = new informDonors();
+        $inform->setStatus(1);
+        $this->assertEquals($inform->getStatus(),1);
+    }
 }

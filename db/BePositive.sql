@@ -389,20 +389,7 @@ CREATE TABLE IF NOT EXISTS OTP_CODE_Audit
   DEFAULT CHARSET = utf8;
 
 DROP TRIGGER IF EXISTS OTP_CODE_Audit_ReGenerate_Amount;
-DELIMITER $$
-CREATE TRIGGER OTP_Code_Audit_ReGenerate_Amount
-    BEFORE UPDATE
-    ON OTP_CODE_Audit
-    FOR EACH ROW
-BEGIN
-    IF (NEW.No_Of_Regeneration > 8) THEN
-        SET NEW.Suspicious = 2;
-        UPDATE Users SET Security_Level = 2 WHERE UID = NEW.UserID;
-    ELSEIF (NEW.No_Of_Regeneration > 5) THEN
-        SET NEW.Suspicious = 1;
-        UPDATE Users SET Security_Level = 1 WHERE UID = NEW.UserID;
-    END IF;
-END $$
+
 
 
 DROP TABLE IF EXISTS Blocked_Users;

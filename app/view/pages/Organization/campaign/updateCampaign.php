@@ -7,6 +7,7 @@
 ///* @var MedicalOfficer $model */
 
 use App\model\users\Organization;
+use App\model\Utils\Security;
 use App\view\components\ResponsiveComponent\ImageComponent\BackGroundImage;
 use App\view\components\ResponsiveComponent\NavbarComponent\AuthNavbar;
 
@@ -18,33 +19,83 @@ echo $navbar;
 echo $background;
 ?>
 <style>
-    .direction{
-        display: flex;
-        flex-direction: row;
-    }
-    #exp{
-        position: relative;
-        animation-name: trans;
-        animation-duration: 2s;
-    }
-    @keyframes trans {
-        0%{
-            margin-left: -2000px;
-        }
-        100%{
-            margin-left: -50px;
+    <style>
+
+    @media only screen and (max-width:541px) {
+        .cre{
+            width: 500px;
         }
 
     }
-    /*#expec{*/
-    /*    visibility: hidden;*/
-    /*}*/
+    @media only screen and (max-width:413px) {
+        .cre{
+            height: 500px;
+            width: 400px;
+        }
+        .mapbtn{
+            width: 60px;
+            font-size: 5pt;
+            margin-left: 10px;
+        }
+        .sel{
+            display: none;
+        }
+    }
+    @media only screen and (max-width:361px) {
+        .cre{
+            height: 500px;
+            width: 350px;
+        }
+        .cre form{
+            height: 700px;
+        }
+        .mapbtn{
+            width: 60px;
+            font-size: 5pt;
+            margin-left: 10px;
+        }
+        .sel{
+            display: none;
+        }
+
+
+    }
+    @media only screen and (min-width: 766px) and (max-width: 913px){
+        .cre{
+            width: 800px;
+
+        }
+    }
+    @media only screen and (max-width: 1025px) {
+        .cre form{
+            height: 400px;
+        }
+        .details{
+            margin-top: -50px;
+            font-size: 12pt;
+        }
+        .name label{
+            font-size: 10pt;
+        }
+        .name input{
+            height: 25px;
+            font-size: 10pt;
+        }
+        #NearestBloodBank{
+            font-size: 10pt;
+        }
+        #opt{
+            font-size: 10pt;
+        }
+
+    }
+
 </style>
-<div class=" d-flex flex-column bg-white-0-7 border-radius-10 align-item-center justify-content-center w-50 p-1 h-100">
-    <form id="form" action="updateCampaign?id=<?php echo $campaign->getCampaignID() ?>" method="post" class="d-flex flex-column p-3 text-xl w-100 gap-1">
-        <div class="bg-dark py-0-5 px-2 text-center text-white"> Fill Campaign Details</div>
+<div class=" d-flex flex-column bg-white-0-7 border-radius-10 align-item-center justify-content-center w-50 p-1 h-100 cre">
+    <form id="form" action="/organization/campaign/updateCampaign?id=<?=urlencode(Security::Encrypt($campaign->getCampaignID()))?>" method="post" class="d-flex flex-column p-3 text-xl w-100 gap-1">
+        <div class="bg-dark py-0-5 px-2 text-center text-white details"> Fill Campaign Details</div>
         <div class="d-flex text-center flex-column gap-0-5 w-100">
-            <div class="form-group w-100">
+            <div class="form-group w-100 name">
                 <label class="w-40" for="CampaignName">Campaign Name</label>
                 <input type="text" id="CampaignName" class="form-control w-60" name="Campaign_Name" value="<?php echo $campaign->getCampaignName() ?>" placeholder="Eg :- Suwasahana Blood Campaign" required>
             </div>
@@ -52,19 +103,19 @@ echo $background;
             <!--                <label class="w-40">Campaign Description</label>-->
             <!--                <textarea class="form-textarea" name="Campaign_Description" required></textarea>-->
             <!--            </div>-->
-            <div class="form-group">
+            <div class="form-group name">
                 <label class="w-40" for="CampaignDate">Campaign Date</label>
                 <input type="date" id="CampaignDate" class="form-date" name="Campaign_Date" value="<?php echo $campaign->getCampaignDate() ?>" min= "<?php echo date("Y-m-d", strtotime($Date.'+ 30days')) ?>" required style="border-radius: 50px;padding-left: 10px;padding-right: 10px">
             </div>
-            <div class="form-group">
+            <div class="form-group name">
                 <label class="w-40" for="CampaignVenue">Venue</label>
                 <input type="text" id="CampaignVenue" class="form-control w-20" name="Venue" value="<?php echo $campaign->getVenue() ?>" required style="width: 70%"  placeholder="Eg :- Sugatharamaya, Kirulapone">
-                <button class="btn btn-info d-flex gap-0-5 align-items-center justify-content-center" type="button" id="SelectLocationBtn" onclick="SelectLocation()">
+                <button class="btn btn-info d-flex gap-0-5 align-items-center justify-content-center mapbtn" type="button" id="SelectLocationBtn" onclick="SelectLocation()">
                     <img src="/public/icons/location.svg" alt="map" class="invert-100" style="width: 20px; height: 20px;">
-                    <span class="ms-1">Select on Map</span>
+                    <span class="ms-1 sel">Select on Map</span>
                 </button>
             </div>
-            <div class="form-group">
+            <div class="form-group name">
                 <label class="w-40" for="NearestCity">Nearest City</label>
                 <input type="text" id="NearestCity" class="form-control" value="<?php echo $campaign->getNearestCity() ?>" name="Nearest_City"  required  placeholder="Eg :- Nugegoda">
             </div>
@@ -76,35 +127,35 @@ echo $background;
     </form>
     <div class="d-flex align-items-center justify-content-center gap-2">
         <button class="btn btn-success w-25" id="button" value="Create" onclick="update()" type="submit"> Update </button>
-        <button class="btn btn-danger w-25" id="button" value="Cancel"> Cancel </button>
+        <button class="btn btn-danger w-25" id="button" value="Cancel" onclick="history.back()"> Cancel </button>
     </div>
 </div>
 
 </div>
 <script>
-    // function read(){
-    //     let select = document.getElementById('error');
-    //     if(select.selectedIndex === 1){
-    //         document.getElementById('errors').style.visibility = 'visible';
-    //         document.getElementById('button').disabled = true;
-    //         document.getElementById('button').style.backgroundColor = '#F5F5F5';
-    //         document.getElementById('button').style.color = 'black';
-    //     }else{
-    //         document.getElementById('errors').style.visibility = 'hidden';
-    //         document.getElementById('button').disabled = false;
-    //         document.getElementById('button').style.backgroundColor = 'rgba(251, 0, 0, 0.7)';
-    //         document.getElementById('button').style.color = 'white';
-    //     }
-    // }
-    // function expect(){
-    //     let val = document.getElementById('expect').value;
-    //     if(val === "1") {
-    //         document.getElementById('expec').style.visibility = 'visible';
-    //     }else{
-    //         document.getElementById('amount').value = "";
-    //         document.getElementById('expec').style.visibility = 'hidden';
-    //     }
-    // }
+    function read(){
+        let select = document.getElementById('error');
+        if(select.selectedIndex === 1){
+            document.getElementById('errors').style.visibility = 'visible';
+            document.getElementById('button').disabled = true;
+            document.getElementById('button').style.backgroundColor = '#F5F5F5';
+            document.getElementById('button').style.color = 'black';
+        }else{
+            document.getElementById('errors').style.visibility = 'hidden';
+            document.getElementById('button').disabled = false;
+            document.getElementById('button').style.backgroundColor = 'rgba(251, 0, 0, 0.7)';
+            document.getElementById('button').style.color = 'white';
+        }
+    }
+    function expect(){
+        let val = document.getElementById('expect').value;
+        if(val === "1") {
+            document.getElementById('expec').style.visibility = 'visible';
+        }else{
+            document.getElementById('amount').value = "";
+            document.getElementById('expec').style.visibility = 'hidden';
+        }
+    }
     const update = (event)=>{
 
         // event.preventDefault();
@@ -294,5 +345,16 @@ echo $background;
         initMap();
 
     }
+    // const cancellation=(click)=>{
+    //     OpenDialogBox({
+    //         title: 'Cancel Confirmation',
+    //         content: 'Are You Sure You want to Go Back? Your Changes will not be saved.'
+    //         successBtnText: 'Yes',
+    //         successBtnAction: () =>{
+    //             // history.back();
+    //         },
+    //     });
+    // }
+
 </script>
 

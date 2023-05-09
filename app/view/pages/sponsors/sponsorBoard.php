@@ -21,9 +21,9 @@ use App\model\users\organization;
 
 use App\view\components\WebComponent\Card\NavigationCard;
 
-$CampaignGuidelines = new NavigationCard('/sponsor/guideline', '/public/images/icons/manager/dashboard/requests.png', 'Sponsor Guidelines');
-$ManageCampaigns = new NavigationCard('/sponsor/sponsor', '/public/images/icons/organization/dashboard/campaign.png', 'Sponsor for Campaigns');
-$History = new NavigationCard('/sponsor/history', '/public/images/icons/organization/dashboard/history.png', 'Sponsorships History');
+$CampaignGuidelines = new NavigationCard('/sponsor/guideline', '/public/images/icons/manager/dashboard/requests.png', 'Sponsor Guidelines','guideline');
+$ManageCampaigns = new NavigationCard('/sponsor/sponsor', '/public/images/icons/organization/dashboard/campaign.png', 'Sponsor for Campaigns','sponse');
+$History = new NavigationCard('/sponsor/history', '/public/images/icons/organization/dashboard/history.png', 'Sponsorships History','history');
 $background = new BackGroundImage();
 
 echo $background;
