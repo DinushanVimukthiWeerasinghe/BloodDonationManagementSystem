@@ -16,7 +16,7 @@ class BloodRequest extends dbModel
     protected string $BloodGroup;
     protected string $Requested_By;
     protected string $Requested_At;
-    protected string $Requested_From;
+    protected string $Request_From;
     protected ?string $FullFilled_By = null;
     protected ?string $Remarks = null;
     protected int $Status=1;
@@ -30,15 +30,15 @@ class BloodRequest extends dbModel
      */
     public function getRequestedFrom(): string
     {
-        return $this->Requested_From;
+        return $this->Request_From;
     }
 
     /**
-     * @param string $Requested_From
+     * @param string $Request_From
      */
-    public function setRequestedFrom(string $Requested_From): void
+    public function setRequestedFrom(string $Request_From): void
     {
-        $this->Requested_From = $Requested_From;
+        $this->Request_From = $Request_From;
     }
 
 
@@ -282,7 +282,7 @@ class BloodRequest extends dbModel
             'RequestedBy' => 'Requested By',
             'RequestedAt' => 'Requested At',
             'RequestStatus' => 'Request Status',
-            'Requested_From' => 'Requested From',
+            'Request_From' => 'Requested From',
         ];
     }
 
@@ -328,7 +328,7 @@ class BloodRequest extends dbModel
             'Remarks',
             'Volume',
             'Action',
-            'Requested_From',
+            'Request_From',
         ];
     }
 
