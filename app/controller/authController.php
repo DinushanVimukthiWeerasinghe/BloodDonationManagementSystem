@@ -128,6 +128,7 @@ class authController extends Controller
                 }
                 if ($user === true){
                     Application::Redirect('/' . strtolower(Application::$app->getUser()->getRole()) . '/dashboard');
+
                 }
 //                return $this->render('Authentication/OTPAuthentication');
 

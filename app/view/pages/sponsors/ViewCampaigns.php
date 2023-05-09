@@ -65,7 +65,7 @@ FlashMessage::RenderFlashMessages();
                     <div class="card-description bg-yellow-7 border-radius-10 p-1" style="font-size: 1.2em;font-weight: bolder;">LKR. <?= $row['Needed_Amount'] ?></div>
                     <div class="d-flex gap-0-5">
                         <button class="btn btn-success w-100 mt-1" onclick="SponsorForCampaign('<?= $row['Sponsorship_ID']?>','<?= $row['Needed_Amount'] ?>')">Sponsor</button>
-                        <button class="btn btn-outline-info w-100 mt-1" onclick="ViewCampaignRequest('<?= $row['Campaign_Name'] ?>' , '<?= $row['Campaign_Date'] ?>' , '<?= $row['Campaign_Venue'] ?>' , '<?= $row['Campaign_Description'] ?>') ; initMap('<?= $row['latitude'] ?>' , '<?= $row['longitude'] ?>')">View Campaign</button>
+                        <button class="btn btn-outline-info w-100 mt-1" onclick="ViewCampaignRequest('<?= $row['Campaign_Name'] ?>' , '<?= $row['Campaign_Date'] ?>' , '<?= $row['Campaign_Venue'] ?>' , '<?= $row['Campaign_Description'] ?>' , '<?= $row['latitude'] ?>' , '<?= $row['longitude'] ?>') ">View Campaign</button>
                     </div>
                 </div>
             </div>
@@ -163,8 +163,7 @@ FlashMessage::RenderFlashMessages();
     //             }
     //         })
     // }
-    const ViewCampaignRequest = (id,date,venue,description,latitude,longitude) => {
-        let ID = id;
+    const ViewCampaignRequest = (name,date,venue,description,latitude,longitude) => {
         OpenDialogBox({
             title: 'Sponsorship Requests',
             titleClass: 'bg-dark text-white py-0-5 px-2 text-center',
@@ -176,7 +175,7 @@ FlashMessage::RenderFlashMessages();
                             <div class="d-flex font-bold mb-1 w-100 text-center justify-content-center align-items-center bg-dark py-1 px-2 text-center text-white">Campaign Details</div>
                             <div class="d-flex justify-content-center w-100 gap-1">
                                 <div class="d-flex flex-column w-50 flex-center gap-0-5 bg-dark text-white border-radius-10">
-                                    <div class="d-flex gap-0-5"><span class="font-bold">Campaign Name </span>: <span id="hello">${ID}</span></div>
+                                    <div class="d-flex gap-0-5"><span class="font-bold">Campaign Name </span>: <span id="hello">${name}</span></div>
                                     <div class="d-flex gap-0-5"><span class="font-bold"> </span> Campaign Date: <span>${date}</div>
                                     <div class="d-flex gap-0-5"><span class="font-bold"> </span>Venue : <span>${venue}</div>
                                     <div class="d-flex flex-column gap-0-5">
@@ -184,11 +183,15 @@ FlashMessage::RenderFlashMessages();
                                     </div>
                                 </div>
                                 <div class="d-flex w-50 flex-center">
-                                    <div id="Map" style="height: 300px;width: 300px"></div>
+                                    <div id="Map" style="height: 300px;width: 300px">
 <!--                                    <div id="infowindow-content">-->
+                                      <button onclick="showingMap(${date},${latitude},${longitude})" style="margin: 150px 0px;padding: 5px; border-radius: 5px;color:whitesmoke;height:50px;background-color: green;cursor: pointer;"><span id="toggle">Show on</span> Map</button>
 
                                     </div>
                                 </div>
+
+                            </div>
+                            <div>
 
                             </div>
                         </div>
@@ -327,7 +330,6 @@ FlashMessage::RenderFlashMessages();
                         <div class="d-flex">
                             <select class="form-control" id="sponsorshipType" onclick="NotAvailable()" disabled>
                                 <option value="1" selected>Cash</option>
-                                <option value="2">Goods</option>
                             </select>
                         </div>
                     </div>
@@ -435,8 +437,9 @@ FlashMessage::RenderFlashMessages();
     //         map
     //     });
     // }
-    function initMap(latitude,longitude){
-        const Campaign = {lat: latitude , lng: longitude };
+    function showingMap(date,latitude,longitude){
+
+        const Campaign = {lng: longitude , lat: latitude};
         const map = new google.maps.Map(document.getElementById("Map"), {
             zoom: 13,
             center: Campaign,
@@ -448,15 +451,8 @@ FlashMessage::RenderFlashMessages();
         marker.addListener("click", () => {
             map.setZoom(16);
             map.setCenter(marker.getPosition());
-            // infoWindow.open(map,marker)
         });
-        // const infoWindow = new google.maps.InfoWindow({
-        //     content : `
-        //         Campaign Name : jjjj  <br/>
-        //         Campaign Date : hhhhh <br/>
-        //         Campaign Status :cjjj  <br/>
-        //     `
-        // })
+
     }
 </script>
 

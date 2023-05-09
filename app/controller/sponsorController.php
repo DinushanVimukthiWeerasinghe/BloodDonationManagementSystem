@@ -472,4 +472,33 @@ class sponsorController extends Controller
         }
 
     }
+    public function ResetPassword(Request $request,Response $response){
+        if($request->isPost()){
+            $user = Application::$app->getUser()->getID();
+            $userDetails = User::findOne(['UID' => $user]);
+            $password = $request->getBody()['NewPassword'];
+            $oldpassword = $userDetails->getPassword();
+            $encryptpassword = password_hash($password,PASSWORD_DEFAULT);
+            $userDetails->setPassword($encryptpassword);
+            if(password_verify($password,$oldpassword)){
+                return json_encode([
+                    'status' => false,
+                    'message' => 'New and Old Passwords cannot be Equal',
+                ]);
+            }
+            else {
+                if ($userDetails->update($user, [], ['Password'])) {
+                    return json_encode([
+                        'status' => true,
+                    ]);
+                } else {
+                    return json_encode([
+                        'status' => false,
+                        'message' => 'Please Try Again Later',
+
+                    ]);
+                }
+            }
+        }
+    }
 }

@@ -337,13 +337,6 @@ $User = Application::$app->getUser();
             content: `
                 <div class="d-flex flex-column gap-1 w-100">
                      <div id="changePassword" class="d-flex flex-column gap-1">
-                         <div class="form-group">
-                            <label for="oldPassword" class="w-50">Old Password</label>
-                            <div class="d-flex flex-column w-50">
-                                 <input type="password" class="form-control w-100" min="8" max="30" id="oldPassword" placeholder="Enter Old Password">
-                                 <span class="text-danger" style="margin-top: 0.5rem" id="CurrentPasswordError"> </span>
-                            </div>
-                        </div>
                         <div class="form-group">
                             <label for="newPassword" class="w-50">New Password</label>
                             <div class="d-flex flex-column w-50">
@@ -361,53 +354,47 @@ $User = Application::$app->getUser();
                     </div>
                 </div>`,
             successBtnText: 'Change Password',
-            successBtnAction: ()=>{
-                const url ='/user/change-password';
-                const oldPassword = document.querySelector('#oldPassword').value;
-                const newPassword = document.querySelector('#newPassword').value;
-                const confirmPassword = document.querySelector('#confirmPassword').value;
-                const formData = new FormData();
-                formData.append('CurrentPassword',oldPassword);
-                formData.append('NewPassword',newPassword);
-                formData.append('ConfirmPassword',confirmPassword);
-                fetch(url, {
-                    method: 'POST',
-                    body: formData
-                }).then(response => response.json())
-                    .then(data => {
-                        console.log(data)
-                        if (data.status){
-                            ShowToast({
-                                title: 'Success',
-                                message: 'Password Changed Successfully',
-                                type: 'success',
-                                duration: 3000
-                            });
-                            CloseDialogBox('changePassword');
-                        }else{
-                            ShowToast({
-                                title: 'Error',
-                                message: data.message,
-                                type: 'danger',
-                                duration: 3000
-                            });
-                            const Filed = data.field;
-                            const CurrentPasswordInput = document.querySelector('#oldPassword');
-                            const NewPasswordInput = document.querySelector('#newPassword');
-                            const ConfirmPasswordInput = document.querySelector('#confirmPassword');
-
-                            if (Filed === 'CurrentPassword'){
-                                CurrentPasswordInput.classList.add('border-danger');
-                                document.querySelector('#CurrentPasswordError').innerHTML = data.message;
-                            }else if (Filed === 'NewPassword'){
-                                NewPasswordInput.classList.add('border-danger');
-                                document.querySelector('#NewPasswordError').innerHTML = data.message;
-                            }else if (Filed === 'ConfirmPassword'){
-                                ConfirmPasswordInput.classList.add('border-danger');
-                                document.querySelector('#ConfirmPasswordError').innerHTML = data.message;
+            successBtnAction: ()=> {
+                const url = '/organization/resetPassword';
+                const newPassword = document.querySelector('#newPassword').value.trim();
+                const confirmPassword = document.querySelector('#confirmPassword').value.trim();
+                if (newPassword.length < 8) {
+                    ShowToast({
+                        type: 'error',
+                        message: 'Password Must Contain at least 8 Characters'
+                    });
+                } else if (newPassword != confirmPassword) {
+                    ShowToast({
+                        type: 'error',
+                        message: 'Password and Confirm Password are Not Equal.'
+                    });
+                } else {
+                    const formData = new FormData();
+                    formData.append('NewPassword', newPassword);
+                    fetch(url, {
+                        method: 'POST',
+                        body: formData
+                    }).then(response => response.json())
+                        .then(data => {
+                            console.log(data)
+                            if (data.status) {
+                                ShowToast({
+                                    title: 'Success',
+                                    message: 'Password Changed Successfully',
+                                    type: 'success',
+                                    duration: 3000
+                                });
+                                CloseDialogBox('changePassword');
+                            } else {
+                                ShowToast({
+                                    title: 'Error',
+                                    message: data.message,
+                                    type: 'danger',
+                                    duration: 3000
+                                });
                             }
-                        }
-                    })
+                        })
+                }
             }
         })
     }

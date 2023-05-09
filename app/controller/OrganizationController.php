@@ -74,13 +74,13 @@ class OrganizationController extends Controller
                 print_r($user->errors);
             }
         }
-
         return $this->render('organization\register', ['model' => $organization]);
     }
 
     public function dashboard(): string
     {
         /* @var Organization $organization*/
+
         $organization = Organization::findOne(['Organization_ID' => Application::$app->getUser()->getID()]);
         $ID=Application::$app->getUser()->getID();
         $AlreadyCreatedCampaign=Campaign::RetrieveAll(false,[],true,['Organization_ID'=>$ID,'Status'=> Campaign::PENDING]);
@@ -286,30 +286,35 @@ public function inform(Request $request, Response $response)
 {
     $id = $_GET['id'];
     $donors = AttendanceAcceptedRequest::RetrieveAll(false,[],true,['Campaign_ID' => $id]);
-    if($donors) {
-        if ($request->isPost()) {
+    if($id) {
+        if ($donors) {
+            if ($request->isPost()) {
 
-            $informdonor = new informDonors();
-            $informdonor->loadData($request->getBody());
-            $informdonor->setMessageID(uniqid('Msg_'));
-            foreach ($donors as $donor){
-                $donornotification = new DonorNotification();
-                $donornotification->setNotificationID(uniqid('Not_'));
-                $donornotification->setNotificationMessage($informdonor->getMessage());
-                $donornotification->setNotificationDate(date('Y-m-d'));
-                $donornotification->setTargetID($donor->getDonorID());
-                $donornotification->setNotificationState(1);
-                $donornotification->save();
-            }
+                $informdonor = new informDonors();
+                $informdonor->loadData($request->getBody());
+                $informdonor->setMessageID(uniqid('Msg_'));
+                foreach ($donors as $donor) {
+                    $donornotification = new DonorNotification();
+                    $donornotification->setNotificationID(uniqid('Not_'));
+                    $donornotification->setNotificationMessage($informdonor->getMessage());
+                    $donornotification->setNotificationDate(date('Y-m-d'));
+                    $donornotification->setTargetID($donor->getDonorID());
+                    $donornotification->setNotificationState(1);
+                    $donornotification->save();
+                }
                 Application::Redirect('/organization/campDetails?id=' . $id);
+            }
+            //    print_r($informdonor);
+            return $this->render('Organization/inform');
+        } else {
+            Application::$app->session->setFlash('error', 'You do not have any Donors Yet.');
+            Application::Redirect('/organization/campDetails?id=' . $id);
         }
-        //    print_r($informdonor);
-        return $this->render('Organization/inform', ['informdonor' => $informdonor ?? null]);
-    }  else{
-        Application::$app->session->setFlash('error','You do not have any Donors Yet.');
-        Application::Redirect('/organization/campDetails?id='. $id);
     }
-
+    else{
+        Application::$app->session->setFlash('error','Access Denied!');
+        Application::Redirect('/organization/dashboard');
+    }
 }
 
     public function ChangeProfileImage(Request $request,Response $response)
@@ -567,14 +572,44 @@ public function inform(Request $request, Response $response)
     }
     public function delete(Request $request,Response $response){
         $id = $_GET['id'];
-        $id = Security::Decrypt($id);
+//        $id = Security::Decrypt($id);
         $campaign = Campaign::findOne(['Campaign_ID' => $id]);
         if($campaign->delete()) {
             Application::$app->session->setFlash('success','Your Campaign Deleted Successfully!');
-            $response->redirect('/organization/manage');
+            $response->redirect('/organization/dashboard');
         }else{
             Application::$app->session->setFlash('error','Message deletion Unsuccessful!');
         }
 
+    }
+
+    public function ResetPassword(Request $request,Response $response){
+        if($request->isPost()){
+            $user = Application::$app->getUser()->getID();
+            $userDetails = User::findOne(['UID' => $user]);
+            $password = $request->getBody()['NewPassword'];
+            $oldpassword = $userDetails->getPassword();
+            $encryptpassword = password_hash($password,PASSWORD_DEFAULT);
+            $userDetails->setPassword($encryptpassword);
+            if(password_verify($password,$oldpassword)){
+                return json_encode([
+                    'status' => false,
+                    'message' => 'New and Old Passwords cannot be Equal',
+                ]);
+            }
+            else {
+                if ($userDetails->update($user, [], ['Password'])) {
+                    return json_encode([
+                        'status' => true,
+                    ]);
+                } else {
+                    return json_encode([
+                        'status' => false,
+                        'message' => 'Please Try Again Later',
+
+                    ]);
+                }
+            }
+        }
     }
 }

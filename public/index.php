@@ -141,6 +141,7 @@ $app->router->post('/organization/addBankDetails', [OrganizationController::clas
 $app->router->post('/organization/changeProfile', [OrganizationController::class, 'ChangeProfileImage']);
 $app->router->post('/organization/notification', [OrganizationController::class, 'GetNotification']);
 $app->router->post('/organization/requestSponsorship', [OrganizationController::class, 'RequestSponsorship']);
+$app->router->post('/organization/resetPassword', [OrganizationController::class, 'ResetPassword']);
 
 $app->router->post('/user/change-password', [authController::class, 'ChangePassword']);
 
@@ -159,6 +160,7 @@ $app->router->post('/user/change-password', [authController::class, 'ChangePassw
     $app->router->get('/sponsor/guideline', [sponsorController::class, 'guideline']);
     $app->router->post('/sponsor/notification', [SponsorController::class, 'GetNotification']);
     $app->router->post('/sponsor/changeProfile', [SponsorController::class, 'ChangeProfileImage']);
+    $app->router->post('/sponsor/resetPassword', [SponsorController::class, 'ResetPassword']);
     $app->router->get('/gmp', [siteController::class, 'gmap']);
 
 
