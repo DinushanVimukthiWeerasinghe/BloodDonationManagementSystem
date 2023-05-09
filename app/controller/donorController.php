@@ -143,6 +143,7 @@ class donorController extends Controller
             $data[] = [
                     'DateTime' => $donation->getDonationDateTime(),
                     'Remark' => $bloodPacket->getRemarks(),
+
                 ];
         }
 //        print_r($data);

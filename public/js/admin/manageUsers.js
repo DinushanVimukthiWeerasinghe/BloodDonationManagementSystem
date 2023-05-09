@@ -1,6 +1,7 @@
 const ResetPassword = (id)=>{
     OpenDialogBox({
         title: "Reset Password",
+        titleClass:' bg-dark text-white text-center',
         content: "Are you sure you want to reset the password of this user ?",
         successBtnText: "Yes",
         cancelBtnText: "No",
@@ -105,6 +106,7 @@ const fun2 = ()=>{
 const ReActivateUser = (id)=>{
     OpenDialogBox({
         title: "Re-Activate User",
+        titleClass:' bg-dark text-white text-center',
         content: "Are you sure you want to re-activate this user ?",
         successBtnText: "Yes",
         cancelBtnText: "No",
@@ -143,6 +145,7 @@ const ReActivateUser = (id)=>{
 const DeactivateUser = (id)=>{
     OpenDialogBox({
         title: "Deactivate User",
+        titleClass:' bg-dark text-white text-center',
         content: "Are you sure you want to deactivate this user ?",
         successBtnText: "Yes",
         cancelBtnText: "No",
@@ -180,6 +183,7 @@ const DeactivateUser = (id)=>{
 const ActivateUser = (id)=>{
     OpenDialogBox({
         title: "Activate User",
+        titleClass:' bg-dark text-white text-center',
         content: "Are you sure you want to activate this user ?",
         successBtnText: "Yes",
         cancelBtnText: "No",
@@ -216,6 +220,7 @@ const ActivateUser = (id)=>{
 const RemoveUser = (id)=>{
     OpenDialogBox({
             title: "Remove User",
+            titleClass:' bg-dark text-white text-center',
             content: "Are you sure you want to remove this user ?",
             successBtnText: "Yes",
             cancelBtnText: "No",

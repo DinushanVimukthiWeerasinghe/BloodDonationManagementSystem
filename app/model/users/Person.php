@@ -82,9 +82,14 @@ abstract class Person extends dbModel
         }
     }
 
-    public function getAccountStatus()
+    public function getAccountStatus(): int
     {
-        return User::findOne(['UID' => $this->getID()])->getAccountStatus();
+        /** @var User $User */
+        $User =User::findOne(['UID' => $this->getID()]);
+        if ($User) {
+            return $User->getAccountStatus();
+        }
+        return self::USER_DELETED;
     }
 
     public function getLastActive(): string

@@ -521,3 +521,9 @@ input[type=button].btn-block, input[type=reset].btn-block, input[type=submit].bt
 .fade {
     transition: opacity 0.15s linear;
 }
+
+.btn-yellow-500 {
+    color: #fff;
+    background-color: #ff8900;
+    border-color: #f6ad55;
+}

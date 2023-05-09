@@ -342,9 +342,7 @@ use App\model\users\User;
 
                 }
             })
-            .catch(error => {
-                console.log(error);
-            });
+
     }
     window.addEventListener("load",()=>{
         ViewChart();

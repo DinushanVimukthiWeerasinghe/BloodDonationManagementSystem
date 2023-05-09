@@ -382,32 +382,32 @@ class User extends dbModel
             if ($user->getRole()=='Manager'){
                 $data=Manager::findOne(['Manager_ID'=>$user->getUid()]);
                 if ($data){
-                    $users[$key]=$data;
+                    $users[]=$data;
                 }
             }else if ($user->getRole()=='MedicalOfficer'){
                 $data=MedicalOfficer::findOne(['Officer_ID'=>$user->getUid()]);
                 if ($data){
-                    $users[$key]=$data;
+                    $users[]=$data;
                 }
             }else if ($user->getRole()=='Donor'){
                 $data=Donor::findOne(['Donor_ID'=>$user->getUid()]);
                 if ($data){
-                    $users[$key]=$data;
+                    $users[]=$data;
                 }
             }else if ($user->getRole()=='Organization'){
                 $data=Organization::findOne(['Organization_ID'=>$user->getUid()]);
                 if ($data){
-                    $users[$key]=$data;
+                    $users[]=$data;
                 }
             }else if ($user->getRole()=='Sponsor'){
                 $data=Sponsor::findOne(['Sponsor_ID'=>$user->getUid()]);
                 if ($data){
-                    $users[$key]=$data;
+                    $users[]=$data;
                 }
             }else if($user->getRole()=='Hospital') {
                 $data = Hospital::findOne(['Hospital_ID' => $user->getUid()]);
                 if ($data) {
-                    $users[$key] = $data;
+                    $users[] = $data;
                 }
             }
 

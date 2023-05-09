@@ -13,7 +13,7 @@ use \App\view\components\ResponsiveComponent\Card\donationCard;
 use App\view\components\ResponsiveComponent\NavbarComponent\DonorNavbar;
 
 
-$navbar = new DonorNavbar('Donor History', '/donor/profile', '/public/images/icons/user.png', true,$firstName . ' ' . $lastName,false );
+$navbar = new DonorNavbar('Donor History', '/donor/profile', '/public/images/icons/user.png', true,false );
 echo $navbar;
 
 
