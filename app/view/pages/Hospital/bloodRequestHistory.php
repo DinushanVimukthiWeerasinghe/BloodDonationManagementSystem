@@ -35,6 +35,10 @@ $table = new \App\view\components\Table\DetailTable(['Request ID', 'Blood Group'
 echo $table->render("table");
 /** @var int $total_pages */
 /** @var int $current_page */
-echo BloodRequest::NavigationFooter($total_pages,$current_page);
+if ($data != null){
+
+    echo BloodRequest::NavigationFooter($total_pages,$current_page);
+
+}
 
 ?>
