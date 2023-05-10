@@ -2,6 +2,7 @@
 <?php
 /* @var string $data */
 
+use App\model\BloodBankBranch\BloodBank;
 use App\model\Requests\BloodRequest;
 use App\model\users\Hospital;
 use App\view\components\ResponsiveComponent\Alert\FlashMessage;
@@ -25,36 +26,27 @@ $background = new BackGroundImage();
 
 echo $background;
 
-$table = new \App\view\components\Table\DetailTable(['Request ID', 'Blood Group', 'Requested At', 'Type', 'Status','Quantity (In Pints)','Remarks'], $data);
-echo $table->render("table");
-/** @var int $total_pages */
-/** @var int $current_page */
-echo BloodRequest::NavigationFooter($total_pages,$current_page);
+$showRequests = new NavigationCard('/hospital/requests', '/public/images/icons/dashboard.png', 'Show Blood Requests', 'ViewBloodRequests', 'bg-primary');
+$addNewRequest = new NavigationCard('#', '/public/images/icons/bloodDrop.png', 'Add Blood Requests', 'AddBloodRequests', 'bg-success');
+$history = new NavigationCard('/hospital/history', '/public/images/icons/calender.png', 'View History', 'ViewHistory', 'bg-warning');
+$donateBlood = new NavigationCard('/hospital/takeBlood' , '/public/images/donation.png', 'Donate Blood', 'DonateBlood', 'bg-danger');
+
+echo cardgroup::CardPanel();
+echo $showRequests;
+echo $addNewRequest;
+echo $history;
+echo $donateBlood;
+echo cardgroup::CloseCardPanel();
+
 
 ?>
 
-<div id="button" class="d-flex align-items-center gap-1 btn btn-outline-success" onclick="AddRequest()" style="
-        background-color: white;
-        color: black;
-        border: 1px solid black;
-        padding: 1vw 2vw;
-        border-radius: 20px;
-        font-size: large;
-        position: absolute;
-        top: 15vh;
-        left: 2vh;
-        z-index: 100;">
-    <img src="/public/icons/person-add.svg" width="24" alt=""/>
-    <span class=" font-bold">Add New Request</span>
-</div>
-<style>
-    #button:hover{
-        background-color: var(--primary)!important;
-        color: white;
-    }
-</style>
-
 <script>
+    const AddBloodRequest= document.getElementById('AddBloodRequests');
+    AddBloodRequest.addEventListener("click", function (e){
+        e.preventDefault()
+        AddRequest();
+    });
     const AddRequest = () =>{
         OpenDialogBox({
             id:'AddNewRequest',
@@ -82,6 +74,17 @@ echo BloodRequest::NavigationFooter($total_pages,$current_page);
                     </select>
                 </div>
                 <div class="form-group">
+                    <label for="requestFrom">Request From</label>
+                    <select class="form-control" id='requestFrom' name="RequestFrom">
+                        <?php
+            /** @var $BloodBanks BloodBank[] */
+            foreach($BloodBanks as $bloodBank){
+                                echo "<option value='".$bloodBank->getBloodBankID()." '>".$bloodBank->getBankName()."</option>";
+                            }
+            ?>
+                    </select>
+                </div>
+                <div class="form-group">
                     <label for="quantity">Quantity (In Pintes)</label>
                     <input type="number" min="1" class="form-control" id="quantity" placeholder="Quantity (In Pints)" name="Volume" value="0" required>
                 </div>
@@ -98,24 +101,24 @@ echo BloodRequest::NavigationFooter($total_pages,$current_page);
         })
     }
 </script>
-
-<a href="/hospital/takeBlood" id="button" class="d-flex align-items-center gap-1 btn btn-outline-success"  style="
-        background-color: white;
-        color: black;
-        border: 1px solid black;
-        padding: 1vw 2vw;
-        border-radius: 20px;
-        font-size: large;
-        position: absolute;
-        top: 15vh;
-        right: 2vh;
-        z-index: 100;">
-    <img src="/public/icons/blood-bag-svgrepo-com.svg" width="24" alt=""/>
-    <span class=" font-bold">Take New Donation</span>
-</a>
-<style>
-    #button:hover{
-        background-color: var(--primary)!important;
-        color: white;
-    }
-</style>
+<!---->
+<!--<a href="/hospital/takeBlood" id="button" class="d-flex align-items-center gap-1 btn btn-outline-success"  style="-->
+<!--        background-color: white;-->
+<!--        color: black;-->
+<!--        border: 1px solid black;-->
+<!--        padding: 1vw 2vw;-->
+<!--        border-radius: 20px;-->
+<!--        font-size: large;-->
+<!--        position: absolute;-->
+<!--        top: 15vh;-->
+<!--        right: 2vh;-->
+<!--        z-index: 100;">-->
+<!--    <img src="/public/icons/blood-bag-svgrepo-com.svg" width="24" alt=""/>-->
+<!--    <span class=" font-bold">Take New Donation</span>-->
+<!--</a>-->
+<!--<style>-->
+<!--    #button:hover{-->
+<!--        background-color: var(--primary)!important;-->
+<!--        color: white;-->
+<!--    }-->
+<!--</style>-->

@@ -384,12 +384,14 @@ $app->router->post('/donor/profile/loginPrompt', [donorController::class, 'login
 $app->router->post('/donor/profile/loginPrompt', [donorController::class, 'loginPrompt']);
 
 
-    $app->router->get('/hospital/bloodRequest/addRequest', [hospitalController::class, 'addBloodRequest']);
-    $app->router->post('/hospital/bloodRequest/addRequest', [hospitalController::class, 'addBloodRequest']);
-    $app->router->get('/hospital/bloodRequest/history', [hospitalController::class, 'bloodRequestHistory']);
-    $app->router->post('/hospital/bloodRequest/history', [hospitalController::class, 'bloodRequestHistory']);
+    $app->router->get('/hospital/addRequest', [hospitalController::class, 'addBloodRequest']);
+    $app->router->post('/hospital/addRequest', [hospitalController::class, 'addBloodRequest']);
+    $app->router->get('/hospital/history', [hospitalController::class, 'bloodRequestHistory']);
+    $app->router->post('/hospital/history', [hospitalController::class, 'bloodRequestHistory']);
     $app->router->get ('/hospital/takeBlood',[hospitalController::class,'takeBlood']);
     $app->router->post ('/hospital/takeBlood',[hospitalController::class,'takeBlood']);
+    $app->router->get ('/hospital/requests',[hospitalController::class, 'showRequests']);
+    $app->router->post('/hospital/requests', [hospitalController::class, 'showRequests']);
 
 
 //Blogs

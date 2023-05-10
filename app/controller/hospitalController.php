@@ -3,6 +3,7 @@
 
  use App\middleware\hospitalMiddleware;
  use App\model\Authentication\Login;
+ use App\model\BloodBankBranch\BloodBank;
  use App\model\Requests\BloodRequest;
  use App\model\users\Donor;
  use App\model\users\Hospital;
@@ -37,12 +38,41 @@
     public function dashboard():string
     {
      /* @var Hospital $hospital */
-        $limit = 10;
+        $BloodBank = BloodBank::retrieveAll();
+        return $this->render('Hospital/dashboard', ['BloodBanks' => $BloodBank]);
+//        $limit = 10;
+//        $page = Application::$app->request->getBody()['page'] ?? 1;
+//        $initial = ($page - 1) * $limit;
+//        $total_rows= BloodRequest::getCount(true, ['Requested_By' => Application::$app->getUser()->getID()]);
+//        $total_pages = ceil($total_rows / $limit);
+//        $requests=BloodRequest::RetrieveAll(true,[$initial,$limit],true,['Requested_By'=>Application::$app->getUser()->getID()]);
+////     print_r($requests);
+////     exit();
+//        $reqData=array();
+//        foreach ($requests as $request){
+//            //echo $request->getRequestedBy();
+//            //request->getRequestedAt();
+//            $reqData[]=[
+//                'Request ID'=>$request->getRequestID(),
+//                'Blood Group'=>$request->getBloodGroup(),
+//                'Requested At'=>Date::GetProperDateTime($request->getRequestedAt()),
+//                'Type'=>$request->getType(),
+//                'Status'=>$request->getStatus(),
+//                'Volume'=>$request->getVolume(),
+//                'Remarks'=>$request->getRemarks(),
+//
+//            ];
+//        }
+//        //print_r($reqData);
+//     return $this->render('Hospital/dashboard',['data'=>$reqData,'total_pages'=>$total_pages,'current_page'=>$page]);
+    }
+    public function showRequests(){
+                $limit = 10;
         $page = Application::$app->request->getBody()['page'] ?? 1;
         $initial = ($page - 1) * $limit;
         $total_rows= BloodRequest::getCount(true, ['Requested_By' => Application::$app->getUser()->getID()]);
         $total_pages = ceil($total_rows / $limit);
-        $requests=BloodRequest::RetrieveAll(true,[$initial,$limit],true,['Requested_By'=>Application::$app->getUser()->getID()]);
+        $requests=BloodRequest::RetrieveAll(true,[$initial,$limit],true,['Requested_By'=>Application::$app->getUser()->getID(),'Status'=>BloodRequest::REQUEST_STATUS_PENDING]);
 //     print_r($requests);
 //     exit();
         $reqData=array();
@@ -61,7 +91,7 @@
             ];
         }
         //print_r($reqData);
-     return $this->render('Hospital/dashboard',['data'=>$reqData,'total_pages'=>$total_pages,'current_page'=>$page]);
+     return $this->render('Hospital/showRequests',['data'=>$reqData,'total_pages'=>$total_pages,'current_page'=>$page]);
     }
 
     public function notification(Request $request, Response $response): string
@@ -94,22 +124,24 @@
             $BloodRequest->loadData($request->getBody());
 //            print_r($request->getBody());
 //            exit();
-//            $newBloodGroup = $data['bloodGroup'];
-//            $newType = $data['type'];
-//            $newQuantity = $data['quantity'];
-//            $newRemarks = $data['remarks'];
+            $newBloodGroup = $data['BloodGroup'];
+            $newType = $data['Type'];
+            $newQuantity = $data['Volume'];
+            $newRemarks = $data['Remarks'];
+            $newRequestFrom= $data['RequestFrom'];
             $newRequestedAt = date('Y-m-d H:i:s');
             $newRequestedBy =  Application::$app->getUser()->getID();
             $newStatus = 1;
             $newRequestID = $BloodRequest->getNewPrimaryKey($BloodRequest->getType());
             $BloodRequest->setRequestID($newRequestID);
-//            $BloodRequest->setBloodGroup($newBloodGroup);
-//            $BloodRequest->setType($newType);
-//            $BloodRequest->setQuantity($newQuantity);
-//            $BloodRequest->setRemarks($newRemarks);
+            $BloodRequest->setBloodGroup($newBloodGroup);
+            $BloodRequest->setType($newType);
+            $BloodRequest->setVolume($newQuantity);
+            $BloodRequest->setRemarks($newRemarks);
             $BloodRequest->setRequestedAt($newRequestedAt);
             $BloodRequest->setRequestedBy($newRequestedBy);
             $BloodRequest->setStatus($newStatus);
+            $BloodRequest->setRequestedFrom($newRequestFrom);
 //            $BloodRequest->save();
             if($BloodRequest->getVolume()<1){
                 $this->setFlashMessage('error','Please Enter Valid Quantity');
