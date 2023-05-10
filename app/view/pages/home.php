@@ -1,7 +1,7 @@
 
 <div class="dark-bg"></div>
 <?php
-
+/** @var $Blogs \App\model\Blog\Blog[]*/
 use App\view\components\ResponsiveComponent\NavbarComponent\AuthNavbar;
 use App\view\components\ResponsiveComponent\NavbarComponent\Navbar;
 
@@ -86,101 +86,31 @@ echo AuthNavbar::getNavbarJS();
             </div>
         </div>
     </section>
-    <section id="donation-report" class="panel">
-        <div class="sub-panel d-flex-row">
-            <div class="intro" id="intro">
-                <div id="caption">
-                    <div class="tagline">Blood Donation Statistics</div>
+    <?php
+    $i=5;
+    if (!empty($Blogs)):
+        foreach ($Blogs as $blog):
+    ?>
+            <section id="blog-<?=$blog->getBlogID()?>" class="panel">
+                <div class="sub-panel d-flex-row">
+                    <div class="intro" style="flex-direction: <?= $i%2===1 ? 'row-reverse':'row' ?>">
+                        <div class="desc-image">
+                            <img src="<?=$blog->getBlogImage()?>" width="600px" alt="">
+                        </div>
+                        <div id="caption">
+                            <div class="tagline"><?=$blog->getBlogTitle()?></div>
+                            <span class="desc">
+                        <?=$blog->getBlogContent()?>
+                    </span>
+                        </div>
+                    </div>
                 </div>
-                <div class="chart-panel">
-                        <canvas id="myChart"></canvas>
-                        <canvas id="myCharts"></canvas>
-                </div>
-
-                <script src="/public/scripts/chartjs/chartjs.js"></script>
-
-                <script>
-                    const xValues = ["Colombo", "Gampaha", "Galle", "Kandy", "Other"];
-                    const yValues = [550, 490, 440, 240, 150];
-                    const barColors = [
-                        "#b91d47",
-                        "#00aba9",
-                        "#2b5797",
-                        "#e8c3b9",
-                        "#1e7145"
-                    ];
-
-
-                    new Chart("myChart", {
-                        type: "pie",
-                        data: {
-                            labels: xValues,
-                            datasets: [{
-                                backgroundColor: barColors,
-                                data: yValues,
-                            }],
-                        },
-                        options: {
-                            plugins: {
-                                title: {
-                                    display: true,
-                                    text: 'Blood Donation By District',
-                                    padding: {
-                                        top: 10,
-                                        bottom: 30
-                                    },
-                                    font: {
-                                        size: 20
-                                    },
-                                    position: 'bottom'
-                                }
-                            }
-                        }
-                    });
-
-                    const xfValues = [2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021];
-
-                    new Chart("myCharts", {
-                        type: "line",
-                        data: {
-                            labels: xfValues,
-                            datasets: [{
-                                data: [1200,1400,1800,2000,2800,2900,3200,2800,4500,6000],
-                                borderColor: "red",
-                                fill: false,
-                                label: "Blood Requirement"
-                            }, {
-                                data: [400,550,750,1000,1200,1600,2000,2600,2400,4800],
-                                borderColor: "green",
-                                fill: false,
-                                label: "Blood Availability"
-                            }]
-                        },
-                        options: {
-                            legend: {display: false},
-                            plugins: {
-                                title: {
-                                    display: true,
-                                    text: 'Blood Requirement & Availability',
-                                    padding: {
-                                        top: 10,
-                                        bottom: 30
-                                    },
-                                    font: {
-                                        size: 20
-                                    },
-                                    position: 'bottom'
-                                }
-                            }
-                        }
-                    });
-                </script>
-<!--                <div class="desc-image">-->
-<!--                    <img src="/public/images/blood-cells.jpg" width="600px" alt="">-->
-<!--                </div>-->
-            </div>
-        </div>
-    </section>
+            </section>
+    <?php
+            $i++;
+        endforeach;
+    endif;
+    ?>
 
     <section id="service-panel" class="panel">
         <div class="sub-panel d-flex-row">

@@ -127,7 +127,8 @@ FlashMessage::RenderFlashMessages();
 <!--<button class="btn btn-info w-10 back" style="position: absolute;margin-top:-500px;margin-left: -1350px;" onclick="history.back()">Go Back</button>-->
 <div class="d-flex flex-column w-90  p-1 mt-4" style="overflow-y: scroll;margin-left: 10vw">
         <div class="d-flex p-2 gap-2 details w-100 justify-content-center" style="flex-wrap: wrap;">
-            <div class="text-xl d-flex flex-column justify-content-center align-items-center w-50 bg-white border-radius-10 gap-1 p-3 mt-3"  id="Campaign_Detail" style="flex-wrap: wrap;">
+            <div class="text-xl d-flex flex-column justify-content-between align-items-center w-50 bg-white border-radius-10 gap-1 px-2 py-2 mt-3"  id="Campaign_Detail" style="flex-wrap: wrap;">
+                <div class="bg-dark py-1 px-2 text-white text-center font-bold w-100 border-radius-10">Campaign Details</div>
                 <div class="d-flex justify-content-between w-100 intro " id="Campaign_Name">
                     <div class="w-40">Campaign Name </div>
                     <div class="font-bold w-60 d-flex align-items-center justify-content-start text-right"><?=$campaign->getCampaignName(); ?></div>
@@ -150,29 +151,43 @@ FlashMessage::RenderFlashMessages();
 
                     </div>
                 </div>
-                <div class="d-flex flex-column w-100 justify-content-between gap-1 intro" id="Campaign_Date">
+                <div class="d-flex flex-column w-100 justify-content-between gap-1 intro" id="Campaign_Description">
                     <div class="">Description </div>
-                    <div class="font-bold px-1 ">
+                    <div class="font-bold px-1 text-center  border-1 border-primary p-0-5 border-radius-5">
                         <?=$campaign->getCampaignDescription(); ?>
                     </div>
                 </div>
                 <?php if($campaign->getVerified() === Campaign::NOT_VERIFIED) {?>
                     <div class="links">
-                        <a href="/organization/campaign/updateCampaign?id=<?php echo urlencode(Security::Encrypt($campaign->getCampaignID()))?>"><button class="btn btn-success w-100">Update Campaign</button></a>
-                        <a href="" id="delete"><button class="btn btn-danger w-100" onclick="del()">Delete Campaign</button></a>
+                        <a class="btn btn-success d-flex flex-center gap-1" href="/organization/campaign/updateCampaign?id=<?php echo urlencode(Security::Encrypt($campaign->getCampaignID()))?>">
+                            <i class="fa-regular fa-pen-to-square"></i>
+                            Update Campaign
+                        </a>
+                        <button class="btn btn-danger d-flex flex-center gap-1" onclick="DeleteCampaign()">
+                            <i class="fa-solid fa-trash"></i>
+                            Delete Campaign
+                        </button>
                     </div>
                 <?php } ?>
             </div>
-            <div id="Map" class="bg-red-1 mt-5" style="width: 500px;height: 300px;"></div>
+            <div id="Map" class="bg-white mt-5 border-radius-5" style="width: 500px;height: 500px;"></div>
         </div>
 
     <?php if($campaign->getVerified()===Campaign::VERIFIED && !$expired) { ?>
-        <div class="d-flex cards text-center  reqcards" style="margin-top: -10px;flex-wrap: wrap">
-            <?php if(!$bank) {?>
+        <div class="d-flex cards flex-center text-center  reqcards" style="margin-top: -10px;flex-wrap: wrap">
+            <?php if(!$bank || $campaign->IsRequestedSponsorship()) {?>
                 <div class="card nav-card bg-white card-disabled text-dark">
+                    <?php
+                    if ($campaign->IsRequestedSponsorship()):
+                    ?>
+                    <div class="disable-text bg-white-0-7 py-2 px-1 font-bold absolute"  style="color: red">
+                        Sponsorship Request is already sent
+                    </div>
+                    <?php else: ?>
                     <div class="disable-text bg-white-0-7 py-2 px-1 font-bold absolute"  style="color: red">
                         Sponsorship Request is not available until You Enter Your Bank details
                     </div>
+                    <?php endif; ?>
                     <div class="card-header">
                         <div class="card-header-img">
                             <img src="/public/images/icons/organization/campaignDetails/request.png" alt="Request" width="100px">
@@ -183,8 +198,8 @@ FlashMessage::RenderFlashMessages();
                     </div>
                 </div>
             <?php } ?>
-            <?php if($bank) {?>
-                <div class="card nav-card bg-white text-dark" onclick="RequestSponsorship('<?= Security::Decrypt($bank->getAccountNumber()) ?>' , '<?= $bank->getAccountName() ?>' , '<?= $bank->getBankName() ?>' , '<?= $bank->getBranchName() ?>' )">
+            <?php if($bank && !$campaign->IsRequestedSponsorship()) {?>
+                <div class="card nav-card bg-white text-dark" onclick="RequestSponsorship('<?= $bank->getAccountNumber() ?>' , '<?= $bank->getAccountName() ?>' , '<?= $bank->getBankName() ?>' , '<?= $bank->getBranchName() ?>' )">
                     <div class="card-header">
                         <div class="card-header-img">
                             <img src="/public/images/icons/organization/campaignDetails/request.png" alt="Request" width="100px">
@@ -195,24 +210,28 @@ FlashMessage::RenderFlashMessages();
                     </div>
                 </div>
             <?php } ?>
-            <div class="card nav-card bg-orange-10 text-dark">
-                <div class="card-header">
-                    <div class="card-title">
-                        <h3 style="color: whitesmoke">You have Received <span class="bg-warning fa fa-1x p-1 " style="color: #0b0000">LKR. <?php echo $ReceivedAmount ?></span></h3>
+            <div class="card nav-card bg-white text-dark">
+                <div class="d-flex flex-center">
+                    <div class="d-flex gap-1 flex-column">
+                        <i class="fa-solid fa-hand-holding-dollar" style="font-size: 4rem"></i>
+                        <div class="text-3xl">LKR.<?php echo $ReceivedAmount ?></div>
+                        <div class="text-xl font-bold">Received Sponsors </div>
                     </div>
                 </div>
             </div>
-            <div class="card nav-card bg-green-3 text-dark">
+            <div class="card nav-card bg-white text-dark">
                 <div class="card-header">
-                    <div class="card-title">
-                        <h3 style="color: whitesmoke"> No. of Accepted Donors<br> <span class="bg-warning fa fa-1x p-1 " style="color: #0b0000"><?php echo $count ?></span></h3>
+                    <div class="d-flex flex-column gap-1">
+                        <i class="fa-solid fa-check-to-slot" style="font-size: 4rem"></i>
+                        <div class="text-3xl"><?php echo $count ?></div>
+                        <div class="text-xl"> Accepted Donors Count</div>
                     </div>
                 </div>
             </div>
-            <div class="card nav-card bg-white text-dark" onclick="informing()">
-                <div class="card-header">
+            <div class="card nav-card bg-white text-dark" onclick="informing('<?=Security::Encrypt($campaign->getCampaignID())?>')">
+                <div class="d-flex flex-column gap-1">
                     <div class="card-header-img">
-                        <img src="/public/images/icons/organization/campaignDetails/inform.png" alt="Inform" width="100px">
+                        <i class="fa-solid fa-envelope" style="font-size: 4rem"></i>
                     </div>
                     <div class="card-title">
                         <h3>Inform Donors</h3>
@@ -426,20 +445,28 @@ const RequestSponsorship = (bankAccountNumber,bankAccountName,bankName,bankBranc
     }
     window.addEventListener('load', initMap);
 
-    const del = (event)=>{
-     event.preventDefault();
-    OpenDialogBox({
-    // id:'sendEmail',
-    title:'Delete Confirmation',
-    content :`Are You Sure You Want to Delete Details? This Action Cannot be Undone.`,
-    successBtnText:'Yes',
-    successBtnAction : ()=>{
-        window.location.href = "/organization/campaign/deleteCampaign?id=<?php echo $campaign->getCampaignID(); ?>"
-    },
-
-    });
+    const DeleteCampaign = ()=>{
+        OpenDialogBox({
+            id:'delete-confirm',
+            title:'Delete Confirmation',
+            titleClass: "bg-dark text-white text-center",
+            content :`
+                <div class="d-flex flex-column gap-0-5">
+                    <div class="text-center">
+                        <strong>Are you sure you want to delete this Campaign?</strong>
+                    </div>
+                    <div class="text-center text-danger">
+                        <strong>Warning : This Action is Irreversible</strong>
+                    </div>
+                </div>
+                    `,
+            successBtnText:'Yes',
+            cancelBtnText:'No',
+            successBtnAction : ()=>{
+                window.location.href = "/organization/campaign/deleteCampaign?id=<?php echo $campaign->getCampaignID(); ?>"
+            },
+        });
     }
-    document.getElementById('delete').addEventListener('click', del);
 
     //const inform= () =>{
     //   OpenDialogBox({
@@ -503,7 +530,8 @@ const RequestSponsorship = (bankAccountNumber,bankAccountName,bankName,bankBranc
     //       }
     //    });
     //}
-    function informing(){
-        window.location.href = "inform?id=<?php echo $_GET['id']?>"
+    function informing(CampaignID){
+        const CampID = encodeURIComponent(CampaignID);
+        window.location.href = "inform?id=" + CampID;
     }
 </script>

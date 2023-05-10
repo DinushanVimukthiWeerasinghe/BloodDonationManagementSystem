@@ -28,7 +28,7 @@ class SponsorshipRequest extends \App\model\database\dbModel
     protected int $Sponsorship_Status=1;
     protected string $Description='';
     protected string $Report='';
-    protected ?string $Transferred=null;
+    protected ?int $Transferred=null;
     protected ?string $Transferred_At=null;
     protected ?string $Managed_By=null;
     protected ?string $Managed_At=null;
@@ -57,12 +57,23 @@ class SponsorshipRequest extends \App\model\database\dbModel
         $this->Managed_By = $Managed_By;
     }
 
+    public function getManagedBloodBank() : BloodBank
+    {
+        return BloodBank::findOne(['BloodBank_ID'=>Manager::findOne(['Manager_ID'=>$this->Managed_By])->getBloodBankID()]);
+
+    }
+
     /**
      * @return string|null
      */
     public function getManagedAt(): ?string
     {
         return $this->Managed_At;
+    }
+
+    public function getAcceptName()
+    {
+        return Manager::findOne(['Manager_ID'=>$this->Managed_By])->getFullName();
     }
 
     /**
@@ -113,9 +124,9 @@ class SponsorshipRequest extends \App\model\database\dbModel
 //    }
 
     /**
-     * @return string|null
+     * @return int|null
      */
-    public function getTransferred(): ?string
+    public function getTransferred(): ?int
     {
         return $this->Transferred ?? "Not Transferred";
     }
@@ -286,6 +297,7 @@ class SponsorshipRequest extends \App\model\database\dbModel
         }else{
             $this->Sponsorship_Status = self::STATUS_APPROVED;
         }
+
         $CampaignSponsor = new CampaignsSponsor();
         $CampaignSponsor->setSponsorshipID($this->Sponsorship_ID);
         $CampaignSponsor->setSponsorID($SponsorID);
@@ -294,6 +306,7 @@ class SponsorshipRequest extends \App\model\database\dbModel
         $CampaignSponsor->setDescription($Description);
         $CampaignSponsor->setStatus(CampaignsSponsor::PAYMENT_STATUS_PENDING);
         $CampaignSponsor->setSessionID($SessionID);
+
 
 
         if ($CampaignSponsor->validate()){

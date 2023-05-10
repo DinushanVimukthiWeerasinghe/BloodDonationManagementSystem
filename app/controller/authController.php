@@ -148,7 +148,7 @@ class authController extends Controller
     {
         if ($request->isPost()){
             $OrganizationID = $request->getBody()['OrganizationID'];
-            $OrganizationID=openssl_decrypt($OrganizationID,$_ENV['ENCRYPTION_METHOD'],$_ENV['ENCRYPTION_KEY']);
+            $OrganizationID=openssl_decrypt($OrganizationID,ENCRYPTION_METHOD,ENCRYPTION_KEY,0,ENCRYPTION_IV);
 //            exit();
             if ($OrganizationID===false){
                 $this->setFlashMessage('error','Invalid Data');
@@ -226,8 +226,9 @@ class authController extends Controller
                 return json_encode(['status'=>false,'message'=>'Invalid Data','errors'=>$Organization->getErrors()]);
             }
         }else{
+
             $OrganizationID = $request->getBody()['uid'];
-            $OrganizationID=openssl_decrypt($OrganizationID,$_ENV['ENCRYPTION_METHOD'],$_ENV['ENCRYPTION_KEY']);
+            $OrganizationID=openssl_decrypt($OrganizationID,ENCRYPTION_METHOD,ENCRYPTION_KEY,0,ENCRYPTION_IV);
 
             if ($OrganizationID===false){
                 $this->setFlashMessage('error','Invalid Data');
@@ -245,11 +246,11 @@ class authController extends Controller
                     $this->setFlashMessage('error','Organization Already Registered');
                     Application::Redirect('/login');
                 }
+
                 if ($User->getRole() != User::ORGANIZATION){
                     $this->setFlashMessage('error','Invalid User Role');
                     Application::Redirect('/login');
                 }
-
 
                 if ($User->getAccountStatus() !== User::ACCOUNT_NOT_VERIFIED){
                     var_dump($Organization);
@@ -315,7 +316,7 @@ class authController extends Controller
                     if ($user->validate()) {
                         $user->save();
                         $UserID = $user->getID();
-                        $EncryptedUserID = openssl_encrypt($UserID,$_ENV['ENCRYPTION_METHOD'],$_ENV['ENCRYPTION_KEY']);
+                        $EncryptedUserID = openssl_encrypt($UserID,ENCRYPTION_METHOD,ENCRYPTION_KEY,0,ENCRYPTION_IV);
                         $this->setFlashMessage('success', 'Please Complete Your Registration');
                         if ($user->getRole() == User::ORGANIZATION)
                             return json_encode(['status'=>true,'message'=>'User Registered Successfully','redirect'=>'/organization/register?uid='.$EncryptedUserID]);

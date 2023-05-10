@@ -49,7 +49,7 @@ $getParams = function ($params) {
                 <th scope="col">Campaign Name</th>
                 <th scope="col">Expected Amount</th>
                 <th scope="col">Sponsored Date</th>
-                <th scope="col">Sponsored Date</th>
+                <th scope="col">Sponsored Description</th>
                 <th scope="col">Status</th>
                 <th scope="col">Action</th>
             </tr>
@@ -73,6 +73,11 @@ $getParams = function ($params) {
                 foreach ($data as $value):
                     /** @var $value SponsorshipRequest*/
                     $id = $value->getSponsorshipID();
+                    $Description = "";
+                    if (strlen($value->getDescription()) > 50)
+                        $Description = substr($value->getDescription(), 0, 50) . '<span class="d-flex cursor text-info" onclick="SeeMore(\''.$value->getDescription().'\')">...see More</span>';
+                    else
+                        $Description = $value->getDescription();
                     ?>
                     <tr>
                         <td data-label="No "><?= $i++;?></td>
@@ -80,7 +85,7 @@ $getParams = function ($params) {
                         <td data-label="NIC "><?php echo $value->getCampaignName()?></td>
                         <td data-label="Contact No "><?php echo $value->getSponsorshipAmount()?></td>
                         <td data-label="Blood Group "><?php echo $value->getSponsorshipDate()?></td>
-                        <td data-label="Address "><?php echo $value->getDescription()?></td>
+                        <td data-label="Address " class="text-left"><?php echo $Description ?></td>
                         <td data-label="Status ">
                             <?php
                             switch ($value->getSponsorshipStatus()):
@@ -101,7 +106,7 @@ $getParams = function ($params) {
                                     break;
                                 case SponsorshipRequest::STATUS_COMPLETED:
                                     ?>
-                                    <span class="badge bg-info text-dark">Completed</span>
+                                    <span class="badge bg-info text-white">Completed</span>
                                     <?php
                                     break;
                             endswitch;
@@ -444,6 +449,20 @@ const SendEmail = (id)=>{
                         }
                     })
             }
+        })
+    }
+const SeeMore = (text,entity="Description")=>{
+        OpenDialogBox({
+            id:'seemore',
+            title:entity,
+            titleClass:'bg-dark text-white text-center px-2 py-1',
+            content:`
+                <div class="d-flex">
+                    <div>${text}</div>
+                </div>
+            `,
+            showSuccessButton: false,
+            cancelBtnText:'Close',
         })
     }
 

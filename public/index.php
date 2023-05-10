@@ -112,8 +112,8 @@ try {
 
     $app->router->get('/test',[siteController::class,'Test']);
 
-$app->router->get('/organization/register', [OrganizationController::class, 'register']);
-$app->router->post('/organization/register', [OrganizationController::class, 'register']);
+//$app->router->get('/organization/register', [OrganizationController::class, 'register']);
+//$app->router->post('/organization/register', [OrganizationController::class, 'register']);
 $app->router->get('/organization/dashboard', [OrganizationController::class, 'dashboard']);
 $app->router->get('/organization/create', [OrganizationController::class, 'CreateCampaign']);
 $app->router->get('/organization/history', [OrganizationController::class, 'history']);

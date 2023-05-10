@@ -230,6 +230,12 @@ class Campaign extends dbModel
         return $this->Status;
     }
 
+    public function IsRequestedSponsorship(): bool
+    {
+        $SponsorshipRequest = SponsorshipRequest::findOne(['Campaign_ID'=>$this->Campaign_ID]);
+        return $SponsorshipRequest != null;
+    }
+
 
     public function getCampaignStatus():string
     {

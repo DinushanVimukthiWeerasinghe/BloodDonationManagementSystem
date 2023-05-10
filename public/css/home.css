@@ -68,6 +68,13 @@ body{
     align-items: center;
 }
 
+.d-flex-row-reverse{
+    display: flex;
+    flex-direction: row-reverse !important;
+    justify-content: center;
+    align-items: center;
+}
+
 .sub-panel{
     min-height: 80vh;
     min-width: 90vw;
@@ -156,6 +163,8 @@ body{
     justify-content: center;
     align-items: center;
 }
+
+
 
 .desc-image img{
     border-radius: 40px;

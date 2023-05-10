@@ -2,7 +2,9 @@
 
 namespace App\view\components\ResponsiveComponent\NavbarComponent;
 
+use App\model\users\Donor;
 use App\model\users\Manager;
+use App\model\users\Organization;
 use App\model\users\User;
 use Core\Application;
 use Core\SessionObject;
@@ -40,6 +42,10 @@ class AuthNavbar
     {
         $user=Application::$app->getUser();
         $profileName=$user->getFirstName().' '.$user->getLastName();
+        if ($user instanceof (Organization::class) )
+        {
+            $profileName=$user->getOrganizationName();
+        }
         $actions=Application::$app->request->getPath();
         $path=explode('/',$actions);
         $action=$path[2];

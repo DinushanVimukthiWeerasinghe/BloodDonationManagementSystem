@@ -668,7 +668,7 @@ CREATE TABLE IF NOT EXISTS  Manager_Notifications
 (
     Notification_ID       VARCHAR(20)  NOT NULL PRIMARY KEY,
     Notification_Type     INT  NOT NULL,
-    Notification_State   INT  NOT NULL,
+    Notification_Status   INT  NOT NULL,
     Target_ID             VARCHAR(20)  NULL,
     Notification_Title    VARCHAR(100) NOT NULL,
     Notification_Message  VARCHAR(100) NOT NULL,

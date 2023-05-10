@@ -156,7 +156,7 @@ class Organization extends Person
     {
         /** @var OrganizationBankAccount $BankAccount */
         $BankAccount=OrganizationBankAccount::findOne(['Organization_ID'=>$this->Organization_ID]);
-        return Security::Decrypt($BankAccount->getAccountNumber());
+        return $BankAccount->getAccountNumber();
     }
 
     public function getBankAccountName(): bool|string
