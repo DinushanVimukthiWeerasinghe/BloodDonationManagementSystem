@@ -26,9 +26,9 @@ class Donor extends Person
     const ACTIVE = 1;
     protected string $Donor_ID = '';
     protected string $Nearest_Bank = '';
-    protected int $Donation_Availability = 0;
+    protected int $Donation_Availability = 1;
     protected ?string $Donation_Availability_Date='';
-    protected int $Verified=0;
+    protected int $Verified=1;
     protected ?string $Verified_At='';
     protected ?string $Verified_By=Null;
     protected ?string $Verification_Remarks='';
@@ -418,7 +418,6 @@ class Donor extends Person
         return [
             'Donor_ID'=>[self::RULE_REQUIRED,self::RULE_UNIQUE],
             'Nearest_Bank'=>[self::RULE_REQUIRED],
-            'Donation_Availability'=>[self::RULE_REQUIRED],
             'Verified'=>[self::RULE_REQUIRED],
             'Verified_At'=>[self::RULE_TODAY_OR_OLDER_DATE]
         ];

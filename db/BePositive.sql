@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS Users
     Email          VARCHAR(100) UNIQUE,
     Password       VARCHAR(100) NOT NULL,
     Account_Status INT          NOT NULL DEFAULT 0,
-    Role           VARCHAR(100) NOT NULL DEFAULT 'donor',
+    Role           VARCHAR(100) NOT NULL DEFAULT 'Donor',
     Created_At     TIMESTAMP             DEFAULT CURRENT_TIMESTAMP,
     Updated_At     TIMESTAMP             DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     Security_Level INT          NOT NULL DEFAULT 0
@@ -954,10 +954,9 @@ VALUES ('Mof_01', 'Medical', 'Officer', 'Address1', 'Address2', 'Colombo', '0771
         '123456789104', 'Doctor', 'M', 'Sri Lankan');
 # Make Default Donor for Testing
 INSERT INTO Donors (DONOR_ID, FIRST_NAME, LAST_NAME, ADDRESS1, ADDRESS2, CITY, NEAREST_BANK, CONTACT_NO, EMAIL, NIC,
-                    GENDER, STATUS,
-                    DONATION_AVAILABILITY, VERIFIED,BloodGroup)
+                    GENDER, STATUS,BloodGroup)
 VALUES ('Dnr_01', 'Donor', 'Donor', 'Address1', 'Address2', 'Colombo', 'BB_01', '0771234567', 'donor@test.com',
-        '200017800595', 'F', 0, 0, 0,"B+");
+        '200017800595', 'F', 0,"B+");
 
 # Make Default Organization for Testing
 INSERT INTO Organizations (Organization_ID, Organization_Name, Organization_Email, Contact_No, Address1, Address2, City,

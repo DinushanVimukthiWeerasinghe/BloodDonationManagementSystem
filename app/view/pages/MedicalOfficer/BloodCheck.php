@@ -63,41 +63,41 @@ use App\view\components\ResponsiveComponent\Alert\FlashMessage;
                 <label for="Iron_Level" class="w-60 ">Iron Level</label>
                 <input type="number" name="Iron_Level" step="0.01" required  id="Iron_Level" class="w-40 form-control">
             </div>
-            <div class="form-group w-100">
-                <label for="Disease" class="align-self-baseline w-40">Infected Diseases</label>
-                <div class="d-flex flex-column flex-wrap w-50 gap-1">
-                    <div class="d-flex w-100 gap-1">
-                        <div class="w-50 d-flex align-items-center">
-                            <input type="checkbox" name="Disease[]" id="Disease" value="HIV" class="form-checkbox">
-                            <label for="Disease" class="ml-2">HIV</label>
-                        </div>
-                        <div class="w-50 d-flex align-items-center">
-                            <input type="checkbox" name="Disease[]" id="Disease" value="Syphilis" class="form-checkbox">
-                            <label for="Disease" class="ml-2">Syphilis</label>
-                        </div>
-                    </div>
-                    <div class="d-flex w-100 gap-1">
-                        <div class="w-50 d-flex align-items-center">
-                            <input type="checkbox" name="Disease[]" id="Disease" value="Hepatitis_B" class="form-checkbox">
-                            <label for="Disease" class="ml-2">Hepatitis_B</label>
-                        </div>
-                        <div class="w-50 d-flex align-items-center">
-                            <input type="checkbox" name="Disease[]" id="Disease" value="Hepatitis_C" class="form-checkbox">
-                            <label for="Disease" class="ml-2">Hepatitis_C</label>
-                        </div>
-                    </div>
-                    <div class="d-flex w-100 gap-1">
-                        <div class="w-50 d-flex align-items-center">
-                            <input type="checkbox" name="Disease[]" id="Disease" value="Malaria" class="form-checkbox">
-                            <label for="Disease" class="ml-2">Malaria</label>
-                        </div>
-                        <div class="w-50 d-flex align-items-center">
-                            <input type="checkbox" name="Disease[]" id="Disease" value="Virus" class="form-checkbox">
-                            <label for="Disease" class="ml-2">Virus</label>
-                        </div>
-                    </div>
-                </div>
-            </div>
+<!--            <div class="form-group w-100">-->
+<!--                <label for="Disease" class="align-self-baseline w-40">Infected Diseases</label>-->
+<!--                <div class="d-flex flex-column flex-wrap w-50 gap-1">-->
+<!--                    <div class="d-flex w-100 gap-1">-->
+<!--                        <div class="w-50 d-flex align-items-center">-->
+<!--                            <input type="checkbox" name="Disease[]" id="Disease" value="HIV" class="form-checkbox">-->
+<!--                            <label for="Disease" class="ml-2">HIV</label>-->
+<!--                        </div>-->
+<!--                        <div class="w-50 d-flex align-items-center">-->
+<!--                            <input type="checkbox" name="Disease[]" id="Disease" value="Syphilis" class="form-checkbox">-->
+<!--                            <label for="Disease" class="ml-2">Syphilis</label>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                    <div class="d-flex w-100 gap-1">-->
+<!--                        <div class="w-50 d-flex align-items-center">-->
+<!--                            <input type="checkbox" name="Disease[]" id="Disease" value="Hepatitis_B" class="form-checkbox">-->
+<!--                            <label for="Disease" class="ml-2">Hepatitis_B</label>-->
+<!--                        </div>-->
+<!--                        <div class="w-50 d-flex align-items-center">-->
+<!--                            <input type="checkbox" name="Disease[]" id="Disease" value="Hepatitis_C" class="form-checkbox">-->
+<!--                            <label for="Disease" class="ml-2">Hepatitis_C</label>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                    <div class="d-flex w-100 gap-1">-->
+<!--                        <div class="w-50 d-flex align-items-center">-->
+<!--                            <input type="checkbox" name="Disease[]" id="Disease" value="Malaria" class="form-checkbox">-->
+<!--                            <label for="Disease" class="ml-2">Malaria</label>-->
+<!--                        </div>-->
+<!--                        <div class="w-50 d-flex align-items-center">-->
+<!--                            <input type="checkbox" name="Disease[]" id="Disease" value="Virus" class="form-checkbox">-->
+<!--                            <label for="Disease" class="ml-2">Virus</label>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
             <div class="form-group w-100">
                 <label for="Remarks" class="align-self-baseline w-40">Remarks</label>
                 <textarea name="Remarks" id="Remarks" cols="30" rows="10" class="w-50 form-control"></textarea>
