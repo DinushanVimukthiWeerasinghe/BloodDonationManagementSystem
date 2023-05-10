@@ -299,6 +299,7 @@ $app->router->post('/mofficer/uploadNICBack', [medicalOfficerController::class, 
 $app->router->post('/mofficer/campaigns/verifyOrganization', [medicalOfficerController::class, 'VerifyOrganization']);
 $app->router->post('/mofficer/campaigns/ReportCampaign', [medicalOfficerController::class, 'ReportCampaign']);
 $app->router->post('/mofficer/campaigns/UndoReportCampaign', [medicalOfficerController::class, 'UndoReportCampaign']);
+$app->router->get('/mofficer/campaigns/overview', [medicalOfficerController::class, 'CampaignOverview']);
 
 //$app->router->get('/mofficer/campaigns', [medicalOfficerController::class, 'VerifyDonor']);
     $app->router->post('/medicalofficer/get-donor', [medicalOfficerController::class, 'FindDonor']);
