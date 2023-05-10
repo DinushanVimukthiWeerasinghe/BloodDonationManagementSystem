@@ -169,4 +169,33 @@
 
         return $this->render('Hospital/HospitalBloodDonation', ['data' => $data]);
     }
+
+    public function bloodRequestHistory(Request $request, Response $response): string
+    {
+        $limit = 10;
+        $page = Application::$app->request->getBody()['page'] ?? 1;
+        $initial = ($page - 1) * $limit;
+        $total_rows= BloodRequest::getCount(true, ['Requested_By' => Application::$app->getUser()->getID()]);
+        $total_pages = ceil($total_rows / $limit);
+        $requests=BloodRequest::RetrieveAll(true,[$initial,$limit],true,['Requested_By'=>Application::$app->getUser()->getID(),'Status'=>BloodRequest::REQUEST_STATUS_FULFILLED]);
+//     print_r($requests);
+//     exit();
+        $reqData=array();
+        foreach ($requests as $request){
+            //echo $request->getRequestedBy();
+            //request->getRequestedAt();
+            $reqData[]=[
+                'Request ID'=>$request->getRequestID(),
+                'Blood Group'=>$request->getBloodGroup(),
+                'Requested At'=>Date::GetProperDateTime($request->getRequestedAt()),
+                'Type'=>$request->getType(),
+                'Status'=>$request->getStatus(),
+                'Volume'=>$request->getVolume(),
+                'Remarks'=>$request->getRemarks(),
+
+            ];
+        }
+        //print_r($reqData);
+        return $this->render('Hospital/bloodRequestHistory',['data'=>$reqData,'total_pages'=>$total_pages,'current_page'=>$page]);
+    }
 }
