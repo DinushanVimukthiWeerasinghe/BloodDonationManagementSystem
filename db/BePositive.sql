@@ -154,7 +154,7 @@ CREATE TABLE IF NOT EXISTS Organizations
     Status             VARCHAR(50)  NOT NULL,
     Verified_By        VARCHAR(20)  NULL,
     Verified_At        TIMESTAMP    NULL,
-    Profile_Image      VARCHAR(100) NOT NULL DEFAULT '/public/upload/organizationDefault.png',
+    Profile_Image      VARCHAR(100) NOT NULL DEFAULT '/public/upload/organization.png',
     Created_At         TIMESTAMP             DEFAULT CURRENT_TIMESTAMP,
     Updated_At         TIMESTAMP             DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (Organization_ID) REFERENCES Users (UID),

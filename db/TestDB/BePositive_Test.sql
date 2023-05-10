@@ -150,7 +150,7 @@ CREATE TABLE IF NOT EXISTS Organizations
     Contact_No         VARCHAR(100) NOT NULL,
     City               VARCHAR(100) NOT NULL,
     Status             VARCHAR(50)  NOT NULL,
-    Profile_Image      VARCHAR(100) NOT NULL DEFAULT '/public/upload/organizationDefault.png',
+    Profile_Image      VARCHAR(100) NOT NULL DEFAULT '/public/upload/organization.png',
     Created_At         TIMESTAMP             DEFAULT CURRENT_TIMESTAMP,
     Updated_At         TIMESTAMP             DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (Organization_ID) REFERENCES Users (UID)

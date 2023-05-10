@@ -261,6 +261,7 @@ class authController extends Controller
             }
             return $this->render('Authentication/Registration/OrganizationRegistration',[
                 'uid'=>$OrganizationID,
+                'email'=>$User->getEmail(),
             ]);
         }
 

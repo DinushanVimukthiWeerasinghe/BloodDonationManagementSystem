@@ -288,7 +288,7 @@ FlashMessage::RenderFlashMessages();
                             </div>
                             <div class="d-flex d-flex w-50 flex-center">
                                 <label for="OrganizationEmail" class="w-50">Organization Email</label>
-                                <input type="email" id="OrganizationEmail" class="text-center" placeholder="Organization Email">
+                                <input type="email" id="OrganizationEmail" class="text-center" placeholder="Organization Email" value="<?=$email?>" disabled>
                             </div>
                         </div>
                         <div class="d-flex gap-1 w-100">
@@ -646,7 +646,7 @@ FlashMessage::RenderFlashMessages();
             const data = {
                 "OrganizationID" : OrganizationID,
                 "OrganizationName": document.getElementById("OrganizationName").value,
-                "OrganizationEmail": document.getElementById("OrganizationEmail").value,
+                "OrganizationEmail": "<?=$email?>",
                 "OrganizationPhone": document.getElementById("OrganizationPhone").value,
                 "OrganizationAddress1": document.getElementById("OrganizationAddress1").value,
                 "OrganizationAddress2": document.getElementById("OrganizationAddress2").value,

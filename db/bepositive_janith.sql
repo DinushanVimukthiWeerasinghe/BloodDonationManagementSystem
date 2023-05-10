@@ -626,7 +626,7 @@ CREATE TABLE `organizations` (
   `Contact_No` varchar(100) NOT NULL,
   `City` varchar(100) NOT NULL,
   `Status` varchar(50) NOT NULL,
-  `Profile_Image` varchar(100) NOT NULL DEFAULT '/public/upload/organizationDefault.png',
+  `Profile_Image` varchar(100) NOT NULL DEFAULT '/public/upload/organization.png',
   `Created_At` timestamp NOT NULL DEFAULT current_timestamp(),
   `Updated_At` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
@@ -636,7 +636,7 @@ CREATE TABLE `organizations` (
 --
 
 INSERT INTO `organizations` (`Organization_ID`, `Organization_Name`, `Address1`, `Address2`, `Organization_Email`, `Contact_No`, `City`, `Status`, `Profile_Image`, `Created_At`, `Updated_At`) VALUES
-('Org_01', 'Organization', 'Address1', 'Address2', 'organization@test.com', '0777123123', 'Colombo', '0', '/public/upload/organizationDefault.png', '2023-02-25 17:32:53', '2023-02-25 17:32:53');
+('Org_01', 'Organization', 'Address1', 'Address2', 'organization@test.com', '0777123123', 'Colombo', '0', '/public/upload/organization.png', '2023-02-25 17:32:53', '2023-02-25 17:32:53');
 
 -- --------------------------------------------------------
 
