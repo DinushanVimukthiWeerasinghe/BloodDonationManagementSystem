@@ -8,6 +8,7 @@ use App\model\Authentication\PasswordReset;
 use App\model\Blood\BloodPackets;
 use App\model\BloodBankBranch\BloodBank;
 use App\model\Email\BaseEmail;
+use App\model\Notification\ManagerNotification;
 use App\model\Requests\SponsorshipRequest;
 use App\model\users\Admin;
 use App\model\users\Donor;
@@ -17,12 +18,15 @@ use App\model\users\MedicalOfficer;
 use App\model\users\Organization;
 use App\model\users\Sponsor;
 use App\model\users\User;
+use App\model\Utils\Notification;
 use Core\Application;
 use Core\BaseMiddleware;
 use Core\Email;
 use Core\middleware\AuthenticationMiddleware;
 use Core\Request;
 use Core\Response;
+use DateTime;
+use DateTimeZone;
 use PHPMailer\PHPMailer\Exception;
 use PHPUnit\Util\Json;
 
@@ -146,10 +150,38 @@ class adminController extends \Core\Controller
         $this->layout='none';
         return $this->render('Admin/manageSetting');
     }
-    public function manageAlerts()
+    public function manageAlerts(Request $request, Response $response)
     {
         $this->layout='none';
-        return $this->render('Admin/manageAlerts');
+
+        $Role=$request->getBody()['Role'] ?? 'Hospital';
+        $notifications = [];
+        $data = [];
+        if ($Role == 'Manager'){
+            $data['Headings'] = ['Title','Message','Receiver'];
+            $notifications = ManagerNotification::RetrieveAll();
+            foreach ($notifications as $notification){
+                $manager = Manager::findOne(['Manager_ID' => $notification->getTargetID()]);
+                $managerName = 'All Managers';
+                if ($manager){
+                    $managerName = $manager->getFullName();
+                }
+                $data[] = [
+                    'NotificationTitle' => $notification->getNotificationTitle(),
+                    'NotificationMessage' => $notification->getNotificationMessage(),
+                    'Receiver' => $managerName
+                ];
+            }
+        }
+        else if ($Role == 'Hospital'){
+            $data['Headings'] = ['Title','Message','Receiver'];
+//            $notifications = HospitalNotification::RetrieveAll();
+        }
+
+//        print_r($data);
+//        exit();
+        $this->layout='none';
+        return $this->render('Admin/manageAlerts',['notifications'=>$data]);
     }
 
     public function manageBanks()
@@ -369,5 +401,37 @@ class adminController extends \Core\Controller
     function addManager(Request $request, Response $response){
         $bank = $request->getBody();
         print_r($bank);
+    }
+
+    public function addManagerNotification(request $request, Response $response){
+        $success = false;
+        $managerID = null;
+
+        $notificationData = $request->getBody();
+        $notification = new ManagerNotification();
+        if($notificationData['managerId']!=='allManagers'){
+            $managerID = $notificationData['managerId'];
+        }
+        $notification->setNotificationID(ManagerNotification::generateID());
+        $notification->setNotificationStatus(1);
+        $notification->setNotificationType(1);
+        $notification->setNotificationDate(date('Y-m-d H:i:s'));
+        $notification->setNotificationTitle($notificationData['title']);
+        $notification->setNotificationMessage($notificationData['message']);
+        $notification->setTargetID($managerID);
+        $notification->setValidUntil($notificationData['expiration-date']);
+        $alert = new \App\view\components\ResponsiveComponent\Alert\FlashMessage();
+        if ($notification->validate()){
+            if ($notification->save()){
+                echo $alert->SuccessAlert("Notification Added Successfully");
+            }else{
+                echo $alert->ErrorAlert("Error adding notification");
+            }
+        }else{
+            echo $alert->ErrorAlert("Error adding notification");
+
+        }
+        Application::Redirect('/admin/dashboard');
+
     }
 }

@@ -100,6 +100,8 @@ try {
     $app->router->get('/admin/manageBanks/addManager', [authController::class, 'managerRegister']);
     $app->router->post('/admin/manageHospital/addHospital', [authController::class, 'hospitalRegister']);
 
+    $app->router->post('/admin/dashboard/manageAlerts/add/managerNotification', [adminController::class, 'addManagerNotification']);
+
     $app->router->post('/user/resetPassword', [adminController::class, 'ResetPassword']);
     $app->router->post('/user/removeUser', [adminController::class, 'RemoveUser']);
     $app->router->post('/user/reActivateUser', [adminController::class, 'ReactivateUser']);
@@ -309,6 +311,8 @@ $app->router->post('/mofficer/campaigns/UndoReportCampaign', [medicalOfficerCont
 
 
     $app->router->get('/api/bbank/getall', [apiController::class, 'getBloodBanks']);
+    $app->router->get('/api/managers/getall', [apiController::class, 'getManagers']);
+    $app->router->get('/api/bloodGroups/getall', [apiController::class, 'getBloodGroups']);
 
 //Hospital login
     $app->router->get('/hospital/login', [hospitalController::class, 'login']);

@@ -125,5 +125,6 @@
 <script src="/public/js/admin/manageBanks.js"></script>
 <script src="/public/js/admin/manageUsers.js"></script>
 <script src="/public/js/admin/manageSetting.js"></script>
+<script src="/public/js/admin/manageNotifications.js"></script>
 <script src="/public/js/admin/admin.js"></script>
 </html>

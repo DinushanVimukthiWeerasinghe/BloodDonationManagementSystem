@@ -13,7 +13,7 @@ class ManagerNotification extends dbModel
     protected string $Notification_Date;
     protected string $Notification_Status;
     protected string $Notification_Type;
-    protected string $Target_ID;
+    protected ?string $Target_ID=null;
     protected ?string $Valid_Until=null;
 
     /**
@@ -118,7 +118,7 @@ class ManagerNotification extends dbModel
     /**
      * @return string
      */
-    public function getTargetID(): string
+    public function getTargetID(): string|null
     {
         return $this->Target_ID;
     }
@@ -126,7 +126,7 @@ class ManagerNotification extends dbModel
     /**
      * @param string $Target_ID
      */
-    public function setTargetID(string $Target_ID): void
+    public function setTargetID(string|null $Target_ID): void
     {
         $this->Target_ID = $Target_ID;
     }
@@ -170,7 +170,7 @@ class ManagerNotification extends dbModel
             'Notification_Date'=>[self::RULE_REQUIRED],
             'Notification_Status'=>[self::RULE_REQUIRED],
             'Notification_Type'=>[self::RULE_REQUIRED],
-            'Target_ID'=>[self::RULE_REQUIRED],
+//            'Target_ID'=>[self::RULE_REQUIRED],
         ];
     }
 
