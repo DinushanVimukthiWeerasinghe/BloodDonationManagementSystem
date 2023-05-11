@@ -2,6 +2,7 @@
 
 namespace App\model\users;
 
+use App\model\Donations\Donation;
 use App\model\Donor\ReportedDonor;
 use App\model\Notification\DonorNotification;
 use Core\Request;
@@ -24,14 +25,15 @@ class Donor extends Person
     const PENDING = 1;
     const NOT_VERIFIED = 3;
     const ACTIVE = 1;
+    const DEFAULT_PROFILE_IMAGE_LOCATION = 'Profile/Donor';
     protected string $Donor_ID = '';
     protected string $Nearest_Bank = '';
     protected int $Donation_Availability = 1;
-    protected ?string $Donation_Availability_Date='';
+    protected ?string $Donation_Availability_Date=null;
     protected int $Verified=1;
-    protected ?string $Verified_At='';
+    protected ?string $Verified_At=null;
     protected ?string $Verified_By=Null;
-    protected ?string $Verification_Remarks='';
+    protected ?string $Verification_Remarks=null;
     protected ?string $BloodPacket_ID='';
     protected string $Created_At='';
     protected string $Updated_At='';
@@ -39,7 +41,7 @@ class Donor extends Person
     protected ?string $NIC_Back=null;
     protected ?string $BloodDonation_Book_1=null;
     protected ?string $BloodDonation_Book_2=null;
-    protected ?string $BloodGroup = null;
+    protected string $BloodGroup = "Unknown";
 
 
     public static function ReportedDonors($q=''): bool|array
@@ -67,6 +69,17 @@ class Donor extends Person
         $notification->setNotificationState(DonorNotification::NOTIFICATION_STATE_UNREAD);
         $notification->save();
         return true;
+    }
+
+    public function GetLatestSuccessfulDonation() : ?Donation
+    {
+        $Donations = Donation::RetrieveAll(false,[],true,['Donor_ID'=>$this->getDonorID(),'Status'=>Donation::STATUS_BLOOD_STORED],['End_At'=>'DESC']);
+        if(count($Donations)>0)
+        {
+            return $Donations[0];
+        }else{
+            return null;
+        }
     }
 
     /**
@@ -483,6 +496,20 @@ class Donor extends Person
     public function getVerificationStatus()
     {
         return $this->Verified ? "Verified" : "Not Verified";
+    }
+
+    public function generateGenderByNIC()
+    {
+        if (!empty($this->getNIC())){
+            $Token = substr($this->getNIC(),3,3);
+            $Token=intval($Token);
+
+            if ($Token<500){
+                $this->setGender("M");
+            }else{
+                $this->setGender("F");
+            }
+        }
     }
 
 }

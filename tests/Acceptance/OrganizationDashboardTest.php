@@ -18,13 +18,14 @@ class OrganizationDashboardTest extends \Codeception\Test\Unit
         $this->tester->click('form input[type=submit]');
         $this->tester->see('Dashboard');
     }
+
     /**
      * @dataprovider  dashboardComponentsProvider
-     * @param $page
-     * @param $element
-     * @param $excepted
+     * @param string $page
+     * @param string $element
+     * @param string $excepted
      * @return void
-     **/
+     */
 
     public function testdashboardComponents(string $page, string $element,string $excepted){
         $this->LogAsOrganization();
@@ -32,7 +33,7 @@ class OrganizationDashboardTest extends \Codeception\Test\Unit
 //        $e = $this->tester->grabAttributeFrom($element,'onclick');
 //        var_dump($e);
         $this->tester->seeElement($element);
-        $this->tester->click($element);
+        $this->tester->click(['js' => "document.getElementById('$element').click()"]);
         $this->tester->seeInCurrentUrl($excepted);
         $this->logout();
     }

@@ -111,6 +111,7 @@ CREATE TABLE IF NOT EXISTS Donors
     BloodDonation_Book_2  VARCHAR(100) NULL,
     Status                VARCHAR(50)  NOT NULL,
     Donation_Availability INT          NOT NULL DEFAULT 1,
+    Donation_Availability_Date DATE NULL ,
     Verified              INT          NOT NULL DEFAULT 1,
     Verified_At           TIMESTAMP    NULL,
     Verified_By           VARCHAR(20)  NULL,

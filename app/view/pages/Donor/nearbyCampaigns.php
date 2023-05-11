@@ -12,8 +12,8 @@
 use \App\view\components\ResponsiveComponent\Card\donationCard;
 use App\view\components\ResponsiveComponent\NavbarComponent\DonorNavbar;
 
-$navbar = new DonorNavbar('Nearby Campaigns', '/donor/profile', '/public/images/icons/user.png', true, $firstName . ' ' . $lastName, false);
-echo $navbar;
+//$navbar = new DonorNavbar('Nearby Campaigns', '/donor/profile', '/public/images/icons/user.png', true,  $lastName, false);
+//echo $navbar;
 
 ?>
 
