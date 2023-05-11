@@ -678,6 +678,22 @@ CREATE TABLE IF NOT EXISTS  Manager_Notifications
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 # Create Title Table
 
+# Create Hospital Notification Table
+DROP TABLE IF EXISTS Hospital_Notifications;
+CREATE TABLE IF NOT EXISTS  Hospital_Notifications
+(
+    Notification_ID       VARCHAR(20)  NOT NULL PRIMARY KEY,
+    Notification_Type     INT  NOT NULL,
+    Notification_State   INT  NOT NULL,
+    Target_ID             VARCHAR(20)  NULL,
+    Notification_Title    VARCHAR(100) NOT NULL,
+    Notification_Message  VARCHAR(100) NOT NULL,
+    Notification_Date     TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    Valid_Until           TIMESTAMP NULL,
+    FOREIGN KEY (Target_ID) REFERENCES Hospitals(Hospital_ID)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+# Create Title Table
+
 
 
 # Create Donor Notification Table
@@ -891,6 +907,8 @@ CREATE TABLE IF NOT EXISTS `Reported_Organization` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
+
+
 # Insert Blood Type
 INSERT INTO BloodGroups (BloodGroup_ID, BloodGroup_Name)
 VALUES ('A+', 'A+');
@@ -1028,6 +1046,3 @@ VALUES ('Org_01', 'Member3', '0773456712', '345678912V', 'Treasurer');
 # CREATE EVENT IF NOT EXISTS `BloodBank_Donation_Queue` ON SCHEDULE EVERY 1 DAY STARTS CURRENT_TIMESTAMP
 #     DO
 #         UPDATE donor_blood_check SET Donor_Status = 3 WHERE Donor_Status = 2 AND DATEDIFF(CURRENT_DATE, Blood_Check_Date) > 3;
-
-
-
