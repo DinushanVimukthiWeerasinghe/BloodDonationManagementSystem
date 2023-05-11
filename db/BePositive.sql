@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS Users
     Email          VARCHAR(100) UNIQUE,
     Password       VARCHAR(100) NOT NULL,
     Account_Status INT          NOT NULL DEFAULT 0,
-    Role           VARCHAR(100) NOT NULL DEFAULT 'donor',
+    Role           VARCHAR(100) NOT NULL DEFAULT 'Donor',
     Created_At     TIMESTAMP             DEFAULT CURRENT_TIMESTAMP,
     Updated_At     TIMESTAMP             DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     Security_Level INT          NOT NULL DEFAULT 0
@@ -111,6 +111,7 @@ CREATE TABLE IF NOT EXISTS Donors
     BloodDonation_Book_2  VARCHAR(100) NULL,
     Status                VARCHAR(50)  NOT NULL,
     Donation_Availability INT          NOT NULL DEFAULT 1,
+    Donation_Availability_Date DATE NULL ,
     Verified              INT          NOT NULL DEFAULT 1,
     Verified_At           TIMESTAMP    NULL,
     Verified_By           VARCHAR(20)  NULL,
@@ -154,7 +155,7 @@ CREATE TABLE IF NOT EXISTS Organizations
     Status             VARCHAR(50)  NOT NULL,
     Verified_By        VARCHAR(20)  NULL,
     Verified_At        TIMESTAMP    NULL,
-    Profile_Image      VARCHAR(100) NOT NULL DEFAULT '/public/upload/organizationDefault.png',
+    Profile_Image      VARCHAR(100) NOT NULL DEFAULT '/public/upload/organization.png',
     Created_At         TIMESTAMP             DEFAULT CURRENT_TIMESTAMP,
     Updated_At         TIMESTAMP             DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (Organization_ID) REFERENCES Users (UID),
@@ -668,7 +669,7 @@ CREATE TABLE IF NOT EXISTS  Manager_Notifications
 (
     Notification_ID       VARCHAR(20)  NOT NULL PRIMARY KEY,
     Notification_Type     INT  NOT NULL,
-    Notification_State   INT  NOT NULL,
+    Notification_Status   INT  NOT NULL,
     Target_ID             VARCHAR(20)  NULL,
     Notification_Title    VARCHAR(100) NOT NULL,
     Notification_Message  VARCHAR(100) NOT NULL,
@@ -954,10 +955,9 @@ VALUES ('Mof_01', 'Medical', 'Officer', 'Address1', 'Address2', 'Colombo', '0771
         '123456789104', 'Doctor', 'M', 'Sri Lankan');
 # Make Default Donor for Testing
 INSERT INTO Donors (DONOR_ID, FIRST_NAME, LAST_NAME, ADDRESS1, ADDRESS2, CITY, NEAREST_BANK, CONTACT_NO, EMAIL, NIC,
-                    GENDER, STATUS,
-                    DONATION_AVAILABILITY, VERIFIED,BloodGroup)
+                    GENDER, STATUS,BloodGroup)
 VALUES ('Dnr_01', 'Donor', 'Donor', 'Address1', 'Address2', 'Colombo', 'BB_01', '0771234567', 'donor@test.com',
-        '200017800595', 'F', 0, 0, 0,"B+");
+        '200017800595', 'F', 0,"B+");
 
 # Make Default Organization for Testing
 INSERT INTO Organizations (Organization_ID, Organization_Name, Organization_Email, Contact_No, Address1, Address2, City,

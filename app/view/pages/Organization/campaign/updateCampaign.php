@@ -190,8 +190,9 @@ echo $background;
         }
         else {
             OpenDialogBox({
-                // id:'sendEmail',
+                id:'update',
                 title: 'Update Confirmation',
+                titleClass: 'text-white bg-dark text-center',
                 content: `Are You Sure You Want to Update Details?`,
                 successBtnText: 'Yes',
                 successBtnAction: () => {

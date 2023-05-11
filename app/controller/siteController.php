@@ -3,6 +3,7 @@
 namespace App\controller;
 
 
+use App\model\Blog\Blog;
 use Core\Application;
 use Core\middleware\AuthenticationMiddleware;
 use Core\Request;
@@ -22,12 +23,13 @@ class siteController extends \Core\Controller
 
     public function home(): string
     {
-
+        $Blogs = Blog::RetrieveAll();
+//        $Blogs = array_merge(...array_fill(0,10,$Blogs));
         $params=[
             'name'=>['first'=>'Mohamed','last'=>'Ali'],
             'Author'=>'Dinushan Vimukthi',
         ];
-        return $this->render('home',['params'=>$params]);
+        return $this->render('home',['params'=>$params,'Blogs'=>$Blogs]);
     }
 
     public function gmap(Request $request,Response $response)

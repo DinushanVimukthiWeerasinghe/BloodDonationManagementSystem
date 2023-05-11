@@ -4,6 +4,7 @@ namespace App\controller;
 
 use App\middleware\donorMiddleware;
 use App\model\Authentication\Login;
+use App\model\Authentication\OTPCode;
 use App\model\Blood\BloodPackets;
 use App\model\Campaigns\Campaign;
 use App\model\database\dbModel;
@@ -11,6 +12,7 @@ use App\model\Donations\AcceptedDonations;
 use App\model\Donations\Donation;
 use App\model\Report\Report;
 use App\model\Requests\AttendanceAcceptedRequest;
+//use App\model\Report\Report;
 use App\model\users\Donor;
 use App\model\users\User;
 use Core\Application;
@@ -20,6 +22,7 @@ use Core\Email;
 use Core\middleware\AuthenticationMiddleware;
 use Core\Request;
 use Core\Response;
+use PHPMailer\PHPMailer\Exception;
 
 
 class donorController extends Controller
@@ -42,6 +45,7 @@ class donorController extends Controller
         $donor = Donor::findOne(['Donor_ID' => Application::$app->getUser()->getID()]);
 
         $data=[
+            'User'=>$donor,
             'firstName'=>$donor->getFirstName(),
             'lastName'=>$donor->getLastName(),
             'state' => $donor->getDonationAvailability()
@@ -51,6 +55,79 @@ class donorController extends Controller
         return $this->render('Donor/Dashboard', $data );
     }
 
+    /**
+     * @throws Exception
+     */
+    public function ChangeEmailOTP(Request $request , Response $response)
+    {
+        if ($request->isPost()){
+            $UserId = Application::$app->getUser()->getID();
+            /** @var Donor $donor */
+            $donor = Donor::findOne(['Donor_ID' => $UserId]);
+            if ($donor){
+                $Email = $request->getBody()['Email'];
+                /** @var OTPCode $OTP */
+                $OTP = OTPCode::findOne(['UserID'=>$UserId,'Type'=>OTPCode::TYPE_EMAIL_CHANGE,'Status'=>OTPCode::STATUS_PENDING]);
+                if ($OTP) {
+                    $delayTime = "-2 minutes";
+                    if(MODE === DEVELOPMENT)
+                        $delayTime = "-5 seconds";
+                    if ($OTP->getCreatedAt() > date('Y-m-d H:i:s', strtotime($delayTime))) {
+                        return json_encode(['status' => false, 'message' => 'OTP Already Sent']);
+                    } else {
+                        if (MODE !== DEVELOPMENT)
+                            $OTP->GenerateCode($Email);
+                        else
+                            $OTP->GenerateCode(DEV_EMAIL);
+                        try {
+                            $OTP->sendCode($donor->getFullName());
+                            $OTP->update($OTP->getUserID(),[],['Code','Updated_At'],['Type'=>OTPCode::TYPE_EMAIL_CHANGE]);
+                            return json_encode(['status' => true, 'message' => 'OTP Sent to your Email']);
+                        }catch (Exception $e){
+                            return json_encode(['status' => false, 'message' => 'OTP Sending Failed']);
+                        }
+                    }
+                }else {
+                    $OTP = new OTPCode();
+                    $OTP->setUserID($UserId);
+                    $OTP->setType(OTPCode::TYPE_EMAIL_CHANGE);
+                    if (MODE !== DEVELOPMENT)
+                        $OTP->GenerateCode($Email);
+                    else
+                        $OTP->GenerateCode(DEV_EMAIL);
+                    $DonorName = $donor->getFullName();
+                    try {
+                        $OTP->sendCode($DonorName);
+                        $OTP->save();
+                        return json_encode(['status' => true, 'message' => 'OTP Sent to your Email']);
+                    } catch (Exception $e) {
+                        return json_encode(['status' => false, 'message' => 'OTP Sending Failed']);
+                    }
+                }
+            }
+        }
+
+    }
+
+    public function ChangeEmail(Request $request , Response $response)
+    {
+        if ($request->isPost()){
+            /** @var OTPCode $OTPCode */
+            $OTPCode = OTPCode::findOne(['UserID'=>Application::$app->getUser()->getID(),'Type'=>OTPCode::TYPE_EMAIL_CHANGE,'Status'=>OTPCode::STATUS_PENDING],false);
+            /** @var string $OTP */
+            $OTP = $request->getBody()['OTP'];
+            if ($OTPCode->getCode()===$OTP){
+                $Email = $OTPCode->getTarget();
+                $OTPCode->setAttempts($OTPCode->getAttempts()+1);
+                $OTPCode->setStatus(OTPCode::STATUS_VERIFIED);
+                $OTPCode->update($OTPCode->getUserID(),[],['Status','Updated_At'],['Type'=>OTPCode::TYPE_EMAIL_CHANGE]);
+                /** @var Donor $donor */
+                $donor = Donor::findOne(['Donor_ID'=>Application::$app->getUser()->getID()]);
+                $donor->update($donor->getDonorID(),[],['Email'=>$Email]);
+                return json_encode(['status'=>true,'message'=>'Email Changed Successfully']);
+            }
+        }
+    }
 
     public function usrCheck(Response $response)
     {
@@ -133,11 +210,14 @@ class donorController extends Controller
 
     public function guideline(Request $request, Response $response)
     {
-        return $this->render('Donor/donationGuideline');
+        $donor = Donor::findOne(['Donor_ID' => Application::$app->getUser()->getID()]);
+        return $this->render('Donor/donationGuideline',[
+            'User'=>$donor,
+        ]);
     }
 
     public function history(Request $request, Response $response){
-//        $donor = Donor::findOne(['Donor_ID' => Application::$app->getUser()->getID()]);
+        $donor = Donor::findOne(['Donor_ID' => Application::$app->getUser()->getID()]);
         $donations = AcceptedDonations::RetrieveAll(false,[],true,['Donor_ID' => Application::$app->getUser()->getID()]);
         $data = [];
         foreach ($donations as $donation) {
@@ -156,15 +236,18 @@ class donorController extends Controller
         }
 //        print_r($data);
 //        exit();
-        return $this->render('Donor/donationHistory',['data' => $data]);
+        return $this->render('Donor/donationHistory',['data' => $data,'User'=>$donor]);
     }
 
     public function nearby(Request $request, Response $response){
+        $donor = Donor::findOne(['Donor_ID' => Application::$app->getUser()->getID()]);
+        $data = Campaign::RetrieveAll();
 //        $data = Campaign::RetrieveAll(false,[],true,['Status'=>Campaign::CAMPAIGN_STATUS_APPROVED]);
         //exit();
         //echo $data;
-        $data = Campaign::RetrieveAll();
-        return $this->render('Donor/nearbyCampaigns',["data"=> $data]);
+        // $data = Campaign::RetrieveAll();
+        // return $this->render('Donor/nearbyCampaigns',["data"=> $data]);
+        return $this->render('Donor/nearbyCampaigns',["data"=> $data,'User'=>$donor]);
     }
 
     public function editDetails(Request $request,Response $response){

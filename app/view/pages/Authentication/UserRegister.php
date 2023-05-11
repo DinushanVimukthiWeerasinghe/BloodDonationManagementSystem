@@ -183,10 +183,21 @@ FlashMessage::RenderFlashMessages();
         const url = '/register/send-otp';
         const formData = new FormData();
         formData.append('Email', Email);
-        OpenDialogBox({
-            title: 'Enter OTP',
-            titleClass: 'text-center bg-dark py-1 text-white font-bold px-2',
-            content: `
+
+        fetch(url, {
+            method: 'POST',
+            body: formData
+        }).then(response => response.json())
+            .then(data => {
+                if (data.status){
+                    ShowToast({
+                        message: data.message,
+                        type: 'success'
+                    });
+                    OpenDialogBox({
+                        title: 'Enter OTP',
+                        titleClass: 'text-center bg-dark py-1 text-white font-bold px-2',
+                        content: `
                 <div class="d-flex flex-column justify-content-center align-items-center gap-1">
                     <div class="d-flex">One Time Password is being sent to ${Email}</div>
                     <div class="d-flex font-bold">Enter OTP Below</div>
@@ -205,55 +216,54 @@ FlashMessage::RenderFlashMessages();
                     </div>
                 </div>
             `,
-            successBtnAction : ()=>{
-                const OTP = document.getElementsByName('OTP[]');
-                let OTPString = '';
-                for (let i = 0; i < OTP.length; i++){
-                    OTPString += OTP[i].value;
-                }
-                if (OTPString.trim() === ''){
-                    ShowToast({
-                        message: 'Please enter OTP',
-                        type: 'danger'
-                    });
-                    return;
-                }
-                const formData = new FormData();
-                formData.append('Email', Email);
-                formData.append('OTP', OTPString);
-                const ValidateOTPUrl = '/register/validate-otp';
-                fetch(ValidateOTPUrl, {
-                    method: 'POST',
-                    body: formData
-                }).then(response => response.json())
-                    .then(data => {
-                        console.log(data)
-                        if (data.status){
+                        successBtnAction : ()=>{
+                            const OTP = document.getElementsByName('OTP[]');
+                            let OTPString = '';
+                            for (let i = 0; i < OTP.length; i++){
+                                OTPString += OTP[i].value;
+                            }
+                            if (OTPString.trim() === ''){
+                                ShowToast({
+                                    message: 'Please enter OTP',
+                                    type: 'danger'
+                                });
+                                return;
+                            }
                             const formData = new FormData();
                             formData.append('Email', Email);
-                            formData.append('Password', Password);
-                            formData.append('ConfirmPassword',ConfirmPassword);
                             formData.append('Role', Role);
-                            const RegisterUrl = '/register';
-                            fetch(RegisterUrl, {
+                            formData.append('OTP', OTPString);
+                            const ValidateOTPUrl = '/register/validate-otp';
+                            fetch(ValidateOTPUrl, {
                                 method: 'POST',
                                 body: formData
                             }).then(response => response.json())
                                 .then(data => {
+                                    console.log(data)
                                     if (data.status){
-                                        console.log(data)
-                                        // wrap up the encrypted uid get parameter from url
-                                        let redirect = data.redirect;
-                                        // extract the encrypted uid from the url
-                                        let encrypted_uid = redirect.split('=')[1];
-                                        // encode the encrypted uid
-                                        encrypted_uid = encodeURIComponent(encrypted_uid);
-                                        // replace the encrypted uid with the encoded encrypted uid
-                                        redirect = redirect.replace(redirect.split('=')[1], encrypted_uid);
-                                        console.log(redirect)
+                                        const formData = new FormData();
+                                        formData.append('Email', Email);
+                                        formData.append('Password', Password);
+                                        formData.append('ConfirmPassword',ConfirmPassword);
+                                        formData.append('Role', Role);
+                                        const RegisterUrl = '/register';
+                                        fetch(RegisterUrl, {
+                                            method: 'POST',
+                                            body: formData
+                                        }).then(response => response.json())
+                                            .then(data => {
+                                                if (data.status){
+                                                    console.log(data)
+                                                    let redirect = data.redirect;
+                                                    window.location.href = redirect;
 
-                                        window.location.href = `${redirect}}`;
-
+                                                }else{
+                                                    ShowToast({
+                                                        message: data.message,
+                                                        type: 'danger'
+                                                    });
+                                                }
+                                            })
                                     }else{
                                         ShowToast({
                                             message: data.message,
@@ -261,25 +271,9 @@ FlashMessage::RenderFlashMessages();
                                         });
                                     }
                                 })
-                        }else{
-                            ShowToast({
-                                message: data.message,
-                                type: 'danger'
-                            });
                         }
                     })
-            }
-        })
-        fetch(url, {
-            method: 'POST',
-            body: formData
-        }).then(response => response.json())
-            .then(data => {
-                if (data.status){
-                    ShowToast({
-                        message: data.message,
-                        type: 'success'
-                    });
+
                 }else{
                     ShowToast({
                         message: data.message,

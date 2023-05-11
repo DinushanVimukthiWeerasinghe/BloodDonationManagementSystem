@@ -2,39 +2,41 @@
 ?>
 
 <head>
-<link rel="stylesheet" href="/public/styles/home.css">
 </head>
 <?php
 
 use App\model\Notification\DonorNotification;
+use App\view\components\Card\ClickableCard;
+use App\view\components\Image\GeneralImage;
+use App\view\components\ResponsiveComponent\Alert\FlashMessage;
 use App\view\components\ResponsiveComponent\NavbarComponent\AuthNavbar;
 use App\view\components\ResponsiveComponent\NavbarComponent\DonorNavbar;
 use App\view\components\ResponsiveComponent\NotificationComponent\Notification;
 
 $donation_Image='/public/images/donation.png';
-$donation_History='/public/images/Icons/icons8-order-history-80.png';
-$donation_Guideline = '/public/images/Icons/icons8-more-details-50.png';
-$nearby_Donations = '/public/images/Icons/icons8-nearby-32.png';
+$donation_History='fa-solid fa-clock-rotate-left';
+$donation_Guideline = 'fa-solid fa-hand-holding-medical';
+$nearby_Donations = 'fa-solid fa-map-marker-alt';
 $blood_Requests = '';
 
 /* @var string $firstName */
 /* @var string $lastName */
 
 
-$Image=new \App\view\components\Image\GeneralImage("/public/images/logo.png", "Home Image", "logo","250rem");
+$Image=new GeneralImage("/public/images/logo.png", "Home Image", "logo","250rem");
 
 
-$c1 = new \App\view\components\Card\ClickableCard("Donation Guideline", $donation_Guideline,"Donation Guideline");
-$c2 = new \App\view\components\Card\ClickableCard("Donation History", $donation_History,"Donation History");
-$c3 = new \App\view\components\Card\ClickableCard("Nearby Donations", $nearby_Donations,"Nearby Donations");
+$c1 = new ClickableCard("Donation Guideline", $donation_Guideline,"Donation Guideline");
+$c2 = new ClickableCard("Donation History", $donation_History,"Donation History");
+$c3 = new ClickableCard("Nearby Donations", $nearby_Donations,"Nearby Donations");
 //$c4 = new \App\view\components\Card\ClickableCard("Blood Requests", $blood_Requests,"Blood Requests");
 
 $navbar = new DonorNavbar('Donor Board', '/donor/profile', '/public/images/icons/user.png', true,$firstName . ' ' . $lastName,false );
-echo $navbar;
+//echo $navbar;
 
 //$notification = new Notification;
 //echo $notification->getNotification('Notification', 'Are you sure you want to', 'Notification', 'Are you sure', 'Are you sure', 'Are you sure', 'Are you sure', 'Are you sure');
-$alert = new \App\view\components\ResponsiveComponent\Alert\FlashMessage();
+$alert = new FlashMessage();
 
 if ($state == 0){
     echo $alert->ErrorAlert("You Cannot Donate Blood at this time Moment");
@@ -54,7 +56,7 @@ if ($state == 0){
                     <h1 class="nav-title">Welcome <br> <?php echo $firstName.' '.$lastName ?> </h1>
                 </div>
                 <div class="nav-desc">
-                    <p class="text text-white">Thank you for visiting the Be Positive blood donation campaign management system.
+                    <p class="text text-white text-xl text-center" style="font-weight: 400">Thank you for visiting the Be Positive blood donation campaign management system.
                         As a registered user, you have the opportunity to make a positive impact on the lives of others by donating blood.
                         Your generosity and commitment to helping those in need is greatly appreciated.
                         Thank you for being a part of the Be Positive community and for doing your part to save lives.

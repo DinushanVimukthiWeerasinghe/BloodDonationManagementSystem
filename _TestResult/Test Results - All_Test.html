@@ -572,9 +572,9 @@ jQuery.cookie = function(name, value, options) {
     <body>
         <div id="container">
             <div id="header">
-                <div class="time" xmlns="">3.61 s</div>
+                <div class="time" xmlns="">5.36 s</div>
                 <h1>
-                    All Test: <strong><span class="total" xmlns="http://www.w3.org/1999/xhtml">26 total, </span><span class="passed">26 passed</span></strong>
+                    All Test: <strong><span class="total" xmlns="http://www.w3.org/1999/xhtml">35 total, </span><span class="failed">2 failed, </span><span class="passed">33 passed</span></strong>
                 </h1>
                 <div id="treecontrol">
                     <ul>
@@ -591,67 +591,97 @@ jQuery.cookie = function(name, value, options) {
             </div>
             <div id="content">
                 <ul id="tree">
-                    <li xmlns="" class="level top open">
+                    <li xmlns="" class="level top failed open">
                         <span><em class="time">
-                                <div class="time">3.01 s</div>
+                                <div class="time">5.02 s</div>
                             </em>Tests.Acceptance</span>
                         <ul>
                             <li class="level test">
                                 <span><em class="time">
-                                        <div class="time">380 ms</div>
+                                        <div class="time">290 ms</div>
                                     </em><em class="status">passed</em>HomePageTest: Navbar components | #0</span>
                             </li>
                             <li class="level test">
                                 <span><em class="time">
-                                        <div class="time">530 ms</div>
+                                        <div class="time">510 ms</div>
                                     </em><em class="status">passed</em>HomePageTest: Navbar components | #1</span>
                             </li>
                             <li class="level test">
                                 <span><em class="time">
-                                        <div class="time">540 ms</div>
+                                        <div class="time">490 ms</div>
                                     </em><em class="status">passed</em>HomePageTest: Navbar components | #2</span>
                             </li>
                             <li class="level test">
                                 <span><em class="time">
-                                        <div class="time">520 ms</div>
+                                        <div class="time">510 ms</div>
                                     </em><em class="status">passed</em>HomePageTest: Navbar components | #3</span>
                             </li>
                             <li class="level test">
                                 <span><em class="time">
-                                        <div class="time">540 ms</div>
+                                        <div class="time">530 ms</div>
                                     </em><em class="status">passed</em>HomePageTest: Navbar components | #4</span>
                             </li>
                             <li class="level test">
                                 <span><em class="time">
-                                        <div class="time">500 ms</div>
+                                        <div class="time">530 ms</div>
                                     </em><em class="status">passed</em>HomePageTest: Navbar components | #5</span>
+                            </li>
+                            <li class="level test failed open">
+                                <span><em class="time">
+                                        <div class="time">1.11 s</div>
+                                    </em><em class="status">failed</em>OrganizationDashboardTest: Testdashboard components | #0</span>
+                                <ul>
+                                    <li class="text">
+                                        <span class="stderr">Array to string conversion C:\Users\stdin\Project\Group Project - Second Year\BloodDonationManagementSystem\vendor\codeception\lib-innerbrowser\src\Codeception\Lib\InnerBrowser.php:1450<br/> C:\Users\stdin\Project\Group Project - Second Year\BloodDonationManagementSystem\vendor\codeception\lib-innerbrowser\src\Codeception\Lib\InnerBrowser.php:1420<br/> C:\Users\stdin\Project\Group Project - Second Year\BloodDonationManagementSystem\vendor\codeception\lib-innerbrowser\src\Codeception\Lib\InnerBrowser.php:434<br/> C:\Users\stdin\Project\Group Project - Second Year\BloodDonationManagementSystem\vendor\codeception\lib-innerbrowser\src\Codeception\Lib\InnerBrowser.php:401<br/> C:\Users\stdin\Project\Group Project - Second Year\BloodDonationManagementSystem\vendor\codeception\codeception\src\Codeception\Step.php:289<br/> C:\Users\stdin\Project\Group Project - Second Year\BloodDonationManagementSystem\vendor\codeception\codeception\src\Codeception\Scenario.php:76<br/> C:\Users\stdin\Project\Group Project - Second Year\BloodDonationManagementSystem\tests\Support\_generated\AcceptanceTesterActions.php:313<br/> C:\Users\stdin\Project\Group Project - Second Year\BloodDonationManagementSystem\tests\Acceptance\OrganizationDashboardTest.php:36<br/> C:\Users\stdin\Project\Group Project - Second Year\BloodDonationManagementSystem\vendor\codeception\codeception\src\Codeception\Test\TestCaseWrapper.php:148<br/> C:\Users\stdin\Project\Group Project - Second Year\BloodDonationManagementSystem\vendor\codeception\codeception\src\Codeception\Test\Test.php:170<br/> C:\Users\stdin\Project\Group Project - Second Year\BloodDonationManagementSystem\vendor\codeception\codeception\src\Codeception\Suite.php:130<br/> C:\Users\stdin\Project\Group Project - Second Year\BloodDonationManagementSystem\vendor\codeception\codeception\src\Codeception\SuiteManager.php:148<br/> C:\Users\stdin\Project\Group Project - Second Year\BloodDonationManagementSystem\vendor\codeception\codeception\src\Codeception\Codecept.php:260<br/> C:\Users\stdin\Project\Group Project - Second Year\BloodDonationManagementSystem\vendor\codeception\codeception\src\Codeception\Codecept.php:216<br/> C:\Users\stdin\Project\Group Project - Second Year\BloodDonationManagementSystem\vendor\codeception\codeception\src\Codeception\Command\Run.php:646<br/> C:\Users\stdin\Project\Group Project - Second Year\BloodDonationManagementSystem\vendor\codeception\codeception\src\Codeception\Command\Run.php:467<br/> C:\Users\stdin\Project\Group Project - Second Year\BloodDonationManagementSystem\vendor\symfony\console\Command\Command.php:312<br/> C:\Users\stdin\Project\Group Project - Second Year\BloodDonationManagementSystem\vendor\symfony\console\Application.php:1022<br/> C:\Users\stdin\Project\Group Project - Second Year\BloodDonationManagementSystem\vendor\symfony\console\Application.php:314<br/> C:\Users\stdin\Project\Group Project - Second Year\BloodDonationManagementSystem\vendor\symfony\console\Application.php:168<br/> C:\Users\stdin\Project\Group Project - Second Year\BloodDonationManagementSystem\vendor\codeception\codeception\src\Codeception\Application.php:112<br/> <br/></span>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li class="level test">
+                                <span><em class="time">
+                                        <div class="time">530 ms</div>
+                                    </em><em class="status">passed</em>OrganizationRegistrationTest: Testdashboard components | #0</span>
+                            </li>
+                            <li class="level test failed open">
+                                <span><em class="time">
+                                        <div class="time">520 ms</div>
+                                    </em><em class="status">failed</em>OrganizationhistoryTest: Testdashboard components | #0</span>
+                                <ul>
+                                    <li class="text">
+                                        <span class="stderr">Element located either by name, CSS or XPath element with '#details' was not found. C:\Users\stdin\Project\Group Project - Second Year\BloodDonationManagementSystem\vendor\codeception\lib-innerbrowser\src\Codeception\Constraint\Crawler.php:48<br/> C:\Users\stdin\Project\Group Project - Second Year\BloodDonationManagementSystem\vendor\codeception\lib-asserts\src\Codeception\Util\Shared\InheritedAsserts.php:1109<br/> C:\Users\stdin\Project\Group Project - Second Year\BloodDonationManagementSystem\vendor\codeception\lib-innerbrowser\src\Codeception\Lib\InnerBrowser.php:1809<br/> C:\Users\stdin\Project\Group Project - Second Year\BloodDonationManagementSystem\vendor\codeception\lib-innerbrowser\src\Codeception\Lib\InnerBrowser.php:1619<br/> C:\Users\stdin\Project\Group Project - Second Year\BloodDonationManagementSystem\vendor\codeception\codeception\src\Codeception\Step.php:289<br/> C:\Users\stdin\Project\Group Project - Second Year\BloodDonationManagementSystem\vendor\codeception\codeception\src\Codeception\Scenario.php:76<br/> C:\Users\stdin\Project\Group Project - Second Year\BloodDonationManagementSystem\tests\Support\_generated\AcceptanceTesterActions.php:3194<br/> C:\Users\stdin\Project\Group Project - Second Year\BloodDonationManagementSystem\tests\Acceptance\OrganizationhistoryTest.php:22<br/> C:\Users\stdin\Project\Group Project - Second Year\BloodDonationManagementSystem\vendor\codeception\codeception\src\Codeception\Test\TestCaseWrapper.php:148<br/> C:\Users\stdin\Project\Group Project - Second Year\BloodDonationManagementSystem\vendor\codeception\codeception\src\Codeception\Test\Test.php:170<br/> C:\Users\stdin\Project\Group Project - Second Year\BloodDonationManagementSystem\vendor\codeception\codeception\src\Codeception\Suite.php:130<br/> C:\Users\stdin\Project\Group Project - Second Year\BloodDonationManagementSystem\vendor\codeception\codeception\src\Codeception\SuiteManager.php:148<br/> C:\Users\stdin\Project\Group Project - Second Year\BloodDonationManagementSystem\vendor\codeception\codeception\src\Codeception\Codecept.php:260<br/> C:\Users\stdin\Project\Group Project - Second Year\BloodDonationManagementSystem\vendor\codeception\codeception\src\Codeception\Codecept.php:216<br/> C:\Users\stdin\Project\Group Project - Second Year\BloodDonationManagementSystem\vendor\codeception\codeception\src\Codeception\Command\Run.php:646<br/> C:\Users\stdin\Project\Group Project - Second Year\BloodDonationManagementSystem\vendor\codeception\codeception\src\Codeception\Command\Run.php:467<br/> C:\Users\stdin\Project\Group Project - Second Year\BloodDonationManagementSystem\vendor\symfony\console\Command\Command.php:312<br/> C:\Users\stdin\Project\Group Project - Second Year\BloodDonationManagementSystem\vendor\symfony\console\Application.php:1022<br/> C:\Users\stdin\Project\Group Project - Second Year\BloodDonationManagementSystem\vendor\symfony\console\Application.php:314<br/> C:\Users\stdin\Project\Group Project - Second Year\BloodDonationManagementSystem\vendor\symfony\console\Application.php:168<br/> C:\Users\stdin\Project\Group Project - Second Year\BloodDonationManagementSystem\vendor\codeception\codeception\src\Codeception\Application.php:112<br/> <br/></span>
+                                    </li>
+                                </ul>
                             </li>
                         </ul>
                     </li>
                     <li class="level top open">
                         <span><em class="time">
-                                <div class="time">600 ms</div>
+                                <div class="time">340 ms</div>
                             </em>Tests.Functional</span>
                         <ul>
                             <li class="level test">
                                 <span><em class="time">
-                                        <div class="time">40 ms</div>
+                                        <div class="time">10 ms</div>
                                     </em><em class="status">passed</em>RouteTest: Routes | #0</span>
                             </li>
                             <li class="level test">
                                 <span><em class="time">
-                                        <div class="time">20 ms</div>
+                                        <div class="time">10 ms</div>
                                     </em><em class="status">passed</em>RouteTest: Routes | #1</span>
                             </li>
                             <li class="level test">
                                 <span><em class="time">
-                                        <div class="time">10 ms</div>
+                                        <div class="time">20 ms</div>
                                     </em><em class="status">passed</em>RouteTest: Routes | #2</span>
                             </li>
                             <li class="level test">
                                 <span><em class="time">
-                                        <div class="time">530 ms</div>
+                                        <div class="time">260 ms</div>
                                     </em><em class="status">passed</em>RouteTest: Invalid routes</span>
+                            </li>
+                            <li class="level test">
+                                <span><em class="time">
+                                        <div class="time">40 ms</div>
+                                    </em><em class="status">passed</em>donorNotificationTest: Valid donor id | #0</span>
                             </li>
                         </ul>
                     </li>
@@ -684,6 +714,16 @@ jQuery.cookie = function(name, value, options) {
                                 <span><em class="time">
                                         <div class="time">0 ms</div>
                                     </em><em class="status">passed</em>CampaignTest: Get campaign description</span>
+                            </li>
+                            <li class="level test">
+                                <span><em class="time">
+                                        <div class="time">0 ms</div>
+                                    </em><em class="status">passed</em>CampaignsSponsorTest: Get sponsored amount</span>
+                            </li>
+                            <li class="level test">
+                                <span><em class="time">
+                                        <div class="time">0 ms</div>
+                                    </em><em class="status">passed</em>CampaignsSponsorTest: Get description</span>
                             </li>
                             <li class="level test">
                                 <span><em class="time">
@@ -728,6 +768,16 @@ jQuery.cookie = function(name, value, options) {
                             <li class="level test">
                                 <span><em class="time">
                                         <div class="time">0 ms</div>
+                                    </em><em class="status">passed</em>SponsorshipRequestTest: Get sponsored amount</span>
+                            </li>
+                            <li class="level test">
+                                <span><em class="time">
+                                        <div class="time">0 ms</div>
+                                    </em><em class="status">passed</em>SponsorshipRequestTest: Get sponsorship status</span>
+                            </li>
+                            <li class="level test">
+                                <span><em class="time">
+                                        <div class="time">0 ms</div>
                                     </em><em class="status">passed</em>informDonorsTest: Get campaign id</span>
                             </li>
                             <li class="level test">
@@ -740,13 +790,18 @@ jQuery.cookie = function(name, value, options) {
                                         <div class="time">0 ms</div>
                                     </em><em class="status">passed</em>informDonorsTest: Get message</span>
                             </li>
+                            <li class="level test">
+                                <span><em class="time">
+                                        <div class="time">0 ms</div>
+                                    </em><em class="status">passed</em>informDonorsTest: Get message status</span>
+                            </li>
                         </ul>
                     </li>
                 </ul>
             </div>
         </div>
         <div id="footer">
-            <p>Generated by PhpStorm on 4/24/23, 2:30 PM</p>
+            <p>Generated by PhpStorm on 5/11/23, 3:36 PM</p>
         </div>
     </body>
 </html>

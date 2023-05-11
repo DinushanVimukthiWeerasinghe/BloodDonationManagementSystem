@@ -10,6 +10,7 @@ use App\model\BloodBankBranch\BloodBank;
 use App\model\Email\BaseEmail;
 use App\model\Notification\ManagerNotification;
 use App\model\Requests\SponsorshipRequest;
+use App\model\sponsor\CampaignsSponsor;
 use App\model\users\Admin;
 use App\model\users\Donor;
 use App\model\users\Hospital;
@@ -136,12 +137,17 @@ class adminController extends \Core\Controller
     {
         $this->layout='none';
 
-        $SponsorshipTransactions=SponsorshipRequest::RetrieveAll(false,[],true,['Sponsorship_Status'=>SponsorshipRequest::STATUS_COMPLETED]);
-//        Merge Array 30 times
-        $SponsorshipTransactions=array_merge(...array_fill(0,50,$SponsorshipTransactions));
-        $data= $SponsorshipTransactions;
+        $SponsorshipTransactions=CampaignsSponsor::RetrieveAll(false,[],true,['Status'=>CampaignsSponsor::PAYMENT_STATUS_PAID]);
+        if ($SponsorshipTransactions)
+        {
+            $SponsorshipTransactions = array_filter($SponsorshipTransactions, function ($transaction) {
+                /** @var CampaignsSponsor $transaction */
+                return $transaction->getSponsorshipRequest()->getTransferred() === SponsorshipRequest::TRANSFERRING_PENDING;
+            });
+        }
+        $SponsorshipTransactions = array_merge(...array_fill(0, 100, $SponsorshipTransactions));
         return $this->render('Admin/manageTransactions',[
-            'Transactions'=>$data
+            'Transactions'=>$SponsorshipTransactions
         ]);
     }
 

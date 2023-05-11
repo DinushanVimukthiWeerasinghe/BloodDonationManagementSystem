@@ -114,8 +114,8 @@ try {
 
     $app->router->get('/test',[siteController::class,'Test']);
 
-$app->router->get('/organization/register', [OrganizationController::class, 'register']);
-$app->router->post('/organization/register', [OrganizationController::class, 'register']);
+//$app->router->get('/organization/register', [OrganizationController::class, 'register']);
+//$app->router->post('/organization/register', [OrganizationController::class, 'register']);
 $app->router->get('/organization/dashboard', [OrganizationController::class, 'dashboard']);
 $app->router->get('/organization/create', [OrganizationController::class, 'CreateCampaign']);
 $app->router->get('/organization/history', [OrganizationController::class, 'history']);
@@ -301,6 +301,7 @@ $app->router->post('/mofficer/uploadNICBack', [medicalOfficerController::class, 
 $app->router->post('/mofficer/campaigns/verifyOrganization', [medicalOfficerController::class, 'VerifyOrganization']);
 $app->router->post('/mofficer/campaigns/ReportCampaign', [medicalOfficerController::class, 'ReportCampaign']);
 $app->router->post('/mofficer/campaigns/UndoReportCampaign', [medicalOfficerController::class, 'UndoReportCampaign']);
+$app->router->get('/mofficer/campaigns/overview', [medicalOfficerController::class, 'CampaignOverview']);
 
 //$app->router->get('/mofficer/campaigns', [medicalOfficerController::class, 'VerifyDonor']);
     $app->router->post('/medicalofficer/get-donor', [medicalOfficerController::class, 'FindDonor']);
@@ -356,8 +357,13 @@ $app->router->post('/donor/login', [donorController::class, 'login']);
 $app->router->get('/donor/signup', [donorController::class, 'signup']);
 $app->router->post('/donor/signup', [donorController::class, 'signup']);
 $app->router->get('/donor/profile', [donorController::class, 'profile']);
-$app->router->get('/donor/register',[donorController::class, 'register']);
-$app->router->post('/donor/register', [donorController::class, 'register']);
+$app->router->get('/donor/register', [authController::class, 'DonorRegister']);
+$app->router->post('/donor/register', [authController::class, 'DonorRegister']);
+$app->router->post('/donor/sendEmailChangeOTP', [donorController::class, 'ChangeEmailOTP']);
+$app->router->post('/donor/changeEmail', [donorController::class, 'ChangeEmail']);
+
+//$app->router->get('/donor/register',[donorController::class, 'register']);
+//$app->router->post('/donor/register', [donorController::class, 'register']);
 $app->router->get('/donor/guideline', [donorController::class, 'guideline']);
 $app->router->get('/donor/history', [donorController::class, 'history']);
 $app->router->get('/donor/nearby', [donorController::class, 'nearby']);
@@ -370,7 +376,7 @@ $app->router->post('/donor/profile/edit', [donorController::class, 'editDetails'
     $app->router->get('/donor/signup', [donorController::class, 'signup']);
     $app->router->post('/donor/signup', [donorController::class, 'signup']);
     $app->router->get('/donor/profile', [donorController::class, 'profile']);
-    $app->router->get('/donor/register',[donorController::class, 'register']);
+//    $app->router->get('/donor/register',[donorController::class, 'register']);
 $app->router->post('/donor/profile/loginPrompt', [donorController::class, 'loginPrompt']);
     //$app->router->get('/donor/dashboard', [donorController::class, 'dashboard']);
     //$app->router->get('/about', [siteController::class, 'about']);
@@ -381,7 +387,7 @@ $app->router->post('/donor/profile/loginPrompt', [donorController::class, 'login
     //$app->router->post('/donor/signup', [donorController::class, 'signup']);
     //$app->router->get('/donor/profile', [donorController::class, 'profile']);
     //$app->router->get('/donor/register',[donorController::class, 'register']);
-    $app->router->post('/donor/register', [donorController::class, 'register']);
+//    $app->router->post('/donor/register', [donorController::class, 'register']);
     $app->router->get('/donor/guideline', [donorController::class, 'guideline']);
     $app->router->get('/donor/history', [donorController::class, 'history']);
     $app->router->get('/donor/nearby', [donorController::class, 'nearby']);
