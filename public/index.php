@@ -313,6 +313,7 @@ $app->router->post('/mofficer/campaigns/UndoReportCampaign', [medicalOfficerCont
     $app->router->get('/api/bbank/getall', [apiController::class, 'getBloodBanks']);
     $app->router->get('/api/managers/getall', [apiController::class, 'getManagers']);
     $app->router->get('/api/bloodGroups/getall', [apiController::class, 'getBloodGroups']);
+    $app->router->get('/api/campaign/checkattendance', [apiController::class, 'checkAttendance']);
 
 //Hospital login
     $app->router->get('/hospital/login', [hospitalController::class, 'login']);
@@ -386,6 +387,15 @@ $app->router->post('/donor/profile/loginPrompt', [donorController::class, 'login
     $app->router->get('/donor/nearby', [donorController::class, 'nearby']);
     $app->router->get('/donor/verify', [donorController::class, 'nearby']);
 $app->router->post('/donor/profile/loginPrompt', [donorController::class, 'loginPrompt']);
+
+    $app->router->get('/donor/campaign/markAttendance', [donorController::class, 'markAttendance']);
+    $app->router->get('/donor/campaign/removeAttendance',[donorController::class, 'removeAttendance']);
+
+
+
+
+
+
 
 
     $app->router->get('/hospital/bloodRequest/addRequest', [hospitalController::class, 'addBloodRequest']);

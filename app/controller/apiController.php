@@ -3,12 +3,24 @@
 namespace App\controller;
 
 use App\model\BloodBankBranch\BloodBank;
+use App\model\Requests\AttendanceAcceptedRequest;
 use App\model\users\Donor;
 use App\model\users\Manager;
 use Core\Controller;
-
+use Core\Request;
+use Core\Response;
 class apiController extends Controller
 {
+    public function checkAttendance(Request $request, Response $response){
+        $data = $request->getBody();
+        $flag = false;
+//        error_log($data['userID']);
+//        error_log($data['campaignID']);
+
+        $attendance = AttendanceAcceptedRequest::findOne(['Donor_ID'=>$data['userID'],'Campaign_ID'=>$data['campaignID']]);
+        if ($attendance){$flag = true;}
+        return json_encode($flag);
+    }
     public function getBloodGroups(){
         $APositive = Donor::RetrieveAll(false,[],true,['BloodGroup'=>'A+']);
         $ANegative = Donor::RetrieveAll(false,[],true,['BloodGroup'=>'A-']);

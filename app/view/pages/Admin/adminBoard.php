@@ -27,7 +27,7 @@
 </div>
 <div class="d-flex w-100 min-h-15 justify-content-center align-items-center gap-1 mt-1">
     <div class="min-w-30 bg-white p-2 border-radius-10">
-        <canvas id="myChart" style="width:100%;max-width:1700px;display: block;" class="chart chartjs-render-monitor" width="1000px"></canvas>
+        <canvas id="myChart" style="width:100%;max-width:1700px;display: block;" class="chart chartjs-render-monitor" width="500px"></canvas>
     </div>
         <div class="min-w-30 bg-white p-2 border-radius-10">
         <canvas id="myChart2" style="width:100%;max-width:700px;display: block;" class="chart chartjs-render-monitor" width="464" height="232"></canvas>

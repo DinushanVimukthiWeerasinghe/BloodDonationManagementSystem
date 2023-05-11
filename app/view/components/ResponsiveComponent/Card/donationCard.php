@@ -4,6 +4,8 @@ namespace App\view\components\ResponsiveComponent\Card;
 
 class donationCard
 {
+    protected string $userID = '';
+    protected string $ID = '';
     protected string $title = '';
     protected string $subtitle = '';
     protected string $description = '';
@@ -15,19 +17,22 @@ class donationCard
 
 //    protected array $allData;
 //    protected string $organization;
-    public function __construct(array $params, bool $popup = true){
+    public function __construct(array $params, string $userID ,bool $popup = true){
         foreach($params as $key => $value){
             $this->{$key} = $value;
         }
         //echo $longDesc;
 //        $this->longDescription = $longDesc;
         $this->popup = $popup;
+        $this->userID = $userID;
     }
     public function render():string {
 
         return <<<HTML
         <!--        <link rel="stylesheet" href="public/css/framework/components/dialog-box/dialog-box.css">-->
         <a href="#" class="data-card" onclick="OpenDialogBoxtrigger({
+        'userID':`$this->userID`,
+        'campaignID':`$this->ID`,
         'title':`$this->title`,
         'subtitle':`$this->subtitle`,
         'description':`$this->description`,
@@ -50,14 +55,25 @@ class donationCard
         
         <script>
         function OpenDialogBoxtrigger(args) {
-            console.log(args);
-                console.log(args);
-                
+            // console.log(args);
+            // console.log(args);
+            const XHR = new XMLHttpRequest();
+            XHR.open("GET", "/api/campaign/checkattendance?userID="+args['userID']+"&campaignID="+args['campaignID'], true);
+            XHR.setRequestHeader("Content-Type", "application/json");
+            XHR.send();
+            XHR.onload = function () {
+            const attendance = JSON.parse(this.responseText);
+            console.log(attendance);
+            // console.log(Object.keys(bankList));
+            // Banks = Object.keys(bankList);
+            // console.log(Banks);
+            // OpenDialogBox({})
+            
                 //var data  = text.split(",");
                 //console.log(data);
-                if(args['popup']){
-                OpenDialogBox({
+            OpenDialogBox({
                                 title: '<div style="color:black">' + args['title'] + '</div>',
+                                id :'nearbyCampaignView',
                                 content :`<div class="d-flex flex-center">
                                     <div id="map" style="height: 300px;width: 300px"></div>
                                     <div id="infowindow-content">
@@ -67,14 +83,86 @@ class donationCard
                                     <br>
                                     Date : `+ args['date'] +`
                                     </div>
-                                </div>`,
-                                showCancelButton: false
-                            })
-                }else {
-                    // document.getElementById('allDetailsLink').remove();
-                }
-                            initMap(parseFloat(args['latitude']),parseFloat(args['longitude']));
+                                </div>
+                                <div id="attendanceMsg">Will You Attend this Campaign</div>`,
+                                showCancelButton: true,
+                                successBtnText : 'I will attend',
+                                successBtnAction : () =>{
+                                    // console.log(args['campaignID']);
+                                    // console.log(args['userID']);
+                                    let attendanceMarkResult;
+                                    if (attendance){
+                                        attendanceMarkResult = removeAttendance(args['campaignID'],args['userID']);
+                                    }else {
+                                        attendanceMarkResult = markAttendance(args['campaignID'],args['userID']);
+                                    }
+                                    CloseDialogBox();
+                                    // console.log(attendanceMarkResult);
+                                    if (attendanceMarkResult){
+                                        ShowToast(
+                                            {
+                                            message:'Prefence Changed Successfully',
+                                            type: 'success',
+                                            timeout: 3000,
+                                            });
+                                    }else {
+                                        ShowToast(
+                                            {
+                                            message: "Error Occured Try Again", 
+                                            type: 'error',
+                                            timeout: 3000,
+                                            }
+                                        );
+                                    }
+                                }
+                            });
+            
+            initMap(parseFloat(args['latitude']),parseFloat(args['longitude']));
+            
+            let attendanceMsg = document.getElementById('attendanceMsg');
+            let dialogBox = document.getElementById('nearbyCampaignView');
+            
+            let successBtn =dialogBox.firstChild.lastChild.firstChild;
+            
+            if(attendance === true){
+                // console.log('Attendance');
+                attendanceMsg.innerText = 'You have already marked Your Attendance';
+                successBtn.innerText = 'Change of Mind';
+                // console.log(successBtn)
+            }
         }
+        }
+        
+        async function markAttendance(campaignID, donorID){
+            let result = false;
+            const XHR = new XMLHttpRequest();
+            XHR.open("GET", "/donor/campaign/markAttendance?userID="+donorID+"&campaignID="+campaignID, true);
+            XHR.setRequestHeader("Content-Type", "application/json");
+            XHR.send();
+            XHR.onload = await function () {
+                result = JSON.parse(this.responseText);
+                // return result;
+            }
+                console.log(result);
+            // console.log(result);
+            return result;
+        }       
+        
+        async function removeAttendance(campaignID, donorID){
+            let result = false;
+            const XHR = new XMLHttpRequest();
+            XHR.open("GET", "/donor/campaign/removeAttendance?userID="+donorID+"&campaignID="+campaignID, true);
+            XHR.setRequestHeader("Content-Type", "application/json");
+            XHR.send();
+            XHR.onload = await function () {
+                result = JSON.parse(this.responseText);
+                // return result;
+            }
+                console.log(result);
+            return result;
+        }       
+        
+        
         
         const initMap=async (latitude,longitude)=> {
             

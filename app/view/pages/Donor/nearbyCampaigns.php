@@ -34,7 +34,7 @@ echo $navbar;
         //echo $longDescription;
         if(checkDistance($campaign['Latitude'],$campaign['Longitude']) < 30){
             //do something
-            $card = new donationCard(['title' => $campaign['Campaign_Name'], 'subtitle' => $campaign['Venue'], 'description' => $campaign['Campaign_Description'], 'date' => $campaign['Campaign_Date'], 'latitude' => $campaign['Latitude'], 'longitude' => $campaign['Longitude']]);
+            $card = new donationCard(['ID'=>$campaign['Campaign_ID'],'title' => $campaign['Campaign_Name'], 'subtitle' => $campaign['Venue'], 'description' => $campaign['Campaign_Description'], 'date' => $campaign['Campaign_Date'], 'latitude' => $campaign['Latitude'], 'longitude' => $campaign['Longitude']],\Core\Application::$app->getUser()->getID());
             echo $card->render();
         }
     }
