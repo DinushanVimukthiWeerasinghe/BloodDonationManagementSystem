@@ -7,8 +7,12 @@ use App\model\Authentication\AuthenticationCode;
 use App\model\Authentication\PasswordReset;
 use App\model\Blood\BloodPackets;
 use App\model\BloodBankBranch\BloodBank;
+use App\model\Campaigns\ApprovedCampaigns;
+use App\model\Campaigns\Campaign;
+use App\model\Donations\AcceptedDonations;
 use App\model\Email\BaseEmail;
 use App\model\Notification\ManagerNotification;
+use App\model\Requests\BloodRequest;
 use App\model\Requests\SponsorshipRequest;
 use App\model\sponsor\CampaignsSponsor;
 use App\model\users\Admin;
@@ -20,6 +24,7 @@ use App\model\users\Organization;
 use App\model\users\Sponsor;
 use App\model\users\User;
 use App\model\Utils\Notification;
+use App\view\components\ResponsiveComponent\Alert\FlashMessage;
 use Core\Application;
 use Core\BaseMiddleware;
 use Core\Email;
@@ -92,10 +97,18 @@ class adminController extends \Core\Controller
 //        $re=AuthenticationCode::Verify('321763','user_01');
         $this->layout=$layout;
         $data = [
-        'donorsCount' => $donors = Donor::getCount(),
-        'bloodBanksCount' => $bloodBanks = BloodBank::getCount(),
-        'bloodPacketsCount' => $bloodPackets = BloodPackets::getCount()
+            'donorsCount' => Donor::getCount(),
+            'availableDonors' => Donor::getCount(false,['Donation_Availability'=>'AVAILABILITY_AVAILABLE']),
+            'bloodBanksCount' => BloodBank::getCount(),
+            'bloodPacketsCount' => BloodPackets::getCount(),
+            'medicalOfficerCount' => MedicalOfficer::getCount(),
+            'onGoingCampaigns' => Campaign::getCount(false,['Status'=>'CAMPAIGN_STATUS_APPROVED']),
+//            'pendingBloodRequests' => count(BloodRequest::RetrieveAll(false,[],true,['Status'=>'REQUEST_STATUS_PENDING']))
+            'pendingBloodRequests' => BloodRequest::getCount()
+
         ];
+//        print_r( $data);
+//        exit();
         return $this->render('Admin/adminBoard', $data);
     }
 
@@ -342,12 +355,14 @@ class adminController extends \Core\Controller
             $BBank = new BloodBank();
             $BBank->loadData($data);
             if ($BBank->validate(true) && $BBank->update($BBank->getBloodBankID())){
-                Application::Redirect('/admin/dashboard');
+                $this->setFlashMessage('success','Bank updated successfully');
             }
             else{
-                print_r($BBank->errors);
+                $this->setFlashMessage('error','An error occurred while updating');
+//                print_r($BBank->errors);
             }
             //BloodBank::updateOne();
+//            Application::Redirect('/admin/dashboard');
         }
     }
 
@@ -355,7 +370,32 @@ class adminController extends \Core\Controller
         if ($request->isPost()){
             $data = $request->getBody();
             $BID = $data['BloodBank_ID'];
-            BloodBank::deleteOne(['BloodBank_ID' => $BID]);
+            if (BloodRequest::findOne(['Requested_By'=>$BID])){
+                $this->setFlashMessage('error', 'Cannot remove Bank there are pending Blood Requests');
+            }elseif (MedicalOfficer::findOne(['Branch_ID'=>$BID])){
+                $this->setFlashMessage('error', 'Cannot remove Bank there are Officers assigned to this Bank.');
+            }elseif (Manager::findOne(['BloodBank_ID'=>$BID])){
+                $this->setFlashMessage('error', 'Cannot remove Bank there are Managers assigned to this Bank.');
+            }elseif (Donor::findOne(['Nearest_Bank'=>$BID])){
+                $this->setFlashMessage('error', 'Cannot remove bank this Blood Bank assigned to some Donors.');
+            }elseif (Hospital::findOne(['Nearest_Blood_Bank'=>$BID])){
+                $this->setFlashMessage('error', 'Cannot remove bank this Blood Bank assigned to some Hospitals');
+            }elseif (Campaign::findOne(['Nearest_BloodBank'=>$BID])){
+                $this->setFlashMessage('error','Cannot remove bank this Blood Bank assigned to some Campaigns');
+            }else{
+                $bloodBank = new BloodBank();
+
+                if (
+                    $bloodBank->deleteOne(['BloodBank_ID' => $BID])
+                ){
+                    $this->setFlashMessage('success','Bank Deleted');
+                }else{
+                    $this->setFlashMessage('error', 'Something Went Wrong');
+                }
+            }
+
+
+//            error_log($bloodBank->errors[0]);
             Application::Redirect('/admin/dashboard');
         }
     }
@@ -367,9 +407,12 @@ class adminController extends \Core\Controller
         $newBank->loadData($data);
         $newBank->setBloodBankID('BNK'.rand());
         if($newBank->validate() && $newBank->save()){
-            Application::Redirect('/admin/dashboard');
+//            Application::Redirect('/admin/dashboard');
+            $this->setFlashMessage('success', 'Bank has been created');
         }else{
-            print_r($newBank->errors);
+            $this->setFlashMessage('error', 'An error has occurred');
+//            print_r($newBank->errors);
+            Application::Redirect('/admin/dashboard');
         }
         }
     }
@@ -431,6 +474,7 @@ class adminController extends \Core\Controller
             if ($notification->save()){
                 echo $alert->SuccessAlert("Notification Added Successfully");
             }else{
+//                print_r($notification)
                 echo $alert->ErrorAlert("Error adding notification");
             }
         }else{

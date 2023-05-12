@@ -18,7 +18,7 @@
         <table class="overflow-x-auto" id="bankTable">
             <thead class="bg-white">
             <tr class="bg-white">
-<!--                <th class="bg-white">Blood Bank ID</th>-->
+                <th class="bg-white">Blood Bank ID</th>
                 <th class="bg-white">Blood Bank Name</th>
                 <th class="bg-white">Address</th>
                 <th class="bg-white">City</th>
@@ -48,7 +48,7 @@
             ?>
                 <tr class="bg-white-0-7 tableRows" id="<?php echo $id ?>">
 
-<!--                    <td>--><?php //echo $id ?><!--</td>-->
+                    <td><?php echo $id ?></td>
                     <td><?php echo $name ?></td>
                     <td><?php echo $address ?></td>
                     <td><?php echo $city ?></td>
@@ -58,9 +58,9 @@
                     <td><?php echo $numberOfBeds ?></td>
                     <td><?php echo $numberOfStorages ?></td>
                     <td><?php if($type === \App\model\BloodBankBranch\BloodBank::BRANCH){
-                        echo "Branch Blood Bank";
+                        echo "Branch";
                         }elseif ($type === \App\model\BloodBankBranch\BloodBank::MAIN){
-                        echo "Main Blood Bank";
+                        echo "Main";
                         } ?></td>
                     <td class="d-flex flex-center">
                         <button type="button" class="btn btn-outline-success border-radius-10" onclick="editBnkData('<?php echo $id; ?>')">
