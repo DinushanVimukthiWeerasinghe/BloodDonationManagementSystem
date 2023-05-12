@@ -29,7 +29,7 @@ echo $background;
 $showRequests = new NavigationCard('/hospital/requests', '/public/images/icons/dashboard.png', 'Show Blood Requests', 'ViewBloodRequests', 'bg-primary');
 $addNewRequest = new NavigationCard('#', '/public/images/icons/bloodDrop.png', 'Add Blood Requests', 'AddBloodRequests', 'bg-success');
 $history = new NavigationCard('/hospital/history', '/public/images/icons/calender.png', 'View History', 'ViewHistory', 'bg-warning');
-$donateBlood = new NavigationCard('/hospital/takeBlood' , '/public/images/donation.png', 'Donate Blood', 'DonateBlood', 'bg-danger');
+$donateBlood = new NavigationCard('#' , '/public/images/donation.png', 'Donate Blood', 'DonateBlood', 'bg-danger');
 
 echo cardgroup::CardPanel();
 echo $showRequests;
@@ -99,6 +99,79 @@ echo cardgroup::CloseCardPanel();
                 document.getElementById('form').submit();
             }
         })
+    }
+</script>
+
+<script>
+    const DonateBlood= document.getElementById('DonateBlood');
+    DonateBlood.addEventListener("click", function (e){
+        e.preventDefault()
+        Donate();
+    });
+
+
+
+    const Donate = () =>{
+        OpenDialogBox ({
+            id: 'DonateBlood',
+            title: 'Search Donor',
+            content: `
+<!--                <form class="form" action="/hospital/searchDonor" method="post" id="form">-->
+                <div class = "form-group">
+                    <label for="search">Search</label>
+                    <input type="text" class="form-control" id="search" placeholder="Search" name="Search" onkeyup="SearchDonor()" required>
+                </div>
+                <div class="results" id="SearchResult">
+                </div>
+            `,
+            successBtnText: 'Search'
+        })
+    }
+
+    function SearchDonor(){
+        const Search = document.getElementsByName('Search')[0].value.trim();
+        const formData = new FormData();
+        if (Search.length === 0){
+            document.getElementById('SearchResult').innerHTML = "";
+            return;
+        }
+        formData.append('keyword', Search);
+        fetch('/hospital/searchDonor', {
+            method: 'POST',
+            body: formData
+        })
+            .then(res => res.json())
+            .then(data => {
+                // console.log(data)
+                // document.getElementById('userTable').innerHTML = data;
+                document.getElementById('SearchResult').innerHTML = "";
+                Object.values(data).forEach(value=>{
+                    // console.log(value);
+                    let newRow= document.createElement('input');
+                    newRow.setAttribute('type', 'text');
+                    newRow.classList.add('cursor');
+                    newRow.onclick = function (){
+                        SelectDonor(value['Donor_ID']);
+                    }
+                    newRow.readOnly = true;
+                    newRow.value = value['First_Name']+" " + value['Last_Name'] + " " + value['Blood_Group'] + " " + value['Email'] + " " + value['Contact_No'] + " "+ value['NIC'];
+                    document.getElementById('SearchResult').appendChild(newRow);
+                    if (document.getElementById('SearchResult').childNodes.length > 10){
+                        document.getElementById('SearchResult').removeChild(document.getElementById('SearchResult').childNodes[0]);
+                    }
+                    // console.log(newRow);
+                })
+                // console.log(data);
+                // for (let i = 0; i < 10; i++) {
+                //
+                // }
+
+            })
+    }
+
+    function SelectDonor(Donor_ID){
+        // console.log(Donor_ID);
+        window.location.href = "/hospital/takeBlood?Donor_ID="+Donor_ID;
     }
 </script>
 <!---->

@@ -394,7 +394,12 @@ $app->router->post('/donor/profile/loginPrompt', [donorController::class, 'login
     $app->router->post('/hospital/requests', [hospitalController::class, 'showRequests']);
     $app->router->get('/hospital/notification', [hospitalController::class, 'notification']);
     $app->router->post('/hospital/notification', [hospitalController::class, 'notification']);
-
+    $app->router->get('/hospital/editRequest', [hospitalController::class, 'editRequest']);
+    $app->router->post('/hospital/editRequest', [hospitalController::class, 'editRequest']);
+    $app->router->get('/hospital/deleteRequest', [hospitalController::class, 'deleteRequest']);
+    $app->router->post('/hospital/deleteRequest', [hospitalController::class, 'deleteRequest']);
+    $app->router->get('/hospital/searchDonor', [hospitalController::class, 'searchDonor']);
+    $app->router->post('/hospital/searchDonor', [hospitalController::class, 'searchDonor']);
 
 //Blogs
     $app->router->post('/blog/add', [blogController::class, 'AddBlog']);

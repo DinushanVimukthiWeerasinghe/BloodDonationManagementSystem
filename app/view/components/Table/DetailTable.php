@@ -42,5 +42,7 @@ class DetailTable
             $table .= "</table>";
             return $table;
         }
+
+
     }
 }
