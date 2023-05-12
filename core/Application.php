@@ -13,6 +13,7 @@ use App\model\users\Organization;
 use App\model\users\Person;
 use App\model\users\Sponsor;
 use App\model\users\User;
+use App\model\Utils\Security;
 use Exception;
 
 class Application
@@ -191,16 +192,13 @@ class Application
 
         }else{
             if ($Role === User::ORGANIZATION){
-                    $Organization = Organization::CreateEmptyOrganization($Email);
-                    $Organization->setOrganizationID($ID);
-                    if ($Organization->validate() && $Organization->save()) {
-                        $this->session->setFlash('success', 'Organization Created Successfully');
-                    }else{
-                        echo "<pre>";
-                        var_dump($Organization->getErrors());
-                    }
-
-                    $this->user = Organization::findOne(['Organization_ID' => $ID]);
+                $this->session->setFlash('success', 'Please Complete Your Registration! Before Login !');
+                Application::Redirect('/organization/register?uid='.urlencode(Security::Encrypt($ID)));
+                exit();
+            }elseif ($Role===User::DONOR){
+                $this->session->setFlash('success', 'Please Complete Your Registration! Before Login !');
+                Application::Redirect('/donor/register?uid='.urlencode(Security::Encrypt($ID)));
+                exit();
             }
         }
         $primaryValue = $user->getID();

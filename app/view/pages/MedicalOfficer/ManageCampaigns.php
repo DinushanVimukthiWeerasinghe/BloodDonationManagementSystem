@@ -21,6 +21,7 @@ use App\model\users\Organization;
 
     <?php
         if (!empty($Campaign) && !empty($MedicalTeam) && !empty($Organization)):
+            $Description = strlen($Campaign->getCampaignDescription()) > 100 ? substr($Campaign->getCampaignDescription(), 0, 100) . '... <button class="btn btn-info" onclick="SeeMore(\''.$Campaign->getCampaignDescription().'\')" style="font-size: 0.8rem;padding: 0.3rem">See more</button>' : $Campaign->getCampaignDescription();
     ?>
     <div id="campaign-information" class="d-flex flex-column align-items-center w-70 m-1 ">
         <div class="d-flex flex-column w-100 p-1 align-items-center">
@@ -29,7 +30,7 @@ use App\model\users\Organization;
                 <div class="d-flex w-60 flex-column align-items-start justify-content-center gap-0-5">
                     <div class="d-flex flex-center"> <span class="font-bold text-md">Venue:</span>  <span class="ml-1"><?= $Campaign->getVenue();?></span></div>
                     <div class="d-flex flex-center"> <span class="font-bold text-md">Date:</span>  <span class="ml-1"><?= $Campaign->getCampaignDate();?></span></div>
-                    <div class="d-flex flex-center"> <span class="font-bold text-md">Description:</span>  <span class="ml-1"><?= $Campaign->getCampaignDescription();?></span></div>
+                    <div class="d-flex flex-center"> <span class="font-bold text-md">Description:</span>  <span class="ml-1"><?= $Description?></span></div>
                     <?php
                     if ($Campaign->IsReported()):
                     ?>
@@ -206,6 +207,7 @@ use App\model\users\Organization;
         OpenDialogBox({
             id: "AllocateTask",
             title: "Allocate Task",
+            titleClass: "text-center text-2xl font-bold bg-dark text-white p-1",
             content:`
                         <div class="d-flex flex-column w-100 p-1 align-items-center">
                             <table class="" id="AllocateTask" >
@@ -219,6 +221,7 @@ use App\model\users\Organization;
                                   <tbody>
                                   <?php
                                         $MedicalOfficers = $MedicalTeam->getTeamMembers();
+                                        $CurrentTask = MedicalOfficer::getTaskOfCampaign($MedicalOfficer->getID(),$Campaign->getCampaignID());
                                         foreach ($MedicalOfficers as $MedicalOfficer){
                                   ?>
                                         <tr>
@@ -229,10 +232,18 @@ use App\model\users\Organization;
                                                     <?php
                                                         $Tasks= TeamMembers::getTasks();
                                                         foreach ($Tasks as $key=>$Task){
+                                                            if ($CurrentTask===$Task){
                                                     ?>
-                                                        <option value="<?= $key;?>"><?= $Task;?></option>
+                                                    <option value="<?= $key;?>" selected><?= $Task;?></option>
+                                                    <?php
+                                                            }
+                                                            else
+                                                            {
+                                                    ?>
+                                                      <option value="<?= $key;?>"><?= $Task;?></option>
                                                     <?php
                                                         }
+                                                    }
                                                     ?>
                                                 </select>
                                             </td>
@@ -624,6 +635,21 @@ use App\model\users\Organization;
         }else{
             ReportDescription.classList.add("none");
         }
+    }
+
+    const SeeMore = (Description) =>{
+        OpenDialogBox({
+            id: "SeeMore",
+            title: "Description",
+            titleClass : "bg-dark text-white text-center",
+            content: `
+                     <div class="d-flex flex-center text-center font-bold text-md">
+                        <span class="ml-1">${Description}</span>
+                     <div>
+            `,
+            showSuccessButton: false,
+            cancelBtnText: "Close"
+        })
     }
 
 </script>

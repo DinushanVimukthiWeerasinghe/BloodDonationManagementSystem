@@ -1,8 +1,8 @@
-use
-    bepositive;
+use bepositive_test;
+-- use bepositive;
 # Create Organizations
 INSERT INTO Users (UID, Email, Password, Account_Status, Role)
-VALUES ('Org_02', 'org2@test.com', '$2y$10$yjcyB1lr8V/nVciydOYedu0Rnedd9JHZ3d6PqPMqM4yNJoPmltlZS', 0, 'Organization'),
+VALUES ('Org_01', 'org2@test.com', '$2y$10$yjcyB1lr8V/nVciydOYedu0Rnedd9JHZ3d6PqPMqM4yNJoPmltlZS', 0, 'Organization'),
          ('Org_03', 'org3#test.com', '$2y$10$yjcyB1lr8V/nVciydOYedu0Rnedd9JHZ3d6PqPMqM4yNJoPmltlZS', 0, 'Organization'),
        ('Org_04', 'org4@test.com', '$2y$10$yjcyB1lr8V/nVciydOYedu0Rnedd9JHZ3d6PqPMqM4yNJoPmltlZS', 0, 'Organization'),
        ('Org_05', 'org5@test.com', '$2y$10$yjcyB1lr8V/nVciydOYedu0Rnedd9JHZ3d6PqPMqM4yNJoPmltlZS', 0, 'Organization'),
@@ -29,7 +29,7 @@ VALUES ('Org_02', 'org2@test.com', '$2y$10$yjcyB1lr8V/nVciydOYedu0Rnedd9JHZ3d6Pq
 INSERT INTO Organizations (Organization_ID, Organization_Name, Organization_Email, Contact_No, Address1, Address2, City,
                            Status)
 VALUES
-    ('Org_02', 'Organization', 'org2@test.com', '0770000001', 'Address1', 'Address2', 'Gampaha', 1),
+    ('Org_01', 'Organization', 'org2@test.com', '0770000001', 'Address1', 'Address2', 'Gampaha', 1),
     ('Org_03', 'Organization', 'org3@test.com', '0770000002', 'Address1', 'Address2', 'Gampaha', 1),
     ('Org_04', 'Organization', 'org4@test.com', '0770000003', 'Address1', 'Address2', 'Colombo', 0),
     ('Org_05', 'Organization', 'org5@test.com', '0770000004', 'Address1', 'Address2', 'Kandy', 1),
@@ -231,34 +231,61 @@ VALUES
 UPDATE Campaign SET Campaign_Date = DATE_ADD(Campaign_Date, INTERVAL 2 MONTH);
 
 # Add Sample Data to the Donor TABLE
+use bepositive;
+INSERT INTO users(UID, Email, Password) VALUES
+('Dnr_02', 'john@test.com','$2y$10$yjcyB1lr8V/nVciydOYedu0Rnedd9JHZ3d6PqPMqM4yNJoPmltlZS'),
+('Dnr_03', 'peter@test.com', '$2y$10$yjcyB1lr8V/nVciydOYedu0Rnedd9JHZ3d6PqPMqM4yNJoPmltlZS'),
+('Dnr_04', 'mary@test.com', '$2y$10$yjcyB1lr8V/nVciydOYedu0Rnedd9JHZ3d6PqPMqM4yNJoPmltlZS'),
+('Dnr_05', 'sarah@test.com', '$2y$10$yjcyB1lr8V/nVciydOYedu0Rnedd9JHZ3d6PqPMqM4yNJoPmltlZS'),
+('Dnr_06', 'david@test.com', '$2y$10$yjcyB1lr8V/nVciydOYedu0Rnedd9JHZ3d6PqPMqM4yNJoPmltlZS'),
+('Dnr_07', 'samantha@test.com', '$2y$10$yjcyB1lr8V/nVciydOYedu0Rnedd9JHZ3d6PqPMqM4yNJoPmltlZS'),
+('Dnr_08', 'robert@test.com', '$2y$10$yjcyB1lr8V/nVciydOYedu0Rnedd9JHZ3d6PqPMqM4yNJoPmltlZS'),
+('Dnr_09', 'linda@test.com', '$2y$10$yjcyB1lr8V/nVciydOYedu0Rnedd9JHZ3d6PqPMqM4yNJoPmltlZS'),
+('Dnr_10', 'samuel@test.com', '$2y$10$yjcyB1lr8V/nVciydOYedu0Rnedd9JHZ3d6PqPMqM4yNJoPmltlZS'),
+('Dnr_11', 'sophias@test.com', '$2y$10$yjcyB1lr8V/nVciydOYedu0Rnedd9JHZ3d6PqPMqM4yNJoPmltlZS'),
+('Dnr_12', 'michael@test.com', '$2y$10$yjcyB1lr8V/nVciydOYedu0Rnedd9JHZ3d6PqPMqM4yNJoPmltlZS'),
+('Dnr_13', 'julia@test.com', '$2y$10$yjcyB1lr8V/nVciydOYedu0Rnedd9JHZ3d6PqPMqM4yNJoPmltlZS'),
+('Dnr_14', 'christopher@test.com', '$2y$10$yjcyB1lr8V/nVciydOYedu0Rnedd9JHZ3d6PqPMqM4yNJoPmltlZS'),
+('Dnr_15', 'emily@test.com', '$2y$10$yjcyB1lr8V/nVciydOYedu0Rnedd9JHZ3d6PqPMqM4yNJoPmltlZS'),
+('Dnr_16', 'adam@test.com', '$2y$10$yjcyB1lr8V/nVciydOYedu0Rnedd9JHZ3d6PqPMqM4yNJoPmltlZS'),
+('Dnr_17', 'olivia@test.com', '$2y$10$yjcyB1lr8V/nVciydOYedu0Rnedd9JHZ3d6PqPMqM4yNJoPmltlZS'),
+('Dnr_20', 'emma@test.com', '$2y$10$yjcyB1lr8V/nVciydOYedu0Rnedd9JHZ3d6PqPMqM4yNJoPmltlZS'),
+('Dnr_21', 'benjamin@test.com', '$2y$10$yjcyB1lr8V/nVciydOYedu0Rnedd9JHZ3d6PqPMqM4yNJoPmltlZS'),
+('Dnr_22', 'chloe@test.com', '$2y$10$yjcyB1lr8V/nVciydOYedu0Rnedd9JHZ3d6PqPMqM4yNJoPmltlZS'),
+('Dnr_23', 'mason@test.com', '$2y$10$yjcyB1lr8V/nVciydOYedu0Rnedd9JHZ3d6PqPMqM4yNJoPmltlZS'),
+('Dnr_24', 'isabella@test.com', '$2y$10$yjcyB1lr8V/nVciydOYedu0Rnedd9JHZ3d6PqPMqM4yNJoPmltlZS'),
+('Dnr_25', 'ethan@test.com', '$2y$10$yjcyB1lr8V/nVciydOYedu0Rnedd9JHZ3d6PqPMqM4yNJoPmltlZS'),
+('Dnr_26', 'sophia@test.com', '$2y$10$yjcyB1lr8V/nVciydOYedu0Rnedd9JHZ3d6PqPMqM4yNJoPmltlZS'),
+('Dnr_27', 'alexander@test.com', '$2y$10$yjcyB1lr8V/nVciydOYedu0Rnedd9JHZ3d6PqPMqM4yNJoPmltlZS'),
+('Dnr_28', 'madison@test.com', '$2y$10$yjcyB1lr8V/nVciydOYedu0Rnedd9JHZ3d6PqPMqM4yNJoPmltlZS');
+
 INSERT INTO Donors (DONOR_ID, FIRST_NAME, LAST_NAME, ADDRESS1, ADDRESS2, CITY, NEAREST_BANK, CONTACT_NO, EMAIL, NIC,
-                    GENDER, STATUS,
-                    DONATION_AVAILABILITY, VERIFIED,BloodGroup)
-VALUES ('Dnr_02', 'John','Fernando','No 15','Colombo 05','Colombo','BB_01','0771234567','john@test.com','200017800001','M',0,0,0,'A+'),
-       ('Dnr_03', 'Peter','Fernando','No 5','Colombo 06','Colombo','BB_01','0771234567','peter@test.com','200017800002','M',0,0,0,'A+'),
-       ('Dnr_04', 'Mary','Fernando','No 8','Kandy','Colombo','BB_01','0771234567','mary@test.com','200017800003','F',0,0,0,'A+'),
-       ('Dnr_05', 'Sarah','Silva','No 20','Colombo 07','Colombo','BB_01','0771234567','sarah@test.com','200017800004','F',0,0,0,'A+'),
-       ('Dnr_06', 'David','Silva','No 10','Colombo 08','Colombo','BB_01','0771234567','david@test.com','200017800005','M',0,0,0,'A+'),
-       ('Dnr_07', 'Samantha','Silva','No 7','Colombo 09','Colombo','BB_01','0771234567','samantha@test.com','200017800006','F',0,0,0,'A+'),
-       ('Dnr_08', 'Robert','Silva','No 3','Colombo 10','Colombo','BB_01','0771234567','robert@test.com','200017800007','M',0,0,0,'A+'),
-       ('Dnr_09', 'Linda','Perera','No 9','Colombo 11','Colombo','BB_01','0771234567','linda@test.com','200017800008','F',0,0,0,'A+'),
-       ('Dnr_10', 'Samuel','Perera','No 1','Colombo 12','Colombo','BB_01','0771234567','samuel@test.com','200017800009','M',0,0,0,'A+'),
-       ('Dnr_11', 'Sophia','Perera','No 12','Colombo 13','Colombo','BB_01','0771234567','sophias@test.com','200017800010','F',0,0,0,'A+'),
-       ('Dnr_12', 'Michael','Fernando','No 6','Colombo 14','Colombo','BB_01','0771234567','michael@test.com','200017800011','M',0,0,0,'A+'),
-       ('Dnr_13', 'Julia','Fernando','No 15','Colombo 15','Colombo','BB_01','0771234567','julia@test.com','200017800012','F',0,0,0,'A+'),
-       ('Dnr_14', 'Christopher','Fernando','No 7','Colombo 16','Colombo','BB_01','0771234567','christopher@test.com','200017800013','M',0,0,0,'A+'),
-       ('Dnr_15', 'Emily','Jayawardena','No 5','Colombo 17','Colombo','BB_01','0771234567','emily@test.com','200017800014','F',0,0,0,'A+'),
-       ('Dnr_16', 'Adam','Jayawardena','No 11','Colombo 18','Colombo','BB_01','0771234567','adam@test.com','200017800015','M',0,0,0,'A+'),
-       ('Dnr_17', 'Olivia','Jayawardena','No 2','Colombo 19','Colombo','BB_01','0771234567','olivia@test.com','200017800016','F',0,0,0,'A+'),
-       ('Dnr_20', 'Emma', 'Rodriguez', 'No 14', 'Colombo 13', 'Colombo', 'BB_01', '0771234567', 'emma@test.com', '200017800112', 'F', 0, 0, 0,"O+"),
-       ('Dnr_21', 'Benjamin', 'Wilson', 'No 18', 'Colombo 14', 'Colombo', 'BB_03', '0771234567', 'benjamin@test.com', '200017800113', 'M', 0, 0, 0,"O+"),
-       ('Dnr_22', 'Chloe', 'Martinez', 'No 21', 'Colombo 15', 'Colombo', 'BB_01', '0771234567', 'chloe@test.com', '200017800114', 'F', 0, 0, 0,"O+"),
-       ('Dnr_23', 'Mason', 'Anderson', 'No 15', 'Galle', 'Colombo', 'BB_02', '0771234567', 'mason@test.com', '200017800115', 'M', 0, 0, 0,"O+"),
-       ('Dnr_24', 'Isabella', 'Thomas', 'No 11', 'Colombo 16', 'Colombo', 'BB_01', '0771234567', 'isabella@test.com', '200017800116', 'F', 0, 0, 0,"O+"),
-       ('Dnr_25', 'Ethan', 'Jackson', 'No 24', 'Colombo 17', 'Colombo', 'BB_04', '0771234567', 'ethan@test.com', '200017800117', 'M', 0, 0, 0,"O+"),
-       ('Dnr_26', 'Sophia', 'White', 'No 17', 'Negombo', 'Colombo', 'BB_01', '0771234567', 'sophia@test.com', '200017800118', 'F', 0, 0, 0,"O+"),
-       ('Dnr_27', 'Alexander', 'Harris', 'No 6', 'Colombo 18', 'Colombo', 'BB_03', '0771234567', 'alexander@test.com', '200017800119', 'M', 0, 0, 0,"O+"),
-       ('Dnr_28', 'Madison', 'Clark', 'No 13', 'Colombo 19', 'Colombo', 'BB_01', '0771234567', 'madison@test.com', '200017800120', 'F', 0, 0, 0,"O+");
+                    GENDER, STATUS,BloodGroup)
+VALUES ('Dnr_02', 'John','Fernando','No 15','Colombo 05','Colombo','BB_01','0771234567','john@test.com','200017800001','M',0,'A+'),
+       ('Dnr_03', 'Peter','Fernando','No 5','Colombo 06','Colombo','BB_01','0771234567','peter@test.com','200017800002','M',0,'A+'),
+       ('Dnr_04', 'Mary','Fernando','No 8','Kandy','Colombo','BB_01','0771234567','mary@test.com','200017800003','F',0,'A+'),
+       ('Dnr_05', 'Sarah','Silva','No 20','Colombo 07','Colombo','BB_01','0771234567','sarah@test.com','200017800004','F',0,'A+'),
+       ('Dnr_06', 'David','Silva','No 10','Colombo 08','Colombo','BB_01','0771234567','david@test.com','200017800005','M',0,'A+'),
+       ('Dnr_07', 'Samantha','Silva','No 7','Colombo 09','Colombo','BB_01','0771234567','samantha@test.com','200017800006','F',0,'A+'),
+       ('Dnr_08', 'Robert','Silva','No 3','Colombo 10','Colombo','BB_01','0771234567','robert@test.com','200017800007','M',0,'A+'),
+       ('Dnr_09', 'Linda','Perera','No 9','Colombo 11','Colombo','BB_01','0771234567','linda@test.com','200017800008','F',0,'A+'),
+       ('Dnr_10', 'Samuel','Perera','No 1','Colombo 12','Colombo','BB_01','0771234567','samuel@test.com','200017800009','M',0,'A+'),
+       ('Dnr_11', 'Sophia','Perera','No 12','Colombo 13','Colombo','BB_01','0771234567','sophias@test.com','200017800010','F',0,'A+'),
+       ('Dnr_12', 'Michael','Fernando','No 6','Colombo 14','Colombo','BB_01','0771234567','michael@test.com','200017800011','M',0,'A+'),
+       ('Dnr_13', 'Julia','Fernando','No 15','Colombo 15','Colombo','BB_01','0771234567','julia@test.com','200017800012','F',0,'A+'),
+       ('Dnr_14', 'Christopher','Fernando','No 7','Colombo 16','Colombo','BB_01','0771234567','christopher@test.com','200017800013','M',0,'A+'),
+       ('Dnr_15', 'Emily','Jayawardena','No 5','Colombo 17','Colombo','BB_01','0771234567','emily@test.com','200017800014','F',0,'A+'),
+       ('Dnr_16', 'Adam','Jayawardena','No 11','Colombo 18','Colombo','BB_01','0771234567','adam@test.com','200017800015','M',0,'A+'),
+       ('Dnr_17', 'Olivia','Jayawardena','No 2','Colombo 19','Colombo','BB_01','0771234567','olivia@test.com','200017800016','F',0,'A+'),
+       ('Dnr_20', 'Emma', 'Rodriguez', 'No 14', 'Colombo 13', 'Colombo', 'BB_01', '0771234567', 'emma@test.com', '200017800112', 'F', 0,"O+"),
+       ('Dnr_21', 'Benjamin', 'Wilson', 'No 18', 'Colombo 14', 'Colombo', 'BB_03', '0771234567', 'benjamin@test.com', '200017800113', 'M', 0,"O+"),
+       ('Dnr_22', 'Chloe', 'Martinez', 'No 21', 'Colombo 15', 'Colombo', 'BB_01', '0771234567', 'chloe@test.com', '200017800114', 'F', 0,"O+"),
+       ('Dnr_23', 'Mason', 'Anderson', 'No 15', 'Galle', 'Colombo', 'BB_02', '0771234567', 'mason@test.com', '200017800115', 'M', 0,"O+"),
+       ('Dnr_24', 'Isabella', 'Thomas', 'No 11', 'Colombo 16', 'Colombo', 'BB_01', '0771234567', 'isabella@test.com', '200017800116', 'F', 0,"O+"),
+       ('Dnr_25', 'Ethan', 'Jackson', 'No 24', 'Colombo 17', 'Colombo', 'BB_04', '0771234567', 'ethan@test.com', '200017800117', 'M', 0,"O+"),
+       ('Dnr_26', 'Sophia', 'White', 'No 17', 'Negombo', 'Colombo', 'BB_01', '0771234567', 'sophia@test.com', '200017800118', 'F', 0,"O+"),
+       ('Dnr_27', 'Alexander', 'Harris', 'No 6', 'Colombo 18', 'Colombo', 'BB_03', '0771234567', 'alexander@test.com', '200017800119', 'M', 0,"O+"),
+       ('Dnr_28', 'Madison', 'Clark', 'No 13', 'Colombo 19', 'Colombo', 'BB_01', '0771234567', 'madison@test.com', '200017800120', 'F', 0,"O+");
 
 # Create Hospitals
 INSERT INTO Users (UID, Email, Password, Account_Status, Role)

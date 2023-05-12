@@ -3,7 +3,7 @@
             <div class="card-header">
                 <img src="/public/images/icons/admin/dashboard/blood-donation.png" alt="" class="max-w-rem-4">
                 <div class="card-title">
-                    <div class="text-center text-dark text-2xl p-1 border-2 border-radius-15 border-primary">15</div>
+                    <div class="text-center text-dark text-2xl p-1 border-2 border-radius-15 border-primary"><?php echo $bloodPacketsCount?></div>
                 </div>
             </div>
         </div>
@@ -11,7 +11,7 @@
             <div class="card-header">
                 <img src="/public/images/icons/admin/dashboard/organization-chart.png" alt="" class="max-w-rem-4">
                 <div class="card-title">
-                    <div class="text-center text-dark text-2xl p-1 border-2 border-radius-15 border-primary">15</div>
+                    <div class="text-center text-dark text-2xl p-1 border-2 border-radius-15 border-primary"><?php echo $donorsCount?></div>
                 </div>
             </div>
         </div>
@@ -19,7 +19,7 @@
             <div class="card-header">
                 <img src="/public/images/icons/admin/dashboard/blood-bank.png" alt="" class="max-w-rem-4">
                 <div class="card-title">
-                    <div class="text-center text-dark text-2xl p-1 border-2 border-radius-15 border-primary">15</div>
+                    <div class="text-center text-dark text-2xl p-1 border-2 border-radius-15 border-primary"><?php echo $bloodBanksCount?></div>
                 </div>
             </div>
         </div>

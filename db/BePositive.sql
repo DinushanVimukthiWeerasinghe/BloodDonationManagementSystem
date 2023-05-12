@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS Users
     Email          VARCHAR(100) UNIQUE,
     Password       VARCHAR(100) NOT NULL,
     Account_Status INT          NOT NULL DEFAULT 0,
-    Role           VARCHAR(100) NOT NULL DEFAULT 'donor',
+    Role           VARCHAR(100) NOT NULL DEFAULT 'Donor',
     Created_At     TIMESTAMP             DEFAULT CURRENT_TIMESTAMP,
     Updated_At     TIMESTAMP             DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     Security_Level INT          NOT NULL DEFAULT 0
@@ -111,6 +111,7 @@ CREATE TABLE IF NOT EXISTS Donors
     BloodDonation_Book_2  VARCHAR(100) NULL,
     Status                VARCHAR(50)  NOT NULL,
     Donation_Availability INT          NOT NULL DEFAULT 1,
+    Donation_Availability_Date DATE NULL ,
     Verified              INT          NOT NULL DEFAULT 1,
     Verified_At           TIMESTAMP    NULL,
     Verified_By           VARCHAR(20)  NULL,
@@ -154,7 +155,7 @@ CREATE TABLE IF NOT EXISTS Organizations
     Status             VARCHAR(50)  NOT NULL,
     Verified_By        VARCHAR(20)  NULL,
     Verified_At        TIMESTAMP    NULL,
-    Profile_Image      VARCHAR(100) NOT NULL DEFAULT '/public/upload/organizationDefault.png',
+    Profile_Image      VARCHAR(100) NOT NULL DEFAULT '/public/upload/organization.png',
     Created_At         TIMESTAMP             DEFAULT CURRENT_TIMESTAMP,
     Updated_At         TIMESTAMP             DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (Organization_ID) REFERENCES Users (UID),
@@ -668,29 +669,13 @@ CREATE TABLE IF NOT EXISTS  Manager_Notifications
 (
     Notification_ID       VARCHAR(20)  NOT NULL PRIMARY KEY,
     Notification_Type     INT  NOT NULL,
-    Notification_State   INT  NOT NULL,
+    Notification_Status   INT  NOT NULL,
     Target_ID             VARCHAR(20)  NULL,
     Notification_Title    VARCHAR(100) NOT NULL,
     Notification_Message  VARCHAR(100) NOT NULL,
     Notification_Date     TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     Valid_Until           TIMESTAMP NULL,
     FOREIGN KEY (Target_ID) REFERENCES Managers(Manager_ID)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-# Create Title Table
-
-# Create Hospital Notification Table
-DROP TABLE IF EXISTS Hospital_Notifications;
-CREATE TABLE IF NOT EXISTS  Hospital_Notifications
-(
-    Notification_ID       VARCHAR(20)  NOT NULL PRIMARY KEY,
-    Notification_Type     INT  NOT NULL,
-    Notification_State   INT  NOT NULL,
-    Target_ID             VARCHAR(20)  NULL,
-    Notification_Title    VARCHAR(100) NOT NULL,
-    Notification_Message  VARCHAR(100) NOT NULL,
-    Notification_Date     TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    Valid_Until           TIMESTAMP NULL,
-    FOREIGN KEY (Target_ID) REFERENCES Hospitals(Hospital_ID)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 # Create Title Table
 
@@ -841,7 +826,7 @@ CREATE TABLE IF NOT EXISTS Sponsorship_Requests
     Sponsorship_Amount INT NOT NULL,
     Sponsorship_Status INT NOT NULL DEFAULT 1,
     Report VARCHAR(100) NOT NULL,
-    Sponsorship_Date DATE NOT NULL,
+    Sponsorship_Date DATE NOT NULL DEFAULT CURRENT_DATE,
     Description VARCHAR(100) NOT NULL,
     Transferred INT NULL,
     Transferred_At TIMESTAMP NULL,
@@ -907,7 +892,18 @@ CREATE TABLE IF NOT EXISTS `Reported_Organization` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
-
+DROP TABLE IF EXISTS `Anonymous_Sponsors`;
+CREATE TABLE IF NOT EXISTS `Anonymous_Sponsors` (
+    Sponsor_ID VARCHAR(20) NOT NULL,
+    Request_ID VARCHAR(20) NOT NULL,
+    Email VARCHAR(100) NOT NULL,
+    Amount INT NOT NULL,
+    Status INT NOT NULL,
+    Session_ID VARCHAR(255) NOT NULL,
+    Sponsored_At TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (Sponsor_ID),
+    FOREIGN KEY (Request_ID) REFERENCES Sponsorship_Requests (Sponsorship_ID)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 # Insert Blood Type
 INSERT INTO BloodGroups (BloodGroup_ID, BloodGroup_Name)
@@ -972,10 +968,9 @@ VALUES ('Mof_01', 'Medical', 'Officer', 'Address1', 'Address2', 'Colombo', '0771
         '123456789104', 'Doctor', 'M', 'Sri Lankan');
 # Make Default Donor for Testing
 INSERT INTO Donors (DONOR_ID, FIRST_NAME, LAST_NAME, ADDRESS1, ADDRESS2, CITY, NEAREST_BANK, CONTACT_NO, EMAIL, NIC,
-                    GENDER, STATUS,
-                    DONATION_AVAILABILITY, VERIFIED,BloodGroup)
+                    GENDER, STATUS,BloodGroup)
 VALUES ('Dnr_01', 'Donor', 'Donor', 'Address1', 'Address2', 'Colombo', 'BB_01', '0771234567', 'donor@test.com',
-        '200017800595', 'F', 0, 0, 0,"B+");
+        '200017800595', 'F', 0,"A+");
 
 # Make Default Organization for Testing
 INSERT INTO Organizations (Organization_ID, Organization_Name, Organization_Email, Contact_No, Address1, Address2, City,
@@ -998,46 +993,46 @@ INSERT INTO Organization_Members(Organization_ID, Name, Contact_No, NIC, Positio
 VALUES ('Org_01', 'Member3', '0773456712', '345678912V', 'Treasurer');
 
 
-# DELIMITER $$
-# DROP TRIGGER IF EXISTS `Campaign_Audit_Create`$$
-# CREATE TRIGGER IF NOT EXISTS `Campaign_Audit_Create` AFTER INSERT ON `campaign_donation_queue` FOR EACH ROW
-#     BEGIN
-#     IF EXISTS(SELECT * FROM campaign_statistics WHERE Campaign_ID=NEW.Campaign_ID) THEN
-#         UPDATE campaign_statistics SET No_Of_Campaign_Registers = No_Of_Campaign_Registers + 1 WHERE Campaign_ID = NEW.Campaign_ID;
-#     ELSE
-#         INSERT INTO campaign_statistics (Campaign_ID, No_Of_Campaign_Registers)
-#         VALUES (NEW.Campaign_ID,1);
-#     END IF;
-#     END $$
-# DELIMITER ;
+DELIMITER $$
+DROP TRIGGER IF EXISTS `Campaign_Audit_Create`$$
+CREATE TRIGGER IF NOT EXISTS `Campaign_Audit_Create` AFTER INSERT ON `campaign_donation_queue` FOR EACH ROW
+    BEGIN
+    IF EXISTS(SELECT * FROM campaign_statistics WHERE Campaign_ID=NEW.Campaign_ID) THEN
+        UPDATE campaign_statistics SET No_Of_Campaign_Registers = No_Of_Campaign_Registers + 1 WHERE Campaign_ID = NEW.Campaign_ID;
+    ELSE
+        INSERT INTO campaign_statistics (Campaign_ID, No_Of_Campaign_Registers)
+        VALUES (NEW.Campaign_ID,1);
+    END IF;
+    END $$
+DELIMITER ;
 
-# DELIMITER $$
-# DROP TRIGGER IF EXISTS `Campaign_Audit_Donor_Health_Check`$$
-#     CREATE TRIGGER IF NOT EXISTS `Campaign_Audit_Donor_Health_Check` AFTER INSERT ON `donor_health_checkup` FOR EACH ROW
-#     BEGIN
-#         UPDATE campaign_statistics SET No_Of_Health_Checks = No_Of_Health_Checks + 1 WHERE Campaign_ID = NEW.Campaign_ID;
-#     END $$
-# DELIMITER ;
-#
-# DELIMITER $$
-# DROP TRIGGER IF EXISTS `Campaign_Audit_Donor_Blood_Check`$$
-#     CREATE TRIGGER IF NOT EXISTS `Campaign_Audit_Donor_Blood_Check` AFTER INSERT ON `donor_blood_check` FOR EACH ROW
-#     BEGIN
-#         UPDATE campaign_statistics SET No_Of_Blood_Checks = No_Of_Blood_Checks + 1 WHERE Campaign_ID = NEW.Campaign_ID;
-#     END $$
-# DELIMITER ;
-#
-# DELIMITER $$
-# DROP TRIGGER IF EXISTS `Campaign_Audit_Donor_Successful_Blood_Donation`$$
-#     CREATE TRIGGER IF NOT EXISTS `Campaign_Audit_Donor_Blood_Donation` AFTER UPDATE ON `campaign_donation_queue` FOR EACH ROW
-#     BEGIN
-#         IF (NEW.Donor_Status = 4) THEN
-#             UPDATE campaign_statistics SET No_Of_Successful_Donations = No_Of_Successful_Donations + 1 WHERE Campaign_ID = NEW.Campaign_ID;
-#         ELSEIF (NEW.Donor_Status = 5) THEN
-#             UPDATE campaign_statistics SET No_Of_Aborted_Donations = Campaign_Statistics.No_Of_Aborted_Donations + 1 WHERE Campaign_ID = NEW.Campaign_ID;
-#         END IF;
-#     END $$
-# DELIMITER ;
+DELIMITER $$
+DROP TRIGGER IF EXISTS `Campaign_Audit_Donor_Health_Check`$$
+    CREATE TRIGGER IF NOT EXISTS `Campaign_Audit_Donor_Health_Check` AFTER INSERT ON `donor_health_checkup` FOR EACH ROW
+    BEGIN
+        UPDATE campaign_statistics SET No_Of_Health_Checks = No_Of_Health_Checks + 1 WHERE Campaign_ID = NEW.Campaign_ID;
+    END $$
+DELIMITER ;
+
+DELIMITER $$
+DROP TRIGGER IF EXISTS `Campaign_Audit_Donor_Blood_Check`$$
+    CREATE TRIGGER IF NOT EXISTS `Campaign_Audit_Donor_Blood_Check` AFTER INSERT ON `donor_blood_check` FOR EACH ROW
+    BEGIN
+        UPDATE campaign_statistics SET No_Of_Blood_Checks = No_Of_Blood_Checks + 1 WHERE Campaign_ID = NEW.Campaign_ID;
+    END $$
+DELIMITER ;
+
+DELIMITER $$
+DROP TRIGGER IF EXISTS `Campaign_Audit_Donor_Successful_Blood_Donation`$$
+    CREATE TRIGGER IF NOT EXISTS `Campaign_Audit_Donor_Blood_Donation` AFTER UPDATE ON `campaign_donation_queue` FOR EACH ROW
+    BEGIN
+        IF (NEW.Donor_Status = 4) THEN
+            UPDATE campaign_statistics SET No_Of_Successful_Donations = No_Of_Successful_Donations + 1 WHERE Campaign_ID = NEW.Campaign_ID;
+        ELSEIF (NEW.Donor_Status = 5) THEN
+            UPDATE campaign_statistics SET No_Of_Aborted_Donations = Campaign_Statistics.No_Of_Aborted_Donations + 1 WHERE Campaign_ID = NEW.Campaign_ID;
+        END IF;
+    END $$
+DELIMITER ;
 
 
 
@@ -1046,3 +1041,6 @@ VALUES ('Org_01', 'Member3', '0773456712', '345678912V', 'Treasurer');
 # CREATE EVENT IF NOT EXISTS `BloodBank_Donation_Queue` ON SCHEDULE EVERY 1 DAY STARTS CURRENT_TIMESTAMP
 #     DO
 #         UPDATE donor_blood_check SET Donor_Status = 3 WHERE Donor_Status = 2 AND DATEDIFF(CURRENT_DATE, Blood_Check_Date) > 3;
+
+
+

@@ -64,8 +64,9 @@
     border-color: var(--success);
 }
 .btn-success:hover {
-    color: var(--white);
-    background-color: var(--success);
+    color: var(--success);
+    background-color: var(--white);
+    border: 2px solid;
     border-color: var(--success);
     background-blend-mode: lighten;
 }
@@ -520,4 +521,10 @@ input[type=button].btn-block, input[type=reset].btn-block, input[type=submit].bt
 }
 .fade {
     transition: opacity 0.15s linear;
+}
+
+.btn-yellow-500 {
+    color: #fff;
+    background-color: #ff8900;
+    border-color: #f6ad55;
 }

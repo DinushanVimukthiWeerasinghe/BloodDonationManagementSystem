@@ -129,6 +129,7 @@ nav .logo:hover{
     height: 50px;
     display: flex;
     align-items: center;
+    justify-content: center;
     border: 2px solid #00da0b;
     border-radius: 100px;
 }

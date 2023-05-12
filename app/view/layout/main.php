@@ -13,7 +13,14 @@
 
 
     <link rel="stylesheet" href="/public/css/framework/utils.css">
+    <link rel="stylesheet" href="/public/css/fontawesome/fa.css">
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+    <script
+        src="https://maps.googleapis.com/maps/api/js?key=<?=$_ENV['MAP_API_KEY'];?>&callback=initMap&v=weekly&libraries=places"
+        defer
+    ></script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
     <link rel="stylesheet" href="/public/css/home.css">
 </head>
 <body>

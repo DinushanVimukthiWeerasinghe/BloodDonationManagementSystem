@@ -60,9 +60,11 @@ class medicalOfficerController extends \Core\Controller
     public function Dashboard(Request $request, Response $response)
     {
         $Campaign=MedicalOfficer::getAssignedCampaign();
-        $Campaign = array_filter($Campaign, function ($object) {
-            return $object->getCampaignDate() >= date('Y-m-d');
-        });
+        if ($Campaign) {
+            $Campaign = array_filter($Campaign, function ($object) {
+                return $object->getCampaignDate() >= date('Y-m-d');
+            });
+        }
         $User = Application::$app->getUser();
 //        $Campaign = Campaign::RetrieveAll(false,[],false,[],['Campaign_Date'=>'ASC']);
         return $this->render('/MedicalOfficer/MedicalOfficerdashboard',
@@ -310,25 +312,30 @@ class medicalOfficerController extends \Core\Controller
                         $TotalAssignmentsInMonth[$Month]++;
                     }
                     $AllAssignedCampaigns = MedicalOfficer::GetAllCampaign($ID);
-                    $AllAssignedCampaigns = array_merge($AllAssignedCampaigns,MedicalOfficer::GetAllCampaign($ID,Campaign::CAMPAIGN_STATUS_APPROVED));
+                    if ($AllAssignedCampaigns)
+                        $AllAssignedCampaigns = array_merge($AllAssignedCampaigns,MedicalOfficer::GetAllCampaign($ID,Campaign::CAMPAIGN_STATUS_APPROVED));
+                    else
+                        $AllAssignedCampaigns = MedicalOfficer::GetAllCampaign($ID,Campaign::CAMPAIGN_STATUS_APPROVED);
                     $AllAssignedCampaignsArray = [];
                     /** @var Campaign[] $AllAssignedCampaigns */
-                    foreach ($AllAssignedCampaigns as $Campaign){
-                        $AllAssignedCampaignsArray[]=[
-                            'CampaignName'=>$Campaign->getCampaignName(),
-                            'CampaignDate'=>$Campaign->getCampaignDate(),
-                            'CampaignDescription'=>$Campaign->getCampaignDescription(),
-                            'Venue'=>$Campaign->getVenue(),
-                            'Latitude'=>$Campaign->getLatitude(),
-                            'Longitude'=>$Campaign->getLongitude(),
-                            'Status'=>$Campaign->getStatus(),
-                            'CampaignStatus'=>$Campaign->getCampaignStatus(),
-                            'OrganizationName'=>$Campaign->getOrganization()->getOrganizationName(),
-                            'OrganizationCity'=>$Campaign->getOrganization()->getCity(),
-                            'OrganizationContactNo'=>$Campaign->getOrganization()->getContactNo(),
-                            'OrganizationEmail'=>$Campaign->getOrganization()->getEmail(),
-                            'TeamPosition'=>MedicalOfficer::getRoleOfCampaign($ID,$Campaign->getCampaignID())
-                        ];
+                    if ($AllAssignedCampaigns) {
+                        foreach ($AllAssignedCampaigns as $Campaign) {
+                            $AllAssignedCampaignsArray[] = [
+                                'CampaignName' => $Campaign->getCampaignName(),
+                                'CampaignDate' => $Campaign->getCampaignDate(),
+                                'CampaignDescription' => $Campaign->getCampaignDescription(),
+                                'Venue' => $Campaign->getVenue(),
+                                'Latitude' => $Campaign->getLatitude(),
+                                'Longitude' => $Campaign->getLongitude(),
+                                'Status' => $Campaign->getStatus(),
+                                'CampaignStatus' => $Campaign->getCampaignStatus(),
+                                'OrganizationName' => $Campaign->getOrganization()->getOrganizationName(),
+                                'OrganizationCity' => $Campaign->getOrganization()->getCity(),
+                                'OrganizationContactNo' => $Campaign->getOrganization()->getContactNo(),
+                                'OrganizationEmail' => $Campaign->getOrganization()->getEmail(),
+                                'TeamPosition' => MedicalOfficer::getRoleOfCampaign($ID, $Campaign->getCampaignID())
+                            ];
+                        }
                     }
 
                     return json_encode([
@@ -350,6 +357,13 @@ class medicalOfficerController extends \Core\Controller
         }
     }
 
+    public function CampaignOverview(Request $request, Response $response)
+    {
+        if ($request->isGet()){
+            return $this->render('/MedicalOfficer/CampaignOverview',['page'=>'overview']);
+        }
+    }
+
     public function ManageDonation(Request $request, Response $response)
     {
         if ($request->isGet())
@@ -358,12 +372,12 @@ class medicalOfficerController extends \Core\Controller
             $Date=date('Y-m-d');
             /* @var Campaign $Campaign*/
             $Campaign=MedicalOfficer::getAssignedCampaign($Date);
-            if ($Campaign->IsReported()){
+            if (!empty($Campaign) && $Campaign->IsReported()){
                 $this->setFlashMessage('error','Campaign Is Reported!');
                 Application::Redirect('/medicalofficer/dashboard');
                 exit();
             }
-            if ($Campaign->getOrganization()->IsReported()){
+            if (!empty($Campaign) && $Campaign->getOrganization()->IsReported()){
                 $this->setFlashMessage('error','Organization Is Reported!');
                 Application::Redirect('/medicalofficer/dashboard');
                 exit();

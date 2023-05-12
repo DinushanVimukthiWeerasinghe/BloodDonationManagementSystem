@@ -6,11 +6,11 @@
 use App\view\components\ResponsiveComponent\ImageComponent\BackGroundImage;
 use App\view\components\ResponsiveComponent\NavbarComponent\DonorNavbar;
 
-$navbar = new DonorNavbar('Donation Guideline', '/donor/profile', '/public/images/icons/user.png', true,false );
-echo $navbar;
-$background = new BackGroundImage();
-
-echo $background;
+//$navbar = new DonorNavbar('Donation Guideline', '/donor/profile', '/public/images/icons/user.png', true,false );
+//echo $navbar;
+//$background = new BackGroundImage();
+//
+//echo $background;
 ?>
 
 <div class="d-flex justify-content-center bg-white-0-5 border-radius-10 w-80 p-2 gap-1 flex-column align-items-center">

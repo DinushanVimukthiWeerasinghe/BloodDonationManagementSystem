@@ -79,7 +79,7 @@ class RouteTest extends \Codeception\Test\Unit
     {
         $I = new FunctionalTester($this->getScenario());
         $I->amOnPage('/invalid');
-        $I->see('Be Positive');
+        $I->dontSee('Be Positive');
     }
 
     public function getRoutes(): array

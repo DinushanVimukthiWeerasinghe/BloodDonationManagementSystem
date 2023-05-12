@@ -7,6 +7,7 @@ use App\model\Authentication\Login;
 use App\model\Authentication\OrganizationBankAccount;
 use App\model\BloodBankBranch\BloodBank;
 use App\model\database\dbModel;
+use App\model\Email\Email;
 use App\model\inform\informDonors;
 use App\model\Notification\DonorNotification;
 use App\model\Notification\OrganizationNotification;
@@ -30,6 +31,7 @@ use Core\Request;
 use Core\Response;
 use Core\SessionObject;
 use MongoDB\BSON\UTCDateTime;
+use PHPMailer\PHPMailer\Exception;
 
 class OrganizationController extends Controller
 {
@@ -140,36 +142,27 @@ class OrganizationController extends Controller
     public function CreateCampaign(Request $request,Response $response): string
     {
         $ID = Application::$app->getUser()->getID();
-        $AlreadyCreatedCampaign = Campaign::RetrieveAll(false, [], true, ['Organization_ID' => $ID, 'Status' => Campaign::CAMPAIGN_STATUS_PENDING]);
-        $AlreadyCreatedCampaigns = Campaign::RetrieveAll(false, [], true, ['Organization_ID' => $ID, 'Status' => Campaign::CAMPAIGN_STATUS_APPROVED]);
-//        print_r($AlreadyCreatedCampaign);
-//        exit();
+        $AlreadyCreatedCampaigns = Campaign::RetrieveAll(false, [], true, ['Organization_ID' => $ID, 'Status' => Campaign::CAMPAIGN_STATUS_PENDING]);
+        if ($AlreadyCreatedCampaigns){
+            $AlreadyCreatedCampaigns = array_merge($AlreadyCreatedCampaigns, Campaign::RetrieveAll(false, [], true, ['Organization_ID' => $ID, 'Status' => Campaign::CAMPAIGN_STATUS_APPROVED]));
+        }else{
+            $AlreadyCreatedCampaigns = Campaign::RetrieveAll(false, [], true, ['Organization_ID' => $ID, 'Status' => Campaign::CAMPAIGN_STATUS_APPROVED]);
+        }
         $Exist=false;
         $identity = 0;
-//        $params = [];
         if($AlreadyCreatedCampaigns) {
             foreach ($AlreadyCreatedCampaigns as $camp) {
                 if ($camp->getCampaignDate() >= date('Y-m-d')) {
                     $Exist = true;
                     $identity = $camp->getCampaignID();
+                    break;
                 }
             }
         }
-        if($AlreadyCreatedCampaign) {
-            foreach ($AlreadyCreatedCampaign as $camp) {
-                if ($camp->getCampaignDate() >= date('Y-m-d')) {
-                    $Exist = true;
-                    $identity = $camp->getCampaignID();
-                }
-            }
-        }
-        if($Exist === true) {
+        if($Exist) {
             Application::$app->session->setFlash('error', 'Already Created Campaign is in Progress!');
             Application::Redirect('/organization/dashboard');
-
-        }
-
-        if($Exist === false) {
+        }else{
             $campaign = new Campaign();
             $bank = BloodBank::RetrieveAll(false, [], false);
             if ($request->isPost()) {
@@ -184,14 +177,13 @@ class OrganizationController extends Controller
 
                 if ($campaign->validate() && $campaign->save()) {
                     $this->setFlashMessage('success', 'You Successfully Created a Campaign! Please Wait for the Admin Approval.');
-                    $response->redirect('/organization/campDetails?id='.$id);
+                    $response->redirect('/organization/campDetails?id='.urlencode(Security::Encrypt($id)));
                 } else {
                     Application::$app->session->setFlash('error', 'Something Went Wrong!');
                     Application::Redirect('/organization/campaign/create');
                 }
 
             }
-//            Application::$app->session->setFlash('success', 'You Successfully Created a Campaign! Please Wait for the Admin Approval.');
             return $this->render('Organization/createCampaign', ['banks' => $bank]);
         }
         return "";
@@ -279,11 +271,11 @@ class OrganizationController extends Controller
 public function inform(Request $request, Response $response)
 {
     $id = $_GET['id'];
+    $id = Security::Decrypt($id);
     $donors = AttendanceAcceptedRequest::RetrieveAll(false,[],true,['Campaign_ID' => $id]);
     if($id) {
         if ($donors) {
-            if ($request->isPost()) {
-
+            if ($request->isPost()){
                 $informdonor = new informDonors();
                 $informdonor->loadData($request->getBody());
                 $informdonor->setMessageID(uniqid('Msg_'));
@@ -296,13 +288,13 @@ public function inform(Request $request, Response $response)
                     $donornotification->setNotificationState(1);
                     $donornotification->save();
                 }
-                Application::Redirect('/organization/campDetails?id=' . $id);
+                Application::Redirect('/organization/campDetails?id=' . urlencode(Security::Encrypt($id)));
             }
             //    print_r($informdonor);
             return $this->render('Organization/inform');
         } else {
             Application::$app->session->setFlash('error', 'You do not have any Donors Yet.');
-            Application::Redirect('/organization/campDetails?id=' . $id);
+            Application::Redirect('/organization/campDetails?id=' . urlencode(Security::Encrypt($id)));
         }
     }
     else{
@@ -355,7 +347,7 @@ public function inform(Request $request, Response $response)
             $UserID = Application::$app->getUser()->getID();
             $BankAccount = OrganizationBankAccount::findOne(['Organization_ID' => $UserID]);
             if ($BankAccount){
-                $BankAccountNumber = $BankAccount->getAccountNumber();
+                $BankAccountNumber = Security::Decrypt($BankAccount->getAccountNumber());
                 $BankAccountName = $BankAccount->getAccountName();
                 $BankName = $BankAccount->getBankName();
                 $BankBranch = $BankAccount->getBranchName();
@@ -387,11 +379,12 @@ public function inform(Request $request, Response $response)
                 $BankAccount->setBranchName($BankBranch);
                 $BankAccount->setAccountNumber(Security::Encrypt($BankAccountNumber));
                 $BankAccount->setAccountName($BankAccountName);
-                if ($BankAccount->update($BankAccount->getOrganizationID(),[],['Bank_Name','Branch_Name','Account_Number','Account_Name'])){
+                if ($BankAccount->update($BankAccount->getOrganizationID(),[],['Bank_Name','Branch_Name','Account_Number','Account_Name'])) {
                     return json_encode([
-                        'status'=>true,
+                        'status' => true,
                     ]);
-                }else{
+                }
+                else{
                     return json_encode(['status'=>false,'errors'=>$BankAccount->errors]);
                 }
             }else{
@@ -508,10 +501,9 @@ public function inform(Request $request, Response $response)
                 return $SponsoredDetail->getSponsoredAmount();
             }, $SponsoredDetails));
         }
+        $ReceivedAmount = number_format($ReceivedAmount, 2);
 
-        if ($ReceivedAmount === 0) {
-            $ReceivedAmount = "Not Received Yet";
-        }
+
 
         if ($Campaign->getCampaignStatus() === Campaign::CAMPAIGN_STATUS_PENDING) {
             $disable = 1;
@@ -605,6 +597,7 @@ public function inform(Request $request, Response $response)
             }
             else {
                 if ($userDetails->update($user, [], ['Password'])) {
+
                     return json_encode([
                         'status' => true,
                     ]);

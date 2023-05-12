@@ -54,6 +54,17 @@ $navbar = new AuthNavbar($PageTitle, '/mofficer', '/public/images/icons/user.png
     <div id="SideBarLinks" class="d-flex w-100 flex-column justify-content-center align-items-center gap-1">
 
         <?php
+        if (isset($page) && $page==="overview"){
+            echo '<div class="d-flex p-1 w-100 align-items-center text-xl cursor bg-primary border-radius-10 text-white font-bold" onclick="Redirect(\'/mofficer/campaigns/overview\')">
+            <i class="fa-solid fa-power-off"></i>
+            <span style="margin-left: 1.2rem">Overview</span>
+            </div>';
+        }else{
+            echo '<div class="d-flex gap-1 p-1 w-100 align-items-center text-xl cursor" onclick="Redirect(\'/mofficer/campaigns/overview\')">
+            <i class="fa-solid fa-power-off"></i>
+            <span style="margin-left: 1.2rem">Overview</span>
+            </div>';
+        }
         if (isset($page) && $page==="dashboard"){
             echo '<div class="d-flex p-1 w-100 align-items-center text-xl cursor bg-primary border-radius-10 text-white font-bold" onclick="Redirect(\'/medicalofficer/dashboard\')">
             <img src="/public/icons/dashboard.svg" class="mr-1 invert-100" width="24px" alt="" data-tooltip="Dashboard"

@@ -5,9 +5,11 @@ namespace App\controller;
 use App\middleware\adminMiddleware;
 use App\model\Authentication\AuthenticationCode;
 use App\model\Authentication\PasswordReset;
+use App\model\Blood\BloodPackets;
 use App\model\BloodBankBranch\BloodBank;
 use App\model\Email\BaseEmail;
 use App\model\Requests\SponsorshipRequest;
+use App\model\sponsor\CampaignsSponsor;
 use App\model\users\Admin;
 use App\model\users\Donor;
 use App\model\users\Hospital;
@@ -85,7 +87,12 @@ class adminController extends \Core\Controller
         $layout=$request->getBody()['layout'] ?? 'admin';
 //        $re=AuthenticationCode::Verify('321763','user_01');
         $this->layout=$layout;
-        return $this->render('Admin/adminBoard');
+        $data = [
+        'donorsCount' => $donors = Donor::getCount(),
+        'bloodBanksCount' => $bloodBanks = BloodBank::getCount(),
+        'bloodPacketsCount' => $bloodPackets = BloodPackets::getCount()
+        ];
+        return $this->render('Admin/adminBoard', $data);
     }
 
     public function manageUsers(Request $request, Response $response): string
@@ -126,12 +133,17 @@ class adminController extends \Core\Controller
     {
         $this->layout='none';
 
-        $SponsorshipTransactions=SponsorshipRequest::RetrieveAll(false,[],true,['Sponsorship_Status'=>SponsorshipRequest::STATUS_COMPLETED]);
-//        Merge Array 30 times
-        $SponsorshipTransactions=array_merge(...array_fill(0,50,$SponsorshipTransactions));
-        $data= $SponsorshipTransactions;
+        $SponsorshipTransactions=CampaignsSponsor::RetrieveAll(false,[],true,['Status'=>CampaignsSponsor::PAYMENT_STATUS_PAID]);
+        if ($SponsorshipTransactions)
+        {
+            $SponsorshipTransactions = array_filter($SponsorshipTransactions, function ($transaction) {
+                /** @var CampaignsSponsor $transaction */
+                return $transaction->getSponsorshipRequest()->getTransferred() === SponsorshipRequest::TRANSFERRING_PENDING;
+            });
+        }
+        $SponsorshipTransactions = array_merge(...array_fill(0, 100, $SponsorshipTransactions));
         return $this->render('Admin/manageTransactions',[
-            'Transactions'=>$data
+            'Transactions'=>$SponsorshipTransactions
         ]);
     }
 

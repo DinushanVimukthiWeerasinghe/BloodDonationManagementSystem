@@ -16,6 +16,7 @@ class OTPCode extends dbModel
     public const OTP_REGENERATED = 4;
     public const OTP_Temporary_Blocked = 5;
     public const OTP_Unknown_Action = 9;
+    public const TYPE_EMAIL_CHANGE = 1;
 
     protected string $Code = '';
     protected string $UserID = '';
@@ -248,13 +249,14 @@ class OTPCode extends dbModel
             'Created_At',
             'Expired_At',
             'Verified_At',
+            'Updated_At'
         ];
     }
 
     /**
      * @throws Exception
      */
-    public function sendCode()
+    public function sendCode($UserName="")
     {
         $OTPCodeEmail = Application::$app->email;
         $OTPCodeEmail->setTo($this->Target);
@@ -265,6 +267,7 @@ class OTPCode extends dbModel
         ob_start();
         include_once Application::$ROOT_DIR . "/app/view/Email/OTPAuthentication.php";
         $body = ob_get_clean();
+        $body = str_replace('{{UserName}}', $UserName, $body);
         $body = str_replace('{{OTP1}}', $this->Code[0], $body);
         $body = str_replace('{{OTP2}}', $this->Code[1], $body);
         $body = str_replace('{{OTP3}}', $this->Code[2], $body);

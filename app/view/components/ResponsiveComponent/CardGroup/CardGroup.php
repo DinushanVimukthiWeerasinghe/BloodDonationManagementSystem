@@ -18,7 +18,7 @@ class CardGroup
     public static function CardPanel(): string
     {
         return <<<HTML
-            <div class="d-flex w-60 flex-wrap flex-column bg-white-0-3 p-3 border-radius-10 justify-content-center align-items-center changepanel">
+            <div class="d-flex w-40 flex-wrap  bg-white-0-3 p-3 border-radius-10 justify-content-center align-items-center changepanel">
                 <div class="d-flex flex-wrap align-items-center justify-content-center w-100">
         HTML;
     }

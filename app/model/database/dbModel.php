@@ -2,9 +2,11 @@
 
 namespace App\model\database;
 
+use App\model\users\User;
 use Core\Application;
 use Core\Model;
 use PDO;
+use PDOException;
 
 abstract class dbModel extends Model
 {
@@ -236,11 +238,16 @@ abstract class dbModel extends Model
         foreach ($attributes as $attribute) {
             $statement->bindValue(":$attribute", $this->{$attribute});
         }
+        try {
+            $statement->execute();
+            return true;
 
-        $statement->execute();
+        }catch (PDOException $e){
+            return false;
+        }
 
 
-        return true;
+
     }
 
     public function delete(array $where=[])
@@ -303,6 +310,8 @@ abstract class dbModel extends Model
             }
             $demo=substr($demo,0,-4);
         }
+
+
         $statement=self::prepare($demo);
 
         $statement->execute();

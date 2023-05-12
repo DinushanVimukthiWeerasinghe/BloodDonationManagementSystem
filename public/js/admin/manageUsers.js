@@ -1,6 +1,7 @@
 const ResetPassword = (id)=>{
     OpenDialogBox({
         title: "Reset Password",
+        titleClass:' bg-dark text-white text-center',
         content: "Are you sure you want to reset the password of this user ?",
         successBtnText: "Yes",
         cancelBtnText: "No",
@@ -52,11 +53,15 @@ const ViewUser = (type="Donor")=>{
             // Loop through the children and remove the active class
             for(let i=0; i<children.length; i++){
                 if(children[i].children[0].id===type+'Icon'){
-                    children[i].children[0].classList.remove('bg-accent');
-                    children[i].children[0].classList.add('bg-primary');
+                    children[i].classList.remove('bg-white');
+                    children[i].classList.add('bg-primary');
+                    children[i].children[1].classList.remove('text-black')
+                    children[i].children[1].classList.add('text-white');
                 }else{
-                    children[i].children[0].classList.remove('bg-primary');
-                    children[i].children[0].classList.add('bg-accent');
+                    children[i].classList.remove('bg-primary');
+                    children[i].classList.add('bg-white');
+                    children[i].children[1].classList.remove('text-white')
+                    children[i].children[1].classList.add('text-black');
                 }
             }
 
@@ -101,6 +106,7 @@ const fun2 = ()=>{
 const ReActivateUser = (id)=>{
     OpenDialogBox({
         title: "Re-Activate User",
+        titleClass:' bg-dark text-white text-center',
         content: "Are you sure you want to re-activate this user ?",
         successBtnText: "Yes",
         cancelBtnText: "No",
@@ -139,6 +145,7 @@ const ReActivateUser = (id)=>{
 const DeactivateUser = (id)=>{
     OpenDialogBox({
         title: "Deactivate User",
+        titleClass:' bg-dark text-white text-center',
         content: "Are you sure you want to deactivate this user ?",
         successBtnText: "Yes",
         cancelBtnText: "No",
@@ -176,6 +183,7 @@ const DeactivateUser = (id)=>{
 const ActivateUser = (id)=>{
     OpenDialogBox({
         title: "Activate User",
+        titleClass:' bg-dark text-white text-center',
         content: "Are you sure you want to activate this user ?",
         successBtnText: "Yes",
         cancelBtnText: "No",
@@ -212,6 +220,7 @@ const ActivateUser = (id)=>{
 const RemoveUser = (id)=>{
     OpenDialogBox({
             title: "Remove User",
+            titleClass:' bg-dark text-white text-center',
             content: "Are you sure you want to remove this user ?",
             successBtnText: "Yes",
             cancelBtnText: "No",
