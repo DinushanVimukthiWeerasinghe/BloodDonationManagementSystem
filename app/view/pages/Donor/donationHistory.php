@@ -23,29 +23,49 @@ echo $navbar;
     <h1>Donation History</h1>
 </div>
 <label class="card-view">Recent Donations</label>
+
 <div class="sub-panel page-contain">
-    <?php
-    /* var array $data */
+    <table class="overflow-x-auto" id="bankTable">
+        <thead class="bg-white">
+        <tr class="bg-white">
+            <!--                <th class="bg-white">Blood Bank ID</th>-->
+            <th class="bg-white">Date</th>
+            <th class="bg-white">Time</th>
+            <th class="bg-white">Campaign Name</th>
+            <th class="bg-white">Organization Name</th>
+            <th class="bg-white">Remark</th>
+        </tr>
+        </thead>
+        <tbody>
+        <?php
+        /* var array $data */
 
-    //$data = [];
-    //print_r( $data[0]);
-    foreach($data as $donation)
-    {
-//        $donation = new AcceptedDonations();
-//        $donation ->loadData($i);
-//        $donation = $i;
-//        print_r($i);
-//        exit();
-//        $date = date($donation -> getDonationDateTime());
-//        $date = explode(" ", $date)[0];
-//        $date = explode("-", $date);
-//        $date = implode("/", $date);
-        $card = new donationCard(['title'=>"On " . explode(' ',$donation['DateTime'])[0] ,'subtitle'=>'At ' . explode(' ',$donation['DateTime'])[1] , 'description'=> $donation['Remark']], false);
+        //$data = [];
+        //print_r( $data[0]);
+
+        if (!$data){
+            echo "NO Data Available";
+        }else{
+        foreach($data as $donation)
+        {
+//        $card = new donationCard(['title'=>"On " . explode(' ',$donation['DateTime'])[0] ,'subtitle'=>'At ' . explode(' ',$donation['DateTime'])[1] , 'description'=> $donation['Remark']], false);
+            ?>
+            <tr class="bg-white-0-7 tableRows">
+
+                <td><?php echo $donation['Date'] ?></td>
+                <td><?php echo $donation['Time'] ?></td>
+                <td><?php echo $donation['CampaignName'] ?></td>
+                <td><?php echo $donation['Organization'] ?></td>
+                <td><?php echo $donation['Remark'] ?></td>
+
+            </tr>
+        <?php }} ?>
 
 
-        echo $card->render();
-    }
-    ?>
+        </tbody>
+    </table>
+
+
 </div>
 
 <script>

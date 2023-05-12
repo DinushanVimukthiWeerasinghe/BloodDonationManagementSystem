@@ -58,9 +58,9 @@
                     <td><?php echo $numberOfBeds ?></td>
                     <td><?php echo $numberOfStorages ?></td>
                     <td><?php if($type === \App\model\BloodBankBranch\BloodBank::BRANCH){
-                        echo "Branch Blood Bank";
+                        echo "Branch";
                         }elseif ($type === \App\model\BloodBankBranch\BloodBank::MAIN){
-                        echo "Main Blood Bank";
+                        echo "Main";
                         } ?></td>
                     <td class="d-flex flex-center">
                         <button type="button" class="btn btn-outline-success border-radius-10" onclick="editBnkData('<?php echo $id; ?>')">

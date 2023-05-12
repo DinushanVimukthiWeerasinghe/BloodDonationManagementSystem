@@ -68,8 +68,8 @@
                             <label for="type">Type</label>
 <!--                            <input type="text" name="Type" placeholder="Type (0/1)">-->
                             <select id="type" name="Type">
-                                <option value="1">Blood Bank Branch</option>
-                                <option value="2">Main Blood Bank</option>
+                                <option value="1">Branch</option>
+                                <option value="2">Main</option>
                             </select>
                         </form>`,
             //closeDialog,
@@ -116,11 +116,11 @@
                             <input type="text" name="No_Of_Beds" value="${data[7]}">
                             <label for="numberOfStorages">Number Of Storages</label>
                             <input type="text" name="No_Of_Storages" value="${data[8]}">
-                            <label for="type">Type</label>
+                            <label for="type">Blood Bank Type</label>
                             <input type="text" name="typeSave" value="${data[9]}" id="typeSaver" disabled hidden="hidden">
                             <select id="typeSelector" name="Type">
-                                <option value="1">Blood Bank Branch</option>
-                                <option value="2">Main Blood Bank</option>
+                                <option value="1">Branch</option>
+                                <option value="2">Main</option>
                             </select>
                         </form>`,
     //closeDialog,

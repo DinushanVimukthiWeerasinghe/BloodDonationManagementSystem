@@ -139,6 +139,7 @@ use App\model\users\User;
                                     <?php elseif ($user->getAccountStatus() == User::PERMANENTLY_DEACTIVATED): ?>
                                         <button class="btn btn-outline-danger pointer-events-none btn-disabled" disabled onclick='RemoveUser(" <?=$user->getID();?>")'>Remove User</button>
                                     <?php endif; ?>
+                                    <button class="btn btn-outline-danger pointer-events" onclick='resetPassword(" <?=$user->getID();?>")'>Reset Password</button>
                                 </td>
                             </tr>
                             <?php endforeach; ?>
