@@ -18,57 +18,60 @@ $background=new BackGroundImage();
 echo $background;
 FlashMessage::RenderFlashMessages();
 ?>
-<div class="d-flex bg-white-0-3 border-radius-10 gap-1 p-2">
-    <div class="d-flex ">
-        <img src="/public/images/RegisterImage/<?= $role?>RegImg.jpg" class="border-radius-10" alt="" width="500rem">
+<div class="d-flex flex-center w-55 bg-white-0-3 border-1 border-white flex-center border-radius-10 gap-1 p-2">
+    <div class="d-flex w-40 flex-center ">
+        <img src="/public/images/RegisterImage/<?= $role?>RegImg.png" class="border-radius-10" alt="" width="500rem">
     </div>
-    <div class="d-flex bg-white border-radius-10 p-2" >
-        <div>
-            <div class="text-2xl mb-1 font-bold text-dark w-100 text-center">
-                <?= $role ?> Registration
+    <div class="d-flex border-radius-10 p-2 w-60 flex-center" >
+        <div class="d-flex flex-column flex-center w-70 gap-1">
+            <div class="text-2xl d-flex flex-center gap-1 d-flex mb-1 font-bold text-dark w-100 text-center">
+                <img src="/public/icons/RegisterUserIcon.png" alt="" width="60">
+                <div class="text-center"><?= $role ?> Registration</div>
             </div>
             <input type="hidden" name="role" value="<?=$role?>">
             <div class="form-group">
-                <label for="email" class="w-30">Email</label>
-                <input type="email" name="Email" id="email" class="form-control border-1 w-60">
+                <label for="email" class="w-30 font-bold none">Email</label>
+                <input type="email" name="Email" id="email" class="form-control border-1 w-60 text-xl" placeholder="Email Address">
             </div>
             <div class="form-group">
-                <label for="password" class="w-30">Password</label>
-                <input type="password" name="Password" id="password" class="form-control w-60">
+                <label for="password" class="w-30 none">Password</label>
+                <input type="password" name="Password" id="password" class="form-control w-60 text-xl py-1" placeholder="Password">
             </div>
             <div class="form-group">
-                <label for="confirmPassword" class="w-30">Confirm Password</label>
-                <input type="password" name="ConfirmPassword" id="confirmPassword" class="form-control w-60">
+                <label for="confirmPassword" class="w-30 none">Confirm Password</label>
+                <input type="password" name="ConfirmPassword" id="confirmPassword" class="form-control w-60 text-xl" placeholder="Confirm Password">
             </div>
-            <div class="form-group flex-column">
+            <div class="d-flex flex-column w-100 gap-1 bg-white-0-7 p-1 border-radius-5 top-9 right-2">
                 <?php
                 if ($role=== User::DONOR || $role=== User::ORGANIZATION) :
                     ?>
-                <div class="d-flex justify-content-center w-100 mt-1">
-                    <?php
-                    if ($role === User::DONOR) :
-                    ?>
-                    <span class="font-bold">Want to Host a campaign?</span> &nbsp;<a href="/register?role=organization" class="text-primary">Campaign Registration</a>
-                    <?php
-                    elseif ($role=== User::ORGANIZATION) :
-                    ?>
-                    <span class="font-bold">Want to Donate?</span> &nbsp;<a href="/register?role=donor" class="text-primary">Donor Registration</a>
-                    <?php
-                    endif;
-                    ?>
-                </div>
+                    <div class="d-flex align-items-baseline justify-content-center gap-1 w-100">
+                        <?php
+                        if ($role === User::DONOR) :
+                            ?>
+                            <a href="/register?role=organization" class="font-bold text-info">Want to Host Campaign ?</a>
+                        <?php
+                        elseif ($role=== User::ORGANIZATION) :
+                            ?>
+                            <a href="/register?role=donor" class="font-bold text-info">Want to Donate Blood?</a>
+                        <?php
+                        endif;
+                        ?>
+                    </div>
                 <?php
                 endif;
                 ?>
-                <div class="d-flex justify-content-center w-100">
-                    Already have an account? &nbsp;<a href="/login" class="text-primary">Log In</a>
+                <div class="d-flex justify-content-center gap-1 w-100">
+                    <div class="font-bold">Already have an account? </div>
+                    <a href="/login" class="font-bold text-info">Log In</a>
                 </div>
             </div>
 
             <div class="form-group" style="justify-content:center;">
-                <button class="btn btn-success w-40" type="submit"name="register" onclick="Register();">Register</button>
+                <button class="btn btn-success w-60 font-bold text-xl border-radius-5 border-2 border-success" type="submit"name="register" onclick="Register();">Register</button>
 <!--                <button class="btn btn-danger w-40" type="reset" value="Reset" name="register">Reset</button>-->
             </div>
+
 
 
         </div>

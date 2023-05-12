@@ -54,6 +54,8 @@ try {
 //$app->db->applyMigrations();
     $app->router->get('/', [siteController::class, 'home']);
     $app->router->get('/home', [siteController::class, 'home']);
+    $app->router->post('/donate', [siteController::class, 'Donate']);
+    $app->router->get('/donate', [siteController::class, 'Donate']);
     $app->router->get('/about', [siteController::class, 'about']);
     $app->router->get('/loader', [siteController::class, 'Loader']);
     $app->router->get('/contact', [siteController::class, 'contact']);
