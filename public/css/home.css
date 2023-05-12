@@ -28,8 +28,8 @@ body{
 
 .dark-bg{
     position: absolute;
-    min-height: 710vh;
-    max-height: 800vh;
+    min-height: 815vh;
+    /*max-height: 800vh;*/
     max-width: 100vw;
     min-width: 100vw;
     background: rgba(0, 0, 0, 0.5);

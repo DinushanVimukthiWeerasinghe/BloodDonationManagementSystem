@@ -20,6 +20,7 @@ class CampaignsSponsor extends \App\model\database\dbModel
     protected int $Status = 1;
     protected string $Session_ID = '';
 
+
     /**
      * @param bool $Readable
      * @return int|string
