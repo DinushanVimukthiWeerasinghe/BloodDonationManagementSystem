@@ -301,7 +301,6 @@ abstract class dbModel extends Model
                 $demo .= $attribute . '="' . $this->{$attribute} . '", ';
             }
         }
-        echo "<pre>";
         $demo=substr($demo,0,-2);
         $demo.=' WHERE '.static::PrimaryKey().'="'.$id.'"';
         if (!empty($where)){

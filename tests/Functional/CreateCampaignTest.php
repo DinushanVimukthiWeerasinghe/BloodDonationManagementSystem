@@ -9,6 +9,7 @@ use Core\Application;
 use Dotenv\Dotenv;
 use PHPMailer\PHPMailer\Exception;
 use Tests\Support\FunctionalTester;
+use Unit\AppClass;
 
 class CreateCampaignTest extends \Codeception\Test\Unit
 {
@@ -26,38 +27,7 @@ class CreateCampaignTest extends \Codeception\Test\Unit
     /**
      * @throws Exception
      */
-    private function getApp(): Application
-    {
-        require_once __DIR__ . '/../../vendor/autoload.php';
-        $dotenv = Dotenv::createImmutable(dirname(__DIR__).'/../');
-        $dotenv->load();
 
-
-
-        require_once __DIR__ . '/../../public/config.php';
-
-
-        $config=[
-            'db'=>[
-                'dsn'=>DB_DSN,
-                'user'=>$_ENV['DB_USER'],
-                'password'=>$_ENV['DB_PASSWORD'] ?? ''
-            ],
-            'email'=>[
-                'host'=>$_ENV['EMAIL_HOST'],
-                'port'=>$_ENV['EMAIL_PORT'],
-                'username'=>$_ENV['EMAIL_USERNAME'],
-                'password'=>$_ENV['EMAIL_PASSWORD'],
-                'encryption'=>$_ENV['EMAIL_ENCRYPTION'],
-                'from'=>$_ENV['EMAIL_FROM']
-            ],
-            'map'=>[
-                'key'=>$_ENV['MAP_API_KEY']
-            ],
-        ];
-
-        return new Application(dirname(__DIR__), $config);
-    }
     /**
      * @dataprovider  ValidCampaignIDProvider
      * @param string $Campaign_ID
@@ -66,7 +36,7 @@ class CreateCampaignTest extends \Codeception\Test\Unit
      * @throws Exception
      */
     public function testCampaigns($Campaign_ID,bool $expected){
-        $app = $this->getApp();
+        $app = AppClass::getApp();
         $campaign = new Campaign();
         $campaign->setCampaignID($Campaign_ID);
         $campaign->setCampaignName('Test Campaign');
@@ -89,7 +59,6 @@ class CreateCampaignTest extends \Codeception\Test\Unit
     public function ValidCampaignIDProvider(){
         return [
             ['Camp_002',true],
-
         ];
     }
 
