@@ -7,6 +7,7 @@ use App\model\Authentication\Login;
 use App\model\Authentication\OrganizationBankAccount;
 use App\model\BloodBankBranch\BloodBank;
 use App\model\database\dbModel;
+use App\model\Email\Email;
 use App\model\inform\informDonors;
 use App\model\Notification\DonorNotification;
 use App\model\Notification\OrganizationNotification;
@@ -30,6 +31,7 @@ use Core\Request;
 use Core\Response;
 use Core\SessionObject;
 use MongoDB\BSON\UTCDateTime;
+use PHPMailer\PHPMailer\Exception;
 
 class OrganizationController extends Controller
 {
@@ -345,7 +347,7 @@ public function inform(Request $request, Response $response)
             $UserID = Application::$app->getUser()->getID();
             $BankAccount = OrganizationBankAccount::findOne(['Organization_ID' => $UserID]);
             if ($BankAccount){
-                $BankAccountNumber = $BankAccount->getAccountNumber();
+                $BankAccountNumber = Security::Decrypt($BankAccount->getAccountNumber());
                 $BankAccountName = $BankAccount->getAccountName();
                 $BankName = $BankAccount->getBankName();
                 $BankBranch = $BankAccount->getBranchName();
@@ -377,11 +379,12 @@ public function inform(Request $request, Response $response)
                 $BankAccount->setBranchName($BankBranch);
                 $BankAccount->setAccountNumber(Security::Encrypt($BankAccountNumber));
                 $BankAccount->setAccountName($BankAccountName);
-                if ($BankAccount->update($BankAccount->getOrganizationID(),[],['Bank_Name','Branch_Name','Account_Number','Account_Name'])){
+                if ($BankAccount->update($BankAccount->getOrganizationID(),[],['Bank_Name','Branch_Name','Account_Number','Account_Name'])) {
                     return json_encode([
-                        'status'=>true,
+                        'status' => true,
                     ]);
-                }else{
+                }
+                else{
                     return json_encode(['status'=>false,'errors'=>$BankAccount->errors]);
                 }
             }else{
@@ -594,6 +597,7 @@ public function inform(Request $request, Response $response)
             }
             else {
                 if ($userDetails->update($user, [], ['Password'])) {
+
                     return json_encode([
                         'status' => true,
                     ]);

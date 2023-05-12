@@ -1,8 +1,8 @@
-use
-    bepositive;
+use bepositive_test;
+-- use bepositive;
 # Create Organizations
 INSERT INTO Users (UID, Email, Password, Account_Status, Role)
-VALUES ('Org_02', 'org2@test.com', '$2y$10$yjcyB1lr8V/nVciydOYedu0Rnedd9JHZ3d6PqPMqM4yNJoPmltlZS', 0, 'Organization'),
+VALUES ('Org_01', 'org2@test.com', '$2y$10$yjcyB1lr8V/nVciydOYedu0Rnedd9JHZ3d6PqPMqM4yNJoPmltlZS', 0, 'Organization'),
          ('Org_03', 'org3#test.com', '$2y$10$yjcyB1lr8V/nVciydOYedu0Rnedd9JHZ3d6PqPMqM4yNJoPmltlZS', 0, 'Organization'),
        ('Org_04', 'org4@test.com', '$2y$10$yjcyB1lr8V/nVciydOYedu0Rnedd9JHZ3d6PqPMqM4yNJoPmltlZS', 0, 'Organization'),
        ('Org_05', 'org5@test.com', '$2y$10$yjcyB1lr8V/nVciydOYedu0Rnedd9JHZ3d6PqPMqM4yNJoPmltlZS', 0, 'Organization'),
@@ -29,7 +29,7 @@ VALUES ('Org_02', 'org2@test.com', '$2y$10$yjcyB1lr8V/nVciydOYedu0Rnedd9JHZ3d6Pq
 INSERT INTO Organizations (Organization_ID, Organization_Name, Organization_Email, Contact_No, Address1, Address2, City,
                            Status)
 VALUES
-    ('Org_02', 'Organization', 'org2@test.com', '0770000001', 'Address1', 'Address2', 'Gampaha', 1),
+    ('Org_01', 'Organization', 'org2@test.com', '0770000001', 'Address1', 'Address2', 'Gampaha', 1),
     ('Org_03', 'Organization', 'org3@test.com', '0770000002', 'Address1', 'Address2', 'Gampaha', 1),
     ('Org_04', 'Organization', 'org4@test.com', '0770000003', 'Address1', 'Address2', 'Colombo', 0),
     ('Org_05', 'Organization', 'org5@test.com', '0770000004', 'Address1', 'Address2', 'Kandy', 1),

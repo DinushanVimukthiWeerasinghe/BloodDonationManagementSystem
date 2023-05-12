@@ -240,6 +240,8 @@ abstract class dbModel extends Model
         }
         try {
             $statement->execute();
+            return true;
+
         }catch (PDOException $e){
             return false;
         }

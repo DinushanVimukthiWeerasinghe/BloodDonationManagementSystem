@@ -62,6 +62,7 @@ try {
     $app->router->post('/register', [authController::class, 'UserRegister']);
     $app->router->post('/register/send-otp', [authController::class, 'SendRegistrationOTP']);
     $app->router->post('/register/validate-otp', [authController::class, 'ValidateOTP']);
+    $app->router->post('/register/validateuser', [authController::class, 'ValidateUser']);
     $app->router->get('/organization/register', [authController::class, 'OrganizationRegister']);
     $app->router->post('/organization/register', [authController::class, 'OrganizationRegister']);
 

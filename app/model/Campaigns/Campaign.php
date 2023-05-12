@@ -424,7 +424,7 @@ class Campaign extends dbModel
     public function rules(): array
     {
         return [
-            'Campaign_ID' => [self::RULE_REQUIRED],
+            'Campaign_ID' => [self::RULE_REQUIRED,self::RULE_UNIQUE],
             'Campaign_Name' => [self::RULE_REQUIRED],
             'Campaign_Description' => [self::RULE_REQUIRED],
             'Campaign_Date' => [self::RULE_REQUIRED],
