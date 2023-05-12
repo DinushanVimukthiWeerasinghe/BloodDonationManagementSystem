@@ -392,6 +392,8 @@ $app->router->post('/donor/profile/loginPrompt', [donorController::class, 'login
     $app->router->post ('/hospital/takeBlood',[hospitalController::class,'takeBlood']);
     $app->router->get ('/hospital/requests',[hospitalController::class, 'showRequests']);
     $app->router->post('/hospital/requests', [hospitalController::class, 'showRequests']);
+    $app->router->get('/hospital/notification', [hospitalController::class, 'notification']);
+    $app->router->post('/hospital/notification', [hospitalController::class, 'notification']);
 
 
 //Blogs

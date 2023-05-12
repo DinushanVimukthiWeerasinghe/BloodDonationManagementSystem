@@ -4,6 +4,8 @@
  use App\middleware\hospitalMiddleware;
  use App\model\Authentication\Login;
  use App\model\BloodBankBranch\BloodBank;
+ use App\model\Notification\HospitalNotification;
+ use App\model\Notification\ManagerNotification;
  use App\model\Requests\BloodRequest;
  use App\model\users\Donor;
  use App\model\users\Hospital;
@@ -96,19 +98,18 @@
 
     public function notification(Request $request, Response $response): string
     {
-        $limit = 10;
-        $page = $request->getBody()['page'] ?? 1;
-        $initial = ($page - 1) * $limit;
-        $id=Application::$app->getUser()->getID();
-        $total_rows = Notification::getCount(false,['Target_User' => $id]);
-        $total_pages = ceil ($total_rows / $limit);
-        $notifications = Notification::findAll(false, ['Target_User' => $id], $initial, $limit);
-        $params = [
-            'notifications' => $notifications,
-            'total_pages' => $total_pages,
-            'page' => $page
-        ];
-        return $this->render('Hospital/notification', $params);
+        if ($request->isPost()){
+            $Notifications=HospitalNotification::RetrieveAll(false,[],true,['Target_ID'=>Application::$app->getUser()->getId()],['Notification_Date'=>'ASC']);
+            if ($Notifications){
+                $Notifications = array_map(function ($object) {
+                    return $object->toArray();
+                }, $Notifications);
+            }
+            return json_encode([
+                'status'=>true,
+                'notifications'=>$Notifications
+            ]);
+        }
     }
 
     public function addRequest(Request $request, Response $response)

@@ -10,7 +10,7 @@ class HospitalNotification extends dbModel
     protected string $Notification_Title;
     protected string $Notification_Message;
     protected string $Notification_Date;
-    protected string $Notification_Status;
+    protected string $Notification_State;
     protected string $Notification_Type;
     protected string $Target_ID;
 
@@ -58,12 +58,12 @@ class HospitalNotification extends dbModel
 
     public function getNotificationStatus(): string
     {
-        return $this->Notification_Status;
+        return $this->Notification_State;
     }
 
     public function setNotificationStatus(string $Notification_Status): void
     {
-        $this->Notification_Status = $Notification_Status;
+        $this->Notification_State = $Notification_Status;
     }
 
     public function getNotificationType(): string
@@ -104,7 +104,7 @@ class HospitalNotification extends dbModel
             'Notification_Title'=>'Notification Title',
             'Notification_Message'=>'Notification Message',
             'Notification_Date'=>'Notification Date',
-            'Notification_Status'=>'Notification Status',
+            'Notification_State'=>'Notification State',
             'Notification_Type'=>'Notification Type',
             'Target_ID'=>'Target ID',
             'Valid_Until'=>'Valid Until'
@@ -118,7 +118,7 @@ class HospitalNotification extends dbModel
             'Notification_Title'=>[self::RULE_REQUIRED],
             'Notification_Message'=>[self::RULE_REQUIRED],
             'Notification_Date'=>[self::RULE_REQUIRED],
-            'Notification_Status'=>[self::RULE_REQUIRED],
+            'Notification_State'=>[self::RULE_REQUIRED],
             'Notification_Type'=>[self::RULE_REQUIRED],
             'Valid_Until'=>[self::RULE_REQUIRED]
         ];
@@ -149,7 +149,7 @@ class HospitalNotification extends dbModel
             'Notification_Title',
             'Notification_Message',
             'Notification_Date',
-            'Notification_Status',
+            'Notification_State',
             'Notification_Type',
             'Target_ID',
             'Valid_Until'
