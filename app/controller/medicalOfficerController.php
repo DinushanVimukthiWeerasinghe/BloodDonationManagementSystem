@@ -21,6 +21,7 @@ use App\model\users\Donor;
 use App\model\users\MedicalOfficer;
 use App\model\users\Organization;
 use App\model\users\User;
+use App\model\Utils\Security;
 use Core\Application;
 use Core\BaseMiddleware;
 use Core\File;
@@ -360,6 +361,9 @@ class medicalOfficerController extends \Core\Controller
     public function CampaignOverview(Request $request, Response $response)
     {
         if ($request->isGet()){
+//            $GetCurrentCampaign=MedicalOfficer::getAssignedCampaign(date('Y-m-d'));
+//            var_dump($GetCurrentCampaign);
+//            exit();
             return $this->render('/MedicalOfficer/CampaignOverview',['page'=>'overview']);
         }
     }
@@ -450,6 +454,7 @@ class medicalOfficerController extends \Core\Controller
                     else if ($Task===TeamMembers::TASK_BLOOD_CHECK){
                         $NIC = $request->getBody()['NIC'] ?? null;
                         if ($NIC) {
+                            $NIC = Security::Decrypt($NIC);
                             /* @var $IsDonorInQueue CampaignDonorQueue*/
                             /* @var $Donor Donor*/
                             $Donor = Donor::findOne(['NIC' => $NIC]);
@@ -509,6 +514,7 @@ class medicalOfficerController extends \Core\Controller
                                 if(!$Donation_Queue){
                                     $this->setFlashMessage('error','Donor not found in the queue! Ask the donor to register first.');
                                     $DonorTakeBloodDonation= CampaignDonorQueue::RetrieveAll(false,[],true,['Campaign_ID'=>$Campaign->getCampaignID(),'Donor_Status'=>CampaignDonorQueue::STAGE_3]);
+
                                     $model['DonorTakeBloodDonation']=$DonorTakeBloodDonation;
                                     return $this->render('/MedicalOfficer/TakeDonationQueue', $model);
                                 }
@@ -534,6 +540,7 @@ class medicalOfficerController extends \Core\Controller
                                 return $this->render('/MedicalOfficer/TakeDonation', $model);
                             }
                             $DonorTakeBloodDonation= CampaignDonorQueue::RetrieveAll(false,[],true,['Campaign_ID'=>$Campaign->getCampaignID(),'Donor_Status'=>CampaignDonorQueue::STAGE_3]);
+//                            $DonorTakeBloodDonation = array_merge(...array_fill(0,50,$DonorTakeBloodDonation));
                             $model['DonorTakeBloodDonation']=$DonorTakeBloodDonation;
                             return $this->render('/MedicalOfficer/TakeDonationQueue', $model);
                         }
@@ -586,6 +593,13 @@ class medicalOfficerController extends \Core\Controller
                 $UserID = Application::$app->getUser()->getID();
                 $DonorBloodCheck = new DonorBloodCheck();
                 $DonorBloodCheck->loadData($request->getBody());
+                $BloodPressure = $request->getBody()['Blood_Pressure'] ?? 0;
+                if ($BloodPressure){
+                    $UpperBloodPressure = (float)explode("/",$BloodPressure)[0];
+                    $LowerBloodPressure = (float)explode("/",$BloodPressure)[1];
+                    $DonorBloodCheck->setBloodPressureUpper($UpperBloodPressure);
+                    $DonorBloodCheck->setBloodPressureLower($LowerBloodPressure);
+                }
                 $DonorBloodCheck->setCheckedAt(date('Y-m-d H:i:s'));
                 $DonorBloodCheck->setCheckedBy($UserID);
                 $DonorQueue=CampaignDonorQueue::findOne(['Donor_ID'=>$DonorBloodCheck->getDonorID()]);
@@ -603,8 +617,10 @@ class medicalOfficerController extends \Core\Controller
                     $this->setFlashMessage('success','Donor Blood Check Up Completed!');
                     Application::Redirect('/mofficer/take-donation');
                 }else{
-                    var_dump($DonorBloodCheck->getErrors());
-                    exit();
+                    $Errors=$DonorBloodCheck->getErrors();
+                    $FirstError=array_shift($Errors);
+                    $this->setFlashMessage('error',$FirstError[0]);
+
                     $Donor=$DonorQueue->getDonor();
                     $model['Donor']=$Donor;
                     $model['BloodCheck']=$DonorBloodCheck;

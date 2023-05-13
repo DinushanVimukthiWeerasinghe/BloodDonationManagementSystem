@@ -275,8 +275,8 @@ FlashMessage::RenderFlashMessages();
 
 </style>
 <div class="container">
-    <div class="form-outer">
-        <div class="form first w-90">
+    <div class="form-outer" style="height: 700px;margin-top: 100px;">
+        <div class="form first w-90" style="height: 600px;">
             <h1 style="font-size: 25pt;" class="bg-dark text-white px-2 py-1">Organization Registration</h1>
             <div class="d-flex flex-column gap-1">
                 <h2 class=" my-1 font-bold" >Organization Details</h2>
@@ -499,10 +499,13 @@ FlashMessage::RenderFlashMessages();
         all3Input = form.querySelectorAll(".third input");
         all4Input = form.querySelectorAll(".forth input");
         all5Input = form.querySelectorAll(".fifth input");
-    const validateEmail = (email) => {
-        const regEx = /\S+@\S+\.\S+/;
-        return regEx.test(email);
-    }
+        let validPhoneNumber =  /^\+?([0-9]{2})\)?[-. ]?([0-9]{4})[-. ]?([0-9]{4})$/;
+        let validNIC = /^\d{9}(V|v|\d{3})?$/;
+        let validEmail = /\S+@\S+\.\S+/;
+    // const validateEmail = (email) => {
+    //     const regEx = /\S+@\S+\.\S+/;
+    //     return regEx.test(email);
+    // }
 
     nextBtn.addEventListener("click", ()=> {
         let count = 0;
@@ -513,30 +516,32 @@ FlashMessage::RenderFlashMessages();
                 count = count+1;
             }
         //     Check whether input is email or not
-            if(input.type === "email"){
-                if(!validateEmail(input.value)){
-                    error = true;
-                    errorMessages.push("Please enter a valid email address");
-                }
-            }
         })
-        if (error){
-            for (let i = 0; i < errorMessages.length; i++){
-                ShowToast({
-                    title: "Error",
-                    message: errorMessages[i],
-                    type: "danger",
-                    duration: 3000
-                })
-            }
+        if(document.getElementById('OrganizationPhone').value.match(validPhoneNumber) === null){
+            ShowToast({
+                message : 'Invalid Phone Number',
+                type : 'error',
+            });
         }
-        if(count === 0){
-            if (!Accepted){
-                OpenDialogBox({
-                    id: "RulesAndRegulation",
-                    title: "Rules And Regulation",
-                    titleClass: "bg-dark text-white",
-                    content:`
+
+        // if (error){
+        //     for (let i = 0; i < errorMessages.length; i++){
+        //         ShowToast({
+        //             title: "Error",
+        //             message: errorMessages[i],
+        //             type: "danger",
+        //             duration: 3000
+        //         })
+        //     }
+        // }
+        else {
+            if (count === 0) {
+                if (!Accepted) {
+                    OpenDialogBox({
+                        id: "RulesAndRegulation",
+                        title: "Rules And Regulation",
+                        titleClass: "bg-dark text-white",
+                        content: `
                 <div class="d-flex flex-column">
                     <span>
                         The Details of President , Secretary and Treasurer of the Organization must be required to register in the system.
@@ -548,34 +553,35 @@ FlashMessage::RenderFlashMessages();
                     </span>
                 </div>
             `,
-                    successBtnText : "I Agree",
-                    cancelBtnText : "I Disagree",
-                    successBtnAction : ()=>{
-                        CloseDialogBox("RulesAndRegulation");
-                        form.classList.add('secActive');
-                        Accepted = true;
-                    },
-                    cancelBtnAction : ()=>{
-                        CloseDialogBox("RulesAndRegulation");
-                        ShowToast({
-                            type: "danger",
-                            message: "You must agree to the rules and regulations to register in the system to continue."
-                        })
-                        setTimeout(()=>{
-                            window.location.href = "/login";
-                        }, 3000)
-                    }
-                })
-            }else{
-                form.classList.add('secActive');
-            }
+                        successBtnText: "I Agree",
+                        cancelBtnText: "I Disagree",
+                        successBtnAction: () => {
+                            CloseDialogBox("RulesAndRegulation");
+                            form.classList.add('secActive');
+                            Accepted = true;
+                        },
+                        cancelBtnAction: () => {
+                            CloseDialogBox("RulesAndRegulation");
+                            ShowToast({
+                                type: "danger",
+                                message: "You must agree to the rules and regulations to register in the system to continue."
+                            })
+                            setTimeout(() => {
+                                window.location.href = "/login";
+                            }, 3000)
+                        }
+                    })
+                } else {
+                    form.classList.add('secActive');
+                }
 
-        }else{
-            ShowToast({
-                message: "All the Fields are Required.",
-                type: "error",
-                duration: 3000
-            })
+            } else {
+                ShowToast({
+                    message: "All the Fields are Required.",
+                    type: "error",
+                    duration: 3000
+                })
+            }
         }
     })
     next2Btn.addEventListener("click", ()=> {
@@ -587,14 +593,41 @@ FlashMessage::RenderFlashMessages();
             }
         })
         console.log(count)
-        if(count === 0 ){
-            form.classList.add('sec2Active');
-        }else{
+        if(document.getElementById('PresidentNIC').value.match(validNIC) === null){
             ShowToast({
-                message: "All the Fields are Required.",
+                message: "Invalid NIC Format",
                 type: "error",
-                duration: 3000
             })
+        }
+        // else if(document.getElementById('PresidentEmail').value.contains('@') === false){
+        //     ShowToast({
+        //         message: "Invalid Email",
+        //         type: "error",
+        //     })
+        //
+        // }
+        else if(document.getElementById('PresidentContactNo').value.match(validPhoneNumber) === null){
+            ShowToast({
+                message: "Invalid Mobile Number",
+                type: "error",
+            })
+        }
+        else if(document.getElementById('PresidentEmail').value.match(validEmail) === null){
+            ShowToast({
+                message: "Invalid Email Address",
+                type: "error",
+            })
+        }
+        else {
+            if (count === 0) {
+                form.classList.add('sec2Active');
+            } else {
+                ShowToast({
+                    message: "All the Fields are Required.",
+                    type: "error",
+                    duration: 3000
+                })
+            }
         }
     })
     next3Btn.addEventListener("click", ()=> {
@@ -605,14 +638,34 @@ FlashMessage::RenderFlashMessages();
                 // form.classList.add('sec2Active');
             }
         })
-        if(count === 0){
-            form.classList.add('sec3Active');
-        }else{
+        if(document.getElementById('SecretaryNIC').value.match(validNIC) === null){
             ShowToast({
-                message: "All the Fields are Required.",
-                type: "danger",
-                duration: 3000
+                message: "Invalid NIC Format",
+                type: "error",
             })
+        }
+        else if(document.getElementById('SecretaryContactNo').value.match(validPhoneNumber) === null){
+            ShowToast({
+                message: "Invalid Mobile Number",
+                type: "error",
+            })
+        }
+        else if(document.getElementById('SecretaryEmail').value.match(validEmail) === null){
+            ShowToast({
+                message: "Invalid Email Address",
+                type: "error",
+            })
+        }
+        else {
+            if (count === 0) {
+                form.classList.add('sec3Active');
+            } else {
+                ShowToast({
+                    message: "All the Fields are Required.",
+                    type: "danger",
+                    duration: 3000
+                })
+            }
         }
     })
     next4Btn.addEventListener("click", ()=> {
@@ -622,14 +675,35 @@ FlashMessage::RenderFlashMessages();
                 count = count+1;
             }
         })
-        if(count === 0){
-            form.classList.add('sec4Active');
-        }else{
+        if(document.getElementById('TreasurerNIC').value.match(validNIC) === null){
             ShowToast({
-                message: "All the Fields are Required.",
-                type: "danger",
-                duration: 3000
+                message: "Invalid NIC Format",
+                type: "error",
             })
+        }
+        else if(document.getElementById('TreasurerContactNo').value.match(validPhoneNumber) === null){
+            ShowToast({
+                message: "Invalid Mobile Number",
+                type: "error",
+            })
+        }
+        else if(document.getElementById('TreasurerEmail').value.match(validEmail) === null){
+            ShowToast({
+                message: "Invalid Email Address",
+                type: "error",
+            })
+        }
+
+        else {
+            if (count === 0) {
+                form.classList.add('sec4Active');
+            } else {
+                ShowToast({
+                    message: "All the Fields are Required.",
+                    type: "danger",
+                    duration: 3000
+                })
+            }
         }
     })
     submitBtn.addEventListener("click", ()=> {

@@ -199,7 +199,7 @@ FlashMessage::RenderFlashMessages();
                 </div>
             <?php } ?>
             <?php if($bank && !$campaign->IsRequestedSponsorship()) {?>
-                <div class="card nav-card bg-white text-dark" onclick="RequestSponsorship('<?= $bank->getAccountNumber() ?>' , '<?= $bank->getAccountName() ?>' , '<?= $bank->getBankName() ?>' , '<?= $bank->getBranchName() ?>' )">
+                <div class="card nav-card bg-white text-dark" onclick="RequestSponsorship('<?= Security::Decrypt($bank->getAccountNumber()) ?>' , '<?= $bank->getAccountName() ?>' , '<?= $bank->getBankName() ?>' , '<?= $bank->getBranchName() ?>' )">
                     <div class="card-header">
                         <div class="card-header-img">
                             <img src="/public/images/icons/organization/campaignDetails/request.png" alt="Request" width="100px">
@@ -403,7 +403,8 @@ const RequestSponsorship = (bankAccountNumber,bankAccountName,bankName,bankBranc
                                             message:'Sponsorship Requested Successfully',
                                             type:'success'
                                         })
-                                        CloseDialogBox('RequestSponsorship')
+                                        CloseDialogBox('RequestSponsorship');
+                                        window.location.reload();
                                     }else{
                                         ShowToast({
                                             message:data.message,

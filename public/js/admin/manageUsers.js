@@ -85,14 +85,17 @@ const ViewUser = (type="Donor")=>{
             const addBtn = document.getElementById('addNewUser');
             if(type==='Hospital'){
                 addBtn.hidden=false;
-                addBtn.innerText = 'Add New ' + type;
+                addBtn.classList.remove('none')
+                addBtn.innerHTML = '<i class="fa-solid fa-plus"></i> Add New ' + type;
                 addBtn.onclick = addNewHospital;
             }else if(type==='Manager'){
                 addBtn.hidden=false;
-                addBtn.innerText = 'Add New ' + type;
+                addBtn.classList.remove('none')
+                addBtn.innerHTML = '<i class="fa-solid fa-plus"></i>Add New ' + type;
                 addBtn.onclick = AddNewManager;
-            }else {
+            }else{
                 addBtn.hidden=true;
+                addBtn.classList.add('none')
             }
         })
 }

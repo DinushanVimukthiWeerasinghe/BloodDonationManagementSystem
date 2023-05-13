@@ -5,6 +5,7 @@ namespace App\model\Requests;
 use App\model\BloodBankBranch\BloodBank;
 use App\model\Campaigns\Campaign;
 //use App\model\sponsor\SponsorshipPackages;
+use App\model\sponsor\AnonymousSponsor;
 use App\model\sponsor\CampaignsSponsor;
 use App\model\users\Manager;
 use App\model\users\Organization;
@@ -110,12 +111,20 @@ class SponsorshipRequest extends \App\model\database\dbModel
     public function getToBeSponsoredAmount(): float|int
     {
         $CampaignSponsors = CampaignsSponsor::RetrieveAll(false,[],true,['Sponsorship_ID'=>$this->Sponsorship_ID,'Status'=>CampaignsSponsor::PAYMENT_STATUS_PAID]);
-        if (count($CampaignSponsors) == 0)
+        $AnonymousSponsors = AnonymousSponsor::RetrieveAll(false,[],true,['Request_ID'=>$this->Sponsorship_ID,'Status'=>AnonymousSponsor::PAYMENT_STATUS_PAID]);
+        $SponsoredAmount = 0;
+        if (count($CampaignSponsors) == 0 && count($AnonymousSponsors) == 0)
             return $this->Sponsorship_Amount;
-        $SponsoredAmount = array_sum(array_map(function ($CampaignSponsor){
-            /** @var $CampaignSponsor CampaignsSponsor */
-            return $CampaignSponsor->getSponsoredAmount();
-        },$CampaignSponsors));
+        if (count($CampaignSponsors) > 0)
+            $SponsoredAmount = array_sum(array_map(function ($CampaignSponsor){
+                /** @var $CampaignSponsor CampaignsSponsor */
+                return $CampaignSponsor->getSponsoredAmount();
+            },$CampaignSponsors));
+        if (count($AnonymousSponsors) > 0)
+            $SponsoredAmount += array_sum(array_map(function ($AnonymousSponsor){
+                /** @var $AnonymousSponsor AnonymousSponsor */
+                return $AnonymousSponsor->getAmount();
+            },$AnonymousSponsors));
         return $this->Sponsorship_Amount - $SponsoredAmount;
     }
 

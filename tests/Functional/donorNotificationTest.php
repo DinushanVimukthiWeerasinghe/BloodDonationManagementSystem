@@ -56,6 +56,8 @@ class donorNotificationTest extends \Codeception\Test\Unit
     {
         $app = $this->getApp();
         $Donor_notification = new DonorNotification();
+        $Donor_notification->setNotificationID('NOT_001');
+        $Donor_notification->setTargetID($DonorID);
         $Donor_notification->setTargetGroup("A+");
         $Donor_notification->setNotificationState(DonorNotification::NOTIFICATION_STATE_UNREAD);
         $Donor_notification->setNotificationTitle('Test Title');
@@ -69,7 +71,7 @@ class donorNotificationTest extends \Codeception\Test\Unit
     public function ValidDonorIDProvider()
     {
         return [
-            [null,false]
+            ['Dnr1',true],
         ];
     }
 

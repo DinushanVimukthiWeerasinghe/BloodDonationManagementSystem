@@ -54,6 +54,8 @@ try {
 //$app->db->applyMigrations();
     $app->router->get('/', [siteController::class, 'home']);
     $app->router->get('/home', [siteController::class, 'home']);
+    $app->router->post('/donate', [siteController::class, 'Donate']);
+    $app->router->get('/donate', [siteController::class, 'Donate']);
     $app->router->get('/about', [siteController::class, 'about']);
     $app->router->get('/loader', [siteController::class, 'Loader']);
     $app->router->get('/contact', [siteController::class, 'contact']);
@@ -62,6 +64,7 @@ try {
     $app->router->post('/register', [authController::class, 'UserRegister']);
     $app->router->post('/register/send-otp', [authController::class, 'SendRegistrationOTP']);
     $app->router->post('/register/validate-otp', [authController::class, 'ValidateOTP']);
+    $app->router->post('/register/validateuser', [authController::class, 'ValidateUser']);
     $app->router->get('/organization/register', [authController::class, 'OrganizationRegister']);
     $app->router->post('/organization/register', [authController::class, 'OrganizationRegister']);
 
@@ -95,6 +98,8 @@ try {
     $app->router->post('/admin/dashboard/manageBanks/delete', [adminController::class, 'deleteBank']);
     $app->router->post('/admin/dashboard/manageBanks/add', [adminController::class, 'addNewBank']);
     $app->router->post('/admin/dashboard/manageBanks/search', [adminController::class, 'searchBank']);
+    $app->router->post('/backup/database', [adminController::class, 'BackupDatabase']);
+    $app->router->post('/backup/download', [adminController::class, 'DownloadBackup']);
 
 
 

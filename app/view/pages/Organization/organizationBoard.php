@@ -1,3 +1,8 @@
+<style>
+    .changepanel{
+        width: 100vw;
+    }
+</style>
 <?php
 /* @var string $organization_Name */
 

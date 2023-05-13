@@ -1,4 +1,4 @@
-DROP database IF EXISTS bepositive_test;
+# DROP database IF EXISTS bepositive_test;
 CREATE DATABASE IF NOT EXISTS `bepositive_test` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
 use bepositive_test;
 
@@ -9,12 +9,12 @@ CREATE TABLE IF NOT EXISTS Users
     Email          VARCHAR(100) UNIQUE,
     Password       VARCHAR(100) NOT NULL,
     Account_Status INT          NOT NULL DEFAULT 0,
-    Role           VARCHAR(100) NOT NULL DEFAULT 'donor',
+    Role           VARCHAR(100) NOT NULL DEFAULT 'Donor',
     Created_At     TIMESTAMP             DEFAULT CURRENT_TIMESTAMP,
     Updated_At     TIMESTAMP             DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     Security_Level INT          NOT NULL DEFAULT 0
-) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8;
+    ) ENGINE = InnoDB
+    DEFAULT CHARSET = utf8;
 
 DROP TABLE IF EXISTS BloodBanks;
 CREATE TABLE IF NOT EXISTS BloodBanks
@@ -30,8 +30,8 @@ CREATE TABLE IF NOT EXISTS BloodBanks
     No_Of_Beds     INT          NOT NULL DEFAULT 0,
     No_Of_Storages INT          NOT NULL DEFAULT 0,
     Type           INT          NOT NULL DEFAULT 2
-) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8;
+    ) ENGINE = InnoDB
+    DEFAULT CHARSET = utf8;
 
 DROP TABLE IF EXISTS MedicalOfficers;
 CREATE TABLE IF NOT EXISTS MedicalOfficers
@@ -55,8 +55,8 @@ CREATE TABLE IF NOT EXISTS MedicalOfficers
     Branch_ID           VARCHAR(20)  NOT NULL,
     Profile_Image       VARCHAR(100) NOT NULL DEFAULT '/public/upload/profile/medicalOfficerDefault.png',
     FOREIGN KEY (Branch_ID) REFERENCES BloodBanks (BloodBank_ID)
-) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8;
+    ) ENGINE = InnoDB
+    DEFAULT CHARSET = utf8;
 
 DROP TABLE IF EXISTS Managers;
 CREATE TABLE IF NOT EXISTS Managers
@@ -75,8 +75,8 @@ CREATE TABLE IF NOT EXISTS Managers
     Profile_Image VARCHAR(100) NOT NULL DEFAULT '/public/upload/profile/managerDefault.png',
     FOREIGN KEY (BloodBank_ID) REFERENCES BloodBanks (BloodBank_ID),
     FOREIGN KEY (Manager_ID) REFERENCES Users (UID)
-) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8;
+    ) ENGINE = InnoDB
+    DEFAULT CHARSET = utf8;
 
 DROP TABLE IF EXISTS Admins;
 CREATE TABLE IF NOT EXISTS Admins
@@ -86,8 +86,8 @@ CREATE TABLE IF NOT EXISTS Admins
     Email         VARCHAR(100) NOT NULL,
     Profile_Image VARCHAR(100) NOT NULL DEFAULT '/public/upload/profile/adminDefault.png',
     FOREIGN KEY (Admin_ID) REFERENCES Users (UID)
-) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8;
+    ) ENGINE = InnoDB
+    DEFAULT CHARSET = utf8;
 
 DROP TABLE IF EXISTS Donors;
 CREATE TABLE IF NOT EXISTS Donors
@@ -110,8 +110,9 @@ CREATE TABLE IF NOT EXISTS Donors
     BloodDonation_Book_1  VARCHAR(100) NULL,
     BloodDonation_Book_2  VARCHAR(100) NULL,
     Status                VARCHAR(50)  NOT NULL,
-    Donation_Availability INT          NOT NULL DEFAULT 0,
-    Verified              INT          NOT NULL DEFAULT 0,
+    Donation_Availability INT          NOT NULL DEFAULT 1,
+    Donation_Availability_Date DATE NULL ,
+    Verified              INT          NOT NULL DEFAULT 1,
     Verified_At           TIMESTAMP    NULL,
     Verified_By           VARCHAR(20)  NULL,
     Verification_Remarks  VARCHAR(100) NULL,
@@ -120,8 +121,8 @@ CREATE TABLE IF NOT EXISTS Donors
     Profile_Image         VARCHAR(100) NOT NULL DEFAULT '/public/upload/profile/donorDefault.png',
     FOREIGN KEY (Nearest_Bank) REFERENCES BloodBanks (BloodBank_ID),
     FOREIGN KEY (Verified_By) REFERENCES MedicalOfficers (Officer_ID)
-) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8;
+    ) ENGINE = InnoDB
+    DEFAULT CHARSET = utf8;
 
 DROP TABLE IF EXISTS Hospitals;
 CREATE TABLE IF NOT EXISTS Hospitals
@@ -133,11 +134,13 @@ CREATE TABLE IF NOT EXISTS Hospitals
     Email         VARCHAR(100) UNIQUE,
     City          VARCHAR(100) NOT NULL,
     Contact_No    VARCHAR(100) UNIQUE,
+    Nearest_Blood_Bank VARCHAR(20) NOT NULL,
     Type          INT          NOT NULL DEFAULT 1,
     Profile_Image VARCHAR(100) NOT NULL DEFAULT '/public/upload/profile/hospitalDefault.png',
-    FOREIGN KEY (Hospital_ID) REFERENCES Users (UID)
-) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8;
+    FOREIGN KEY (Hospital_ID) REFERENCES Users (UID),
+    FOREIGN KEY (Nearest_Blood_Bank) REFERENCES BloodBanks (BloodBank_ID)
+    ) ENGINE = InnoDB
+    DEFAULT CHARSET = utf8;
 
 DROP TABLE IF EXISTS Organizations;
 CREATE TABLE IF NOT EXISTS Organizations
@@ -150,12 +153,15 @@ CREATE TABLE IF NOT EXISTS Organizations
     Contact_No         VARCHAR(100) NOT NULL,
     City               VARCHAR(100) NOT NULL,
     Status             VARCHAR(50)  NOT NULL,
+    Verified_By        VARCHAR(20)  NULL,
+    Verified_At        TIMESTAMP    NULL,
     Profile_Image      VARCHAR(100) NOT NULL DEFAULT '/public/upload/organization.png',
     Created_At         TIMESTAMP             DEFAULT CURRENT_TIMESTAMP,
     Updated_At         TIMESTAMP             DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (Organization_ID) REFERENCES Users (UID)
-) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8;
+    FOREIGN KEY (Organization_ID) REFERENCES Users (UID),
+    FOREIGN KEY (Verified_By) REFERENCES MedicalOfficers (Officer_ID)
+    ) ENGINE = InnoDB
+    DEFAULT CHARSET = utf8;
 
 
 DROP TABLE IF EXISTS Sponsors;
@@ -173,8 +179,8 @@ CREATE TABLE IF NOT EXISTS Sponsors
     Updated_At    TIMESTAMP             DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     Profile_Image VARCHAR(100) NOT NULL DEFAULT '/public/upload/sponsorDefault.png',
     FOREIGN KEY (Sponsor_ID) REFERENCES Users (UID)
-) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8;
+    ) ENGINE = InnoDB
+    DEFAULT CHARSET = utf8;
 
 
 
@@ -189,7 +195,7 @@ CREATE TABLE IF NOT EXISTS  Medical_Team
     Assigned_At TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (Assigned_By) REFERENCES Managers(Manager_ID),
     FOREIGN KEY (Team_Leader) REFERENCES MedicalOfficers (Officer_ID)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 # Status 1 - Pending 2- Approved 3- Rejected
@@ -204,7 +210,7 @@ CREATE TABLE IF NOT EXISTS Campaign
     Campaign_Date        DATE         NOT NULL,
     Venue                VARCHAR(100) NOT NULL,
     Nearest_City         VARCHAR(100) NOT NULL,
-    Status               INT          NOT NULL CHECK ( Status Between 1 AND 3),
+    Status               INT          NOT NULL CHECK ( Status Between 1 AND 5),
     Latitude             VARCHAR(100) NOT NULL,
     Longitude            VARCHAR(100) NOT NULL,
     Nearest_BloodBank    VARCHAR(20)  NOT NULL,
@@ -214,41 +220,41 @@ CREATE TABLE IF NOT EXISTS Campaign
     Updated_At           TIMESTAMP             DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (Nearest_BloodBank) REFERENCES BloodBanks (BloodBank_ID),
     FOREIGN KEY (Organization_ID) REFERENCES Organizations (Organization_ID)
-) ENGINE = InnoDB DEFAULT CHARSET = utf8;
+    ) ENGINE = InnoDB DEFAULT CHARSET = utf8;
 
 
 # Create Table for Approved Campaigns
 DROP TABLE IF EXISTS Approved_Campaigns;
 CREATE TABLE IF NOT EXISTS Approved_Campaigns (
-                                                  Campaign_ID VARCHAR(20) NOT NULL  PRIMARY KEY,
-                                                  Approved_By VARCHAR(20) NOT NULL,
-                                                  Approved_At TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                                                  Remarks VARCHAR(100) NOT NULL,
-                                                  FOREIGN KEY (Campaign_ID) REFERENCES Campaign(Campaign_ID),
-                                                  FOREIGN KEY (Approved_By) REFERENCES Managers(Manager_ID)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+    Campaign_ID VARCHAR(20) NOT NULL  PRIMARY KEY,
+    Approved_By VARCHAR(20) NOT NULL,
+    Approved_At TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    Remarks VARCHAR(100) NOT NULL,
+    FOREIGN KEY (Campaign_ID) REFERENCES Campaign(Campaign_ID),
+    FOREIGN KEY (Approved_By) REFERENCES Managers(Manager_ID)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 # Create Table for Rejected Campaigns
 DROP TABLE IF EXISTS Rejected_Campaigns;
 CREATE TABLE IF NOT EXISTS Rejected_Campaigns (
-                                                  Campaign_ID VARCHAR(20) NOT NULL  PRIMARY KEY,
-                                                  Rejected_By VARCHAR(20) NOT NULL,
-                                                  Rejected_At TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                                                  Remarks VARCHAR(100) NOT NULL,
-                                                  FOREIGN KEY (Campaign_ID) REFERENCES Campaign(Campaign_ID),
-                                                  FOREIGN KEY (Rejected_By) REFERENCES Managers(Manager_ID)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+    Campaign_ID VARCHAR(20) NOT NULL  PRIMARY KEY,
+    Rejected_By VARCHAR(20) NOT NULL,
+    Rejected_At TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    Remarks VARCHAR(100) NOT NULL,
+    FOREIGN KEY (Campaign_ID) REFERENCES Campaign(Campaign_ID),
+    FOREIGN KEY (Rejected_By) REFERENCES Managers(Manager_ID)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS Campaign_Donation_Queue;
 CREATE TABLE IF NOT EXISTS Campaign_Donation_Queue(
-                                                      Donor_ID VARCHAR(20) NOT NULL,
-                                                      Campaign_ID VARCHAR(20) NOT NULL,
-                                                      Donor_Status INT NOT NULL CHECK ( Donor_Status BETWEEN 1 AND 5),
-                                                      Last_Update TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                                                      PRIMARY KEY (Donor_ID, Campaign_ID),
-                                                      FOREIGN KEY (Donor_ID) REFERENCES Donors(Donor_ID),
-                                                      FOREIGN KEY (Campaign_ID) REFERENCES Campaign(Campaign_ID)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+    Donor_ID VARCHAR(20) NOT NULL,
+    Campaign_ID VARCHAR(20) NOT NULL,
+    Donor_Status INT NOT NULL CHECK ( Donor_Status BETWEEN 1 AND 5),
+    Last_Update TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (Donor_ID, Campaign_ID),
+    FOREIGN KEY (Donor_ID) REFERENCES Donors(Donor_ID),
+    FOREIGN KEY (Campaign_ID) REFERENCES Campaign(Campaign_ID)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS Donor_Health_Checkup;
 CREATE TABLE IF NOT EXISTS Donor_Health_Checkup
@@ -270,20 +276,23 @@ CREATE TABLE IF NOT EXISTS Donor_Health_Checkup
     Teeth_Removed            INT          NOT NULL CHECK ( Teeth_Removed BETWEEN 1 AND 2),
     Antibiotics_And_Aspirins INT          NOT NULL CHECK ( Antibiotics_And_Aspirins BETWEEN 1 AND 2),
     Eligible                 INT          NOT NULL CHECK ( Eligible BETWEEN 1 AND 2),
+    Recommendation          INT         NOT NULL CHECK ( Recommendation BETWEEN 1 AND 2),
+    Recommend_By             VARCHAR(20)  NULL,
     Remarks                  VARCHAR(100) NULL,
     FOREIGN KEY (Donor_ID) REFERENCES Donors (Donor_ID),
+    FOREIGN KEY (Recommend_By) REFERENCES MedicalOfficers (Officer_ID),
     FOREIGN KEY (Campaign_ID) REFERENCES Campaign (Campaign_ID),
     PRIMARY KEY (Donor_ID, Campaign_ID)
-) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8;
+    ) ENGINE = InnoDB
+    DEFAULT CHARSET = utf8;
 
 DROP TABLE IF EXISTS Donor_Report;
 CREATE TABLE IF NOT EXISTS `Donor_Report` (
-                                `Donor_ID` varchar(20) NOT NULL,
-                                `Blood_Group` varchar(10) NOT NULL,
-                                `Weight` decimal(10,0) NOT NULL,
-                                `Remarks` varchar(50) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+    `Donor_ID` varchar(20) NOT NULL,
+    `Blood_Group` varchar(10) NOT NULL,
+    `Weight` decimal(10,0) NOT NULL,
+    `Remarks` varchar(50) NOT NULL
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 DROP TABLE IF EXISTS Email;
@@ -299,7 +308,7 @@ CREATE TABLE IF NOT EXISTS Email
     Email_Status INT          NOT NULL DEFAULT 0,
     Created_At   TIMESTAMP             DEFAULT CURRENT_TIMESTAMP,
     Updated_At   TIMESTAMP             DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 DROP TABLE IF EXISTS Password_Reset;
@@ -313,7 +322,7 @@ CREATE TABLE IF NOT EXISTS Password_Reset(
     Lifetime       INT          NOT NULL DEFAULT 60,
     Reset_At       TIMESTAMP        NULL DEFAULT NULL,
     FOREIGN KEY (UID) REFERENCES Users (UID)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 DROP TABLE IF EXISTS Password_Reset_Audit;
@@ -342,7 +351,7 @@ CREATE TABLE IF NOT EXISTS Blood_Packets
     Remarks     VARCHAR(100) NULL,
     Stored_At   TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (Packed_By) REFERENCES MedicalOfficers (Officer_ID)
-) ENGINE = InnoDB DEFAULT CHARSET = utf8;
+    ) ENGINE = InnoDB DEFAULT CHARSET = utf8;
 
 DROP TABLE IF EXISTS OTP_Code;
 CREATE TABLE IF NOT EXISTS OTP_Code
@@ -360,8 +369,8 @@ CREATE TABLE IF NOT EXISTS OTP_Code
     Updated_At     TIMESTAMP    NULL ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (UserID, Code),
     FOREIGN KEY (UserID) REFERENCES Users (UID)
-) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8;
+    ) ENGINE = InnoDB
+    DEFAULT CHARSET = utf8;
 
 DROP TABLE IF EXISTS OTP_CODE_Audit;
 CREATE TABLE IF NOT EXISTS OTP_CODE_Audit
@@ -377,8 +386,10 @@ CREATE TABLE IF NOT EXISTS OTP_CODE_Audit
     Suspicious         INT                   DEFAULT 0,
     PRIMARY KEY (UserID, Code),
     FOREIGN KEY (UserID) REFERENCES Users (UID)
-) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8;
+    ) ENGINE = InnoDB
+    DEFAULT CHARSET = utf8;
+
+DROP TRIGGER IF EXISTS OTP_CODE_Audit_ReGenerate_Amount;
 
 
 
@@ -389,8 +400,8 @@ CREATE TABLE IF NOT EXISTS Blocked_Users
     Blocked_At TIMESTAMP NOT NULL,
     Type       INT       NOT NULL,
     FOREIGN KEY (UID) REFERENCES Users (UID)
-) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8;
+    ) ENGINE = InnoDB
+    DEFAULT CHARSET = utf8;
 
 
 # Create Table for Blood Group
@@ -399,8 +410,8 @@ CREATE TABLE IF NOT EXISTS BloodGroups
 (
     BloodGroup_ID   VARCHAR(20) PRIMARY KEY,
     BloodGroup_Name VARCHAR(100) NOT NULL UNIQUE
-) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8;
+    ) ENGINE = InnoDB
+    DEFAULT CHARSET = utf8;
 
 
 # Create Table for Accepted Requests
@@ -413,8 +424,8 @@ CREATE TABLE IF NOT EXISTS Attendance_Accepted_Requests
     Accepted_At TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (Donor_ID) REFERENCES Donors (Donor_ID),
     FOREIGN KEY (Campaign_ID) REFERENCES Campaign (Campaign_ID)
-) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8;
+    ) ENGINE = InnoDB
+    DEFAULT CHARSET = utf8;
 
 DROP TABLE IF EXISTS Blood_Requests;
 CREATE TABLE IF NOT EXISTS Blood_Requests (
@@ -422,6 +433,7 @@ CREATE TABLE IF NOT EXISTS Blood_Requests (
     Requested_By VARCHAR(20) NOT NULL,
     BloodGroup VARCHAR(3) NOT NULL,
     Requested_At TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    Request_From VARCHAR(20) NOT NULL,
     Type INT NOT NULL DEFAULT 1,
     Volume DECIMAL(10,2) NOT NULL CHECK ( Volume BETWEEN 0 AND 1000),
     Status INT NOT NULL DEFAULT 1,
@@ -429,8 +441,22 @@ CREATE TABLE IF NOT EXISTS Blood_Requests (
     Remarks VARCHAR(100) NULL,
     FullFilled_By VARCHAR(20) NULL,
     FOREIGN KEY (Requested_By) REFERENCES Hospitals(Hospital_ID),
-    FOREIGN KEY (BloodGroup) REFERENCES BloodGroups(BloodGroup_ID)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+    FOREIGN KEY (BloodGroup) REFERENCES BloodGroups(BloodGroup_ID),
+    FOREIGN KEY (Request_From) REFERENCES BloodBanks(BloodBank_ID)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS Hospital_Blood_Donations;
+CREATE TABLE IF NOT EXISTS Hospital_Blood_Donations
+(
+    Donation_ID VARCHAR(20) NOT NULL PRIMARY KEY,
+    Donor_ID    VARCHAR(20) NOT NULL,
+    Request_ID  VARCHAR(20) NOT NULL,
+    Donation_At TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    Volume      DECIMAL(10,2) NOT NULL CHECK ( Volume BETWEEN 0 AND 1000),
+    FOREIGN KEY (Request_ID) REFERENCES Blood_Requests (Request_ID),
+    FOREIGN KEY (Donor_ID) REFERENCES Donors (Donor_ID)
+    ) ENGINE = InnoDB
+    DEFAULT CHARSET = utf8;
 
 # Create Table for Organization Members
 DROP TABLE IF EXISTS Organization_Members;
@@ -444,8 +470,8 @@ CREATE TABLE IF NOT EXISTS Organization_Members
     Email           VARCHAR(100) UNIQUE ,
     PRIMARY KEY (Organization_ID, NIC),
     FOREIGN KEY (Organization_ID) REFERENCES Organizations (Organization_ID)
-) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8;
+    ) ENGINE = InnoDB
+    DEFAULT CHARSET = utf8;
 
 
 # Create Table for Team Members
@@ -459,7 +485,7 @@ CREATE TABLE IF NOT EXISTS Team_Members
     PRIMARY KEY (Team_ID, Member_ID),
     FOREIGN KEY (Team_ID) REFERENCES Medical_Team (Team_ID),
     FOREIGN KEY (Member_ID) REFERENCES MedicalOfficers (Officer_ID)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 # Create Table for Campaigns
 
@@ -473,8 +499,8 @@ CREATE TABLE IF NOT EXISTS `Inform_Donors`
     `Status`      int(11)      NOT NULL,
     `Date`        timestamp    NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
     `Campaign_ID` varchar(255) NOT NULL
-) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8;
+    ) ENGINE = InnoDB
+    DEFAULT CHARSET = utf8;
 
 DROP TABLE IF EXISTS Donor_Blood_Check;
 CREATE TABLE IF NOT EXISTS Donor_Blood_Check
@@ -498,22 +524,22 @@ CREATE TABLE IF NOT EXISTS Donor_Blood_Check
     FOREIGN KEY (Donor_ID) REFERENCES Donors (Donor_ID),
     FOREIGN KEY (Campaign_ID) REFERENCES Campaign(Campaign_ID),
     FOREIGN KEY (Checked_By) REFERENCES MedicalOfficers(Officer_ID)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 # Create Table for Donations
 DROP TABLE IF EXISTS Donations;
 CREATE TABLE IF NOT EXISTS Donations(
     Donation_ID VARCHAR(20) NOT NULL,
     Campaign_ID VARCHAR(20) NOT NULL,
+    Donor_ID VARCHAR(20) NOT NULL,
     Start_At TIMESTAMP NOT NULL,
     End_At TIMESTAMP NULL,
     Officer_ID VARCHAR(20) NOT NULL,
     Status INT NOT NULL CHECK ( Status BETWEEN 1 AND 5),
-    Donor_ID VARCHAR(20) NOT NULL,
     PRIMARY KEY (Donation_ID, Donor_ID, Campaign_ID),
     FOREIGN KEY (Donor_ID) REFERENCES Donors(Donor_ID),
     FOREIGN KEY (Campaign_ID) REFERENCES Campaign(Campaign_ID)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 DROP TABLE IF EXISTS Aborted_Donations;
@@ -529,7 +555,7 @@ CREATE TABLE IF NOT EXISTS Aborted_Donations(
     PRIMARY KEY (Donation_ID, Donor_ID, Campaign_ID),
     FOREIGN KEY (Donor_ID) REFERENCES Donors(Donor_ID),
     FOREIGN KEY (Campaign_ID) REFERENCES Campaign(Campaign_ID)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 DROP TABLE IF EXISTS Campaign_Request;
@@ -539,8 +565,21 @@ CREATE TABLE IF NOT EXISTS Campaign_Request (
     BloodBank_ID VARCHAR(20),
     FOREIGN KEY (Campaign_ID) REFERENCES Campaign(Campaign_ID),
     FOREIGN KEY (Organization_ID) REFERENCES Organizations(Organization_ID)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+
+DROP TABLE IF EXISTS Campaign_Statistics;
+CREATE TABLE IF NOT EXISTS Campaign_Statistics (
+    Campaign_ID VARCHAR(20) NOT NULL,
+    No_of_Registers INT NOT NULL DEFAULT 0,
+    No_Of_Campaign_Registers INT NOT NULL DEFAULT 0,
+    No_Of_Health_Checks INT NOT NULL DEFAULT 0,
+    No_Of_Blood_Checks INT NOT NULL DEFAULT 0,
+    No_Of_Successful_Donations INT NOT NULL DEFAULT 0,
+    No_Of_Aborted_Donations INT NOT NULL DEFAULT 0,
+    FOREIGN KEY (Campaign_ID) REFERENCES Campaign(Campaign_ID),
+    PRIMARY KEY (Campaign_ID)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 
@@ -554,26 +593,30 @@ CREATE TABLE IF NOT EXISTS Accepted_Donations (
     Retrieved_By VARCHAR(20) NOT NULL,
     In_Time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     Out_Time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    Volume DECIMAL(4, 2) NOT NULL,
     Verified_By VARCHAR(20) NULL,
+    FOREIGN KEY (Donation_ID) REFERENCES Donations(Donation_ID),
     FOREIGN KEY (Donor_ID) REFERENCES Donors(Donor_ID),
     FOREIGN KEY (Packet_ID) REFERENCES Blood_Packets(Packet_ID),
     FOREIGN KEY (Retrieved_By) REFERENCES MedicalOfficers(Officer_ID),
     FOREIGN KEY (Verified_By) REFERENCES MedicalOfficers(Officer_ID)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS Rejected_Donations;
 CREATE TABLE IF NOT EXISTS Rejected_Donations (
     Donation_ID VARCHAR(20) NOT NULL  PRIMARY KEY,
     Donor_ID VARCHAR(20) NOT NULL,
-    Packet_ID VARCHAR(20) NOT NULL,
     Donated_At TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    Campaign_ID VARCHAR(20) NOT NULL,
     Rejected_By VARCHAR(20) NOT NULL,
     Rejected_At TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    Remarks VARCHAR(100) NOT NULL,
+    Reason INT NOT NULL,
+    OtherReason VARCHAR(255) NULL ,
+    Type INT NOT NULL CHECK ( Type BETWEEN 1 AND 6), # TODO Change This to 5
+    FOREIGN KEY (Donation_ID) REFERENCES Donations(Donation_ID),
     FOREIGN KEY (Donor_ID) REFERENCES Donors(Donor_ID),
-    FOREIGN KEY (Packet_ID) REFERENCES Blood_Packets(Packet_ID),
     FOREIGN KEY (Rejected_By) REFERENCES MedicalOfficers(Officer_ID)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS Donor_Reviews;
 CREATE TABLE IF NOT EXISTS Donor_Reviews (
@@ -584,7 +627,7 @@ CREATE TABLE IF NOT EXISTS Donor_Reviews (
     Remarks VARCHAR(100) NOT NULL,
     FOREIGN KEY (Donor_ID) REFERENCES Donors(Donor_ID),
     FOREIGN KEY (Campaign_ID) REFERENCES Campaign(Campaign_ID)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 # Authentication Code
 DROP TABLE IF EXISTS Authentication_Code;
@@ -595,7 +638,7 @@ CREATE TABLE IF NOT EXISTS Authentication_Code (
     Attempts INT NOT NULL DEFAULT 0 CHECK ( Attempts BETWEEN 0 AND 4),
     Created_At TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     Updated_At TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 # Create Monthly Report Table
 DROP TABLE IF EXISTS Monthly_Reports;
@@ -607,7 +650,7 @@ CREATE TABLE IF NOT EXISTS  Monthly_Reports(
     Generated_At TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     Generated_By VARCHAR(20) NOT NULL,
     FOREIGN KEY (Generated_By) REFERENCES Managers(Manager_ID)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 #Create Table for Yearly Report
 DROP TABLE IF EXISTS Yearly_Reports;
@@ -618,7 +661,7 @@ CREATE TABLE IF NOT EXISTS  Yearly_Reports(
     Generated_At TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     Generated_By VARCHAR(20) NOT NULL,
     FOREIGN KEY (Generated_By) REFERENCES Managers(Manager_ID)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 # Create Manager Notification Table
 DROP TABLE IF EXISTS Manager_Notifications;
@@ -626,14 +669,14 @@ CREATE TABLE IF NOT EXISTS  Manager_Notifications
 (
     Notification_ID       VARCHAR(20)  NOT NULL PRIMARY KEY,
     Notification_Type     INT  NOT NULL,
-    Notification_State   INT  NOT NULL,
+    Notification_Status   INT  NOT NULL,
     Target_ID             VARCHAR(20)  NULL,
     Notification_Title    VARCHAR(100) NOT NULL,
     Notification_Message  VARCHAR(100) NOT NULL,
     Notification_Date     TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     Valid_Until           TIMESTAMP NULL,
     FOREIGN KEY (Target_ID) REFERENCES Managers(Manager_ID)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 # Create Title Table
 
 
@@ -652,7 +695,7 @@ CREATE TABLE IF NOT EXISTS  Donor_Notifications
     Notification_Date     TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     Valid_Until           TIMESTAMP NULL,
     FOREIGN KEY (Target_ID) REFERENCES Donors(Donor_ID)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 # Create Medical Officer Notification Table
 DROP TABLE IF EXISTS Medical_Officer_Notifications;
@@ -667,7 +710,7 @@ CREATE TABLE IF NOT EXISTS  Medical_Officer_Notifications
     Notification_Date     TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     Valid_Until           TIMESTAMP NULL,
     FOREIGN KEY (Target_ID) REFERENCES MedicalOfficers(Officer_ID)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 # Create Organization Notification Table
 DROP TABLE IF EXISTS Organization_Notifications;
@@ -682,7 +725,7 @@ CREATE TABLE IF NOT EXISTS  Organization_Notifications
     Notification_Date     TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     Valid_Until           TIMESTAMP NULL,
     FOREIGN KEY (Target_ID) REFERENCES Organizations(Organization_ID)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 # Create Sponsor Notification Table
 DROP TABLE IF EXISTS Sponsor_Notifications;
@@ -697,7 +740,7 @@ CREATE TABLE IF NOT EXISTS  Sponsor_Notifications
     Notification_Date     TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     Valid_Until           TIMESTAMP NULL,
     FOREIGN KEY (Target_ID) REFERENCES Sponsors(Sponsor_ID)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 # Create Admin Notification Table
 DROP TABLE IF EXISTS Admin_Notifications;
@@ -712,7 +755,7 @@ CREATE TABLE IF NOT EXISTS  Admin_Notifications
     Notification_Date     TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     Valid_Until           TIMESTAMP NULL,
     FOREIGN KEY (Target_ID) REFERENCES Admins(Admin_ID)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 # Create Table for Logging Sessions
 DROP TABLE IF EXISTS Logging_History;
@@ -724,8 +767,8 @@ CREATE TABLE IF NOT EXISTS Logging_History
     Session_End      TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NULL,
     Session_End_Type INT       DEFAULT 0,
     FOREIGN KEY (User_ID) REFERENCES Users (UID)
-) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8;
+    ) ENGINE = InnoDB
+    DEFAULT CHARSET = utf8;
 
 DROP TABLE IF EXISTS Donation_Campaigns;
 CREATE TABLE IF NOT EXISTS Donation_Campaigns
@@ -739,7 +782,8 @@ CREATE TABLE IF NOT EXISTS Donation_Campaigns
     Status           INT NOT NULL,
     FOREIGN KEY (Organization_ID) REFERENCES Organizations (Organization_ID),
     FOREIGN KEY (Nearest_Blood_Bank) REFERENCES BloodBanks (BloodBank_ID)
-);
+    ) ENGINE = InnoDB
+      DEFAULT CHARSET = utf8;
 DROP TABLE IF EXISTS Blogs;
 CREATE TABLE Blogs (
                        Blog_ID VARCHAR(20) PRIMARY KEY ,
@@ -758,8 +802,8 @@ CREATE TABLE IF NOT EXISTS Register_OTP
     Created_At TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     Updated_At TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NULL,
     No_Of_Attempts INT DEFAULT 0 NOT NULL
-) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8;
+    ) ENGINE = InnoDB
+    DEFAULT CHARSET = utf8;
 
 DROP TABLE IF EXISTS Organization_Bank_Accounts;
 CREATE TABLE IF NOT EXISTS Organization_Bank_Accounts
@@ -771,8 +815,8 @@ CREATE TABLE IF NOT EXISTS Organization_Bank_Accounts
     Branch_Name     VARCHAR(100) NOT NULL,
     PRIMARY KEY (Organization_ID),
     FOREIGN KEY (Organization_ID) REFERENCES Organizations (Organization_ID)
-) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8;
+    ) ENGINE = InnoDB
+    DEFAULT CHARSET = utf8;
 
 
 DROP TABLE IF EXISTS Sponsorship_Requests;
@@ -791,8 +835,8 @@ CREATE TABLE IF NOT EXISTS Sponsorship_Requests
     Managed_At TIMESTAMP NULL,
     FOREIGN KEY (Managed_By) REFERENCES Managers (Manager_ID),
     FOREIGN KEY (Campaign_ID) REFERENCES Campaign (Campaign_ID)
-) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8;
+    ) ENGINE = InnoDB
+    DEFAULT CHARSET = utf8;
 
 DROP TABLE IF EXISTS campaigns_sponsors;
 CREATE TABLE IF NOT EXISTS campaigns_sponsors
@@ -801,8 +845,114 @@ CREATE TABLE IF NOT EXISTS campaigns_sponsors
     Sponsor_ID VARCHAR(20) NOT NULL,
     Description VARCHAR(100) NOT NULL,
     Sponsored_Amount INT NOT NULL,
+    Session_ID VARCHAR(255) NOT NULL,
+    Status INT NOT NULL DEFAULT 1,
     Sponsored_At TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (Sponsorship_ID, Sponsor_ID),
+    PRIMARY KEY (Sponsorship_ID, Sponsor_ID,Sponsored_At),
     FOREIGN KEY (Sponsorship_ID) REFERENCES Sponsorship_Requests (Sponsorship_ID)
-) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8;
+    ) ENGINE = InnoDB
+    DEFAULT CHARSET = utf8;
+
+DROP TABLE IF EXISTS `Manager_Notices`;
+CREATE TABLE IF NOT EXISTS `Manager_Notices` (
+    Notice_ID VARCHAR(20) NOT NULL PRIMARY KEY,
+    Manager_ID VARCHAR(20) NOT NULL,
+    Notice_Title VARCHAR(100) NOT NULL,
+    Notice_Content TEXT NOT NULL,
+    Notice_Date DATE NOT NULL,
+    Notice_Status INT NOT NULL,
+    Notice_Action INT NOT NULL,
+    FOREIGN KEY (Manager_ID) REFERENCES Managers (Manager_ID)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS `Reported_Campaigns`;
+CREATE TABLE IF NOT EXISTS `Reported_Campaigns` (
+    Campaign_ID VARCHAR(20) NOT NULL,
+    Report_Reason INT NOT NULL,
+    Report_Description VARCHAR(100) NULL,
+    Reported_By VARCHAR(20) NOT NULL,
+    Reported_At TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (Campaign_ID, Reported_By),
+    FOREIGN KEY (Campaign_ID) REFERENCES Campaign (Campaign_ID),
+    FOREIGN KEY (Reported_By) REFERENCES MedicalOfficers(Officer_ID)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS `Reported_Organization`;
+CREATE TABLE IF NOT EXISTS `Reported_Organization` (
+    Organization_ID VARCHAR(20) NOT NULL,
+    Report_Reason VARCHAR(100) NOT NULL,
+    Report_Description VARCHAR(100) NULL,
+    Reported_By VARCHAR(20) NOT NULL,
+    Reported_At TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    Action INT NULL,
+    Reply VARCHAR(100) NULL,
+    Reply_Action INT NULL,
+    PRIMARY KEY (Organization_ID, Reported_By),
+    FOREIGN KEY (Organization_ID) REFERENCES Organizations (Organization_ID),
+    FOREIGN KEY (Reported_By) REFERENCES MedicalOfficers(Officer_ID)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS `Backups`;
+CREATE TABLE IF NOT EXISTS `Backups` (
+    Backup_ID VARCHAR(20) NOT NULL PRIMARY KEY,
+    Backup_Date TIMESTAMP NOT NULL,
+    Backup_Name VARCHAR(100) NOT NULL ,
+    Backup_Status INT NOT NULL,
+    Backup_Path VARCHAR(100) NOT NULL,
+    Backup_Size VARCHAR(100) NOT NULL
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+DROP TABLE IF EXISTS `Anonymous_Sponsors`;
+CREATE TABLE IF NOT EXISTS `Anonymous_Sponsors` (
+    Sponsor_ID VARCHAR(20) NOT NULL,
+    Request_ID VARCHAR(20) NOT NULL,
+    Email VARCHAR(100) NOT NULL,
+    Amount INT NOT NULL,
+    Status INT NOT NULL,
+    Session_ID VARCHAR(255) NOT NULL,
+    Sponsored_At TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (Sponsor_ID),
+    FOREIGN KEY (Request_ID) REFERENCES Sponsorship_Requests (Sponsorship_ID)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+DELIMITER $$
+DROP TRIGGER IF EXISTS `Campaign_Audit_Create`$$
+CREATE TRIGGER IF NOT EXISTS `Campaign_Audit_Create` AFTER INSERT ON `campaign_donation_queue` FOR EACH ROW
+BEGIN
+    IF EXISTS(SELECT * FROM campaign_statistics WHERE Campaign_ID=NEW.Campaign_ID) THEN
+UPDATE campaign_statistics SET No_Of_Campaign_Registers = No_Of_Campaign_Registers + 1 WHERE Campaign_ID = NEW.Campaign_ID;
+ELSE
+        INSERT INTO campaign_statistics (Campaign_ID, No_Of_Campaign_Registers)
+        VALUES (NEW.Campaign_ID,1);
+END IF;
+END $$
+DELIMITER ;
+
+DELIMITER $$
+DROP TRIGGER IF EXISTS `Campaign_Audit_Donor_Health_Check`$$
+CREATE TRIGGER IF NOT EXISTS `Campaign_Audit_Donor_Health_Check` AFTER INSERT ON `donor_health_checkup` FOR EACH ROW
+BEGIN
+UPDATE campaign_statistics SET No_Of_Health_Checks = No_Of_Health_Checks + 1 WHERE Campaign_ID = NEW.Campaign_ID;
+END $$
+DELIMITER ;
+
+DELIMITER $$
+DROP TRIGGER IF EXISTS `Campaign_Audit_Donor_Blood_Check`$$
+CREATE TRIGGER IF NOT EXISTS `Campaign_Audit_Donor_Blood_Check` AFTER INSERT ON `donor_blood_check` FOR EACH ROW
+BEGIN
+UPDATE campaign_statistics SET No_Of_Blood_Checks = No_Of_Blood_Checks + 1 WHERE Campaign_ID = NEW.Campaign_ID;
+END $$
+DELIMITER ;
+
+DELIMITER $$
+DROP TRIGGER IF EXISTS `Campaign_Audit_Donor_Successful_Blood_Donation`$$
+CREATE TRIGGER IF NOT EXISTS `Campaign_Audit_Donor_Blood_Donation` AFTER UPDATE ON `campaign_donation_queue` FOR EACH ROW
+BEGIN
+        IF (NEW.Donor_Status = 4) THEN
+UPDATE campaign_statistics SET No_Of_Successful_Donations = No_Of_Successful_Donations + 1 WHERE Campaign_ID = NEW.Campaign_ID;
+ELSEIF (NEW.Donor_Status = 5) THEN
+UPDATE campaign_statistics SET No_Of_Aborted_Donations = Campaign_Statistics.No_Of_Aborted_Donations + 1 WHERE Campaign_ID = NEW.Campaign_ID;
+END IF;
+END $$
+DELIMITER ;

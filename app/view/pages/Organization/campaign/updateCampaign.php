@@ -127,7 +127,7 @@ echo $background;
     </form>
     <div class="d-flex align-items-center justify-content-center gap-2">
         <button class="btn btn-success w-25" id="button" value="Create" onclick="update()" type="submit"> Update </button>
-        <button class="btn btn-danger w-25" id="button" value="Cancel" onclick="history.back()"> Cancel </button>
+        <button class="btn btn-danger w-25" id="button" value="Cancel" onclick="cancellation()"> Cancel </button>
     </div>
 </div>
 
@@ -346,16 +346,16 @@ echo $background;
         initMap();
 
     }
-    // const cancellation=(click)=>{
-    //     OpenDialogBox({
-    //         title: 'Cancel Confirmation',
-    //         content: 'Are You Sure You want to Go Back? Your Changes will not be saved.'
-    //         successBtnText: 'Yes',
-    //         successBtnAction: () =>{
-    //             // history.back();
-    //         },
-    //     });
-    // }
+    function cancellation(){
+        OpenDialogBox({
+            title: 'Cancel Confirmation',
+            content: 'Are You Sure You want to Go Back? Your Changes will not be saved.',
+            successBtnText: 'Yes',
+            successBtnAction: () =>{
+                 history.back();
+            },
+        });
+    }
 
 </script>
 

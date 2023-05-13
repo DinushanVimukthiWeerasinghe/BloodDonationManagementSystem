@@ -1,4 +1,4 @@
-<div class="d-flex bg-white align-self-start justify-content-center" style="width: 100%;min-width: 5%">
+<div class="d-flex bg-white align-self-start justify-content-center" style="width: 100%;min-width: 50%">
     <div class="d-flex flex-row justify-content-center border-bottom-4-primary gap-1 align-items-center" id="UserCategory" style="width: 25%">
         <div class="d-flex w-95 justify-content-center align-items-center border-2 border-primary bg-primary border-radius-5 justify-content-evenly p-0-5 mb-0-5" id="Hospital" onclick="ViewNotification('Hospital')" >
             <img src="/public/images/icons/user/hospital.png" class="w-30 bg-white border-radius-50" id="HospitalIcon" alt="" style="padding: 8px;" width="512">

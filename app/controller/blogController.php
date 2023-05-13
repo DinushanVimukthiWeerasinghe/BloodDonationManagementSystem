@@ -18,10 +18,10 @@ class blogController extends Controller
     {
         if ($request->isPost()){
             $Blog=new Blog();
+            $Blog->setBlogID(uniqid('Blog_'));
             $Blog->setBlogTitle($request->getBody()['Blog_Title']);
             $Blog->setBlogContent($request->getBody()['Blog_Content']);
             $BlogImage=$request->getBody()['Blog_Image'];
-            $BlogImage->setPathPrefix('Blog');
             $BlogImage->generateFileName('Blog_');
             $Blog->setBlogImage($BlogImage->getFileName());
             if ($Blog->save()){

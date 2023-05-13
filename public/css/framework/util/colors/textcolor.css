@@ -100,3 +100,30 @@
 .text-blue-10{
     color: var(--blue-10);
 }
+.text-purple-1{
+    color: var(--purple-1);
+}
+.text-purple-2{
+    color: var(--purple-2);
+}
+.text-purple-3{
+    color: var(--purple-3);
+}
+.text-purple-4{
+    color: var(--purple-4);
+}
+.text-purple-5{
+    color: var(--purple-5);
+}
+.text-purple-6{
+    color: var(--purple-6);
+}
+.text-purple-7{
+    color: var(--purple-7);
+}
+.text-purple-8{
+    color: var(--purple-8);
+}
+.text-purple-9{
+    color: var(--purple-9);
+}

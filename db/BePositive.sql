@@ -509,7 +509,9 @@ CREATE TABLE IF NOT EXISTS Donor_Blood_Check
     Campaign_ID        VARCHAR(20)   NOT NULL,
     BloodGroup         VARCHAR(10)   NOT NULL,
     Hemoglobin_Level   DECIMAL(4, 2) NOT NULL,
-    Blood_Pressure     DECIMAL(4, 2) NOT NULL,
+    Blood_Pressure_Upper     DECIMAL(4, 2) NOT NULL CHECK ( Blood_Pressure_Upper BETWEEN 79 AND 121 ),
+    Blood_Pressure_Lower     DECIMAL(4, 2) NOT NULL CHECK ( Blood_Pressure_Lower BETWEEN 59 AND 81 ),
+    Blood_Sugar        DECIMAL(4, 2) NOT NULL,
     Weight             DECIMAL(4, 2) NOT NULL,
     Pulse_Rate         DECIMAL(5, 2) NOT NULL,
     Temperature        DECIMAL(5, 2) NOT NULL,
@@ -892,6 +894,19 @@ CREATE TABLE IF NOT EXISTS `Reported_Organization` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
+DROP TABLE IF EXISTS `Anonymous_Sponsors`;
+CREATE TABLE IF NOT EXISTS `Anonymous_Sponsors` (
+    Sponsor_ID VARCHAR(20) NOT NULL,
+    Request_ID VARCHAR(20) NOT NULL,
+    Email VARCHAR(100) NOT NULL,
+    Amount INT NOT NULL,
+    Status INT NOT NULL,
+    Session_ID VARCHAR(255) NOT NULL,
+    Sponsored_At TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (Sponsor_ID),
+    FOREIGN KEY (Request_ID) REFERENCES Sponsorship_Requests (Sponsorship_ID)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 # Insert Blood Type
 INSERT INTO BloodGroups (BloodGroup_ID, BloodGroup_Name)
 VALUES ('A+', 'A+');
@@ -957,7 +972,7 @@ VALUES ('Mof_01', 'Medical', 'Officer', 'Address1', 'Address2', 'Colombo', '0771
 INSERT INTO Donors (DONOR_ID, FIRST_NAME, LAST_NAME, ADDRESS1, ADDRESS2, CITY, NEAREST_BANK, CONTACT_NO, EMAIL, NIC,
                     GENDER, STATUS,BloodGroup)
 VALUES ('Dnr_01', 'Donor', 'Donor', 'Address1', 'Address2', 'Colombo', 'BB_01', '0771234567', 'donor@test.com',
-        '200017800595', 'F', 0,"B+");
+        '200017800595', 'F', 0,"A+");
 
 # Make Default Organization for Testing
 INSERT INTO Organizations (Organization_ID, Organization_Name, Organization_Email, Contact_No, Address1, Address2, City,

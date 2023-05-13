@@ -39,6 +39,15 @@ class Campaign extends dbModel
     protected ?string $Longitude=null;
     protected ?string $Latitude=null;
 
+    public static function getActiveCampaigns(): bool|array
+    {
+        $Campaigns = Campaign::RetrieveAll(false,[],true,['Status'=>self::CAMPAIGN_STATUS_APPROVED]);
+        if ($Campaigns){
+            return $Campaigns;
+        }
+        return [];
+    }
+
 
     /**
      * @return string
@@ -158,7 +167,7 @@ class Campaign extends dbModel
         return $this->Campaign_Date;
     }
 
-    public function getSponsorshipRequest()
+    public function getSponsorshipRequest() : SponsorshipRequest|bool
     {
         return SponsorshipRequest::findOne(['Campaign_ID'=>$this->Campaign_ID]);
     }
@@ -424,7 +433,7 @@ class Campaign extends dbModel
     public function rules(): array
     {
         return [
-            'Campaign_ID' => [self::RULE_REQUIRED],
+            'Campaign_ID' => [self::RULE_REQUIRED,self::RULE_UNIQUE],
             'Campaign_Name' => [self::RULE_REQUIRED],
             'Campaign_Description' => [self::RULE_REQUIRED],
             'Campaign_Date' => [self::RULE_REQUIRED],
