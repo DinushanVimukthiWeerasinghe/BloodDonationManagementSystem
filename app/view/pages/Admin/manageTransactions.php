@@ -13,7 +13,7 @@ use App\model\sponsor\CampaignsSponsor;
         </div>
     </div>
     <div class="d-flex flex-column flex-center bg-white max-h-80 w-100 p-2 border-radius-10">
-        <div class="d-flex flex-center max-h-100 overflow-y-overlay w-100">
+        <div class="d-flex align-items-start justify-content-center py-2 max-h-100 overflow-y-overlay w-100" style="min-height: 80vh">
             <table class="table table-striped table-hover">
                 <thead class="bg-white">
                 <tr class="bg-white">

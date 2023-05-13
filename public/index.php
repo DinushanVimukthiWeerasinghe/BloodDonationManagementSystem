@@ -98,6 +98,8 @@ try {
     $app->router->post('/admin/dashboard/manageBanks/delete', [adminController::class, 'deleteBank']);
     $app->router->post('/admin/dashboard/manageBanks/add', [adminController::class, 'addNewBank']);
     $app->router->post('/admin/dashboard/manageBanks/search', [adminController::class, 'searchBank']);
+    $app->router->post('/backup/database', [adminController::class, 'BackupDatabase']);
+    $app->router->post('/backup/download', [adminController::class, 'DownloadBackup']);
 
     $app->router->post('/admin/manageBanks/addManager', [authController::class, 'managerRegister']);
     $app->router->get('/admin/manageBanks/addManager', [authController::class, 'managerRegister']);

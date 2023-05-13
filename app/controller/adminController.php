@@ -5,6 +5,7 @@ namespace App\controller;
 use App\middleware\adminMiddleware;
 use App\model\Authentication\AuthenticationCode;
 use App\model\Authentication\PasswordReset;
+use App\model\Blog\Blog;
 use App\model\Blood\BloodPackets;
 use App\model\BloodBankBranch\BloodBank;
 use App\model\Campaigns\ApprovedCampaigns;
@@ -23,6 +24,7 @@ use App\model\users\MedicalOfficer;
 use App\model\users\Organization;
 use App\model\users\Sponsor;
 use App\model\users\User;
+use App\model\Utils\Backup;
 use App\model\Utils\Notification;
 use App\view\components\ResponsiveComponent\Alert\FlashMessage;
 use Core\Application;
@@ -167,7 +169,12 @@ class adminController extends \Core\Controller
     public function manageSetting()
     {
         $this->layout='none';
-        return $this->render('Admin/manageSetting');
+        $Blogs = Blog::RetrieveAll();
+        $Backups = Backup::RetrieveAll();
+        return $this->render('Admin/manageSetting',[
+            'Blogs'=>$Blogs,
+            'Backups'=>$Backups
+        ]);
     }
     public function manageAlerts(Request $request, Response $response)
     {
@@ -452,7 +459,7 @@ class adminController extends \Core\Controller
         print_r($bank);
     }
 
-    public function addManagerNotification(request $request, Response $response){
+    public function addManagerNotification(Request $request, Response $response){
         $success = false;
         $managerID = null;
 
@@ -482,6 +489,44 @@ class adminController extends \Core\Controller
 
         }
         Application::Redirect('/admin/dashboard');
+    }
 
+    public function BackupDatabase(Request $request, Response $response): bool|string
+    {
+        if(Backup::backupDatabase()){
+            return json_encode(['status'=>true,'message'=>'Database Backup Successfully']);
+        }else{
+            return json_encode(['status'=>false,'message'=>'Database Backup Failed']);
+
+        }
+    }
+
+    public function DownloadBackup(Request $request, Response $response): bool|string
+    {
+        if($request->isPost()){
+            $Name = $request->getBody()['Backup_Name'];
+            /** @var Backup $Backup */
+            $Backup = Backup::findOne(['Backup_Name'=>$Name]);
+            if($Backup){
+                $FilePath = '../Backups/' . $Name . '.sql';
+                if(file_exists($FilePath)) {
+                    $file_path = $FilePath;
+                    $file_data = base64_encode(file_get_contents($file_path));
+                    $file_name = basename($file_path);
+                    $file_mime = mime_content_type($file_path);
+                    header("Content-Type: application/json");
+                    return json_encode(['status'=>true,'message'=>'Backup Found','data'=>[
+                        'file_name'=>$file_name,
+                        'file_data'=>$file_data,
+                        'file_mime'=>$file_mime,
+                    ]]);
+                }else{
+                    return json_encode(['status'=>false,'message'=>'Backup Not Found']);
+                }
+            }else{
+                return json_encode(['status'=>false,'message'=>'Backup Not Found']);
+            }
+
+        }
     }
 }
