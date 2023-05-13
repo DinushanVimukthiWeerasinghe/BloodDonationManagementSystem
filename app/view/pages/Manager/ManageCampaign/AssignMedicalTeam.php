@@ -35,11 +35,13 @@ FlashMessage::RenderFlashMessages();
 </div>
 <div id="MedOfficers" class="d-flex w-60 flex-column align-items-center bg-white p-1 border-radius-10 m-1">
     <div class="d-flex w-100 flex-row">
-        <div class="d-flex bg-white-0-7 p-1 text-dark align-items-center w-100 flex-row gap-0-5 justify-content-center flex-center">
+        <div class="d-flex bg-white-0-7 p-1 text-dark align-items-center w-100 flex-row gap-0-5 justify-content-between flex-center">
+            <div class="btn btn-outline-info d-flex gap-1 flex-center" onclick="Redirect('/manager/mngCampaigns?status=2')"><i class="fa-regular fa-2x fa-circle-left"></i>Back</div>
             <div id="Search" class="d-flex gap-0-5 align-items-center flex-center">
                 <label for="search" class="search">Search </label>
                 <input class="form-control" name="search" id="search" onkeyup="SearchAssignOfficer('/manager/mngMedicalOfficer/search-for-team','assign')">
             </div>
+            <div></div>
         </div>
     </div>
     <div class="d-flex w-100 overflow-y-scroll">
