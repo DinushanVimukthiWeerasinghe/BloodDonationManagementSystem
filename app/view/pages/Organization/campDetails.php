@@ -403,7 +403,8 @@ const RequestSponsorship = (bankAccountNumber,bankAccountName,bankName,bankBranc
                                             message:'Sponsorship Requested Successfully',
                                             type:'success'
                                         })
-                                        CloseDialogBox('RequestSponsorship')
+                                        CloseDialogBox('RequestSponsorship');
+                                        window.location.reload();
                                     }else{
                                         ShowToast({
                                             message:data.message,
