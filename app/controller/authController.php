@@ -704,67 +704,8 @@ class authController extends Controller
     }
 
 
-    public function managerRegister(Request $request, Response $response) {
-        if($request->isPost()){
-            $data = $request->getBody();
-            $user = new User();
-            $user->setRole('Manager');
-            $Password = $data['password'];
-            $hash = password_hash($Password, PASSWORD_DEFAULT);
-            $user->loadData($request->getBody());
-//            $user->setAccountStatus(User::SEC_LEVEL_NORMAL);
-            $user->setPassword($hash);
-            $user->generateUID();
-            $user->setEmail($data['Email']);
-            $manager = new Manager();
-            $manager->loadData($data);
-//            $manager->setProfileImage('noPath');
-            $manager->setID($user->getUid());
-            $manager->setBloodBankID($data['bank']);
-//            $manager->setStatus(5);
-
-//            var_dump($user);
-
-//            exit();
-            if($user->validate()){
-                if($user->save()){
-                    if ($manager->validate()){
-//                      error_log($manager->getCity() .' '. $manager->getID() .' '. $manager->getFirstName() .' '. $manager->getLastName().' '.$manager->getAddress1().' '.$manager->getAddress2().' '.$manager->getContactNo().' '.$manager->getEmail().' '.$manager->getStatus().' '.$manager->getBloodBankID().' '.$manager->getProfileImage());
-                        error_log($manager->save());
-                    }
-                }
-            }
-            error_log(print_r($manager->errors, true));
-//            $response->redirect('/');
-//            print_r($request);
-        }
-    }
 
 
-    function hospitalRegister(Request $request, Response $response){
-        if($request->isPost()){
-            $data = $request->getBody();
-            $user = new User();
-//            $user->setEmail($data['Email']);
-            $user->setRole('Hospital');
-            $user->loadData($data);
-            $user->generateUID();
-            $user->setPassword(password_hash($data['password'],PASSWORD_DEFAULT));
-
-            $hospital = new Hospital();
-            $hospital->loadData($data);
-            $hospital->setID($user->getId());
-
-            if($user->validate()){
-                if ($user->save()){
-                    if ($hospital->validate()){
-                        $hospital->save();
-                    }
-                    error_log(print_r($hospital->errors, true));
-                }
-            }
-        }
-    }
 
 
     public function logout()

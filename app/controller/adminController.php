@@ -11,6 +11,7 @@ use App\model\Campaigns\ApprovedCampaigns;
 use App\model\Campaigns\Campaign;
 use App\model\Donations\AcceptedDonations;
 use App\model\Email\BaseEmail;
+use App\model\Notification\HospitalNotification;
 use App\model\Notification\ManagerNotification;
 use App\model\Requests\BloodRequest;
 use App\model\Requests\SponsorshipRequest;
@@ -23,6 +24,7 @@ use App\model\users\MedicalOfficer;
 use App\model\users\Organization;
 use App\model\users\Sponsor;
 use App\model\users\User;
+use App\model\Utils\Date;
 use App\model\Utils\Notification;
 use App\view\components\ResponsiveComponent\Alert\FlashMessage;
 use Core\Application;
@@ -174,27 +176,34 @@ class adminController extends \Core\Controller
         $this->layout='none';
 
         $Role=$request->getBody()['Role'] ?? 'Hospital';
-        $notifications = [];
+        $notificationList = [];
         $data = [];
+        $receiver = null;
+        $receiverName = '';
         if ($Role == 'Manager'){
             $data['Headings'] = ['Title','Message','Receiver'];
-            $notifications = ManagerNotification::RetrieveAll();
-            foreach ($notifications as $notification){
-                $manager = Manager::findOne(['Manager_ID' => $notification->getTargetID()]);
-                $managerName = 'All Managers';
-                if ($manager){
-                    $managerName = $manager->getFullName();
-                }
-                $data[] = [
-                    'NotificationTitle' => $notification->getNotificationTitle(),
-                    'NotificationMessage' => $notification->getNotificationMessage(),
-                    'Receiver' => $managerName
-                ];
-            }
-        }
-        else if ($Role == 'Hospital'){
+            $notificationList = ManagerNotification::RetrieveAll();
+            $receiverName = 'All Managers';
+        } else if ($Role == 'Hospital'){
             $data['Headings'] = ['Title','Message','Receiver'];
-//            $notifications = HospitalNotification::RetrieveAll();
+            $notificationList = HospitalNotification::RetrieveAll();
+            $receiverName = 'All Hospitals';
+        }
+        foreach ($notificationList as $notification){
+//            $receiver = User::findOne(['$UID' => $notification->getTargetID()]);
+            if ($Role == 'Hospital'){
+                $receiver = Hospital::findOne(['Hospital_ID' => $notification->getTargetID()]);
+            }else if ($Role == 'Manager'){
+                $receiver = Manager::findOne(['Manager_ID' => $notification->getTargetID()]);
+            }
+            if ($receiver){
+                $receiverName = $receiver->getFullName();
+            }
+            $data[] = [
+                'NotificationTitle' => $notification->getNotificationTitle(),
+                'NotificationMessage' => $notification->getNotificationMessage(),
+                'Receiver' => $receiverName
+            ];
         }
 
 //        print_r($data);
@@ -359,10 +368,11 @@ class adminController extends \Core\Controller
             }
             else{
                 $this->setFlashMessage('error','An error occurred while updating');
-//                print_r($BBank->errors);
             }
+//            print_r($BBank->errors);
+//            exit();
             //BloodBank::updateOne();
-//            Application::Redirect('/admin/dashboard');
+            Application::Redirect('/admin/dashboard');
         }
     }
 
@@ -412,9 +422,9 @@ class adminController extends \Core\Controller
         }else{
             $this->setFlashMessage('error', 'An error has occurred');
 //            print_r($newBank->errors);
-            Application::Redirect('/admin/dashboard');
         }
         }
+        Application::Redirect('/admin/dashboard');
     }
 
     public function searchBank(Request $request, Response $response): bool|string
@@ -457,6 +467,8 @@ class adminController extends \Core\Controller
         $managerID = null;
 
         $notificationData = $request->getBody();
+        if($request->isPost()){
+
         $notification = new ManagerNotification();
         if($notificationData['managerId']!=='allManagers'){
             $managerID = $notificationData['managerId'];
@@ -481,7 +493,144 @@ class adminController extends \Core\Controller
             echo $alert->ErrorAlert("Error adding notification");
 
         }
+        }
         Application::Redirect('/admin/dashboard');
 
     }
+
+
+    public function getAllHospitals(Request $request, Response $response)
+    {
+        $hospitals = Hospital::RetrieveAll();
+        $data = [];
+        foreach($hospitals as $hospital){
+            $data[]=[
+                'HospitalID' => $hospital->getHospitalID(),
+                'HospitalName' => $hospital->getHospitalName(),
+            ];
+        }
+
+        return json_encode($data);
+    }
+
+    public function addHospitalsNotification(Request $request, Response $response){
+        $data = $request->getBody();
+        if($request->isPost()){
+            $notification = new HospitalNotification();
+            $notification->setNotificationID(HospitalNotification::generateID('HN_'));
+            $notification->setNotificationDate(date('Y-m-d H:i:s'));
+            $notification->setNotificationMessage($data['message']);
+            $notification->setNotificationTitle($data['title']);
+            $notification->setNotificationType(1);
+            $notification->setNotificationStatus(1);
+            if($data['hospitalId'] != 'allHospitals'){
+//            print_r($data['hospitalId']);
+//            exit();
+                $notification->setTargetID($data['hospitalId']);
+            }
+            $notification->setValidUntil($data['expiration-date']);
+
+            if ($notification->validate()){
+//                $notification->save();
+                if($notification->save()){
+                    $this->setFlashMessage('success','Notification Added Success');
+                }else{
+                    $this->setFlashMessage('error','Something went wrong Saving Notification');
+                }
+            }else{
+                $this->setFlashMessage('error','Something went wrong');
+            }
+
+//            print_r($notification);
+//            exit();
+        }
+        $response->redirect('/admin/dashboard');
+    }
+
+
+
+
+
+
+    public function managerRegister(Request $request, Response $response) {
+        if($request->isPost()){
+            $data = $request->getBody();
+            $user = new User();
+            $user->setRole('Manager');
+            $Password = $data['password'];
+            $hash = password_hash($Password, PASSWORD_DEFAULT);
+            $user->loadData($request->getBody());
+//            $user->setAccountStatus(User::SEC_LEVEL_NORMAL);
+            $user->setPassword($hash);
+            $user->generateUID();
+            $user->setEmail($data['Email']);
+            $manager = new Manager();
+            $manager->loadData($data);
+//            $manager->setProfileImage('noPath');
+            $manager->setID($user->getUid());
+            $manager->setBloodBankID($data['bank']);
+            $manager->setJoinedDate(date('Y-m-d H:i:s'));
+            $manager->setJoinedAt(date('Y-m-d H:i:s'));
+            $manager->setStatus(5);
+
+//            var_dump($user);
+
+//            exit();
+            if($user->validate()){
+                if($user->save()){
+                    if ($manager->validate()){
+//                      error_log($manager->getCity() .' '. $manager->getID() .' '. $manager->getFirstName() .' '. $manager->getLastName().' '.$manager->getAddress1().' '.$manager->getAddress2().' '.$manager->getContactNo().' '.$manager->getEmail().' '.$manager->getStatus().' '.$manager->getBloodBankID().' '.$manager->getProfileImage());
+                        if($manager->save()){
+                            $this->setFlashMessage('success', 'Manager Successfully Added');
+                        }
+                    }else{
+                        $this->setFlashMessage('error', 'Could not validate Manager');
+                    }
+                }
+            }else{
+                $this->setFlashMessage('error', 'Error Occurred');
+            }
+//            error_log(print_r($manager->errors, true));
+//            $response->redirect('/');
+//            print_r($request);
+        }
+        $response->redirect('/admin/dashboard');
+    }
+
+
+
+    function hospitalRegister(Request $request, Response $response){
+        if($request->isPost()){
+            $data = $request->getBody();
+            $user = new User();
+//            $user->setEmail($data['Email']);
+            $user->setRole('Hospital');
+            $user->loadData($data);
+            $user->generateUID();
+            $user->setPassword(password_hash($data['password'],PASSWORD_DEFAULT));
+
+            $hospital = new Hospital();
+            $hospital->loadData($data);
+            $hospital->setID($user->getId());
+
+            if($user->validate()){
+                if ($user->save()){
+                    if ($hospital->validate()){
+//                        error_log('Please work now im frustrated');
+                        if($hospital->save()){
+                            $this->setFlashMessage('success', 'Hospital added successfully');
+                        }
+                    }else{
+                        $this->setFlashMessage('error', 'Could not validate');
+                    }
+                    error_log(print_r($hospital->errors, true));
+                }
+            }else{
+                $this->setFlashMessage('error', 'Cannot Validate User Account');
+            }
+        }
+        $response->redirect('/admin/dashboard');
+    }
+
+
 }

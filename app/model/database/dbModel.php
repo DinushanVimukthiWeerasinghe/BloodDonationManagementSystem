@@ -239,7 +239,7 @@ abstract class dbModel extends Model
             $statement->bindValue(":$attribute", $this->{$attribute});
         }
         try {
-            $statement->execute();
+            return $statement->execute();
         }catch (PDOException $e){
             return false;
         }
