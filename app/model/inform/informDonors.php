@@ -28,7 +28,7 @@ class informDonors extends dbModel
     {
         // TODO: Implement rules() method.
         return [
-            'Message'=>[self::RULE_REQUIRED,[self::RULE_MAX,'max' => 200],[self::RULE_MIN,'min' => 10]],
+            'Message'=>[self::RULE_REQUIRED],
 //            'Password'=>[self::RULE_REQUIRED],
         ];
     }

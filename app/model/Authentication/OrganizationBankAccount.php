@@ -109,7 +109,7 @@ class OrganizationBankAccount extends \App\model\database\dbModel
         return [
             'Organization_ID'=>[self::RULE_REQUIRED,self::RULE_UNIQUE],
             'Bank_Name'=>[self::RULE_REQUIRED],
-            'Account_Number'=>[self::RULE_REQUIRED,self::RULE_UNIQUE],
+            'Account_Number'=>[self::RULE_REQUIRED,self::RULE_UNIQUE,[self::RULE_MIN => 8]],
             'Account_Name'=>[self::RULE_REQUIRED],
             'Branch_Name'=>[self::RULE_REQUIRED],
         ];

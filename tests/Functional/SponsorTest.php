@@ -2,12 +2,13 @@
 
 namespace Functional;
 
-use App\model\Notification\DonorNotification;
+use App\model\Notification\SponsorNotification;
+use App\model\users\Sponsor;
 use Core\Application;
 use Dotenv\Dotenv;
 use PHPMailer\PHPMailer\Exception;
 
-class donorNotificationTest extends \Codeception\Test\Unit
+class SponsorTest extends \Codeception\Test\Unit
 {
 
     /**
@@ -46,32 +47,37 @@ class donorNotificationTest extends \Codeception\Test\Unit
     }
 
     /**
-     * @dataprovider  ValidDonorIDProvider
-     * @param string|null $DonorID
+     * @dataprovider  SponsorProvider
+     * @param null|string $SponsorID
+     * @param string $Email
      * @param bool $expected
      * @return void
      * @throws Exception
      */
-    public function testValidDonorID($DonorID, bool $expected)
+    public function testValidSponsor($SponsorID, $Email, bool $expected)
     {
-//        $app = $this->getApp();
-        $Donor_notification = new DonorNotification();
-        $Donor_notification->setNotificationID('NOT_001');
-        $Donor_notification->setTargetID($DonorID);
-        $Donor_notification->setTargetGroup("A+");
-        $Donor_notification->setNotificationState(DonorNotification::NOTIFICATION_STATE_UNREAD);
-        $Donor_notification->setNotificationTitle('Test Title');
-        $Donor_notification->setNotificationMessage('Description of the notification details.');
-        $Donor_notification->setValidUntil(date('Y-m-d H:i:s', strtotime('+2 day')));
-        $Donor_notification->setNotificationDate(date('Y-m-d H:i:s'));
-        $Donor_notification->setNotificationType(DonorNotification::INFORM_GROUP_OF_DONOR);
-        $this->assertEquals($expected,$Donor_notification->save());
+//        $this->getApp();
+        $sponsor = new Sponsor();
+        $sponsor->setSponsorID($SponsorID);
+        $sponsor->setEmail($Email);
+        $sponsor->setAddress1('Matara');
+        $sponsor->setAddress2('Matara');
+        $sponsor->setNIC('956789134V');
+        $sponsor->setCity('Matara');
+        $sponsor->setContactNo('0765431234');
+        $sponsor->setType(1);
+        $sponsor->setProfileImage('user');
+        $this->assertEquals($expected,$sponsor->save());
+//        session_destroy();
+
     }
 
-    public function ValidDonorIDProvider()
+    public function SponsorProvider()
     {
         return [
-            ['Dnr1',true],
+            ['Spn_35','amal@gmail.com',true],
+            ['Spn_35','namal@gmail.com',false],
+            ['Spn_36','namal@gmail.com',false],
         ];
     }
 

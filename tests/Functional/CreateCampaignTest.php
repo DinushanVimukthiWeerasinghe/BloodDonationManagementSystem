@@ -61,11 +61,13 @@ class CreateCampaignTest extends \Codeception\Test\Unit
     /**
      * @dataprovider  ValidCampaignIDProvider
      * @param string $Campaign_ID
+     * @param string $BloodBankID
+     * @param string $OrganuzationID
      * @param bool $expected
      * @return void
      * @throws Exception
      */
-    public function testCampaigns($Campaign_ID,bool $expected){
+    public function testCampaigns($Campaign_ID,$BloodBankID,$OrganizationID, bool $expected){
         $app = $this->getApp();
         $campaign = new Campaign();
         $campaign->setCampaignID($Campaign_ID);
@@ -78,19 +80,25 @@ class CreateCampaignTest extends \Codeception\Test\Unit
         $campaign->setCreatedAt('2002-05-10');
         $campaign->setStatus(Campaign::CAMPAIGN_STATUS_PENDING);
         $campaign->setVenue('Matara');
-        $campaign->setOrganizationID('Org_01');
-        $campaign->setNearestBloodBank('BB_02');
+        $campaign->setOrganizationID($OrganizationID);
+        $campaign->setNearestBloodBank($BloodBankID);
         $campaign->setLatitude(1.5555);
         $campaign->setLongitude(2.5555);
         $this->assertEquals($expected,$campaign->save());
-        session_destroy();
+//        session_destroy();
     }
 
     public function ValidCampaignIDProvider(){
         return [
-            ['Camp_002',true],
-
+            ['Camp_0022','BB_04','Org_01',true],
+            ['Camp_0022','BB_04','Org_01',false],
+            ['Camp_0023','BB_02','Org_01',false],
+            ['Camp_0023','BB_04','Org_01',true],
+            ['Camp_0024','BB_04','Org_00',false],
+            ['Camp_0025','BB_02','Org_00',false],
         ];
     }
+
+
 
 }

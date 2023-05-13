@@ -2,12 +2,14 @@
 
 namespace Functional;
 
+use App\model\Authentication\OrganizationBankAccount;
 use App\model\Notification\DonorNotification;
+use App\model\Notification\OrganizationNotification;
 use Core\Application;
 use Dotenv\Dotenv;
 use PHPMailer\PHPMailer\Exception;
 
-class donorNotificationTest extends \Codeception\Test\Unit
+class OrganizationBankDetailsTest extends \Codeception\Test\Unit
 {
 
     /**
@@ -46,32 +48,32 @@ class donorNotificationTest extends \Codeception\Test\Unit
     }
 
     /**
-     * @dataprovider  ValidDonorIDProvider
-     * @param string|null $DonorID
+     * @dataprovider  OrganizationBankID
+     * @param null|string $OrganizationID
      * @param bool $expected
      * @return void
      * @throws Exception
      */
-    public function testValidDonorID($DonorID, bool $expected)
+    public function testValidOrganizationID(string $OrganizationID,bool $expected)
     {
-//        $app = $this->getApp();
-        $Donor_notification = new DonorNotification();
-        $Donor_notification->setNotificationID('NOT_001');
-        $Donor_notification->setTargetID($DonorID);
-        $Donor_notification->setTargetGroup("A+");
-        $Donor_notification->setNotificationState(DonorNotification::NOTIFICATION_STATE_UNREAD);
-        $Donor_notification->setNotificationTitle('Test Title');
-        $Donor_notification->setNotificationMessage('Description of the notification details.');
-        $Donor_notification->setValidUntil(date('Y-m-d H:i:s', strtotime('+2 day')));
-        $Donor_notification->setNotificationDate(date('Y-m-d H:i:s'));
-        $Donor_notification->setNotificationType(DonorNotification::INFORM_GROUP_OF_DONOR);
-        $this->assertEquals($expected,$Donor_notification->save());
+//        $this->getApp();
+        $bankAccount = new OrganizationBankAccount();
+        $bankAccount->setOrganizationID($OrganizationID);
+        $bankAccount->setBankName('People\'s Bank');
+        $bankAccount->setBranchName('Beliatta');
+        $bankAccount->setAccountName('YES');
+        $bankAccount->setAccountNumber('8006559435');
+        $this->assertEquals($expected,$bankAccount->save());
+//        session_destroy();
+
     }
 
-    public function ValidDonorIDProvider()
+    public function OrganizationBankID()
     {
         return [
-            ['Dnr1',true],
+            ['Org_01',true],
+            ['Org_01',false],
+            ['Org_00',false],
         ];
     }
 

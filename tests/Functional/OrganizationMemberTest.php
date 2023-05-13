@@ -2,18 +2,34 @@
 
 namespace Functional;
 
-use App\model\Notification\DonorNotification;
+use App\model\Campaigns\Campaign;
+use App\model\OrganizationMembers\Organization_Members;
+use App\model\Utils\Date;
+use Codeception\Template\Unit;
+use Codeception\Test\Test;
 use Core\Application;
 use Dotenv\Dotenv;
 use PHPMailer\PHPMailer\Exception;
+use Tests\Support\FunctionalTester;
 
-class donorNotificationTest extends \Codeception\Test\Unit
+class OrganizationMemberTest extends \Codeception\Test\Unit
 {
+    /**
+     * @var FunctionalTester
+     */
+    protected FunctionalTester $tester;
+
+
+
+    protected function _before()
+    {
+    }
 
     /**
      * @throws Exception
      */
-    private function getApp():Application{
+    private function getApp(): Application
+    {
         require_once __DIR__ . '/../../vendor/autoload.php';
         $dotenv = Dotenv::createImmutable(dirname(__DIR__).'/../');
         $dotenv->load();
@@ -44,39 +60,31 @@ class donorNotificationTest extends \Codeception\Test\Unit
 
         return new Application(dirname(__DIR__), $config);
     }
-
     /**
-     * @dataprovider  ValidDonorIDProvider
-     * @param string|null $DonorID
+     * @dataprovider  ValidCampaignIDProvider
+     * @param string $NIC
+     * @param string $OrganuzationID
      * @param bool $expected
      * @return void
      * @throws Exception
      */
-    public function testValidDonorID($DonorID, bool $expected)
-    {
+    public function testOrganizationMembers($OrganizationID, $NIC, bool $expected){
 //        $app = $this->getApp();
-        $Donor_notification = new DonorNotification();
-        $Donor_notification->setNotificationID('NOT_001');
-        $Donor_notification->setTargetID($DonorID);
-        $Donor_notification->setTargetGroup("A+");
-        $Donor_notification->setNotificationState(DonorNotification::NOTIFICATION_STATE_UNREAD);
-        $Donor_notification->setNotificationTitle('Test Title');
-        $Donor_notification->setNotificationMessage('Description of the notification details.');
-        $Donor_notification->setValidUntil(date('Y-m-d H:i:s', strtotime('+2 day')));
-        $Donor_notification->setNotificationDate(date('Y-m-d H:i:s'));
-        $Donor_notification->setNotificationType(DonorNotification::INFORM_GROUP_OF_DONOR);
-        $this->assertEquals($expected,$Donor_notification->save());
+        $member = new Organization_Members();
+        $member->setOrganizationID($OrganizationID);
+        $member->setNIC($NIC);
+        $this->assertEquals($expected,$member->save());
+//        session_destroy();
     }
 
-    public function ValidDonorIDProvider()
-    {
+    public function ValidCampaignIDProvider(){
         return [
-            ['Dnr1',true],
+            ['Org_01','123456789V',true],
+            ['Org_02','123456789V',false],
+            ['Org_02','123456777V',false],
+            ['Org_00','123456777V',false],
         ];
     }
-
-
-
 
 
 

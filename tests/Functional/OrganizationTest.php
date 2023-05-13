@@ -2,12 +2,14 @@
 
 namespace Functional;
 
-use App\model\Notification\DonorNotification;
+use App\model\Notification\SponsorNotification;
+use App\model\users\Organization;
+use App\model\users\Sponsor;
 use Core\Application;
 use Dotenv\Dotenv;
 use PHPMailer\PHPMailer\Exception;
 
-class donorNotificationTest extends \Codeception\Test\Unit
+class OrganizationTest extends \Codeception\Test\Unit
 {
 
     /**
@@ -46,32 +48,38 @@ class donorNotificationTest extends \Codeception\Test\Unit
     }
 
     /**
-     * @dataprovider  ValidDonorIDProvider
-     * @param string|null $DonorID
+     * @dataprovider  SponsorProvider
+     * @param null|string $OrganizationID
+     * @param string $Email
      * @param bool $expected
      * @return void
      * @throws Exception
      */
-    public function testValidDonorID($DonorID, bool $expected)
+    public function testValidOrganization( $OrganizationID, $Email, bool $expected)
     {
-//        $app = $this->getApp();
-        $Donor_notification = new DonorNotification();
-        $Donor_notification->setNotificationID('NOT_001');
-        $Donor_notification->setTargetID($DonorID);
-        $Donor_notification->setTargetGroup("A+");
-        $Donor_notification->setNotificationState(DonorNotification::NOTIFICATION_STATE_UNREAD);
-        $Donor_notification->setNotificationTitle('Test Title');
-        $Donor_notification->setNotificationMessage('Description of the notification details.');
-        $Donor_notification->setValidUntil(date('Y-m-d H:i:s', strtotime('+2 day')));
-        $Donor_notification->setNotificationDate(date('Y-m-d H:i:s'));
-        $Donor_notification->setNotificationType(DonorNotification::INFORM_GROUP_OF_DONOR);
-        $this->assertEquals($expected,$Donor_notification->save());
+//        $this->getApp();
+        $organization = new Organization();
+        $organization->setOrganizationID('Org_000');
+        $organization->setContactNo('07776548907');
+        $organization->setAddress1('Matara');
+        $organization->setAddress2('Matara');
+        $organization->setType(1);
+        $organization->setProfileImage('img');
+        $organization->setNIC('982456789V');
+        $organization->setCity('Matara');
+        $organization->setStatus(Organization::ORGANIZATION_NOT_VERIFIED);
+        $organization->setEmail('org120@test.com');
+        $this->assertEquals($expected,$organization->save());
+//        session_destroy();
+
     }
 
-    public function ValidDonorIDProvider()
+    public function SponsorProvider()
     {
         return [
-            ['Dnr1',true],
+            ['Org_35','amal@gmail.com',true],
+            ['Org_35','namal@gmail.com',false],
+            ['Org_36','namal@gmail.com',false],
         ];
     }
 

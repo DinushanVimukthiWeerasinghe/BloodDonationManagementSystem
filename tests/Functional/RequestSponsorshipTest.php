@@ -62,29 +62,35 @@ class RequestSponsorshipTest extends \Codeception\Test\Unit
     }
     /**
      * @dataprovider  ValidRequestIDProvider
+     * @param string $Sponsorship_ID
+     * @param string $SponsorsipAmount
      * @param string $Campaign_ID
      * @param bool $expected
      * @return void
      * @throws Exception
      */
-    public function testSponsorshipRequest($sponsorship_ID,bool $expected){
+    public function testSponsorshipRequest($sponsorship_ID, $SponsorsipAmount, $Campaign_ID,bool $expected){
 //        $app = $this->getApp();
         $sponsorship = new SponsorshipRequest();
         $sponsorship->setSponsorshipID($sponsorship_ID);
-        $sponsorship->setCampaignID('Camp_645b4ebc92123');
-        $sponsorship->setSponsorshipAmount(50000);
+        $sponsorship->setCampaignID($Campaign_ID);
+        $sponsorship->setSponsorshipAmount($SponsorsipAmount);
         $sponsorship->setSponsorshipStatus(SponsorshipRequest::STATUS_PENDING);
         $sponsorship->setSponsorshipDate(date('Y-m-d'));
         $sponsorship->setDescription('This is a test Description');
         $this->assertEquals($expected,$sponsorship->save());
-        session_destroy();
+//        session_destroy();
 
     }
 
     public function ValidRequestIDProvider(){
         return [
-            ['',false],
-            ['spn_005',true],
+            ['Req_002','2000','Camp_0022',true],
+            ['Req_002','2000','Camp_0022',false],
+            ['Req_003','500','Camp_0022',false],
+            ['Req_003','1200','Camp_0023',true],
+            ['Req_004','1700','Camp_0024',false],
+
         ];
     }
 

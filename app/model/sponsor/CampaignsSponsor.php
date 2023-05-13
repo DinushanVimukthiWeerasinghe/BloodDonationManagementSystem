@@ -126,7 +126,7 @@ class CampaignsSponsor extends \App\model\database\dbModel
             'Description',
             'Sponsored_Amount',
             'Sponsored_At',
-            'Status',
+//            'Status',
             'Session_ID',
         ];
     }
