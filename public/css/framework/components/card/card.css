@@ -45,6 +45,18 @@
     opacity: 1 !important;
 }
 
+.card-hover-danger:hover{
+    box-shadow: 0 3px 0 rgba(9,30,66,.25), 0 0 60px rgba(255,0,0,.08);
+    transform: scale(1.05) translate(0, -5px);
+    cursor: pointer;
+}
+
+.card-hover-success:hover{
+    box-shadow: 0 3px 0 rgba(9,30,66,.25), 0 0 60px rgba(0,255,0,.08);
+    transform: scale(1.05) translate(0, -5px);
+    cursor: pointer;
+}
+
 .nav-card:hover{
     box-shadow: 0 1px 0 rgba(9,30,66,.25), 0 0 60px rgba(0,0,0,.08);
     transform: scale(1.05) translate(0, -5px);

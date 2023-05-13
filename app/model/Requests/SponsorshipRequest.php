@@ -112,6 +112,7 @@ class SponsorshipRequest extends \App\model\database\dbModel
     {
         $CampaignSponsors = CampaignsSponsor::RetrieveAll(false,[],true,['Sponsorship_ID'=>$this->Sponsorship_ID,'Status'=>CampaignsSponsor::PAYMENT_STATUS_PAID]);
         $AnonymousSponsors = AnonymousSponsor::RetrieveAll(false,[],true,['Request_ID'=>$this->Sponsorship_ID,'Status'=>AnonymousSponsor::PAYMENT_STATUS_PAID]);
+        $SponsoredAmount = 0;
         if (count($CampaignSponsors) == 0 && count($AnonymousSponsors) == 0)
             return $this->Sponsorship_Amount;
         if (count($CampaignSponsors) > 0)

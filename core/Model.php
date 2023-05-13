@@ -12,7 +12,7 @@ abstract class Model
     public const RULE_OLDER_DATE = 'older_date';
     public const RULE_TODAY_OR_OLDER_DATE = 'today_or_older_date';
     public const RULE_UPCOMING_DATE = 'upcoming_date';
-    public const    RULE_MAX_VALUE = 'max_value';
+    public const RULE_MAX_VALUE = 'max_value';
     public const RULE_MIN_VALUE = 'min_value';
 
     public const RULE_MOBILE_NO = 'mobile';

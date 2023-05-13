@@ -4,6 +4,7 @@
 
 use App\model\Donor\DonorHealthCheckUp;
 use App\model\users\Donor;
+use App\model\Utils\Security;
 use App\view\components\ResponsiveComponent\Alert\FlashMessage;
 
 ?>
@@ -43,7 +44,7 @@ use App\view\components\ResponsiveComponent\Alert\FlashMessage;
                         <td><?= $Donor->getContactNo() ?></td>
                         <td><?= $Donor->getGender() ?></td>
                         <td>
-                            <a href="/mofficer/take-donation?NIC=<?= $Donor->getNIC() ?>" class="btn btn-outline-success">Check</a>
+                            <a href="/mofficer/take-donation?NIC=<?= urlencode(Security::Encrypt($Donor->getNIC())); ?>" class="btn btn-outline-success">Check</a>
                         </td>
                     </tr>
                 <?php

@@ -41,54 +41,109 @@ if (isset($BloodRetrievingStarted)):
 <?php
 else:
 ?>
-<div class="d-flex flex-column bg-white m-1 h-100 w-100">
+<div class="d-flex flex-column justify-content-start bg-white m-1 h-100 w-100">
     <div class="d-flex flex-column align-items-center ">
         <div class="d-flex flex-column  w-100 justify-content-center align-items-center">
             <div class="text-xl w-95 mt-1 text-white bg-dark text-center py-1 px-1">Donor Details - <?=$Donor->getNIC()?></div>
         </div>
-        <div class="d-flex w-90 mt-1 justify-content-between gap-1">
-            <div class="d-flex flex-column justify-content-center align-items-center w-50" id="PersonalDetails">
+        <div class="d-flex w-90 mt-1 justify-content-center align-items-baseline gap-1">
+            <div class="d-flex flex-column justify-content-center align-items-center w-40" id="PersonalDetails">
                 <div class="d-flex bg-dark px-2 text-white text-center justify-content-center align-items-center py-1 text-white w-100">Personal Details</div>
                 <div class="d-flex w-90 justify-content-center mt-1 align-items-center">
                     <label for="FullName" class="form-label w-40">Full Name</label>
-                    <input type="text" class="form-control w-60" id="FullName" value="<?=$Donor->getFullName()?>" disabled>
+                    <input type="text" class="form-control border-dark w-60" style="border: 2px solid" id="FullName" value="<?=$Donor->getFullName()?>" disabled>
                 </div>
                 <div class="d-flex w-90 justify-content-center mt-1 align-items-center">
                     <label for="NIC" class="form-label w-40">NIC</label>
-                    <input type="text" class="form-control w-60" id="NIC" value="<?=$Donor->getNIC()?>" disabled>
+                    <input type="text" class="form-control border-dark w-60" style="border: 2px solid" id="NIC" value="<?=$Donor->getNIC()?>" disabled>
+                </div>
+                <div class="d-flex w-90 justify-content-center mt-1 align-items-center">
+                    <label for="Age" class="form-label w-40">Age</label>
+                    <input type="text" class="form-control border-dark w-60" style="border: 2px solid" id="NIC" value="<?=$Donor->getAge()?> Years" disabled>
                 </div>
                 <div class="d-flex w-90 justify-content-center mt-1 align-items-center">
                     <label for="DOB" class="form-label w-40">Gender</label>
-                    <input type="text" class="form-control w-60" id="DOB" value="<?=$Donor->getGender()?>" disabled>
+                    <input type="text" class="form-control border-dark w-60" style="border: 2px solid" id="DOB" value="<?=$Donor->getGender()?>" disabled>
                 </div>
+                <div class="d-flex w-90 justify-content-center mt-1 align-items-center">
+                    <label for="Address" class="form-label w-40">Address</label>
+                    <input type="text" class="form-control border-dark w-60" style="border: 2px solid" id="Address" value="<?=$Donor->getAddress()?>" disabled>
+                </div>
+
             </div>
-            <div class="d-flex flex-column justify-content-center align-items-center w-50" id="MedicalDetails">
+            <div class="d-flex flex-column justify-content-center align-items-center w-60" id="MedicalDetails">
                 <div class="d-flex bg-dark px-2 text-white text-center justify-content-center align-items-center py-1 text-white w-100">Medical Details</div>
                 <div class="d-flex w-90 justify-content-center mt-1 align-items-center">
                     <div class="card card-sm">
                         <div class="card-header flex-column gap-1">
-                            <img src="/public/images/icons/verify.png" alt="A+" class="border-radius-10">
+                            <i class="fa-solid fa-circle-check fa-3x"></i>
                             <div class="text-center text-xl">Verified User</div>
                         </div>
                     </div>
                     <div class="card card-sm">
                         <div class="card-header flex-column gap-1">
-                            <img src="/public/images/icons/BloodType/A+.png" alt="A+" class="border-radius-10">
+                            <img src="/public/images/icons/BloodType/A+.png" width="52" alt="A+" class="border-radius-10">
                             <div class="text-center text-xl">Blood Type</div>
                         </div>
                     </div>
+                    <div class="card card-sm">
+                        <div class="card-header flex-column gap-1">
+                            <div class="single-chart" style="width: 60%">
+                                <svg viewBox="0 0 36 36" class="circular-chart blue">
+                                    <path class="circle-bg"
+                                          d="M18 2.0845
+          a 15.9155 15.9155 0 0 1 0 31.831
+          a 15.9155 15.9155 0 0 1 0 -31.831"
+                                    />
+                                    <path class="circle"
+                                          stroke-dasharray="100, 100"
+                                          d="M18 2.0845
+          a 15.9155 15.9155 0 0 1 0 31.831
+          a 15.9155 15.9155 0 0 1 0 -31.831"
+                                    />
+                                    <text x="18" y="20.35" class="percentage"><?=$Donor->getTotalSuccessfulDonations()?></text>
+                                </svg>
+                            </div>
+                            <div class="text-center text-xl">Donations</div>
+                        </div>
+                    </div>
+                    <div class="card card-sm">
+                        <div class="card-header flex-column ">
+                            <div class="single-chart" style="width: 60%">
+                                <svg viewBox="0 0 36 36" class="circular-chart green">
+                                    <path class="circle-bg"
+                                          d="M18 2.0845
+          a 15.9155 15.9155 0 0 1 0 31.831
+          a 15.9155 15.9155 0 0 1 0 -31.831"
+                                    />
+                                    <path class="circle"
+                                          stroke-dasharray="<?=$Donor->getSuccessRate()?>, 100"
+                                          d="M18 2.0845
+          a 15.9155 15.9155 0 0 1 0 31.831
+          a 15.9155 15.9155 0 0 1 0 -31.831"
+                                    />
+                                    <text x="18" y="20.35" class="percentage"><?=$Donor->getSuccessRate()?>%</text>
+                                </svg>
+                            </div>
+                            <div class="text-center text-xl">Success Rate</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="d-flex w-90 justify-content-center mt-1 align-items-center">
+                    <label for="MedicalCondition" class="form-label w-40">Last Donation Date</label>
+                    <input type="text" class="form-control border-dark w-60" style="border: 2px solid" id="MedicalCondition" value="<?=$Donor->getLastDonation()?>" disabled>
                 </div>
             </div>
         </div>
     </div>
     <div class="d-flex h-100 align-items-center justify-content-center m-2">
-       <div class="card cursor" onclick="StartDonation('<?=$Donor->getID()?>')">
+       <div class="card card-hover-success cursor border-success" style="border: 3px solid" onclick="StartDonation('<?=$Donor->getID()?>')">
            <div class="card-header flex-column">
                <img src="/public/icons/timer.svg" alt="A+" class="border-radius-10">
                <div class="card-title" >Start Blood Retrieving</div>
            </div>
        </div>
-       <div class="card cursor" onclick="RejectDonation('<?=$Donor->getID()?>')">
+       <div class="card card-hover-danger border-danger" style="border: 3px solid"" onclick="RejectDonation('<?=$Donor->getID()?>')">
            <div class="card-header flex-column">
                <img src="/public/icons/cancel.svg" alt="A+" class="border-radius-10">
                <div class="card-title" >Reject Blood Donation</div>
@@ -98,7 +153,6 @@ else:
         ?>
 
     </div>
-</div>
 <?php
 endif;
 ?>
@@ -145,9 +199,10 @@ endif;
             id: "CompleteDonation",
             title: "Complete Donation & Store Blood",
             order: 1001,
+            titleClass: "bg-success text-white bg-dark",
             content: `
                 <div class="d-flex flex-column gap-1">
-                    <div class="bg-dark w-100 p-1 text-white text-center">Donation Completed Successfully!</div>
+                    <div class="bg-dark w-100 px-1 py-0-5 text-white text-center">Enter the Blood Packet ID on Packet</div>
                     <div class="form-group">
                         <label for="PacketID" class="form-label w-40">Packet ID</label>
                         <input type="text" class="form-control w-60" id="PacketID" placeholder="Packet ID" style="border-radius: 0;border-color: black">

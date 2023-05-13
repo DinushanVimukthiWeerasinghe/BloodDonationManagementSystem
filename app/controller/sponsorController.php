@@ -111,7 +111,7 @@ class sponsorController extends Controller
                 'quantity' => 1,
             ];
             $EncAmount = Security::Encrypt($Amount);
-            $EncAmount = urlencode($Amount);
+            $EncAmount = urlencode($EncAmount);
             $Description =Security::Encrypt($Description);
             $Description = urlencode($Description);
             /** @var $SponsorshipRequest SponsorshipRequest*/
