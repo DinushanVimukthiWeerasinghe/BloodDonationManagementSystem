@@ -361,6 +361,9 @@ class medicalOfficerController extends \Core\Controller
     public function CampaignOverview(Request $request, Response $response)
     {
         if ($request->isGet()){
+//            $GetCurrentCampaign=MedicalOfficer::getAssignedCampaign(date('Y-m-d'));
+//            var_dump($GetCurrentCampaign);
+//            exit();
             return $this->render('/MedicalOfficer/CampaignOverview',['page'=>'overview']);
         }
     }

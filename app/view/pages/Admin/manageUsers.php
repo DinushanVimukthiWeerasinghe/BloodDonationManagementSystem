@@ -19,8 +19,8 @@ use App\model\users\User;
 //print_r($users);
 ?>
 
-
-<div class="d-flex bg-white align-self-start justify-content-center" style="width: 100%;min-width: 5%">
+<div class="d-flex flex-column w-100 align-items-start ">
+<div class="d-flex mt-1 align-self-start justify-content-center" style="width: 100%;min-width: 5%">
     <div class="d-flex flex-row justify-content-center border-bottom-4-primary gap-1 align-items-center" id="UserCategory" style="width: 75%">
         <div class="d-flex w-95 justify-content-center align-items-center border-2 border-primary bg-primary border-radius-5 justify-content-evenly p-0-5 mb-0-5" id="Donor" onclick="ViewUser('Donor')">
             <img src="/public/images/icons/user/donor.png" class="w-30 bg-white border-radius-50" id="DonorIcon" alt="" style="padding: 8px;" width="512">
@@ -49,33 +49,31 @@ use App\model\users\User;
     </div>
 
 </div>
-
-
-
 <div class="d-flex h-100 w-100 justify-content-center align-items-center">
 
-
-    <div class="d-flex w-100 m-1 justify-content-center align-self-baseline gap-2 flex-column" >
-        <div class="d-flex justify-content-center align-items-center mt-2">
+    <div class="d-flex w-100 m-1 justify-content-center align-self-baseline gap-2 flex-column" style="max-width: 70vw">
+        <div class="d-flex justify-content-center align-items-center mt-1 gap-1">
             <div id="Search" class="d-flex align-items-center gap-1">
                 <label for="Search" class="text-dark text-xl font-bold">Search</label>
-                <input type="text" class="form-control" name="Search" placeholder="Search" onkeyup="SearchUser('<?=$Role?>')">
+                <input type="text" class="form-control border-dark" style="border:2px solid;border-radius: 10px" name="Search" placeholder="Search" onkeyup="SearchUser('<?=$Role?>')">
             </div>
-            <button id="addNewUser" class="btn btn-success" hidden="hidden">
+            <button id="addNewUser" class="btn btn-success d-flex flex-center none gap-0-5" hidden="hidden">
+                <i class="fa-solid fa-plus"></i>
+            </button>
         </div>
-        <div class="d-flex justify-content-center align-items-center flex-wrap overflow-y-overlay">
-            <div class="d-flex justify-content-center w-100 mx-2" id="userTable" style="max-height: 70vh">
-                <table>
+        <div class="d-flex justify-content-center align-items-center bg-white p-1 border-radius-10 flex-wrap">
+            <div class="d-flex justify-content-center w-100 mx-2  overflow-y-overlay overflow-x-auto" id="userTable" style="max-height: 65vh;">
+                <table style="min-width: 60vw">
                     <thead class="sticky top-0">
                         <tr>
-                            <th class="text-center">No</th>
+                            <th class="sticky left-0 bg-white" style="z-index: 2">No</th>
                             <th class="text-center">Full Name</th>
                             <th class="text-center">NIC</th>
                             <th class="text-center">Contact No</th>
                             <th class="text-center">Email</th>
                             <th class="text-center">Last Active</th>
                             <th class="text-center">Status</th>
-                            <th class="text-center">Action</th>
+                            <th class="sticky top-0 right-0 bg-white text-center" style="z-index: 2">Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -109,7 +107,7 @@ use App\model\users\User;
                                 $LastActive=$user->getLastActive();
                                 ?>
                             <tr>
-                                <td class="text-center"><?=$i++;?></td>
+                                <td class="text-center bg-white sticky left-0"><?=$i++;?></td>
                                 <td class="text-center"><?=$UserName?></td>
                                 <td class="text-center"><?=$NIC?></td>
                                 <td class="text-center"><?=$ContactNo?></td>
@@ -124,7 +122,7 @@ use App\model\users\User;
                                         <span class="badge bg-danger text-white">Deleted</span>
                                     <?php endif; ?>
                                 </td>
-                                <td class="text-center">
+                                <td class="sticky right-0 bg-white d-flex flex-center gap-0-5 h-100">
                                     <?php if ($user->getAccountStatus() == User::TEMPORARY_DEACTIVATED): ?>
                                         <button class="btn btn-outline-success" onclick="ActivateUser('<?=$user->getID();?>')">Activate</button>
                                     <?php elseif ($user->getAccountStatus() == User::ACTIVE): ?>
@@ -149,8 +147,8 @@ use App\model\users\User;
             </div>
         </div>
     </div>
-    <div class="d-flex h-100 flex-column justify-content-center align-items-center flex-wrap bg-white-0-7">
-        <div class="card card-sm">
+    <div class="d-flex h-100 flex-column justify-content-center align-items-center flex-wrap">
+        <div class="card card-sm" style="width: 180px;height: 150px">
             <div class="card-header text-dark">
                 <h3 class="card-title">Total <span id="Role"> <?=$Role?></span>s</h3>
             </div>
@@ -162,19 +160,19 @@ use App\model\users\User;
                 </div>
             </div>
         </div>
-        <div class="card card-sm">
+        <div class="card card-sm" style="width: 180px;height: 150px">
             <div class="card-header text-dark">
-                <h3 class="card-title">Deactivated <span id="Role"> <?=$Role?></span>s</h3>
+                <h3 class="card-title font-bold">Deactivated <span id="Role"> <?=$Role?></span>s</h3>
             </div>
             <div class="card-body">
                 <div class="d-flex justify-content-center align-items-center">
                     <div class="d-flex flex-column justify-content-center align-items-center">
-                        <h1 class="text-dark" id="TotalDeactivated"><?= $TotalDeactivated?></h1>
+                        <h1 class="text-dark font-bold" id="TotalDeactivated"><?= $TotalDeactivated?></h1>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="card card-sm">
+        <div class="card card-sm" style="width: 180px;height: 150px">
             <div class="card-header text-dark">
                 <h3 class="card-title">Disabled <span id="Role"> <?=$Role?></span></h3>
             </div>
@@ -187,6 +185,7 @@ use App\model\users\User;
             </div>
         </div>
     </div>
+</div>
 </div>
 <script>
 
