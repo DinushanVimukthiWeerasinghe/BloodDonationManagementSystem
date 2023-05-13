@@ -433,7 +433,8 @@ public function inform(Request $request, Response $response)
             $Report->GenerateFileName('SR_');
             $Campaign = Campaign::findOne(['Campaign_ID' => $id]);
                 if ($Campaign){
-                    if (SponsorshipRequest::findOne(['Campaign_ID'=>$id]))
+                    $sponsorshipRequest = SponsorshipRequest::findOne(['Campaign_ID' => $id]);
+                    if ($sponsorshipRequest && $sponsorshipRequest->getSponsorshipStatus() != SponsorshipRequest::STATUS_REJECTED)
                         return json_encode(['status'=>false,'message'=>'You have already requested sponsorship for this campaign!']);
                     $SponsorshipRequest->setCampaignID($id);
                 }else{
@@ -493,9 +494,11 @@ public function inform(Request $request, Response $response)
         /** @var $SponsorshipRequest SponsorshipRequest */
         $ReceivedAmount = 0;
         $SponsorshipRequest = SponsorshipRequest::findOne(['Campaign_ID' => $id]);
-
+        $rejected = 0;
         if ($SponsorshipRequest) {
-
+            if($SponsorshipRequest->getSponsorshipStatus() == SponsorshipRequest::STATUS_REJECTED){
+                $rejected = 1;
+            }
             $SponsoredDetails = CampaignsSponsor::RetrieveAll(false, [], true, ['Sponsorship_ID' => $SponsorshipRequest->getSponsorshipID()]);
             $ReceivedAmount = array_sum(array_map(function ($SponsoredDetail) {
                 return $SponsoredDetail->getSponsoredAmount();
@@ -514,8 +517,10 @@ public function inform(Request $request, Response $response)
         $attendance = new AttendanceAcceptedRequest();
         $condition = ['Campaign_ID' => $id];
         $count = $attendance::getCount(false, $condition);
+//        print_r($rejected);
+//        exit();
 
-        return $this->render('Organization/campDetails', ['campaign' => $Campaign, 'disable' => $disable, 'expired' => $expired, 'ReceivedAmount' => $ReceivedAmount, 'count' => $count, 'bank' => $bank]);
+        return $this->render('Organization/campDetails', ['campaign' => $Campaign, 'disable' => $disable, 'expired' => $expired, 'ReceivedAmount' => $ReceivedAmount, 'count' => $count, 'bank' => $bank , 'rejected' => $rejected]);
 
 
     }
