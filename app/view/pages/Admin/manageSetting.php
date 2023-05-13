@@ -1,6 +1,6 @@
-<div class="w-100 h-100 bg-white-0-5 d-flex align-items-start justify-content-center overflow-y-scroll">
-    <div class="d-flex flex-column w-100 p-1 gap-1 justify-content-center mb-4">
-        <div class="d-flex flex-column bg-white p-2 w-100 h-90 align-items-center border-radius-10" id="Appearance_Setting">
+<div class="w-100 h-100 d-flex flex-column align-items-center justify-content-start overflow-y-scroll">
+    <div class="d-flex w-100 p-1 gap-1 justify-content-center mb-1">
+        <div class="d-flex flex-column bg-white p-2 w-100 align-items-center border-radius-10" id="Appearance_Setting">
             <div class="d-flex title">Appearance Setting</div>
             <div class="d-flex align-items-center mt-2 flex-column">
                 <div class="form-group">
@@ -27,92 +27,108 @@
 
             </div>
         </div>
-        <div class="d-flex flex-column bg-white align-items-center w-100 p-2 h-90 border-radius-10" id="HomePage_Setting">
+        <div class="d-flex flex-column bg-white align-items-center w-100 p-2 border-radius-10" id="HomePage_Setting">
             <div class="d-flex align-items-center w-100 justify-content-center justify-content-between">
                 <div></div>
                 <div class="title">Home Page Setting</div>
                 <button class="btn btn-success float-right" id="addBlog" onclick="AddNewBlog()">Add New Blog</button>
             </div>
             <div class="d-flex align-items-center mt-2 gap-1 overflow-y-scroll flex-column">
+                <?php
+                /** @var \App\model\Blog\Blog[] $Blogs */
+                if (!empty($Blogs)):
+                    foreach ($Blogs as $blog):
+                ?>
                 <div class="d-flex text-center w-100 border-2 border-radius-10 p-1" id="blog1">
                     <div class="d-flex p-1">
-                        <img src="/public/images/blood-cells.jpg" id="blogImage_1" width="250rem" alt="" class="border-radius-2">
+                        <img src="<?=$blog->getBlogImage()?>" id="blogImage_<?=$blog->getBlogID()?>" width="250rem" alt="" class="border-radius-2">
                     </div>
                     <div class="d-flex flex-column text-center">
-                        <div class="d-flex w-100 bg-dark py-0-5 text-white text-center justify-content-center" id="blogTitle_1">
-                            Why Blood Donation is Important?
+                        <div class="d-flex w-100 bg-dark py-0-5 text-white text-center justify-content-center" id="blogTitle_<?=$blog->getBlogID()?>">
+                            <?= $blog->getBlogTitle();?>
                         </div>
                         <div class="d-flex w-100 p-1 text-center flex-column align-items-center" id="content">
-                            <div class="d-flex" id="blogContent_1">
-                                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Error ex optio qui ratione ullam. Adipisci amet architecto aut culpa cum delectus dicta dolorem, enim impedit iste itaque placeat possimus quasi qui quidem quod quos rem tempora, unde veniam. Debitis molestias nisi vel? Asperiores, optio, quaerat!
+                            <div class="d-flex" id="blogContent_<?=$blog->getBlogID()?>">
+                                <?= $blog->getBlogContent();?>
                             </div>
                             <div class="d-flex gap-1 mt-1">
-                                <button class="btn btn-success" onclick="EditBlog('1')">Edit</button>
-                                <button class="btn btn-danger">Delete</button>
+                                <button class="btn btn-success" onclick="EditBlog('<?=$blog->getBlogID()?>')">Edit</button>
+                                <button class="btn btn-danger" onclick="DeleteBlog('<?=$blog->getBlogID()?>')">Delete</button>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="d-flex text-center w-100 border-2 border-radius-10 p-1" id="blog1">
-                    <div class="d-flex p-1">
-                        <img src="/public/images/blood-cells.jpg" width="250rem" alt="" class="border-radius-2">
-                    </div>
-                    <div class="d-flex flex-column text-center">
-                        <div class="d-flex w-100 bg-dark py-0-5 text-white text-center justify-content-center" id="title">
-                            Why Blood Donation is Important?
-                        </div>
-                        <div class="d-flex w-100 p-1 text-center flex-column align-items-center" id="content">
-                            <div class="d-flex">
-                                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Error ex optio qui ratione ullam. Adipisci amet architecto aut culpa cum delectus dicta dolorem, enim impedit iste itaque placeat possimus quasi qui quidem quod quos rem tempora, unde veniam. Debitis molestias nisi vel? Asperiores, optio, quaerat!
-                            </div>
-                            <div class="d-flex gap-1 mt-1">
-                                <button class="btn btn-success">Edit</button>
-                                <button class="btn btn-danger">Delete</button>
-                            </div>
+                <?php
+                    endforeach;
+                 else:
+                ?>
+                <div class="d-flex flex-center text-center w-100 border-radius-10 p-2" id="blog1">
+                    <div class="d-flex flex-column flex-center text-center box-shadow-danger border-radius-10 p-2">
+                        <div class="d-flex flex-column font-bold text-2xl flex-center  w-100 py-0-5 text-center " id="blogTitle_1">
+                            <i class="fa-brands fa-blogger fa-4x"></i>
+                            No Blog Found
                         </div>
                     </div>
                 </div>
-                <div class="d-flex text-center w-100 border-2 border-radius-10 p-1" id="blog1">
-                    <div class="d-flex p-1">
-                        <img src="/public/images/blood-cells.jpg" width="250rem" alt="" class="border-radius-2">
-                    </div>
-                    <div class="d-flex flex-column text-center">
-                        <div class="d-flex w-100 bg-dark py-0-5 text-white text-center justify-content-center" id="title">
-                            Why Blood Donation is Important?
-                        </div>
-                        <div class="d-flex w-100 p-1 text-center flex-column align-items-center" id="content">
-                            <div class="d-flex">
-                                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Error ex optio qui ratione ullam. Adipisci amet architecto aut culpa cum delectus dicta dolorem, enim impedit iste itaque placeat possimus quasi qui quidem quod quos rem tempora, unde veniam. Debitis molestias nisi vel? Asperiores, optio, quaerat!
-                            </div>
-                            <div class="d-flex gap-1 mt-1">
-                                <button class="btn btn-success">Edit</button>
-                                <button class="btn btn-danger">Delete</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="d-flex text-center w-100 border-2 border-radius-10 p-1" id="blog1">
-                    <div class="d-flex p-1">
-                        <img src="/public/images/blood-cells.jpg" width="250rem" alt="" class="border-radius-2">
-                    </div>
-                    <div class="d-flex flex-column text-center">
-                        <div class="d-flex w-100 bg-dark py-0-5 text-white text-center justify-content-center" id="title">
-                            Why Blood Donation is Important?
-                        </div>
-                        <div class="d-flex w-100 p-1 text-center flex-column align-items-center" id="content">
-                            <div class="d-flex">
-                                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Error ex optio qui ratione ullam. Adipisci amet architecto aut culpa cum delectus dicta dolorem, enim impedit iste itaque placeat possimus quasi qui quidem quod quos rem tempora, unde veniam. Debitis molestias nisi vel? Asperiores, optio, quaerat!
-                            </div>
-                            <div class="d-flex gap-1 mt-1">
-                                <button class="btn btn-success" onclick="EditBlog('Blog_01')">Edit</button>
-                                <button class="btn btn-danger">Delete</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <?php
+                 endif;
+                ?>
+
 
 
             </div>
+        </div>
+    </div>
+    <div class="d-flex flex-column min-h-40 bg-white p-2 border-radius-10 gap-0-5 align-items-center gap-3 justify-content-start w-95">
+        <div class="d-flex align-items-center justify-content-between bg-dark text-white text-2xl w-90 border-radius-10 py-1">
+            <div></div>
+            <div class="w-100 text-center">Database Setting</div>
+            <button class="mr-1 flex-center d-flex flex btn btn-success gap-1" onclick="BackupDatabase()">
+                <i class="fa-solid fa-2x fa-database"></i>
+                Backup Database
+            </button>
+        </div>
+        <div class="d-flex w-90">
+            <table>
+                <thead class="sticky top-0 border-1 border-dark">
+                    <tr>
+                        <th> No </th>
+                        <th> Backup Name </th>
+                        <th> Backup Date </th>
+                        <th> Action </th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                <?php
+                /** @var \App\model\Utils\Backup[] $Backups */
+                if (!empty($Backups)):
+                $i=1;
+                foreach ($Backups as $backup):
+                ?>
+                    <tr>
+                        <td> <?=$i++?></td>
+                        <td> <?=$backup->getBackupName()?> </td>
+                        <td><?=$backup->getBackupDate()?> </td>
+                        <td>
+                            <button class="btn btn-success" onclick="DownloadBackup('<?=$backup->getBackupName()?>')">
+                                <i class="fa-solid fa-cloud-arrow-down"></i>
+                                Download
+                            </button>
+                        </td>
+                    </tr>
+                <?php
+                endforeach;
+                else:
+                ?>
+                    <tr>
+                        <td colspan="4" class="text-center">No Backup Found</td>
+                    </tr>
+                <?php
+                endif;
+                ?>
+                </tbody>
+            </table>
         </div>
 
     </div>

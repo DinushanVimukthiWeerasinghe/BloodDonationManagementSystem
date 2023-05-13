@@ -892,6 +892,16 @@ CREATE TABLE IF NOT EXISTS `Reported_Organization` (
     FOREIGN KEY (Reported_By) REFERENCES MedicalOfficers(Officer_ID)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+DROP TABLE IF EXISTS `Backups`;
+CREATE TABLE IF NOT EXISTS `Backups` (
+    Backup_ID VARCHAR(20) NOT NULL PRIMARY KEY,
+    Backup_Date TIMESTAMP NOT NULL,
+    Backup_Name VARCHAR(100) NOT NULL ,
+    Backup_Status INT NOT NULL,
+    Backup_Path VARCHAR(100) NOT NULL,
+    Backup_Size VARCHAR(100) NOT NULL
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 
 DROP TABLE IF EXISTS `Anonymous_Sponsors`;
 CREATE TABLE IF NOT EXISTS `Anonymous_Sponsors` (
