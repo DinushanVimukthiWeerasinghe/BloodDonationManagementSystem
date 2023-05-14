@@ -91,6 +91,7 @@ echo $background;
 
     }
 </style>
+
 <div class=" d-flex flex-column bg-white-0-7 border-radius-10 align-item-center justify-content-center w-50 p-1 h-100 mt-5 cre">
     <form id="form" action="create" method="post" class="d-flex flex-column p-3 text-xl w-100 gap-1">
         <div class="bg-dark py-0-5 px-2 text-center text-white details"> Fill Campaign Details</div>
@@ -142,6 +143,7 @@ echo $background;
         <div class="d-flex align-items-center justify-content-center gap-2">
             <button class="btn btn-success w-25" id="button" value="Create" onclick="AcceptGuidelines()"> Create </button>
             <button class="btn btn-danger w-25" id="button" value="Cancel" onclick="cancellation()"> Cancel </button>
+
         </div>
 
 <!--    <div class="w-40 d-flex justify-content-center flex-column align-items-center gap-1 bg-white border-radius-10 p-1 m-1">-->
@@ -339,52 +341,16 @@ echo $background;
                 titleClass: 'bg-dark text-white',
                 content: `
                     <div class="w-100 d-flex flex-column align-items-center gap-1 overflow-y-scroll max-h-80vh">
-                        <div class="bg-dark text-center text-white px-2 py-1">
-                            <h5> Lorem ipsum dolor sit amet, consectetur adipisicing elit. </h5>
+                        <div class="bg-dark text-center text-white px-2 py-1 w-50">
+                            <h5> Guidelines You Should Follow: </h5>
                         </div>
-                        <p class="p-1">
-                            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusantium adipisci aliquid autem corporis dolorum eaque
-                            eum fugiat harum iusto nam nesciunt nihil non nostrum placeat possimus quia quibusdam quod similique, temporibus unde
-                            velit veniam vitae. Aliquam consequuntur, culpa dicta ducimus ea eos explicabo harum impedit iste libero magni nesciunt
-                            nostrum odit officia optio praesentium quia rem repellat, rerum sed sequi similique sint suscipit tempora tempore ut vitae
-                            voluptate. Aspernatur autem delectus deserunt dicta dolor doloribus dolorum eum inventore itaque pariatur quaerat quia quibusdam
-                            quisquam repellendus, reprehenderit tenetur voluptatum! A ad animi, aspernatur cum cumque cupiditate doloremque eius illo labore minima neque odio
-                            perspiciatis quam quasi quia quisquam quo quod totam veniam voluptatem. Ab aliquid animi at consequuntur dolor est et eveniet fuga
-                            id itaque laborum maxime necessitatibus nihil nulla omnis, quaerat, quia, quisquam ratione repellendus similique sit tempore totam.
-                            Accusantium aperiam asperiores aut dicta eaque earum, eligendi eum facere nisi, quasi sit, tempore! Architecto, autem commodi deleniti
-                            dolorum eveniet id iusto nihil quibusdam? Aliquid aspernatur culpa dicta magni, molestiae nam placeat repellat sapiente sunt voluptatem!
-                            Distinctio doloremque dolores dolorum, eaque earum expedita explicabo fuga harum hic illum impedit, modi nisi nulla suscipit vitae! Ad
-                            deleniti excepturi fugit, natus quae veniam!
-                        </p>
-                        <p class="p-1">
-                            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusantium adipisci aliquid autem corporis dolorum eaque
-                            eum fugiat harum iusto nam nesciunt nihil non nostrum placeat possimus quia quibusdam quod similique, temporibus unde
-                            velit veniam vitae. Aliquam consequuntur, culpa dicta ducimus ea eos explicabo harum impedit iste libero magni nesciunt
-                            nostrum odit officia optio praesentium quia rem repellat, rerum sed sequi similique sint suscipit tempora tempore ut vitae
-                            voluptate. Aspernatur autem delectus deserunt dicta dolor doloribus dolorum eum inventore itaque pariatur quaerat quia quibusdam
-                            quisquam repellendus, reprehenderit tenetur voluptatum! A ad animi, aspernatur cum cumque cupiditate doloremque eius illo labore minima neque odio
-                            perspiciatis quam quasi quia quisquam quo quod totam veniam voluptatem. Ab aliquid animi at consequuntur dolor est et eveniet fuga
-                            id itaque laborum maxime necessitatibus nihil nulla omnis, quaerat, quia, quisquam ratione repellendus similique sit tempore totam.
-                            Accusantium aperiam asperiores aut dicta eaque earum, eligendi eum facere nisi, quasi sit, tempore! Architecto, autem commodi deleniti
-                            dolorum eveniet id iusto nihil quibusdam? Aliquid aspernatur culpa dicta magni, molestiae nam placeat repellat sapiente sunt voluptatem!
-                            Distinctio doloremque dolores dolorum, eaque earum expedita explicabo fuga harum hic illum impedit, modi nisi nulla suscipit vitae! Ad
-                            deleniti excepturi fugit, natus quae veniam!
-                        </p>
-                        <p class="p-1">
-                            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusantium adipisci aliquid autem corporis dolorum eaque
-                            eum fugiat harum iusto nam nesciunt nihil non nostrum placeat possimus quia quibusdam quod similique, temporibus unde
-                            velit veniam vitae. Aliquam consequuntur, culpa dicta ducimus ea eos explicabo harum impedit iste libero magni nesciunt
-                            nostrum odit officia optio praesentium quia rem repellat, rerum sed sequi similique sint suscipit tempora tempore ut vitae
-                            voluptate. Aspernatur autem delectus deserunt dicta dolor doloribus dolorum eum inventore itaque pariatur quaerat quia quibusdam
-                            quisquam repellendus, reprehenderit tenetur voluptatum! A ad animi, aspernatur cum cumque cupiditate doloremque eius illo labore minima neque odio
-                            perspiciatis quam quasi quia quisquam quo quod totam veniam voluptatem. Ab aliquid animi at consequuntur dolor est et eveniet fuga
-                            id itaque laborum maxime necessitatibus nihil nulla omnis, quaerat, quia, quisquam ratione repellendus similique sit tempore totam.
-                            Accusantium aperiam asperiores aut dicta eaque earum, eligendi eum facere nisi, quasi sit, tempore! Architecto, autem commodi deleniti
-                            dolorum eveniet id iusto nihil quibusdam? Aliquid aspernatur culpa dicta magni, molestiae nam placeat repellat sapiente sunt voluptatem!
-                            Distinctio doloremque dolores dolorum, eaque earum expedita explicabo fuga harum hic illum impedit, modi nisi nulla suscipit vitae! Ad
-                            deleniti excepturi fugit, natus quae veniam!
-                        </p>
-
+                           <ul style="text-align: left">
+                               <li>1. <span style="font-weight: 800">Obtain necessary permissions and approvals:</span> Before hosting a blood donation campaign, obtain all necessary permissions and approvals from relevant authorities, such as local health departments and blood banks.</li><br/>
+                               <li>2. <span style="font-weight: 800">Recruit volunteers:</span> Recruit volunteers to help with the recruitment of donors and support during the donation process. Volunteers should be trained in all aspects of the donation process, including donor eligibility, screening, and post-donation care.</li><br/>
+                               <li>3. <span style="font-weight: 800">Promote the campaign:</span> Promote the campaign through various channels, such as social media, local news outlets, and community organizations. Encourage people to donate blood and raise awareness about the importance of blood donation.</li><br/>
+                               <li>4. <span style="font-weight: 800">Ensure donor eligibility:</span> Ensure that donors meet the eligibility requirements for blood donation, such as age, weight, and medical history. Screen donors for any risk factors that could affect the safety of the blood supply.</li><br/>
+                               <li>5. <span style="font-weight: 800">Provide post-donation care:</span> Provide post-donation care to donors, such as refreshments and a quiet area for recovery. Follow up with donors to ensure that they do not experience any adverse reactions after donation.</li><br/>
+                            </ul>
                     </div>
             `,
                 showCloseButton: true,

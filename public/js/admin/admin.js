@@ -49,13 +49,13 @@ const SearchBank = () => {
 
 
                 newTr.appendChild(document.createElement('td')).innerHTML = `
-                    <button type="button" class="btn btn-success" onclick="editBnkData('${bank['id']}')">
-                        <img src="/public/icons/edit.png" width="24px" alt="">
-                    </button>`;
+                    <button type="button" class="btn btn-outline-success border-radius-10" onclick="editBnkData('<?php echo $id; ?>')">
+                                <i class="fas fa-edit"></i>
+                                Edit
+                            </button>`;
             }
         })
 }
-
 function addNewBank() {
     OpenDialogBox({
             id: 'addBankPop',

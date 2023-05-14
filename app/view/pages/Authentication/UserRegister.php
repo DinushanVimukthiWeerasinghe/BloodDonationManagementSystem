@@ -26,7 +26,7 @@ FlashMessage::RenderFlashMessages();
         <div class="d-flex flex-column flex-center w-70 gap-1">
             <div class="text-2xl d-flex flex-center gap-1 d-flex mb-1 font-bold text-dark w-100 text-center">
                 <img src="/public/icons/RegisterUserIcon.png" alt="" width="60">
-                <div class="text-center"><?= $role ?> Registration</div>
+                <div class="text-center text-4xl" style="rgba(255,255,255,0.5)"><?= $role ?> Registration</div>
             </div>
             <input type="hidden" name="role" value="<?=$role?>">
             <div class="form-group">
@@ -256,9 +256,7 @@ FlashMessage::RenderFlashMessages();
                                         }).then(response => response.json())
                                             .then(data => {
                                                 if (data.status){
-                                                    console.log(data)
-                                                    let redirect = data.redirect;
-                                                    window.location.href = redirect;
+                                                   window.location.href = data.redirect;
 
                                                 }else{
                                                     ShowToast({

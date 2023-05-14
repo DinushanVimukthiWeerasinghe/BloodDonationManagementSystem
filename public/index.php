@@ -377,8 +377,6 @@ $app->router->post('/donor/changeEmail', [donorController::class, 'ChangeEmail']
 $app->router->post('/donor/changeContactNo', [donorController::class, 'ChangeContactNo']);
 $app->router->post('/donor/notification', [donorController::class, 'DonorNotification']);
 
-//$app->router->get('/donor/register',[donorController::class, 'register']);
-//$app->router->post('/donor/register', [donorController::class, 'register']);
 $app->router->get('/donor/guideline', [donorController::class, 'guideline']);
 $app->router->get('/donor/history', [donorController::class, 'history']);
 $app->router->get('/donor/nearby', [donorController::class, 'nearby']);
@@ -391,7 +389,6 @@ $app->router->post('/donor/profile/edit', [donorController::class, 'editDetails'
     $app->router->get('/donor/signup', [donorController::class, 'signup']);
     $app->router->post('/donor/signup', [donorController::class, 'signup']);
     $app->router->get('/donor/profile', [donorController::class, 'profile']);
-//    $app->router->get('/donor/register',[donorController::class, 'register']);
 $app->router->post('/donor/profile/loginPrompt', [donorController::class, 'loginPrompt']);
     //$app->router->get('/donor/dashboard', [donorController::class, 'dashboard']);
     //$app->router->get('/about', [siteController::class, 'about']);
@@ -401,8 +398,6 @@ $app->router->post('/donor/profile/loginPrompt', [donorController::class, 'login
     //$app->router->get('/donor/signup', [donorController::class, 'signup']);
     //$app->router->post('/donor/signup', [donorController::class, 'signup']);
     //$app->router->get('/donor/profile', [donorController::class, 'profile']);
-    //$app->router->get('/donor/register',[donorController::class, 'register']);
-//    $app->router->post('/donor/register', [donorController::class, 'register']);
     $app->router->get('/donor/guideline', [donorController::class, 'guideline']);
     $app->router->get('/donor/history', [donorController::class, 'history']);
     $app->router->get('/donor/nearby', [donorController::class, 'nearby']);
