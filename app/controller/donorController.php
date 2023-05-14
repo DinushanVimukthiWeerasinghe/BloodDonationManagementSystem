@@ -281,6 +281,10 @@ class donorController extends Controller
 
     public function markAttendance(Request $request, Response $response){
         $data = $request->getBody();
+
+        if ($data['userID'] != Application::$app->getUser()->getId()){
+            return false;
+        }
 //        $data = $request->getBody();
 //        $flag = false;
 //        error_log($data['userID']);
@@ -301,6 +305,9 @@ class donorController extends Controller
 
     public function removeAttendance(Request $request, Response $response){
         $data = $request->getBody();
+        if ($data['userID'] != Application::$app->getUser()->getId()){
+            return false;
+        }
 //        return json_encode($data['userID']);
         $attendanceRecord = AttendanceAcceptedRequest::findOne(['Campaign_ID'=>$data['campaignID'],'Donor_ID'=>$data['userID']]);
         if ($attendanceRecord){

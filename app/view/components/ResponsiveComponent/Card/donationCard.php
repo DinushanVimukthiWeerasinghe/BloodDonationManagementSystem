@@ -139,8 +139,8 @@ class donationCard
             XHR.open("GET", "/donor/campaign/markAttendance?userID="+donorID+"&campaignID="+campaignID, true);
             XHR.setRequestHeader("Content-Type", "application/json");
             XHR.send();
-            XHR.onload = await function () {
-                result = JSON.parse(this.responseText);
+            XHR.onload = await async function () {
+                result = await JSON.parse(this.responseText);
                 // return result;
             }
                 console.log(result);
@@ -154,8 +154,8 @@ class donationCard
             XHR.open("GET", "/donor/campaign/removeAttendance?userID="+donorID+"&campaignID="+campaignID, true);
             XHR.setRequestHeader("Content-Type", "application/json");
             XHR.send();
-            XHR.onload = await function () {
-                result = JSON.parse(this.responseText);
+            XHR.onload = await async function () {
+                result = await JSON.parse(this.responseText);
                 // return result;
             }
                 console.log(result);
