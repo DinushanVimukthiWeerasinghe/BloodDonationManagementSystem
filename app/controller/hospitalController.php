@@ -376,9 +376,13 @@
      {
 
          $data = $request->getBody();
-         $donorInfo = Donor::findOne(['NIC' => $data['NIC']]);
+         $Id= $_GET['Id'];
 
-//         $donorInfo = Donor::findOne(['Donor_ID' => $data['Donor_ID']]);
+//         print_r($data);
+//         exit();
+//         $donorInfo = Donor::findOne(['NIC' => $data['NIC']]);
+
+         $donorInfo = Donor::findOne(['Donor_ID' => $Id]);
 //        print_r($donorInfo);
 //        exit();
          $reqData=[

@@ -300,7 +300,7 @@ use App\model\users\Donor;
         let NoDiseaseDetected = true;
         Diseases.forEach((Disease) => {
             if (Disease.checked) {
-                DiseaseDetected = false;
+                NoDiseaseDetected = false;
             }
         });
         if (!GoodHealth || !NoDiseaseDetected) {
@@ -350,6 +350,6 @@ use App\model\users\Donor;
         }
 
 
-        console.log(GoodHealth, DiseaseDetected);
+        console.log(GoodHealth, NoDiseaseDetected);
     }
 </script>

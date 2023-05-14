@@ -158,7 +158,7 @@ if(!empty($data)):
                 if ($data['Donation_Availability']==1) :
                 ?>
 <!--                <button class="btn btn-success m-1 btn-lg" type="submit" >Take Donation</button>-->
-                    <a href="/hospital/healthCheckup?NIC=<?= $data['NIC'] ?>" class="btn btn-outline-success m-1 btn-lg">Take Donation</a>
+                    <a href="/hospital/healthCheckup?Id=<?= $data['Donor_ID'] ?>" class="btn btn-outline-success m-1 btn-lg">Take Donation</a>
                <?php
                 endif;
                 ?>
