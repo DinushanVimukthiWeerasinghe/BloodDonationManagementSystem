@@ -38,7 +38,9 @@ class OrganizationController extends Controller
 
     public function __construct()
     {
+//        set the Organization Layout
         $this->setLayout('Organization');
+//        set the middlewares for organization for unauthorized accesses
         $this->registerMiddleware(new organizationMiddleware());
 //        $this->registerMiddleware(new AuthenticationMiddleware(['login','register'], BaseMiddleware::ALLOWED_ROUTES));
 //        $this->registerMiddleware(new ManagerMiddleware());
