@@ -102,7 +102,10 @@ $User = Application::$app->getUser();
 
                                  </div>
                                  <button class="btn btn-success d-flex align-items-center font-bold" onclick="ChangeProfileImage()"><span><img src="/public/icons/camera.svg" alt="" width="24px" class="cursor invert-100" onclick="EditProfile()"></span> &nbsp;Change Profile Image</button>
-                                <div class="bg-dark w-100 text-center text-white py-0-5 px-1"> Profile Details</div>
+                                <div class="d-flex align-items-center bg-dark w-100 text-center justify-content-between text-white py-0-5 px-1">
+                                    <div> Profile Details</div>
+                                   
+                                </div>
                                     <div class="d-flex w-100 align-items-center justify-content-evenly gap-1">
                                          <div class="d-flex w-50 justify-content-center">
                                             <div class="d-flex font-bold"> Organization Name : </div>
