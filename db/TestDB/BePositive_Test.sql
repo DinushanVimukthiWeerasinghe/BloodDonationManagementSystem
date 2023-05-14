@@ -916,6 +916,19 @@ CREATE TABLE IF NOT EXISTS `Anonymous_Sponsors` (
     FOREIGN KEY (Request_ID) REFERENCES Sponsorship_Requests (Sponsorship_ID)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+DROP TABLE IF EXISTS `Hospital_Notifications`;
+CREATE TABLE IF NOT EXISTS `Hospital_Notifications` (
+    Notification_ID VARCHAR(20) NOT NULL PRIMARY KEY,
+    Hospital_ID VARCHAR(20) NOT NULL,
+    Notification_Title VARCHAR(100) NOT NULL,
+    Notification_Message TEXT NOT NULL,
+    Notification_Date DATE NOT NULL,
+    Notification_State INT NOT NULL,
+    Notification_Type INT NOT NULL,
+    Target_ID VARCHAR(20) NULL DEFAULT NULL,
+    Valid_Until DATE NULL DEFAULT NULL
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 DELIMITER $$
 DROP TRIGGER IF EXISTS `Campaign_Audit_Create`$$
 CREATE TRIGGER IF NOT EXISTS `Campaign_Audit_Create` AFTER INSERT ON `campaign_donation_queue` FOR EACH ROW

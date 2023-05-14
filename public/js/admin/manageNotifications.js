@@ -27,8 +27,6 @@ function addNewHospitalNotification() {
                           <select name="hospitalId" id="hospitalId">
                             <option value="allHospitals">All Hospitals</option>
                           </select>
-  
-  
                         </form>`,
             successBtnText: "Yes",
             successBtnAction: () => {

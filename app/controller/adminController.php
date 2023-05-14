@@ -583,6 +583,7 @@ class adminController extends \Core\Controller
                     $this->setFlashMessage('error','Something went wrong Saving Notification');
                 }
             }else{
+
                 $this->setFlashMessage('error','Something went wrong');
             }
 

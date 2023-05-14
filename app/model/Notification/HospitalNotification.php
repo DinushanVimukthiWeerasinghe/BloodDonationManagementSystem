@@ -13,7 +13,6 @@ class HospitalNotification extends dbModel
     protected string $Notification_State;
     protected string $Notification_Type;
     protected ?string $Target_ID = null;
-
     protected ?string $Valid_Until=null;
 
     public function getNotificationID(): string
@@ -76,7 +75,7 @@ class HospitalNotification extends dbModel
         $this->Notification_Type = $Notification_Type;
     }
 
-    public function getTargetID(): string
+    public function getTargetID(): string | null
     {
         return $this->Target_ID;
     }

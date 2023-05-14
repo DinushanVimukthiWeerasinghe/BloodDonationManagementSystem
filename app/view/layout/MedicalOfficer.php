@@ -125,7 +125,7 @@ $navbar = new AuthNavbar($PageTitle, '/mofficer', '/public/images/icons/user.png
 </div>
 
 <div class="absolute d-flex justify-content-center"
-     style="top: 8vh;height: 92vh;width: calc(100vw - 200px);max-width: calc(100vw - 200px);left: 200px;background: #f2f2f2"
+     style="top: 8vh;height: 92vh;width: calc(100vw - 200px);max-width: calc(100vw - 200px);left: 200px;background: aliceblue"
      id="Content">
     {{content}}
 </div>
