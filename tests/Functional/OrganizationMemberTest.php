@@ -66,23 +66,26 @@ class OrganizationMemberTest extends \Codeception\Test\Unit
      * @param string $OrganuzationID
      * @param bool $expected
      * @return void
-     * @throws Exception
      */
-    public function testOrganizationMembers($OrganizationID, $NIC, bool $expected){
+    public function testOrganizationMembers($OrganizationID,string $NIC,string $Email, bool $expected){
 //        $app = $this->getApp();
         $member = new Organization_Members();
         $member->setOrganizationID($OrganizationID);
         $member->setNIC($NIC);
+        $member->setEmail($Email);
+        $member->setName('Test');
         $this->assertEquals($expected,$member->save());
-//        session_destroy();
+        session_abort();
     }
 
-    public function ValidCampaignIDProvider(){
+    public function ValidCampaignIDProvider()
+    {
         return [
-            ['Org_01','123456789V',true],
-            ['Org_02','123456789V',false],
-            ['Org_02','123456777V',false],
-            ['Org_00','123456777V',false],
+            ['ORG_06','123456789V','testEmail1@bepositive.local',true],
+            ['ORG_06','123456789V','testEmail2@bepositive.local',false],
+            ['Org_02','123456777V','testEmail3@bepositive.local',false],
+            ['Org_00','123456777V','testEmail4@bepositive.local',false],
+            ['ORG_06','123456780V','testEmail1@bepositive.local',false],
         ];
     }
 

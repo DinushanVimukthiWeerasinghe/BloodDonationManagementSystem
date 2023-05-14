@@ -85,17 +85,17 @@ class CreateCampaignTest extends \Codeception\Test\Unit
         $campaign->setLatitude(1.5555);
         $campaign->setLongitude(2.5555);
         $this->assertEquals($expected,$campaign->save());
-//        session_destroy();
+        session_abort();
     }
 
     public function ValidCampaignIDProvider(){
         return [
             ['Camp_0022','BB_04','Org_01',true],
             ['Camp_0022','BB_04','Org_01',false],
-            ['Camp_0023','BB_02','Org_01',false],
+            ['Camp_0023','BB_77118','Org_01',false],
             ['Camp_0023','BB_04','Org_01',true],
             ['Camp_0024','BB_04','Org_00',false],
-            ['Camp_0025','BB_02','Org_00',false],
+            ['Camp_0025','BB_77118','Org_00',false],
         ];
     }
 

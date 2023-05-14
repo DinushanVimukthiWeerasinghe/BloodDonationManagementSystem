@@ -49,12 +49,12 @@ class OrganizationBankDetailsTest extends \Codeception\Test\Unit
 
     /**
      * @dataprovider  OrganizationBankID
-     * @param null|string $OrganizationID
+     * @param string $OrganizationID
+     * @param string $bankAccountNo
      * @param bool $expected
      * @return void
-     * @throws Exception
      */
-    public function testValidOrganizationID(string $OrganizationID,bool $expected)
+    public function testValidOrganizationID(string $OrganizationID,string $bankAccountNo,bool $expected)
     {
 //        $this->getApp();
         $bankAccount = new OrganizationBankAccount();
@@ -62,18 +62,20 @@ class OrganizationBankDetailsTest extends \Codeception\Test\Unit
         $bankAccount->setBankName('People\'s Bank');
         $bankAccount->setBranchName('Beliatta');
         $bankAccount->setAccountName('YES');
-        $bankAccount->setAccountNumber('8006559435');
+        $bankAccount->setAccountNumber($bankAccountNo);
         $this->assertEquals($expected,$bankAccount->save());
-//        session_destroy();
+        session_destroy();
 
     }
 
     public function OrganizationBankID()
     {
         return [
-            ['Org_01',true],
-            ['Org_01',false],
-            ['Org_00',false],
+            ['ORG_05','856754754',true],
+            ['ORG_05','579863126',false],
+            ['Org_00','478935412',false],
+            ['ORG_06','415',false],
+            ['ORG_05','478935412',false],
         ];
     }
 

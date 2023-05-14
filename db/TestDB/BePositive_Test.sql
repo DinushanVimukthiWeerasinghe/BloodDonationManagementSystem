@@ -464,10 +464,10 @@ CREATE TABLE IF NOT EXISTS Organization_Members
 (
     Organization_ID VARCHAR(20)  NOT NULL,
     Name            VARCHAR(100) NOT NULL,
-    Contact_No      VARCHAR(100) UNIQUE ,
-    NIC             VARCHAR(100) UNIQUE,
+    Contact_No      VARCHAR(100) UNIQUE NOT NULL ,
+    NIC             VARCHAR(100) UNIQUE NOT NULL ,
     Position        VARCHAR(100) NOT NULL,
-    Email           VARCHAR(100) UNIQUE ,
+    Email           VARCHAR(100) UNIQUE NOT NULL ,
     PRIMARY KEY (Organization_ID, NIC),
     FOREIGN KEY (Organization_ID) REFERENCES Organizations (Organization_ID)
     ) ENGINE = InnoDB
@@ -809,7 +809,7 @@ CREATE TABLE IF NOT EXISTS Organization_Bank_Accounts
 (
     Organization_ID VARCHAR(20) NOT NULL,
     Account_Name    VARCHAR(100) NOT NULL,
-    Account_Number  VARCHAR(100) NOT NULL UNIQUE ,
+    Account_Number  VARCHAR(100) NOT NULL UNIQUE CHECK ( LENGTH(Account_Number) = 8 ),
     Bank_Name       VARCHAR(100) NOT NULL,
     Branch_Name     VARCHAR(100) NOT NULL,
     PRIMARY KEY (Organization_ID),

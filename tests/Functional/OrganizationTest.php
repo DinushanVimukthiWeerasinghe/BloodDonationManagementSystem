@@ -60,12 +60,12 @@ class OrganizationTest extends \Codeception\Test\Unit
 //        $this->getApp();
         $organization = new Organization();
         $organization->setOrganizationID('Org_000');
+        $organization->setOrganizationName('Sahana Society');
         $organization->setContactNo('07776548907');
         $organization->setAddress1('Matara');
         $organization->setAddress2('Matara');
         $organization->setType(1);
-        $organization->setProfileImage('img');
-        $organization->setNIC('982456789V');
+        $organization->setProfileImage('/public/upload/organization.png');
         $organization->setCity('Matara');
         $organization->setStatus(Organization::ORGANIZATION_NOT_VERIFIED);
         $organization->setEmail('org120@test.com');
@@ -77,9 +77,9 @@ class OrganizationTest extends \Codeception\Test\Unit
     public function SponsorProvider()
     {
         return [
-            ['Org_35','amal@gmail.com',true],
-            ['Org_35','namal@gmail.com',false],
-            ['Org_36','namal@gmail.com',false],
+            ['Org_absd','sahanaSociety@bepositive.local',true],
+            ['Org_35','vpSociety@bepositive.local',false],
+            ['Org_36','mashin@bepositive.local',false],
         ];
     }
 

@@ -141,7 +141,7 @@ class Organization_Members extends \App\model\database\dbModel
             'NIC' => [self::RULE_REQUIRED,self::RULE_UNIQUE],
             'Position' => [self::RULE_REQUIRED],
             'Contact_No' => [self::RULE_REQUIRED],
-            'Email' => [self::RULE_REQUIRED],
+            'Email' => [self::RULE_REQUIRED,self::RULE_UNIQUE],
             'Name' => [self::RULE_REQUIRED],
         ];
     }
