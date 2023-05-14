@@ -3,6 +3,7 @@
 namespace App\model\users;
 
 use App\model\Authentication\OrganizationBankAccount;
+use App\model\Utils\Security;
 
 class Organization extends Person
 {
@@ -105,7 +106,7 @@ class Organization extends Person
     {
         /** @var OrganizationBankAccount $BankAccount */
         $BankAccount=OrganizationBankAccount::findOne(['Organization_ID'=>$this->Organization_ID]);
-        return $BankAccount->getAccountNumber();
+        return Security::Decrypt($BankAccount->getAccountNumber());
     }
 
     public function getBankAccountName(): bool|string

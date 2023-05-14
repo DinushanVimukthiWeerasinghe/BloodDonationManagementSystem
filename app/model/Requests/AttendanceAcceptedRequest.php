@@ -29,6 +29,22 @@ class AttendanceAcceptedRequest extends \App\model\database\dbModel
         ];
     }
 
+    /**
+     * @return string
+     */
+    public function getDonorID(): string
+    {
+        return $this->Donor_ID;
+    }
+
+    /**
+     * @param string $Donor_ID
+     */
+    public function setDonorID(string $Donor_ID): void
+    {
+        $this->Donor_ID = $Donor_ID;
+    }
+
     public static function getTableShort(): string
     {
         return 'Attendance_Accepted_Requests';

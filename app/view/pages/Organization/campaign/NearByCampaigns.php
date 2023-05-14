@@ -91,30 +91,38 @@ echo $background;
                         strictBounds: false,
                     },
                 });
-
-                for (let i = 0; i < Campaigns.length; i++) {
-                    const marker = new google.maps.Marker({
-                        position: {
-                            lat: parseFloat(Campaigns[i].Latitude),
-                            lng: parseFloat(Campaigns[i].Longitude),
-                        },
-                        map: map,
-                        title: Campaigns[i].name,
-                    });
-                    const infowindow = new google.maps.InfoWindow({
-                        content: `
+                if(Campaigns.length === 0){
+                    ShowToast({
+                        type : "danger",
+                        message :"No Campaigns Found"
+                    })
+                    return;
+                }
+                else {
+                    for (let i = 0; i < Campaigns.length; i++) {
+                        const marker = new google.maps.Marker({
+                            position: {
+                                lat: parseFloat(Campaigns[i].Latitude),
+                                lng: parseFloat(Campaigns[i].Longitude),
+                            },
+                            map: map,
+                            title: Campaigns[i].name,
+                        });
+                        const infowindow = new google.maps.InfoWindow({
+                            content: `
                             Campaign Name: ${Campaigns[i].Campaign_Name} <br>
                             Campaign Date: ${Campaigns[i].Campaign_Date} <br>
                             Campaign Venue: ${Campaigns[i].Venue} <br>
                         `
-                    });
+                        });
 
-                    marker.addListener("click", () => {
-                        map.setZoom(15);
-                        map.setCenter(marker.getPosition());
-                        infowindow.open(map, marker);
-                    });
+                        marker.addListener("click", () => {
+                            map.setZoom(15);
+                            map.setCenter(marker.getPosition());
+                            infowindow.open(map, marker);
+                        });
 
+                    }
                 }
                 const input = document.getElementById("pac-input");
                 const searchBox = new google.maps.places.SearchBox(input);

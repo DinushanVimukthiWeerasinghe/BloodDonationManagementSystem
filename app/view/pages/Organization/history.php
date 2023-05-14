@@ -79,12 +79,12 @@ echo $background;
                 <?php foreach ($params as $key=>$row){ ?>
                     <div class="card" style="width: 300px;height: 300px;">
                         <div class="card-image">
-                            <img src='/public/images/icons/bloodDrop.png'alt="">
+                            <img src='/public/images/icons/bloodDrop.png'alt="Image Not Available">
                         </div>
                         <div class="card-body">
-                            <div class="card-title fa fa-1x"><?= $row['Campaign_Name']; ?></div><br><br>
-                            <div class="card-description fa fa-1x"><?= $row['Campaign_Date']; ?></div><br><br>
-                            <a href="campDetails?id=<?php echo $row['Campaign_ID'];?>"><button class="btn btn-success mt-1 w-100">Campaign Details</button></a>
+                            <div class="card-title fa fa-1x" style="margin-top: -2px;"><?= $row['Campaign_Name']; ?></div><br><br>
+                            <div class="card-description fa fa-1x" style="margin-top: -30px;"><?= $row['Campaign_Date']; ?></div><br><br>
+                            <a href="campDetails?id=<?php echo $row['Campaign_ID'];?>"><button class="btn btn-success w-100" id="details">Campaign Details</button></a>
                         </div>
                     </div>
                 <?php

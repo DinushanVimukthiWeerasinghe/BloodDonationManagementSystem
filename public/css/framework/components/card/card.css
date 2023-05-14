@@ -123,3 +123,20 @@
         margin: 0.5rem;
     }
 }
+@media only screen and (min-width: 279px) and (max-width: 281px) {
+    .card{
+        width: 150px;
+        height: 150px;
+    }
+    .card .card-header{
+        flex-direction: column;
+    }
+
+    .card-header .card-header-img img{
+        max-width: 4rem;
+    }
+    .card .card-header .card-title{
+        font-size: var(--md);
+        margin: 0.5rem;
+    }
+}

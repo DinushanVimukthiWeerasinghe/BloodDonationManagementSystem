@@ -96,11 +96,26 @@ class AuthNavbar
            return <<<HTML
                 <div class="profile">
                         $lnk
-                        <a href="/logout" class="logout"><img src="/public/icons/log-out.svg" alt="" width="30rem"> </a>
+                        <a  class="logout" onclick="confirmation()"><img src="/public/icons/log-out.svg" alt="" width="30rem"> </a>
                         <button  href="$profileLnk" class="navProfile" onclick="getProfile()"><img class="profile-icon" id="NavProfileImage" src="$profilePicture" width="40rem" alt="profile"></button>
                         <div class="navProfileName"><span>{$profileName}</span></div>
                 </div>
+                <script>
+                    const confirmation = () => {
+                        OpenDialogBox({
+                            title : 'Log Out',
+                            content : 'Are You Sure You Want To Log Out?',
+                            successBtnText : 'Yes',
+                            cancelBtnText : 'No',
+                            successBtnAction:()=>{
+                                window.location.href = "/logout"
+                            }
+                        
+                        });
+                    }
+                </script>
             HTML;
+
     }
 
 
@@ -192,6 +207,5 @@ class AuthNavbar
         HTML;
 
     }
-
 
 }

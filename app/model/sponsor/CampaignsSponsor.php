@@ -10,7 +10,6 @@ class CampaignsSponsor extends \App\model\database\dbModel
     const PAYMENT_STATUS_PAID = 2;
     const PAYMENT_STATUS_FAILED = 3;
 
-
     protected string $Sponsor_ID='';
     protected string $Sponsorship_ID='';
     protected string $Description='';
@@ -18,6 +17,7 @@ class CampaignsSponsor extends \App\model\database\dbModel
     protected string $Sponsored_At='';
     protected int $Status = 1;
     protected string $Session_ID = '';
+    protected string $Campaign_ID= '';
 
     /**
      * @return int
@@ -46,6 +46,22 @@ class CampaignsSponsor extends \App\model\database\dbModel
     public function IsSessionValid($sessionID): bool
     {
         return Security::VerifyHash($sessionID,$this->Session_ID);
+    }
+
+    /**
+     * @return string
+     */
+    public function getCampaignID(): string
+    {
+        return $this->Campaign_ID;
+    }
+
+    /**
+     * @param string $Campaign_ID
+     */
+    public function setCampaignID(string $Campaign_ID): void
+    {
+        $this->Campaign_ID = $Campaign_ID;
     }
 
     /**
@@ -108,6 +124,7 @@ class CampaignsSponsor extends \App\model\database\dbModel
         // TODO: Implement attributes() method.
         return [
             'Sponsor_ID',
+            'Campaign_ID',
             'Sponsorship_ID',
             'Description',
             'Sponsored_Amount',
