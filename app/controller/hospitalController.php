@@ -4,6 +4,7 @@
  use App\middleware\hospitalMiddleware;
  use App\model\Authentication\Login;
  use App\model\BloodBankBranch\BloodBank;
+ use App\model\Campaigns\CampaignDonorQueue;
  use App\model\Notification\HospitalNotification;
  use App\model\Notification\ManagerNotification;
  use App\model\Requests\BloodRequest;
@@ -165,7 +166,7 @@
             $response->redirect('/hospital/dashboard');
         }
     }
-    public function takeBlood(Request $request, Response $response): string
+    public function showDetails(Request $request, Response $response): string
     {
         $data = $request->getBody();
 //        print_r($data);
@@ -173,7 +174,7 @@
         $donorInfo = Donor::findOne(['Donor_ID' => $data['Donor_ID']]);
 //        print_r($donorInfo);
 //        exit();
-        $reqData[]=[
+        $reqData=[
             'Donor_ID'=>$donorInfo->getDonorID(),
             'First_Name'=>$donorInfo->getFirstName(),
             'Last_Name'=>$donorInfo->getLastName(),
@@ -187,6 +188,7 @@
             'NIC_Front'=>$donorInfo->getNICFront(),
             'NIC_Back'=>$donorInfo->getNICBack(),
             'Profile_Image'=>$donorInfo->getProfileImage(),
+            'Donor'=>$donorInfo,
         ];
 
         return $this->render('Hospital/HospitalBloodDonation', ['data' => $reqData]);
@@ -268,7 +270,7 @@
      {
          $data = $request->getBody();
             $keyword = $data['keyword'];
-         $Donors = Donor::Search(['City' => $keyword, 'Donor_ID' => $keyword, 'NIC' => $keyword, 'First_Name' => $keyword, 'Last_Name' => $keyword, 'Email' => $keyword, 'Contact_No' => $keyword]);
+         $Donors = Donor::Search(['City' => $keyword, 'Donor_ID' => $keyword, 'NIC' => $keyword, 'First_Name' => $keyword, 'Last_Name' => $keyword, 'Email' => $keyword, 'Contact_No' => $keyword] );
 //            $donors = Donor::search(['Donor_ID'=>$keyword]);
 //         print_r($Donors);
          $returnData = array();
@@ -285,7 +287,7 @@
                  'Donation_Availability'=>$Donor->getDonationAvailability(),
                  'Verified'=>$Donor->getVerified(),
                  'NIC_Front'=>$Donor->getNICFront(),
-                 'NIC_Back'=>$Donor->getNICBack()
+                 'NIC_Back'=>$Donor->getNICBack(),
 
 //                 'Type'=>$Donor->getType(),
 //                 'Last_Donated'=>Date::GetProperDateTime($Donor->getLastDonated()),
@@ -294,5 +296,111 @@
          }
          header('Content-Type: application/json');
          return json_encode($returnData);
+     }
+
+     public function UploadDonorNICFront(Request $request,Response $response)
+     {
+         if ($request->isPost()){
+
+             $DonorID = $request->getBody()['DonorID'];
+             $File = $request->getBody()['NICFront'];
+             /** @var Donor $Donor */
+             /** @var File $File */
+
+             $Donor = Donor::findOne(['Donor_ID'=>$DonorID],false);
+             if (!$Donor){
+                 return json_encode([
+                     'status'=>false,
+                     'message'=>'Invalid Donor ID!'
+                 ]);
+             }
+             $File->setFileName('Donor/NIC/'.$DonorID.'/'.uniqid("NICFront_").".".$File->getExtension());
+             $Donor->setNICFront($File->getFileName());
+             if ($Donor->validate(true)) {
+                 $Donor->update($Donor->getID(),[],['NIC_Front']);
+                 $File->saveFile();
+                 return json_encode([
+                     'status' => true,
+                     'message' => 'NIC Front Uploaded Successfully!'
+                 ]);
+             }else{
+                 return json_encode([
+                     'status'=>false,
+                     'message'=>'Invalid Data!',
+                     'errors'=>[
+                         'Donor'=>$Donor->errors,
+                     ]
+                 ]);
+             }
+         }
+     }
+     public function UploadDonorNICBack(Request $request,Response $response)
+     {
+         if ($request->isPost()){
+
+             $DonorID = $request->getBody()['DonorID'];
+             $File = $request->getBody()['NICBack'];
+             /** @var Donor $Donor */
+             /** @var File $File */
+
+             $Donor = Donor::findOne(['Donor_ID'=>$DonorID],false);
+             if (!$Donor){
+                 return json_encode([
+                     'status'=>false,
+                     'message'=>'Invalid Donor ID!'
+                 ]);
+             }
+             $File->setFileName('Donor/NIC/'.$DonorID.'/'.uniqid("NICBack_").".".$File->getExtension());
+             $Donor->setNICBack($File->getFileName());
+             if ($Donor->validate(true)) {
+                 $Donor->update($Donor->getID(),[],['NIC_Back']);
+                 $File->saveFile();
+                 return json_encode([
+                     'status' => true,
+                     'message' => 'NIC Back Uploaded Successfully!'
+                 ]);
+             }else{
+                 return json_encode([
+                     'status'=>false,
+                     'message'=>'Invalid Data!',
+                     'errors'=>[
+                         'Donor'=>$Donor->errors,
+                     ]
+                 ]);
+             }
+
+         }
+     }
+
+     public function HealthCheckup(Request $request, Response $response): string
+     {
+
+         $data = $request->getBody();
+         $donorInfo = Donor::findOne(['NIC' => $data['NIC']]);
+
+//         $donorInfo = Donor::findOne(['Donor_ID' => $data['Donor_ID']]);
+//        print_r($donorInfo);
+//        exit();
+         $reqData=[
+             'Donor_ID'=>$donorInfo->getDonorID(),
+             'First_Name'=>$donorInfo->getFirstName(),
+             'Last_Name'=>$donorInfo->getLastName(),
+             'NIC'=>$donorInfo->getNIC(),
+             'Email'=>$donorInfo->getEmail(),
+             'Contact_No'=>$donorInfo->getContactNo(),
+             'City'=>$donorInfo->getCity(),
+             'Blood_Group'=>$donorInfo->getBloodGroup(),
+             'Donation_Availability'=>$donorInfo->getDonationAvailability(),
+             'Verified'=>$donorInfo->getVerified(),
+             'NIC_Front'=>$donorInfo->getNICFront(),
+             'NIC_Back'=>$donorInfo->getNICBack(),
+             'Profile_Image'=>$donorInfo->getProfileImage(),
+             'Donor'=>$donorInfo,
+         ];
+
+//         $model['Donor']=$Donor;
+//         return $this->render('/Hospital/HealthCheck', $model);
+         return $this->render('/Hospital/HealthCheck', ['data' => $reqData]);
+
      }
 }

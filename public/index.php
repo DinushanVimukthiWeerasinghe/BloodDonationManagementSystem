@@ -397,8 +397,8 @@ $app->router->post('/donor/profile/loginPrompt', [donorController::class, 'login
     $app->router->post('/hospital/addRequest', [hospitalController::class, 'addBloodRequest']);
     $app->router->get('/hospital/history', [hospitalController::class, 'bloodRequestHistory']);
     $app->router->post('/hospital/history', [hospitalController::class, 'bloodRequestHistory']);
-    $app->router->get ('/hospital/takeBlood',[hospitalController::class,'takeBlood']);
-    $app->router->post ('/hospital/takeBlood',[hospitalController::class,'takeBlood']);
+    $app->router->get ('/hospital/takeBlood',[hospitalController::class,'showDetails']);
+    $app->router->post ('/hospital/takeBlood',[hospitalController::class,'showDetails']);
     $app->router->get ('/hospital/requests',[hospitalController::class, 'showRequests']);
     $app->router->post('/hospital/requests', [hospitalController::class, 'showRequests']);
     $app->router->get('/hospital/notification', [hospitalController::class, 'notification']);
@@ -409,6 +409,11 @@ $app->router->post('/donor/profile/loginPrompt', [donorController::class, 'login
     $app->router->post('/hospital/deleteRequest', [hospitalController::class, 'deleteRequest']);
     $app->router->get('/hospital/searchDonor', [hospitalController::class, 'searchDonor']);
     $app->router->post('/hospital/searchDonor', [hospitalController::class, 'searchDonor']);
+    $app->router->post('/hospital/uploadNICFront', [hospitalController::class, 'UploadDonorNICFront']);
+    $app->router->post('/hospital/uploadNICBack', [hospitalController::class, 'UploadDonorNICBack']);
+    $app->router->post('/hospital/healthCheckup', [hospitalController::class, 'HealthCheckup']);
+    $app->router->get('/hospital/healthCheckup', [hospitalController::class, 'HealthCheckup']);
+
 
 //Blogs
     $app->router->post('/blog/add', [blogController::class, 'AddBlog']);
