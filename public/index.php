@@ -313,6 +313,7 @@ $app->router->post('/mofficer/campaigns/verifyOrganization', [medicalOfficerCont
 $app->router->post('/mofficer/campaigns/ReportCampaign', [medicalOfficerController::class, 'ReportCampaign']);
 $app->router->post('/mofficer/campaigns/UndoReportCampaign', [medicalOfficerController::class, 'UndoReportCampaign']);
 $app->router->get('/mofficer/campaigns/overview', [medicalOfficerController::class, 'CampaignOverview']);
+$app->router->post('/mofficer/mngDonors/find', [medicalOfficerController::class, 'FindDonorJSON']);
 
 //$app->router->get('/mofficer/campaigns', [medicalOfficerController::class, 'VerifyDonor']);
     $app->router->post('/medicalofficer/get-donor', [medicalOfficerController::class, 'FindDonor']);

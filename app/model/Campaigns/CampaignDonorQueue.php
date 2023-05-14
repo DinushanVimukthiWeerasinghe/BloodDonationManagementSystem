@@ -131,4 +131,25 @@ class CampaignDonorQueue extends \App\model\database\dbModel
             'Last_Update',
         ];
     }
+
+    public function getDonorName(): string
+    {
+        $donor = $this->getDonor();
+        if ($donor) {
+            return $donor->getFullName();
+        }
+        return '';
+    }
+
+    public function getQueueState(): string
+    {
+        return match ($this->Donor_Status) {
+            self::STAGE_1 => 'Registration',
+            self::STAGE_2 => 'Health Check',
+            self::STAGE_3 => 'Blood Check',
+            self::STAGE_4 => 'Donation',
+            self::STAGE_5 => 'Donation Complete',
+            default => 'Unknown',
+        };
+    }
 }

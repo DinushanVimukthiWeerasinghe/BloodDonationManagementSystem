@@ -59,31 +59,71 @@ const SearchBank = () => {
 function addNewBank() {
     OpenDialogBox({
             id: 'addBankPop',
-            title: 'Add Bank',
-            content: `<form id="addBankForm" action="/admin/dashboard/manageBanks/add" method="post">
-                            <label for="bank_name">Bank Name</label>
-                            <input type="text" id="BankName" name="BankName" placeholder="Bank Name">
-                            <label for="address">Address</label>
-                            <input type="text" id="Address1" name="Address1" placeholder="Address Line 01">
-                            <input type="text" id="Address2" name="Address2" placeholder="Address Line 02">
-                            <label for="city">City</label>
-                            <input type="text" id="City" name="City" placeholder="City">
-                            <label for="telephone">Telephone</label>
-                            <input type="text" id="Telephone_No" name="Telephone_No" placeholder="Telephone Number">
-                            <label for="numberOfDoctors">Number of Doctors</label>
-                            <input type="text" id="No_Of_Doctors" name="No_Of_Doctors" placeholder="Number Of Doctors" value="1">
-                            <label for="numberOfNurses">Number Of Nurses</label>
-                            <input type="text" id="No_Of_Nurses" name="No_Of_Nurses" placeholder="Number Of Nurses" value="1">
-                            <label for="numberOfBeds">Number Of Beds</label>
-                            <input type="text" id="No_Of_Beds" name="No_Of_Beds" placeholder="Number Of Beds" value="1">
-                            <label for="numberOfStorages">Number Of Storages</label>
-                            <input type="text" id="No_Of_Storages" name="No_Of_Storages" placeholder="Number Of Storages" value="1">
-                            <label for="type">Type</label>
-<!--                            <input type="text" name="Type" placeholder="Type (0/1)">-->
-                            <select id="type" name="Type">
-                                <option value="1">Branch</option>
-                                <option value="2">Main</option>
-                            </select>
+            titleClass: 'bg-dark text-white text-center',
+            title: 'Add Blood Bank',
+            content: `
+                    <form id="addBankForm" class="d-flex flex-column gap-1" action="/admin/dashboard/manageBanks/add" method="post">
+                        <div class="d-flex gap-1 flex-center">
+                            <div class="d-flex flex-center gap-1 w-50">
+                                <label class="w-40" for="bank_name">Bank Name</label>
+                                <input type="text" class="w-60 form-control" id="BankName" name="BankName" placeholder="Bank Name">
+                            </div>
+                            <div class="d-flex flex-center w-50 gap-1">
+                                <label class="w-40" for="Address1">Address</label>
+                                <input type="text" class="w-60 form-control" id="Address1" name="Address1" placeholder="Address Line 01">
+                            </div>
+                        </div>
+                        <div class="d-flex gap-1 flex-center">
+                            <div class="d-flex w-50 flex-center gap-1">
+                                <label class="w-40" for="Address2">Address 2</label>
+                                <input type="text" class="w-60 form-control" id="Address2" name="Address2" placeholder="Address Line 02">
+                                
+                            </div>
+                            <div class="d-flex w-50 flex-center gap-1">
+                                <label class="w-40" for="City">City </label>
+                                <input type="text" class="w-60 form-control" id="City" name="City" placeholder="City">
+                                
+                            </div>
+                        </div>
+                        <div class="d-flex gap-1 flex-center">
+                            <div class="d-flex w-50 flex-center gap-1">
+                                <label class="w-40" for="Telephone_No">Telephone Number</label>
+                                <input type="text" class="w-60 form-control" id="Telephone_No" name="Telephone_No" placeholder="Telephone Number">
+                                
+                            </div>
+                            <div class="d-flex w-50 gap-1 flex-center">
+                                <label class="w-40" for="numberOfDoctors">Number of Doctors</label>
+                                <input type="text" class="w-60 form-control" id="No_Of_Doctors" name="No_Of_Doctors" placeholder="Number Of Doctors" value="1">
+                                
+                            </div>
+                        </div>
+                        <div class="d-flex gap-1 flex-center">
+                            <div class="d-flex w-50 flex-center gap-1">
+                                <label class="w-40" for="numberOfNurses">Number Of Nurses</label>
+                                <input type="text" class="w-60 form-control" id="No_Of_Nurses" name="No_Of_Nurses" placeholder="Number Of Nurses" value="1">
+                                
+                            </div>
+                            <div class="d-flex w-50 flex-center gap-1">
+                                <label class="w-40" for="numberOfBeds">Number Of Beds</label>
+                                <input type="text" class="w-60 form-control" id="No_Of_Beds" name="No_Of_Beds" placeholder="Number Of Beds" value="1">
+                                
+                            </div>
+                        </div>
+                        <div class="d-flex gap-1 flex-center">
+                            <div class="d-flex w-50 flex-center gap-1">
+                                <label class="w-40" for="numberOfStorages">Number Of Storages</label>
+                                <input type="text" class="w-60 form-control" id="No_Of_Storages" name="No_Of_Storages" placeholder="Number Of Storages" value="1">
+                              
+                            </div>
+                            <div class="d-flex w-50 flex-center w-60 gap-1">
+                                <label class="w-40" for="type">Type</label>
+    <!--                            <input type="t class="w-60 form-control" ext" name="Type" placeholder="Type (0/1)">-->
+                                <select id="type" name="Type" class="form-select w-60">
+                                    <option value="1">Branch</option>
+                                    <option value="2">Main</option>
+                                </select>
+                            </div>
+                        </div>
                         </form>`,
             //closeDialog,
             successBtnText: 'Add New Blood Bank',
@@ -159,7 +199,73 @@ function editBnkData(tr) {
     OpenDialogBox({
             id: 'editBankPop',
             title: 'Edit Data',
-            content: `<form id="editBankForm" action="/admin/dashboard/manageBanks/edit" method="post">
+            titleClass: 'text-white bg-dark px-2 py-1',
+            content: `
+                        <form id="addBankForm" class="d-flex flex-column gap-1" action="/admin/dashboard/manageBanks/add" method="post">
+                        <input type="hidden" name="BloodBank_ID" value="${data[0]}">
+                        <div class="d-flex gap-1 flex-center">
+                            <div class="d-flex flex-center gap-1 w-50">
+                                <label class="w-40" for="bank_name">Bank Name</label>
+                                <input type="text" class="w-60 form-control" id="BankName" name="BankName" placeholder="Bank Name">
+                            </div>
+                            <div class="d-flex flex-center w-50 gap-1">
+                                <label class="w-40" for="Address1">Address</label>
+                                <input type="text" class="w-60 form-control" id="Address1" name="Address1" placeholder="Address Line 01">
+                            </div>
+                        </div>
+                        <div class="d-flex gap-1 flex-center">
+                            <div class="d-flex w-50 flex-center gap-1">
+                                <label class="w-40" for="Address2">Address 2</label>
+                                <input type="text" class="w-60 form-control" id="Address2" name="Address2" placeholder="Address Line 02">
+                                
+                            </div>
+                            <div class="d-flex w-50 flex-center gap-1">
+                                <label class="w-40" for="City">City </label>
+                                <input type="text" class="w-60 form-control" id="City" name="City" placeholder="City">
+                                
+                            </div>
+                        </div>
+                        <div class="d-flex gap-1 flex-center">
+                            <div class="d-flex w-50 flex-center gap-1">
+                                <label class="w-40" for="Telephone_No">Telephone Number</label>
+                                <input type="text" class="w-60 form-control" id="Telephone_No" name="Telephone_No" placeholder="Telephone Number">
+                                
+                            </div>
+                            <div class="d-flex w-50 gap-1 flex-center">
+                                <label class="w-40" for="numberOfDoctors">Number of Doctors</label>
+                                <input type="text" class="w-60 form-control" id="No_Of_Doctors" name="No_Of_Doctors" placeholder="Number Of Doctors" value="1">
+                                
+                            </div>
+                        </div>
+                        <div class="d-flex gap-1 flex-center">
+                            <div class="d-flex w-50 flex-center gap-1">
+                                <label class="w-40" for="numberOfNurses">Number Of Nurses</label>
+                                <input type="text" class="w-60 form-control" id="No_Of_Nurses" name="No_Of_Nurses" placeholder="Number Of Nurses" value="1">
+                                
+                            </div>
+                            <div class="d-flex w-50 flex-center gap-1">
+                                <label class="w-40" for="numberOfBeds">Number Of Beds</label>
+                                <input type="text" class="w-60 form-control" id="No_Of_Beds" name="No_Of_Beds" placeholder="Number Of Beds" value="1">
+                                
+                            </div>
+                        </div>
+                        <div class="d-flex gap-1 flex-center">
+                            <div class="d-flex w-50 flex-center gap-1">
+                                <label class="w-40" for="numberOfStorages">Number Of Storages</label>
+                                <input type="text" class="w-60 form-control" id="No_Of_Storages" name="No_Of_Storages" placeholder="Number Of Storages" value="1">
+                              
+                            </div>
+                            <div class="d-flex w-50 flex-center w-60 gap-1">
+                                <label class="w-40" for="type">Type</label>
+    <!--                            <input type="t class="w-60 form-control" ext" name="Type" placeholder="Type (0/1)">-->
+                                <select id="type" name="Type" class="form-select w-60">
+                                    <option value="1">Branch</option>
+                                    <option value="2">Main</option>
+                                </select>
+                            </div>
+                        </div>
+                        </form>
+                        <form id="editBankForm" action="/admin/dashboard/manageBanks/edit" method="post">
                             <input type="hidden" name="BloodBank_ID" value="${data[0]}">
                             <label for="bank_name">Bank Name</label>
                             <input type="text" id="BankName" name="BankName" value="${data[1]}">

@@ -13,7 +13,7 @@
             </div>
              <button class=" mr-1 btn btn-success d-flex flex-center gap-1 btn-lg" onclick="addNewBank()">
                  <i class="fa-solid fa-plus"></i>
-                 Add New Bank
+                 Add Blood Bank
              </button>
         </div>
     </div>

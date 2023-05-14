@@ -104,6 +104,8 @@ class medicalOfficerController extends \Core\Controller
 
     }
 
+
+
     public function CampaignAssignment(Request $request, Response $response)
     {
         $UserID = Application::$app->getUser()->getId();
@@ -129,6 +131,76 @@ class medicalOfficerController extends \Core\Controller
         $Donor = Donor::findOne(['Donor_ID' => $Donor_ID]);
         return $this->render('/MedicalOfficer/VerifyDonor', ['data' => $Donor]);
     }
+
+    public function FindDonorJSON(Request $request,Response $response): bool|string
+    {
+
+        $NIC = $request->getBody()['nic'] ?? null;
+        $ID = $request->getBody()['ID'] ?? null;
+        $format = $request->getBody()['format'] ?? 'html';
+//        var_dump($format);
+//        exit();
+
+        if (strtolower($format) !== 'json' && ($NIC===null && $ID===null)){
+            return json_encode(['status'=>500,'message'=>'No NIC Provided']);
+        }
+        /* @var  $Donor Donor*/
+        /* @var  $AcceptedDonation AcceptedDonations*/
+        /* @var  $Donations Donation[]*/
+        if ($ID){
+            $Donor = Donor::findOne(['Donor_ID' => $ID]);
+            if (strtolower($format) === 'json'){
+                if ($Donor){
+                    $DonationDetails = [];
+                    $Donations = Donation::RetrieveAll(false,[],true,['Donor_ID'=>$Donor->getID()]);
+                    if ($Donations){
+                        $Donations = array_merge(...array_fill(0,100,$Donations));
+                        usort($Donations,function ($a,$b){
+                            return $a->getDonatedAt() <=> $b->getDonatedAt();
+                        });
+                        foreach ($Donations as $key=>$value){
+                            /** @var Donation $value */
+                            $DonationDetails[] = [
+                                'Date'=>date('Y-M-d',strtotime($value->getDonatedAt())),
+                                'PackageID'=>AcceptedDonations::findOne(['Donation_ID'=>$value->getDonationID()]) ? AcceptedDonations::findOne(['Donation_ID'=>$value->getDonationID()])->getPacketID() : 'N/A',
+                                'Venue'=>$value->getCampaignName(),
+                                'Status'=>$value->getStatus(true),
+                            ];
+                        }
+
+                    }
+                    return json_encode(['status'=>200,'data'=>[
+                        'FullName'=>$Donor->getFullName(),
+                        'NIC'=>$Donor->getNIC(),
+                        'Address'=>$Donor->getAddress(),
+                        'Age'=>$Donor->getAge(),
+                        'ContactNo'=>$Donor->getContactNo(),
+                        'Email'=>$Donor->getEmail(),
+                        'Nationality'=>$Donor->getNationality(),
+                        'BloodGroup'=>$Donor->getBloodGroup(),
+                        'Donations'=>$DonationDetails,
+                        'Availability'=>$Donor->getDonationAvailability(),
+                    ]]);
+                }else{
+                    return json_encode(['status'=>500,'message'=>'No Donor Found']);
+                }
+            }
+        }else{
+            $Donor = Donor::findOne(['NIC' => $NIC]);
+            if (strtolower($format) === 'json'){
+                if ($Donor){
+                    return json_encode(['status'=>200,'name'=>$Donor->getFullName()]);
+                }else{
+                    return json_encode(['status'=>500,'message'=>'No Donor Found']);
+                }
+            }
+        }
+
+        //Get the Donor Information
+//        $this->layout="none";
+        return $this->render('Manager/ManageDonor/findDonor', ['data' => $Donor]);
+    }
+
 
     public function FindDonor(Request $request, Response $response)
     {
@@ -362,10 +434,12 @@ class medicalOfficerController extends \Core\Controller
     public function CampaignOverview(Request $request, Response $response)
     {
         if ($request->isGet()){
+            $CampaignID = MedicalOfficer::getAssignedCampaign(date('Y-m-d'))?->getCampaignID();
+            $DonorQueue = CampaignDonorQueue::RetrieveAll(false,[],true,['Campaign_ID'=>$CampaignID]);
 //            $GetCurrentCampaign=MedicalOfficer::getAssignedCampaign(date('Y-m-d'));
 //            var_dump($GetCurrentCampaign);
 //            exit();
-            return $this->render('/MedicalOfficer/CampaignOverview',['page'=>'overview']);
+            return $this->render('/MedicalOfficer/CampaignOverview',['page'=>'overview','DonorQueue'=>$DonorQueue]);
         }
     }
 
