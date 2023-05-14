@@ -14,7 +14,7 @@ use App\model\users\Donor;
             <input type="hidden" name="Task" value=<?=TeamMembers::TASK_HEALTH_CHECK?>>
             <input type="hidden" name="Recommendation" value=<?= DonorHealthCheckUp::Doctor_Not_Recommend?>>
             <input type="hidden" name="Donor_ID" value="<?=$Donor->getDonorID()?>">
-            <div id="PreviousDonation" class="w-70 d-flex flex-column px-2 gap-1 ">
+            <div id="PreviousDonation" class="w-70 d-flex flex-column px-2 py-1 gap-1 ">
                 <div class="form-group w-100">
                     <div class="form-group border-2 border-radius-10 border-dark px-2 py-0-5" style="gap: 0">
                         <label for="IsInGoodHealth" class="w-70">Are you in Good Health?</label>
@@ -121,7 +121,6 @@ use App\model\users\Donor;
                             <label for="PregnantN" class="">No</label>
                         </div>
                     </div>
-
                     <div class="d-flex w-100 border-2 border-dark px-2 py-0-5 border-radius-10">
                         <label for="Prisoned" class="w-70">Have You Prisoned?</label>
                         <div class="d-flex w-30 gap-1 justify-content-end">
@@ -198,8 +197,8 @@ use App\model\users\Donor;
                         </div>
                     </div>
                 </div>
-                <div class="d-flex">
-                    <button type="button" class="btn btn-success" onclick="CheckHealth()"> Check and Proceed </button>
+                <div class="d-flex w-100 flex-center mb-5">
+                    <button type="button" class="btn btn-lg btn-success mb-3" onclick="CheckHealth()"> Check and Proceed </button>
                 </div>
             </div>
             <div id="DonorDetails" class="w-30 d-flex flex-column mt-2 justify-content-start align-items-center px-2 gap-1">

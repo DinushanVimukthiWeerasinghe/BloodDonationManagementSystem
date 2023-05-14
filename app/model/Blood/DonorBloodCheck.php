@@ -9,7 +9,8 @@ class DonorBloodCheck extends \App\model\database\dbModel
     protected string $Campaign_ID='';
     protected string $BloodGroup='';
     protected float $Hemoglobin_Level=0.0;
-    protected float $Blood_Pressure=0.0;
+    protected float $Blood_Pressure_Upper=0.0;
+    protected float $Blood_Pressure_Lower=0.0;
     protected float $Blood_Sugar=0.0;
     protected float $Temperature=0.0;
     protected float $Pulse_Rate=0.0;
@@ -90,17 +91,17 @@ class DonorBloodCheck extends \App\model\database\dbModel
     /**
      * @return float
      */
-    public function getBloodPressure(): float
+    public function getBloodPressureUpper(): float
     {
-        return $this->Blood_Pressure;
+        return $this->Blood_Pressure_Upper;
     }
 
     /**
-     * @param float $Blood_Pressure
+     * @param float $Blood_Pressure_Upper
      */
-    public function setBloodPressure(float $Blood_Pressure): void
+    public function setBloodPressureUpper(float $Blood_Pressure_Upper): void
     {
-        $this->Blood_Pressure = $Blood_Pressure;
+        $this->Blood_Pressure_Upper = $Blood_Pressure_Upper;
     }
 
     /**
@@ -343,6 +344,39 @@ class DonorBloodCheck extends \App\model\database\dbModel
         $this->Remarks = $Remarks;
     }
 
+    /**
+     * @return float
+     */
+    public function getBloodPressureLower(): float
+    {
+        return $this->Blood_Pressure_Lower;
+    }
+
+    /**
+     * @param float $Blood_Pressure_Lower
+     */
+    public function setBloodPressureLower(float $Blood_Pressure_Lower): void
+    {
+        $this->Blood_Pressure_Lower = $Blood_Pressure_Lower;
+    }
+
+    /**
+     * @return float
+     */
+    public function getBloodSugar(): float
+    {
+        return $this->Blood_Sugar;
+    }
+
+    /**
+     * @param float $Blood_Sugar
+     */
+    public function setBloodSugar(float $Blood_Sugar): void
+    {
+        $this->Blood_Sugar = $Blood_Sugar;
+    }
+
+
     public function labels(): array
     {
         return [
@@ -350,7 +384,8 @@ class DonorBloodCheck extends \App\model\database\dbModel
             'Campaign_ID' => 'Campaign ID',
             'BloodGroup' => 'Blood Group',
             'Hemoglobin_Level' => 'Hemoglobin Level',
-            'Blood_Pressure' => 'Blood Pressure',
+            'Blood_Pressure_Upper' => 'Blood Pressure',
+            'Blood_Pressure_Lower' => 'Blood Pressure',
             'Temperature' => 'Temperature',
             'Pulse_Rate' => 'Pulse Rate',
             'Infection_Diseases' => 'Infection Diseases',
@@ -360,6 +395,7 @@ class DonorBloodCheck extends \App\model\database\dbModel
             'Eligible' => 'Eligible',
             'Checked_At' => 'Checked At',
             'Checked_By' => 'Checked By',
+
         ];
     }
 
@@ -369,13 +405,15 @@ class DonorBloodCheck extends \App\model\database\dbModel
             'Donor_ID' =>[self::RULE_REQUIRED],
             'Campaign_ID' => [self::RULE_REQUIRED],
             'BloodGroup' => [self::RULE_REQUIRED],
-            'Hemoglobin_Level' => [self::RULE_REQUIRED],
-            'Blood_Pressure' => [self::RULE_REQUIRED],
-            'Temperature' => [self::RULE_REQUIRED],
-            'Pulse_Rate' => [self::RULE_REQUIRED],
+            'Hemoglobin_Level' => [self::RULE_REQUIRED,[self::RULE_MAX_VALUE, 'max' => 20],[self::RULE_MIN_VALUE, 'min' => 12]],
+            'Blood_Pressure_Upper' => [self::RULE_REQUIRED, [self::RULE_MAX_VALUE, 'max' => 120], [self::RULE_MIN_VALUE, 'min' => 80]],
+            'Blood_Pressure_Lower' => [self::RULE_REQUIRED, [self::RULE_MAX_VALUE, 'max' => 80], [self::RULE_MIN_VALUE, 'min' => 60]],
+            'Temperature' => [self::RULE_REQUIRED, [self::RULE_MAX_VALUE, 'max' => 40], [self::RULE_MIN_VALUE, 'min' => 30]],
+            'Pulse_Rate' => [self::RULE_REQUIRED, [self::RULE_MAX_VALUE, 'max' => 100], [self::RULE_MIN_VALUE, 'min' => 60]],
             'Infection_Diseases' => [self::RULE_REQUIRED],
+            'Blood_Sugar' => [self::RULE_REQUIRED, [self::RULE_MAX_VALUE, 'max' => 100], [self::RULE_MIN_VALUE, 'min' => 70]],
             'Antibodies' => [self::RULE_REQUIRED],
-            'Weight' => [self::RULE_REQUIRED],
+            'Weight' => [self::RULE_REQUIRED, [self::RULE_MIN_VALUE, 'min' => 50]],
             'Iron_Level' => [self::RULE_REQUIRED],
             'Eligible' => [self::RULE_REQUIRED],
             'Checked_At' => [self::RULE_REQUIRED],
@@ -405,7 +443,9 @@ class DonorBloodCheck extends \App\model\database\dbModel
             'Campaign_ID',
             'BloodGroup',
             'Hemoglobin_Level',
-            'Blood_Pressure',
+            'Blood_Pressure_Upper',
+            'Blood_Pressure_Lower',
+            'Blood_Sugar',
             'Temperature',
             'Pulse_Rate',
             'Infection_Diseases',

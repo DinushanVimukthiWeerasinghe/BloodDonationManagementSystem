@@ -44,7 +44,7 @@
 }
 
 .circular-chart.green .circle {
-    stroke: var(--success);
+    stroke: var(--green-6);
 }
 
 .circular-chart.danger .circle {
@@ -57,6 +57,14 @@
 
 .circular-chart.blue .circle {
     stroke: var(--info);
+}
+
+.circular-chart.purple .circle {
+    stroke: var(--purple-8);
+}
+
+.circular-chart.dark .circle {
+    stroke: var(--dark);
 }
 
 

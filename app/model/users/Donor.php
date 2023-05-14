@@ -90,8 +90,12 @@ class Donor extends Person
         $this->BloodGroup = $BloodGroup;
     }
 
+    /**
+     * @throws \Exception
+     */
     public function getAge(): ?int
     {
+        return 18;
         $nicNumber=$this->getNIC();
         $nicNumber = preg_replace('/\D/', '', $nicNumber);
 
@@ -139,8 +143,7 @@ class Donor extends Person
         $DateOfBirth = $year . '-' . $month . '-' . $days;
         $DateOfBirth = new DateTime($DateOfBirth);
         $today = new DateTime('today');
-        $age = $DateOfBirth->diff($today)->y;
-        return $age;
+        return $DateOfBirth->diff($today)->y;
 
 
     }
@@ -510,6 +513,48 @@ class Donor extends Person
                 $this->setGender("F");
             }
         }
+    }
+
+    public function getLastDonation()
+    {
+        $Donation = Donation::findOne(['Donor_ID'=>$this->getDonorID()]);
+        if ($Donation){
+            return $Donation->getDonationDate();
+        }else{
+            return "No Donation";
+        }
+    }
+
+    public function getSuccessRate()
+    {
+        /** @var Donation[] $Donations */
+        $Donations = Donation::RetrieveAll(false,[],true,['Donor_ID'=>$this->getDonorID()]);
+        $Success = 0;
+        $Total = 0;
+        foreach ($Donations as $Donation){
+            $Total++;
+            if ($Donation->getStatus()===Donation::STATUS_BLOOD_STORED){
+                $Success++;
+            }
+        }
+        if ($Total==0){
+            return 0;
+        }else{
+            return round(($Success/$Total)*100,2)."%";
+        }
+    }
+
+    public function getTotalSuccessfulDonations()
+    {
+        /** @var Donation[] $Donations */
+        $Donations = Donation::RetrieveAll(false,[],true,['Donor_ID'=>$this->getDonorID()]);
+        $Success = 0;
+        foreach ($Donations as $Donation){
+            if ($Donation->getStatus()===Donation::STATUS_BLOOD_STORED){
+                $Success++;
+            }
+        }
+        return $Success;
     }
 
 }

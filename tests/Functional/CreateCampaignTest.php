@@ -9,6 +9,7 @@ use Core\Application;
 use Dotenv\Dotenv;
 use PHPMailer\PHPMailer\Exception;
 use Tests\Support\FunctionalTester;
+use Unit\AppClass;
 
 class CreateCampaignTest extends \Codeception\Test\Unit
 {

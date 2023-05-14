@@ -32,3 +32,71 @@
 .border-danger:focus{
     box-shadow: 0 0 0 0.2rem rgba(220,53,69,.5);
 }
+
+
+
+/*Bow Shadows*/
+.box-shadow-primary{
+box-shadow: 0 0 5px var(--primary);
+}
+.box-shadow-secondary{
+box-shadow: 0 0 5px var(--secondary);
+}
+.box-shadow-success{
+box-shadow: 0 0 5px var(--success);
+}
+.box-shadow-danger{
+box-shadow: 0 0 5px var(--danger);
+}
+.box-shadow-warning{
+box-shadow: 0 0 5px var(--warning);
+}
+.box-shadow-info{
+box-shadow: 0 0 5px var(--info);
+}
+.box-shadow-light{
+box-shadow: 0 0 5px var(--light);
+}
+.box-shadow-dark{
+box-shadow: 0 0 5px var(--dark);
+}
+.box-shadow-white{
+box-shadow: 0 0 5px var(--white);
+}
+.box-shadow-black{
+box-shadow: 0 0 5px var(--black);
+}
+
+.box-shadow-purple{
+box-shadow: 0 0 5px var(--purple-8);
+}
+.box-shadow-pink{
+box-shadow: 0 0 5px var(--pink-8);
+}
+.box-shadow-red{
+box-shadow: 0 0 5px var(--red-8);
+}
+.box-shadow-orange{
+box-shadow: 0 0 5px var(--orange-8);
+}
+.box-shadow-yellow{
+box-shadow: 0 0 5px var(--yellow-8);
+}
+.box-shadow-green{
+box-shadow: 0 0 5px var(--green-8);
+}
+.box-shadow-teal{
+box-shadow: 0 0 5px var(--teal-8);
+}
+.box-shadow-cyan{
+box-shadow: 0 0 5px var(--cyan-8);
+}
+.box-shadow-blue{
+box-shadow: 0 0 5px var(--blue-8);
+}
+.box-shadow-indigo{
+box-shadow: 0 0 5px var(--indigo-8);
+}
+.box-shadow-gray{
+box-shadow: 0 0 5px var(--gray-8);
+}

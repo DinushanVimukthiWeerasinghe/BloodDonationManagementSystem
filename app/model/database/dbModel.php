@@ -136,6 +136,17 @@ abstract class dbModel extends Model
         if ($IsConditional) {
             $sql = "SELECT * FROM $tableName WHERE ";
             $attributes = array_keys($conditions);
+            foreach ($conditions as $key => $value) {
+                if (is_array($value)){
+                    $check = $value[0].' "'.$value[1].'"';
+                    $sql .=$key. ' ' .$check.' AND ';
+//                    $sql .= "$key $check AND ";
+
+                    $attributes = array_filter($attributes, fn($attr) => $attr !== $key);
+                }
+//                Delete from $attributes where $key = $value
+            }
+
             $sql .= implode(' AND ', array_map(fn($attr) => "$attr = :$attr", $attributes));
             if ($OrderBy){
                 $sql.=" ORDER BY ";
@@ -149,9 +160,10 @@ abstract class dbModel extends Model
             }
             $statement = self::prepare($sql);
             foreach ($conditions as $key => $value) {
-                $statement->bindValue(":$key", $value);
+                if (!is_array($value)){
+                    $statement->bindValue(":$key",$value);
+                }
             }
-
             $statement->execute();
             return $statement->fetchAll(PDO::FETCH_CLASS,static::class);
         } else {
@@ -165,6 +177,7 @@ abstract class dbModel extends Model
             if ($pagination) {
                 $sql .= " LIMIT $limit[0],$limit[1]";
             }
+
             $statement = self::prepare($sql);
             $statement->execute();
             return $statement->fetchAll(PDO::FETCH_CLASS,static::class);
@@ -285,11 +298,14 @@ abstract class dbModel extends Model
                 if ($attribute == static::PrimaryKey()) {
                     continue;
                 }
+
                 if (in_array($attribute, $Include)) {
+
                     $demo .= $attribute . '="' . $this->{$attribute} . '", ';
                 }
-
             }
+
+
         }else {
             foreach ($attributes as $attribute) {
                 if ($attribute == static::PrimaryKey()) {
@@ -301,7 +317,6 @@ abstract class dbModel extends Model
                 $demo .= $attribute . '="' . $this->{$attribute} . '", ';
             }
         }
-        echo "<pre>";
         $demo=substr($demo,0,-2);
         $demo.=' WHERE '.static::PrimaryKey().'="'.$id.'"';
         if (!empty($where)){
@@ -311,6 +326,8 @@ abstract class dbModel extends Model
             }
             $demo=substr($demo,0,-4);
         }
+
+
 
 
         $statement=self::prepare($demo);

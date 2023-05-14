@@ -230,11 +230,11 @@ class BloodBank extends dbModel
             'Address1'=>[self::RULE_REQUIRED],
             'Address2'=>[self::RULE_REQUIRED],
             'City'=>[self::RULE_REQUIRED],
-            'Telephone_No'=>[self::RULE_REQUIRED],
-            'No_Of_Doctors'=>[self::RULE_REQUIRED],
-            'No_Of_Nurses'=>[self::RULE_REQUIRED],
-            'No_Of_Beds'=>[self::RULE_REQUIRED],
-            'No_Of_Storages'=>[self::RULE_REQUIRED],
+            'Telephone_No'=>[self::RULE_REQUIRED,self::RULE_MOBILE_NO],
+            'No_Of_Doctors'=>[self::RULE_REQUIRED,[self::RULE_MIN,'min' => 0],[self::RULE_NUMERIC]],
+            'No_Of_Nurses'=>[self::RULE_REQUIRED,[self::RULE_MIN,'min' => 0],[self::RULE_NUMERIC]],
+            'No_Of_Beds'=>[self::RULE_REQUIRED,[self::RULE_MIN,'min' => 0],[self::RULE_NUMERIC]],
+            'No_Of_Storages'=>[self::RULE_REQUIRED,[self::RULE_MIN,'min' => 0],[self::RULE_NUMERIC]],
             'Type'=>[self::RULE_REQUIRED]
 
         ];
