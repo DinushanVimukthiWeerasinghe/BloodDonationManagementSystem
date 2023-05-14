@@ -18,7 +18,7 @@
         </div>
     </div>
     <div class="d-flex w-95 pt-2 pb-1 flex-center flex-column bg-white border-radius-10" style="max-height: 80vh">
-        <div class="w-95  d-flex min-h-75 overflow-y-overlay">
+        <div class="w-95  d-flex min-h-75 overflow-y-overlay" id="div1">
             <table class="" id="bankTable">
                 <thead class="sticky top-0">
                 <tr>
@@ -87,4 +87,5 @@
         </div>
     </div>
 </div>
+
 
