@@ -58,7 +58,7 @@ echo $background;
 <!---->
 <!--    }-->
 <!--</style>-->
-<div class="container p-5" style="background-color: rgba(0,0,0,0.3);margin-top: 10vh;border-radius: 80px;">
+<img src="/public/images/doublearrow.png" style="height: 80px;margin-right: 85vw;cursor: pointer;margin-bottom: 60vh;position: fixed" onclick="history.back()"/><br>
     <?php
 
     if (empty($params)): ?>
