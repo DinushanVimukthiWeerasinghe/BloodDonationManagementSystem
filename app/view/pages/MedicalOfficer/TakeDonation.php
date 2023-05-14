@@ -305,7 +305,42 @@ endif;
                     </div>
                 </div>
             `,
-
+            successBtnAction: ()=>{
+                const url = "/mofficer/AbortDonation";
+                const formData = new FormData();
+                formData.append("DonorID", "<?=$Donor->getDonorID()?>");
+                formData.append("Donation_ID", "<?=$Donation->getDonationID()?>");
+                formData.append("AbortDonationReason", document.getElementById("AbortDonationReason").value);
+                const OtherReason = document.getElementById("AbortDonationReasonOther").value;
+                if (OtherReason !== ""){
+                    formData.append("OtherReason", OtherReason);
+                }
+                fetch(url, {
+                    method: "POST",
+                    body: formData
+                })
+                    .then((res) => res.json())
+                    .then((data) => {
+                    console.log(data)
+                    if (data.status) {
+                        CloseDialogBox("AbortDonation");
+                        ShowToast({
+                            message: data.message,
+                            type: "success",
+                            duration: 3000
+                        })
+                        setTimeout(()=>{
+                            window.location.reload();
+                        },3000)
+                    } else {
+                        ShowToast({
+                            message: data.message,
+                            type: "error",
+                            duration: 3000
+                        })
+                    }
+                })
+            }
         })
     }
     <?php

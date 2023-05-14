@@ -138,8 +138,6 @@ class medicalOfficerController extends \Core\Controller
         $NIC = $request->getBody()['nic'] ?? null;
         $ID = $request->getBody()['ID'] ?? null;
         $format = $request->getBody()['format'] ?? 'html';
-//        var_dump($format);
-//        exit();
 
         if (strtolower($format) !== 'json' && ($NIC===null && $ID===null)){
             return json_encode(['status'=>500,'message'=>'No NIC Provided']);
@@ -205,6 +203,7 @@ class medicalOfficerController extends \Core\Controller
     public function FindDonor(Request $request, Response $response)
     {
         $Donor_ID = $request->getBody()['nic'];
+        /** @var Donor $Donor */
         $Donor = Donor::findOne(['NIC' => $Donor_ID]);
         return json_encode([
             'status'=>true,
@@ -215,6 +214,8 @@ class medicalOfficerController extends \Core\Controller
                 'address'=>$Donor->getAddress(),
                 'profileImage'=>$Donor->getProfileImage(),
                 'gender'=>$Donor->getGender(),
+                'age'=>$Donor->getAge(),
+                'contactNo'=>$Donor->getContactNo(),
             ]]);
     }
 
@@ -705,7 +706,7 @@ class medicalOfficerController extends \Core\Controller
                 }
             }
             else if ($type===TeamMembers::TASK_BLOOD_RETRIEVAL){
-                var_dump("Blood Retrieval");
+                Application::Redirect('/mofficer/take-donation');
 
 
             }
@@ -737,12 +738,17 @@ class medicalOfficerController extends \Core\Controller
             $RejectedDonation->setRejectedBy($UserID);
             $RejectedDonation->setDonorID($DonorID);
             $RejectedDonation->setType(RejectedDonations::TYPE_ABORT_BLOOD_RETRIEVING);
+            /** @var Donor $Donor */
+            $Donor = Donor::findOne(['Donor_ID'=>$DonorID],false);
+            $Donor->setDonationAvailability(Donor::AVAILABILITY_TEMPORARY_UNAVAILABLE);
+            $Donor->setDonationAvailabilityDate(strtotime("+6 months"));
             if ($ReasonOther){
                 $RejectedDonation->setOtherReason($ReasonOther);
             }
             if ($RejectedDonation->validate()){
                 $RejectedDonation->save();
                 $DonorQueue->update($DonorID,[],['Donor_Status'],['Campaign_ID'=>$DonorQueue->getCampaignID()]);
+                $Donor->update($DonorID,[],['Donation_Availability','Donation_Availability_Date']);
                 return json_encode(['status'=>true,'message'=>'Aborted the Donation']);
             }else{
                 return json_encode(['status'=>false,'message'=>'Error Occured','errors'=>$RejectedDonation->getErrors()]);
@@ -817,6 +823,8 @@ class medicalOfficerController extends \Core\Controller
             $RejectedDonation->setRejectedBy($UserID);
             $RejectedDonation->setDonorID($DonorID);
             $RejectedDonation->setType(RejectedDonations::TYPE_ABORT_DONATION);
+            $Donor = Donor::findOne(['Donor_ID'=>$DonorID],false);
+
             if ($ReasonOther){
                 $RejectedDonation->setOtherReason($ReasonOther);
             }

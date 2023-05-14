@@ -65,6 +65,8 @@ echo $background;
             id: 'profile',
             title: 'Donor Profile',
             titleClass: 'text-center text-white bg-dark px-2 py-1',
+            showSuccessButton: false,
+            cancelBtnText: 'Close',
             content: `
                 <div class="d-flex flex-column gap-1 w-100">
                      <div id="profile" class="d-flex flex-column w-100">
@@ -127,7 +129,7 @@ echo $background;
                                         <div class="d-flex flex-center gap-2 w-100">
                                             <div class="d-flex flex-center w-50 gap-1">
                                                 <div class="font-bold"> Availability  : </div>
-                                                <div class="bg-success text-sm text-white text-center px-1 py-0-5 border-radius-10"> Available </div>
+                                                <div class="bg-success text-sm text-white text-center px-1 py-0-5 border-radius-10"> <?=$User->getDonationAvailability(true)?> </div>
                                             </div>
                                             <div class="d-flex flex-center w-50 gap-1">
                                                 <div class="font-bold"> Available On : </div>
@@ -141,6 +143,54 @@ echo $background;
                 </div>
             `,
         })
+    }
+    const getNotification = () => {
+        const url = '/donor/notification';
+        fetch(url, {
+            method: 'POST',
+        }).then(res => res.json())
+            .then(data => {
+                    if (data.status) {
+                        OpenDialogBox({
+                            id: 'notification',
+                            title: 'Notification',
+                            titleClass:'bg-dark text-white px-1 py-0-5',
+                            content: `
+                            <div class="d-flex flex-column gap-1">
+                                   <div id="notification" class="d-flex flex-column gap-1">
+                                        <div class="d-flex flex-column gap-1 overflow-y-overlay max-h-80vh">
+                                            ${data.notifications.map(notification => `
+                                                        <div class="d-flex flex-column gap-1 border-2 px-2 py-0-5">
+                                                            <div class="d-flex justify-content-between border-bottom-2 py-0-5">
+                                                                <img src="/public/icons/${notification.Notification_Type === "1" ? "CampaignAssign.svg" : (notification.Notification_Type === "2" ? "TaskComplete.svg" : "TaskAssign.svg")}" alt="" width="24px">
+                                                                <div class="text-sm font-bold">${notification.Notification_Title}</div>
+                                                                <div class="text-sm">${notification.Notification_Date}</div>
+                                                            </div>
+                                                            <div class="d-flex justify-content-centerpy-1 text-center   ">
+                                                                <div class="text-sm">${notification.Notification_Message}</div>
+                                                            </div>
+                                                        </div>
+
+                                            `).join('')}
+                                            <!--If data.notification is empty - Show no Notification-->
+                                            ${data.notifications.length === 0 ? `
+                                                <div class="d-flex flex-column px-1 py-0-5">
+                                                    <div class="d-flex flex-center text-center   ">
+                                                        <div class="text-sm font-bold">No Notification to Show!</div>
+                                                    </div>
+                                                </div>
+                                            ` : ''}
+                                        </div>
+                                   </div>
+                            </div>
+                        `,
+                            showSuccessButton: false,
+                            cancelBtnText: 'Close',
+                        })
+                    }
+                }
+            )
+
     }
 
     const EditEmail = ()=>{
@@ -201,11 +251,19 @@ echo $background;
                                         body: form,
                                     }).then(res=>res.json())
                                         .then(data=>{
-                                            if (data.success){
+                                            if (data.status){
                                                 ShowToast({
                                                     title: 'Success',
                                                     message: 'Email Changed Successfully',
                                                     type: 'success',
+                                                })
+                                                CloseDialogBox('otpVerification')
+                                                CloseDialogBox('editEmail')
+                                            }else{
+                                                ShowToast({
+                                                    title: 'Error',
+                                                    message: 'Invalid OTP',
+                                                    type: 'error',
                                                 })
                                             }
                                         })
@@ -219,7 +277,166 @@ echo $background;
     }
 
     const EditContactNo = ()=>{
-        console.log('Edit Contact No')
+        OpenDialogBox({
+            id: 'editContactNo',
+            title: 'Edit Contact No',
+            titleClass: 'text-center text-white bg-dark px-2 py-1',
+            popupOrder: 1,
+            content: `
+                <div class="d-flex flex-center flex-column gap-1 w-90">
+                    <div class="d-flex flex-center w-100">
+                        <label for="contactNo" class="font-bold w-40">Previous Contact No : </label>
+                        <input type="text" name="contactNo" id="contactNo" class="border-1 border-radius-10 px-1 w-60" value="<?= $User->getContactNo() ?>" disabled>
+                    </div>
+                    <div class="d-flex flex-center w-100">
+                        <label for="contactNo" class="font-bold w-40">New Contact No : </label>
+                        <input type="text" name="contactNo" id="newContactNo" class="border-1 border-radius-10 px-1 w-60" value="<?= $User->getContactNo() ?>">
+                    </div>
+                    </div>
+            `,
+            successBtnText: 'Save',
+            successBtnAction: ()=>{
+                const url = '/donor/changeContactNo'
+                const newContactNo = document.getElementById('newContactNo').value
+                const form = new FormData()
+                form.append('ContactNo', newContactNo)
+                fetch(url,{
+                    method: 'POST',
+                    body: form,
+                }).then(res=>res.json())
+                    .then(data=>{
+                        if (data.status){
+                            ShowToast({
+                                title: 'Success',
+                                message: 'Contact No Changed Successfully',
+                                type: 'success',
+                            })
+                            CloseDialogBox('editContactNo')
+                        }else{
+                            ShowToast({
+                                title: 'Error',
+                                message: 'Invalid OTP',
+                                type: 'error',
+                            })
+                        }
+                    })
+            }
+        })
+    }
+    const ChangePassword = ()=>{
+        OpenDialogBox({
+            id: 'changePassword',
+            title: 'Change Password',
+            popupOrder: 1,
+            content: `
+                <div class="d-flex flex-column gap-1 w-100">
+                     <div id="changePassword" class="d-flex flex-column gap-1">
+                         <div class="form-group">
+                            <label for="oldPassword" class="w-50">Old Password</label>
+                            <div class="d-flex flex-column w-50">
+                                 <input type="password" class="form-control w-100" min="8" max="30" id="oldPassword" placeholder="Enter Old Password">
+                                 <span class="text-danger" style="margin-top: 0.5rem" id="CurrentPasswordError"> </span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="newPassword" class="w-50">New Password</label>
+                            <div class="d-flex flex-column w-50">
+                                 <input type="password" class="form-control w-100" min="8" max="30" id="newPassword" placeholder="Enter New Password">
+                                 <span class="text-danger" style="margin-top: 0.5rem" id="NewPasswordError"> </span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="confirmPassword" class="w-50">Confirm Password</label>
+                            <div class="d-flex flex-column w-50">
+                                 <input type="password" class="form-control w-100" min="8" max="30" id="confirmPassword" placeholder="Enter Confirm Password">
+                                 <span class="text-danger" style="margin-top: 0.5rem" id="ConfirmPasswordError"> </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>`,
+            successBtnText: 'Change Password',
+            successBtnAction: ()=>{
+                const url ='/donor/changePassword';
+                const oldPassword = document.querySelector('#oldPassword').value;
+                const newPassword = document.querySelector('#newPassword').value;
+                const confirmPassword = document.querySelector('#confirmPassword').value;
+                if (oldPassword.length === 0){
+                    document.querySelector('#CurrentPasswordError').innerText = 'Old Password is Required';
+                    return;
+                }
+                if (newPassword.length === 0){
+                    document.querySelector('#NewPasswordError').innerText = 'New Password is Required';
+                    return;
+                }
+                if (confirmPassword.length === 0){
+                    document.querySelector('#ConfirmPasswordError').innerText = 'Confirm Password is Required';
+                    return;
+                }
+                if (newPassword.length < 8){
+                    document.querySelector('#NewPasswordError').innerText = 'Password must be at least 8 characters';
+                    return;
+                }
+                if (newPassword.length > 30){
+                    document.querySelector('#NewPasswordError').innerText = 'Password must be at most 30 characters';
+                    return;
+                }
+                if (confirmPassword.length < 8){
+                    document.querySelector('#ConfirmPasswordError').innerText = 'Password must be at least 8 characters';
+                    return;
+                }
+                if (confirmPassword.length > 30){
+                    document.querySelector('#ConfirmPasswordError').innerText = 'Password must be at most 30 characters';
+                    return;
+                }
+                if (newPassword !== confirmPassword){
+                    document.querySelector('#ConfirmPasswordError').innerText = 'Confirm Password is not Matched';
+                    return;
+                }
+
+                const formData = new FormData();
+                formData.append('CurrentPassword',oldPassword);
+                formData.append('NewPassword',newPassword);
+                formData.append('ConfirmPassword',confirmPassword);
+                fetch(url, {
+                    method: 'POST',
+                    body: formData
+                }).then(response => response.json())
+                    .then(data => {
+                        console.log(data)
+                        if (data.status){
+                            ShowToast({
+                                title: 'Success',
+                                message: 'Password Changed Successfully',
+                                type: 'success',
+                                duration: 3000
+                            });
+                            CloseDialogBox('changePassword');
+                        }else{
+                            ShowToast({
+                                title: 'Error',
+                                message: data.message,
+                                type: 'danger',
+                                duration: 3000
+                            });
+                            const Filed = data.field;
+                            const CurrentPasswordInput = document.querySelector('#oldPassword');
+                            const NewPasswordInput = document.querySelector('#newPassword');
+                            const ConfirmPasswordInput = document.querySelector('#confirmPassword');
+
+                            if (Filed === 'CurrentPassword'){
+                                CurrentPasswordInput.classList.add('border-danger');
+                                document.querySelector('#CurrentPasswordError').innerHTML = data.message;
+                            }else if (Filed === 'NewPassword'){
+                                NewPasswordInput.classList.add('border-danger');
+                                document.querySelector('#NewPasswordError').innerHTML = data.message;
+                            }else if (Filed === 'ConfirmPassword'){
+                                ConfirmPasswordInput.classList.add('border-danger');
+                                document.querySelector('#ConfirmPasswordError').innerHTML = data.message;
+                            }
+                        }
+                    })
+            }
+        })
     }
 
 </script>
