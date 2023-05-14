@@ -9,6 +9,55 @@ class AttendanceAcceptedRequest extends \App\model\database\dbModel
     protected string $Campaign_ID='';
     protected string $Accepted_At='';
 
+
+    /**
+     * @return string
+     */
+    public function getRequestID(): string
+    {
+        return $this->Request_ID;
+    }
+
+    /**
+     * @param string $Request_ID
+     */
+    public function setRequestID(string $Request_ID): void
+    {
+        $this->Request_ID = $Request_ID;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCampaignID(): string
+    {
+        return $this->Campaign_ID;
+    }
+
+    /**
+     * @param string $Campaign_ID
+     */
+    public function setCampaignID(string $Campaign_ID): void
+    {
+        $this->Campaign_ID = $Campaign_ID;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAcceptedAt(): string
+    {
+        return $this->Accepted_At;
+    }
+
+    /**
+     * @param string $Accepted_At
+     */
+    public function setAcceptedAt(string $Accepted_At): void
+    {
+        $this->Accepted_At = $Accepted_At;
+    }
+
     public function labels(): array
     {
         return [

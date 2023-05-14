@@ -1368,19 +1368,11 @@ class managerController extends Controller
         }else if ($CampaignStatus===1){
             $total_rows = Campaign::getCount(false,['Status'=>Campaign::CAMPAIGN_STATUS_PENDING]);
             $total_pages = ceil ($total_rows / $limit);
-            $data= Campaign::RetrieveAll(true,[$initial,$limit],true,['Status'=>Campaign::CAMPAIGN_STATUS_PENDING]);
-            $data=array_filter($data,function ($item){
-                /** @var $item Campaign*/
-                $date = new DateTime($item->getCampaignDate());
-                $now = new DateTime();
-                $interval = $date->diff($now);
-                $days = $interval->format('%d');
-                $days = intval($days);
-                if ($days>14){
-                    return true;
-                }
-                return false;
-            });
+            $date = date('Y-m-d',strtotime('+14 day'));
+            $data= Campaign::RetrieveAll(true,[$initial,$limit],true,['Status'=>Campaign::CAMPAIGN_STATUS_PENDING,'Campaign_Date'=>['>',$date]],['Campaign_Date'=>'ASC']);
+            $total_rows=count($data);
+            $total_pages = ceil ($total_rows / $limit);
+            $data = Campaign::RetrieveAll(true,[$initial,$limit],true,['Status'=>Campaign::CAMPAIGN_STATUS_PENDING,'Campaign_Date'=>['>',date('Y-m-d')]]);
         }else if ($CampaignStatus===2){
             $total_rows = Campaign::getCount();
             $total_pages = ceil ($total_rows / $limit);
@@ -1391,6 +1383,9 @@ class managerController extends Controller
             $total_pages = ceil ($total_rows / $limit);
             $data= Campaign::RetrieveAll(true,[$initial,$limit],true,['Status'=>Campaign::CAMPAIGN_STATUS_REJECTED,'Verified'=>Campaign::CAMPAIGN_STATUS_REJECTED]);
         }
+       usort($data,function ($a,$b){
+            return $a->getCampaignDate() > $b->getCampaignDate();
+        });
 
         return $this->render('Manager/ManageCampaigns',
             [

@@ -1,106 +1,259 @@
-<div class="information-cards d-flex justify-content-center align-items-center bg-white-0-5">
-        <div class="card card-sm bg-white border border-radius-5 d-flex align-center flex-row justify-content-center">
-            <div class="card-header">
-                <img src="/public/images/icons/admin/dashboard/blood-donation.png" alt="" class="max-w-rem-4">
-                <div class="card-title">
-                    <div class="text-center text-dark text-2xl p-1 border-2 border-radius-15 border-primary"><?php echo $bloodPacketsCount?></div>
+<?php
+\App\view\components\ResponsiveComponent\Alert\FlashMessage::RenderFlashMessages();
+?>
+<div class="d-flex flex-column justify-content-start overflow-y-overlay" style="max-height: 100vh">
+    <div class="d-flex flex-wrap flex-center w-100 gap-2 p-2 border-radius-5">
+        <div class="d-flex flex-column bg-white text-white box-shadow-purple border-dark border-radius-5"
+             style="width: 250px;height: 180px">
+            <div class="d-flex flex-column flex-center gap-0-5 h-100">
+                <div class="font-bold text-xl">Total Donations Given</div>
+                <div class="single-chart">
+                    <svg viewBox="0 0 36 36" class="circular-chart purple">
+                        <path class="circle-bg"
+                              d="M18 2.0845
+              a 15.9155 15.9155 0 0 1 0 31.831
+              a 15.9155 15.9155 0 0 1 0 -31.831"
+                        />
+                        <path class="circle"
+                              stroke-dasharray="100, 100"
+                              d="M18 2.0845
+              a 15.9155 15.9155 0 0 1 0 31.831
+              a 15.9155 15.9155 0 0 1 0 -31.831"
+                        />
+                        <text x="18" y="20.35" class="percentage"><?php echo $bloodPacketsCount?></text>
+                    </svg>
                 </div>
-            </div>
-        </div>
-        <div class="card card-sm bg-white border border-radius-5 d-flex align-center flex-row justify-content-center">
-            <div class="card-header">
-                <img src="/public/images/icons/admin/dashboard/organization-chart.png" alt="" class="max-w-rem-4">
-                <div class="card-title">
-                    <div class="text-center text-dark text-2xl p-1 border-2 border-radius-15 border-primary"><?php echo $donorsCount?></div>
-                </div>
-            </div>
-        </div>
-        <div class="card card-sm bg-white border border-radius-5 d-flex align-center flex-row justify-content-center">
-            <div class="card-header">
-                <img src="/public/images/icons/admin/dashboard/blood-bank.png" alt="" class="max-w-rem-4">
-                <div class="card-title">
-                    <div class="text-center text-dark text-2xl p-1 border-2 border-radius-15 border-primary"><?php echo $bloodBanksCount?></div>
-                </div>
-            </div>
-        </div>
+                <div><span class="font-extraBold text-purple-8 text-xl">60</span> / <span>100</span></div>
 
-</div>
-<div class="d-flex w-100 min-h-15 justify-content-center align-items-center gap-1 mt-1">
-    <div class="min-w-30 bg-white p-2 border-radius-10">
-        <canvas id="myChart" style="width:100%;max-width:700px;display: block;" class="chart chartjs-render-monitor" width="464" height="232"></canvas>
+            </div>
+            <div class="w-90 bg-purple-8 border-radius-5 align-self-center"
+                 style="height: 8px;width: 85%;margin-bottom:2px">
+
+            </div>
+        </div>
+        <div class="d-flex flex-column bg-white text-white box-shadow-dark border-dark border-radius-5"
+             style="width: 250px;height: 180px">
+            <div class="d-flex flex-column flex-center gap-0-5 h-100">
+                <div class="d-flex flex-column font-bold text-xl">
+                    Total Donors Registered
+                </div>
+
+                <div class="single-chart">
+                    <svg viewBox="0 0 36 36" class="circular-chart dark">
+                        <path class="circle-bg"
+                              d="M18 2.0845
+              a 15.9155 15.9155 0 0 1 0 31.831
+              a 15.9155 15.9155 0 0 1 0 -31.831"
+                        />
+                        <path class="circle"
+                              stroke-dasharray="30, 100"
+                              d="M18 2.0845
+              a 15.9155 15.9155 0 0 1 0 31.831
+              a 15.9155 15.9155 0 0 1 0 -31.831"
+                        />
+                        <text x="18" y="20.35" class="percentage"><?php echo $donorsCount?></text>
+                    </svg>
+                </div>
+                <div><span class="font-extraBold text-dark text-xl">30</span> <span class="text-2xl">/</span> <span>100</span></div>
+            </div>
+            <div class="w-100 bg-dark border-radius-5 align-self-center"
+                 style="height: 8px;width: 85%;margin-bottom:2px">
+            </div>
+        </div>
+        <div class="d-flex flex-column bg-white text-white box-shadow-green border-dark border-radius-5"
+             style="width: 250px;height: 180px">
+            <div class="d-flex flex-column flex-center gap-0-5 h-100">
+                <div class="font-bold text-xl">Total Blood Banks</div>
+                <div class="single-chart">
+                    <svg viewBox="0 0 36 36" class="circular-chart green">
+                        <path class="circle-bg"
+                              d="M18 2.0845
+              a 15.9155 15.9155 0 0 1 0 31.831
+              a 15.9155 15.9155 0 0 1 0 -31.831"
+                        />
+                        <path class="circle"
+                              stroke-dasharray="40, 100"
+                              d="M18 2.0845
+              a 15.9155 15.9155 0 0 1 0 31.831
+              a 15.9155 15.9155 0 0 1 0 -31.831"
+                        />
+                        <text x="18" y="20.35" class="percentage">
+                            <?php echo $bloodBanksCount?>
+                        </text>
+                    </svg>
+                </div>
+                <div><span class="font-extraBold text-success text-xl">60</span> / <span>100</span></div>
+            </div>
+            <div class="w-100 bg-green-6 border-radius-5 align-self-center"
+                 style="height: 8px;width: 85%;margin-bottom:2px">
+
+            </div>
+        </div>
+        <div class="d-flex flex-column bg-white text-white box-shadow-primary border-dark border-radius-5"
+             style="width: 250px;height: 180px">
+            <div class="d-flex flex-column flex-center gap-0-5 h-100">
+                <div class="font-bold text-xl">Total Medical Officers</div>
+                <div class="single-chart">
+                    <svg viewBox="0 0 36 36" class="circular-chart primary">
+                        <path class="circle-bg"
+                              d="M18 2.0845
+              a 15.9155 15.9155 0 0 1 0 31.831
+              a 15.9155 15.9155 0 0 1 0 -31.831"
+                        />
+                        <path class="circle"
+                              stroke-dasharray="40, 100"
+                              d="M18 2.0845
+              a 15.9155 15.9155 0 0 1 0 31.831
+              a 15.9155 15.9155 0 0 1 0 -31.831"
+                        />
+                        <text x="18" y="20.35" class="percentage"><?php echo $medicalOfficerCount?></text>
+                    </svg>
+                </div>
+                <div><span class="font-extraBold text-primary text-xl">60</span> / <span>100</span></div>
+            </div>
+            <div class="w-100 bg-primary border-radius-5 align-self-center"
+                 style="height: 8px;width: 85%;margin-bottom:2px">
+
+            </div>
+        </div>
+        <div class="d-flex flex-column bg-white text-white box-shadow-yellow border-dark border-radius-5"
+             style="width: 250px;height: 180px">
+            <div class="d-flex flex-column flex-center gap-0-5 h-100">
+                <div class="font-bold text-xl"> Ongoing Blood Retrieval </div>
+                <div class="single-chart">
+                    <svg viewBox="0 0 36 36" class="circular-chart yellow">
+                        <path class="circle-bg"
+                              d="M18 2.0845
+              a 15.9155 15.9155 0 0 1 0 31.831
+              a 15.9155 15.9155 0 0 1 0 -31.831"
+                        />
+                        <path class="circle"
+                              stroke-dasharray="40, 100"
+                              d="M18 2.0845
+              a 15.9155 15.9155 0 0 1 0 31.831
+              a 15.9155 15.9155 0 0 1 0 -31.831"
+                        />
+                        <text x="18" y="20.35" class="percentage">60%</text>
+                    </svg>
+                </div>
+                <div><span class="font-extraBold text-yellow-8 text-xl">60</span> / <span>100</span></div>
+            </div>
+            <div class="w-100 bg-warning border-radius-5 align-self-center"
+                 style="height: 8px;width: 85%;margin-bottom:2px">
+
+            </div>
+        </div>
     </div>
+    <div class="d-flex w-100 justify-content-center align-items-center gap-1 mt-1">
         <div class="min-w-30 bg-white p-2 border-radius-10">
-        <canvas id="myChart2" style="width:100%;max-width:700px;display: block;" class="chart chartjs-render-monitor" width="464" height="232"></canvas>
+            <canvas id="myChart" style="width:600px;min-width:400px;max-width: 600px" ></canvas>
+        </div>
+        <div class="min-w-30 bg-white p-2 border-radius-10">
+            <canvas id="myChart2" style="width:600px;min-width:400px;max-width: 600px" ></canvas>
+        </div>
+    </div>
+    <div class="d-flex w-100 justify-content-center align-items-center gap-1 mt-1 mb-2">
+    <div class=" bg-white p-1 border-radius-10 mb-2 border-3 border-dark">
+        <div class="title"> Important Stats</div>
+        <ul class="list list-style-none">
+            <li class="d-flex align-items-center justify-content-evenly">Ongoing Campaigns : <div class="text-2xl"> <?php echo $onGoingCampaigns ?> </div></li>
+            <li class="d-flex align-items-center justify-content-evenly">Pending Blood Requests : <div class="text-2xl"> <?php echo $pendingBloodRequests  ?> </div></li>
+            <li class="d-flex align-items-center justify-content-evenly">Total Users : <div class="text-2xl">30</div></li>
+        </ul>
+    </div>
     </div>
 </div>
-<div class="d-flex w-100 min-h-15 justify-content-center align-items-center gap-1 mt-1 mb-2">
-<div class="min-w-40 bg-white p-2 border-radius-10">
-    <div class="title"> Important Stats</div>
-    <ul class="list list-style-none">
-        <li class="d-flex align-items-center justify-content-evenly">Total Users : <div class="text-2xl">54</div></li>
-        <li class="d-flex align-items-center justify-content-evenly">Total Users : <div class="text-2xl">50</div></li>
-        <li class="d-flex align-items-center justify-content-evenly">Total Users : <div class="text-2xl">30</div></li>
-    </ul>
-</div>
-</div>
-
 <script type="text/javascript">
-    var xyValues = [
-        {x:50, y:7},
-        {x:60, y:8},
-        {x:70, y:8},
-        {x:80, y:9},
-        {x:90, y:9},
-        {x:100, y:9},
-        {x:110, y:10},
-        {x:120, y:11},
-        {x:130, y:14},
-        {x:140, y:14},
-        {x:150, y:15}
-    ];
-    var xValues = ["Italy", "France", "Spain", "USA", "Argentina"];
-    var yValues = [55, 49, 44, 24, 15];
-    var barColors = [
-        "#b91d47",
-        "#00aba9",
-        "#2b5797",
-        "#e8c3b9",
-        "#1e7145"
-    ];
+
+    // let cards = descriptionCardsContainer.childNodes;
+    // let cardsd = cards.querySelectorAll("div");
+
+    // console.log(cards);
+
+    loadPieChartDonors(<?php echo $donorsCount ?>, <?php echo $availableDonors ?>);
 
 
-    const chart =new Chart("myChart", {
-        type: "pie",
-        data: {
-            labels: xValues,
-            datasets: [{
-                backgroundColor: barColors,
-                data: yValues
-            }]
-        },
-        options: {
-            title: {
-                display: true,
-                text: "World Wide Wine Production"
+
+
+
+
+    let BloodGroups = [];
+    const XHR = new XMLHttpRequest();
+    XHR.open("GET", "/api/bloodGroups/getall", true);
+    XHR.setRequestHeader("Content-Type", "application/json");
+    XHR.send();
+    XHR.onload = function () {
+        // console.log("high");
+        const bloodGroups = JSON.parse(this.responseText);
+        // console.log(bloodGroups.toArray());
+        loadPieChart(bloodGroups);
+        // Managers = Object.keys(managerList);
+       }
+
+        // loadPieChart();
+        // loadScatterPlot();
+
+    function loadPieChartDonors(totalDonors, availableDonors) {
+        let yValues = [availableDonors, totalDonors - availableDonors];
+        let xValues = ["Available Donors", "Unavailable Donors"];
+        let barColors = [
+            "rgba(255, 0, 0, 1)",       // Red
+            "rgba(220, 20, 60, 1)",     // Crimson
+        ]
+        const chart = new Chart("myChart2", {
+            type: "pie",
+            data: {
+                labels: xValues,
+                datasets: [{
+                    backgroundColor: barColors,
+                    data: yValues
+                }]
+            },
+            options: {
+                title: {
+                    display: true,
+                    text: "Available Donors"
+                }
             }
-        }
-    });
-    const chart2 =new Chart("myChart2", {
-        type: "scatter",
-        data: {
-            datasets: [{
-                pointRadius: 4,
-                pointBackgroundColor: "rgb(0,0,255)",
-                data: xyValues
-            }]
-        },
-        options: {
-            legend: {display: false},
-            scales: {
-                xAxes: [{ticks: {min: 40, max:160}}],
-                yAxes: [{ticks: {min: 6, max:16}}],
+        });
+    }
+
+    function loadPieChart(bloodGroups) {
+            // let yValues = [55, 49, 44, 24, 15, 45, 45, 44];
+            let yValues = Object.values(bloodGroups);
+            // console.log(bloodGroups.toArray());
+            // let xValues = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
+            let xValues = Object.keys(bloodGroups);
+            let barColors = [
+                "rgba(255, 0, 0, 1)",       // Red
+                "rgba(220, 20, 60, 1)",     // Crimson
+                "rgba(178, 34, 34, 1)",     // Fire Brick
+                "rgba(165, 42, 42, 1)",     // Brown
+                "rgba(139, 0, 0, 1)",       // Dark Red
+                "rgba(128, 0, 0, 1)",       // Maroon
+                "rgba(255, 0, 0, 0.8)",     // Red with alpha
+                "rgba(220, 20, 60, 0.8)",   // Crimson with alpha
+            ];
+
+        const chart =new Chart("myChart", {
+            type: "bar",
+            data: {
+                labels: xValues,
+                datasets: [{
+                    backgroundColor: barColors,
+                    data: yValues
+                }]
+            },
+            options: {
+                title: {
+                    display: true,
+                    text: "Blood Groups"
+                },
+                legend: { display: false }
             }
-        }
-    });
+        });
+
+    }
+
 
 </script>

@@ -12,8 +12,7 @@ class HospitalNotification extends dbModel
     protected string $Notification_Date;
     protected string $Notification_State;
     protected string $Notification_Type;
-    protected string $Target_ID;
-
+    protected ?string $Target_ID = null;
     protected ?string $Valid_Until=null;
 
     public function getNotificationID(): string
@@ -76,7 +75,7 @@ class HospitalNotification extends dbModel
         $this->Notification_Type = $Notification_Type;
     }
 
-    public function getTargetID(): string
+    public function getTargetID(): string | null
     {
         return $this->Target_ID;
     }
@@ -115,6 +114,7 @@ class HospitalNotification extends dbModel
     {
         // TODO: Implement rules() method.
         return [
+            'Notification_ID' => [self::RULE_REQUIRED],
             'Notification_Title'=>[self::RULE_REQUIRED],
             'Notification_Message'=>[self::RULE_REQUIRED],
             'Notification_Date'=>[self::RULE_REQUIRED],
@@ -146,6 +146,7 @@ class HospitalNotification extends dbModel
     {
         // TODO: Implement attributes() method.
         return [
+            'Notification_ID',
             'Notification_Title',
             'Notification_Message',
             'Notification_Date',

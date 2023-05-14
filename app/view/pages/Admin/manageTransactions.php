@@ -6,14 +6,14 @@ use App\model\sponsor\CampaignsSponsor;
 
 ?>
 <div class="d-flex flex-column min-w-90 min-h-80  ">
-    <div class="d-flex w-100 justify-content-center mb-3">
+    <div class="d-flex w-100 justify-content-center my-2">
         <div class="d-flex gap-1 flex-center">
             <label for="Search" class="text-dark text-xl font-bold">Search</label>
             <input class="form-control" name="Search" id="Search" onkeyup="SearchBank()">
         </div>
     </div>
-    <div class="d-flex flex-column bg-white max-h-80 w-100">
-        <div class="d-flex max-h-100 overflow-y-scroll">
+    <div class="d-flex flex-column flex-center bg-white max-h-80 w-100 p-2 border-radius-10">
+        <div class="d-flex align-items-start justify-content-center py-2 max-h-100 overflow-y-overlay w-100" style="min-height: 80vh">
             <table class="table table-striped table-hover">
                 <thead class="bg-white">
                 <tr class="bg-white">
@@ -31,6 +31,7 @@ use App\model\sponsor\CampaignsSponsor;
                 <tbody>
                 <?php
                 $i=1;
+                if (!empty($Transactions)):
                 foreach ($Transactions as $Transaction) :
                     $CampaignName = $Transaction->getCampaign()->getCampaignName();
                     $SponsorName = $Transaction->getSponsor()->getSponsorName();
@@ -58,6 +59,11 @@ use App\model\sponsor\CampaignsSponsor;
                     </tr>
 
                 <?php endforeach;
+                else:?>
+                    <tr>
+                        <td colspan="9"  class="text-center">No Data Found</td>
+                    </tr>
+                <?php endif;
                 ?>
                 </tbody>
             </table>

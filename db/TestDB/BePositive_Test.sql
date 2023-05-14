@@ -1,4 +1,4 @@
-DROP database IF EXISTS bepositive_test;
+# DROP database IF EXISTS bepositive_test;
 CREATE DATABASE IF NOT EXISTS `bepositive_test` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
 use bepositive_test;
 
@@ -509,7 +509,9 @@ CREATE TABLE IF NOT EXISTS Donor_Blood_Check
     Campaign_ID        VARCHAR(20)   NOT NULL,
     BloodGroup         VARCHAR(10)   NOT NULL,
     Hemoglobin_Level   DECIMAL(4, 2) NOT NULL,
-    Blood_Pressure     DECIMAL(4, 2) NOT NULL,
+    Blood_Pressure_Upper     DECIMAL(4, 2) NOT NULL CHECK ( Blood_Pressure_Upper BETWEEN 90 AND 120),
+    Blood_Pressure_Lower     DECIMAL(4, 2) NOT NULL CHECK ( Blood_Pressure_Lower BETWEEN 60 AND 80),
+    Blood_Sugar        DECIMAL(4, 2) NOT NULL,
     Weight             DECIMAL(4, 2) NOT NULL,
     Pulse_Rate         DECIMAL(5, 2) NOT NULL,
     Temperature        DECIMAL(5, 2) NOT NULL,
@@ -782,7 +784,8 @@ CREATE TABLE IF NOT EXISTS Donation_Campaigns
     Status           INT NOT NULL,
     FOREIGN KEY (Organization_ID) REFERENCES Organizations (Organization_ID),
     FOREIGN KEY (Nearest_Blood_Bank) REFERENCES BloodBanks (BloodBank_ID)
-    );
+    ) ENGINE = InnoDB
+      DEFAULT CHARSET = utf8;
 DROP TABLE IF EXISTS Blogs;
 CREATE TABLE Blogs (
                        Blog_ID VARCHAR(20) PRIMARY KEY ,
@@ -891,6 +894,16 @@ CREATE TABLE IF NOT EXISTS `Reported_Organization` (
     FOREIGN KEY (Reported_By) REFERENCES MedicalOfficers(Officer_ID)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+DROP TABLE IF EXISTS `Backups`;
+CREATE TABLE IF NOT EXISTS `Backups` (
+    Backup_ID VARCHAR(20) NOT NULL PRIMARY KEY,
+    Backup_Date TIMESTAMP NOT NULL,
+    Backup_Name VARCHAR(100) NOT NULL ,
+    Backup_Status INT NOT NULL,
+    Backup_Path VARCHAR(100) NOT NULL,
+    Backup_Size VARCHAR(100) NOT NULL
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 
 DROP TABLE IF EXISTS `Anonymous_Sponsors`;
 CREATE TABLE IF NOT EXISTS `Anonymous_Sponsors` (
@@ -905,93 +918,18 @@ CREATE TABLE IF NOT EXISTS `Anonymous_Sponsors` (
     FOREIGN KEY (Request_ID) REFERENCES Sponsorship_Requests (Sponsorship_ID)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-# Insert Blood Type
-INSERT INTO BloodGroups (BloodGroup_ID, BloodGroup_Name)
-VALUES ('A+', 'A+');
-INSERT INTO BloodGroups (BloodGroup_ID, BloodGroup_Name)
-VALUES ('A-', 'A-');
-INSERT INTO BloodGroups (BloodGroup_ID, BloodGroup_Name)
-VALUES ('B+', 'B+');
-INSERT INTO BloodGroups (BloodGroup_ID, BloodGroup_Name)
-VALUES ('B-', 'B-');
-INSERT INTO BloodGroups (BloodGroup_ID, BloodGroup_Name)
-VALUES ('AB+', 'AB+');
-INSERT INTO BloodGroups (BloodGroup_ID, BloodGroup_Name)
-VALUES ('AB-', 'AB-');
-INSERT INTO BloodGroups (BloodGroup_ID, BloodGroup_Name)
-VALUES ('O+', 'O+');
-INSERT INTO BloodGroups (BloodGroup_ID, BloodGroup_Name)
-VALUES ('O-', 'O-');
-
-
-
-# Insert Default Users for Testing
-INSERT INTO Users (UID, Email, Password, Account_Status, Role)
-VALUES ('Mng_01', 'manager@test.com', '$2y$10$yjcyB1lr8V/nVciydOYedu0Rnedd9JHZ3d6PqPMqM4yNJoPmltlZS', 0, 'Manager');
-INSERT INTO Users (UID, Email, Password, Account_Status, Role)
-VALUES ('Adm_01', 'admin@test.com', '$2y$10$yjcyB1lr8V/nVciydOYedu0Rnedd9JHZ3d6PqPMqM4yNJoPmltlZS', 0, 'Admin');
-INSERT INTO Users (UID, Email, Password, Account_Status, Role)
-VALUES ('Mof_01', 'mofficer@test.com', '$2y$10$yjcyB1lr8V/nVciydOYedu0Rnedd9JHZ3d6PqPMqM4yNJoPmltlZS', 0,'MedicalOfficer');
-INSERT INTO Users (UID, Email, Password, Account_Status, Role)
-VALUES ('Dnr_01', 'donor@test.com', '$2y$10$yjcyB1lr8V/nVciydOYedu0Rnedd9JHZ3d6PqPMqM4yNJoPmltlZS', 0, 'Donor');
-INSERT INTO Users (UID, Email, Password, Account_Status, Role)
-VALUES ('Dnr_02', 'donor2@test.com', '$2y$10$yjcyB1lr8V/nVciydOYedu0Rnedd9JHZ3d6PqPMqM4yNJoPmltlZS', 0, 'Donor');
-INSERT INTO Users (UID, Email, Password, Account_Status, Role)
-VALUES ('Dnr_03', 'donor3@test.com', '$2y$10$yjcyB1lr8V/nVciydOYedu0Rnedd9JHZ3d6PqPMqM4yNJoPmltlZS', 0, 'Donor');
-INSERT INTO Users (UID, Email, Password, Account_Status, Role)
-VALUES ('Dnr_04', 'donor4@test.com', '$2y$10$yjcyB1lr8V/nVciydOYedu0Rnedd9JHZ3d6PqPMqM4yNJoPmltlZS', 0, 'Donor');
-INSERT INTO Users (UID, Email, Password, Account_Status, Role)
-VALUES ('Dnr_05', 'donor5@test.com', '$2y$10$yjcyB1lr8V/nVciydOYedu0Rnedd9JHZ3d6PqPMqM4yNJoPmltlZS', 0, 'Donor');
-
-INSERT INTO Users (UID, Email, Password, Account_Status, Role)
-VALUES ('Org_01', 'org@test.com', '$2y$10$yjcyB1lr8V/nVciydOYedu0Rnedd9JHZ3d6PqPMqM4yNJoPmltlZS', 0, 'Organization');
-INSERT INTO Users (UID, Email, Password, Account_Status, Role)
-VALUES ('Spn_01', 'sponsor@test.com', '$2y$10$yjcyB1lr8V/nVciydOYedu0Rnedd9JHZ3d6PqPMqM4yNJoPmltlZS', 0, 'Sponsor');
-INSERT INTO Users (UID, Email, Password, Account_Status, Role)
-VALUES ('Hos_01', 'hospital@test.com', '$2y$10$yjcyB1lr8V/nVciydOYedu0Rnedd9JHZ3d6PqPMqM4yNJoPmltlZS', 0, 'Hospital');
-
-# Make Default Blood Bank for Testing
-INSERT INTO BloodBanks (BloodBank_ID, BankName, Address1, Address2, City, Telephone_No, No_Of_Doctors, No_Of_Nurses,
-                        No_Of_Beds, No_Of_Storages, Type)
-VALUES ('BB_01', 'Main Blood Bank', 'No 01, Main Street', 'Colombo 01', 'Colombo', '0111234567', 0, 0, 0, 0, 1);;
-INSERT INTO BloodBanks (BloodBank_ID, BankName, Address1, Address2, City, Telephone_No, No_Of_Doctors, No_Of_Nurses,
-                        No_Of_Beds, No_Of_Storages, Type)
-VALUES ('BB_02', 'Negombo Blood Bank', 'No 02, Main Street', 'Colombo 02', 'Negombo', '0111234577', 0, 0, 0, 0, 1);
-# Make Default Admin for Testing
-INSERT INTO Admins (Admin_ID, UserName, Email) VALUES ('Adm_01', 'Admin', 'admin@test.com');
-# Make Default Manager for Testing
-INSERT INTO Managers (Manager_ID, First_Name, Last_Name, Address1, Address2, City, Contact_No, Email, BloodBank_ID)
-VALUES ('Mng_01', 'Manager', 'Manager', 'Address1', 'Address2', 'Colombo', '0771234567', 'manager@test.com', 'BB_01');
-# Make Default Medical Officer for Testing
-INSERT INTO MedicalOfficers (Officer_ID, First_Name, Last_Name, Address1, Address2, City, Contact_No, Email,Branch_ID,Registration_Number, NIC, Position, Gender, Nationality)
-VALUES ('Mof_01', 'Medical', 'Officer', 'Address1', 'Address2', 'Colombo', '0771234567', 'mofficer@test.com', 'BB_01','12344',
-        '123456789104', 'Doctor', 'M', 'Sri Lankan');
-# Make Default Donor for Testing
-INSERT INTO Donors (DONOR_ID, FIRST_NAME, LAST_NAME, ADDRESS1, ADDRESS2, CITY, NEAREST_BANK, CONTACT_NO, EMAIL, NIC,
-                    GENDER, STATUS,BloodGroup)
-VALUES ('Dnr_01', 'Donor', 'Donor', 'Address1', 'Address2', 'Colombo', 'BB_01', '0771234567', 'donor@test.com',
-        '200017800595', 'F', 0,"A+");
-
-# Make Default Organization for Testing
-INSERT INTO Organizations (Organization_ID, Organization_Name, Organization_Email, Contact_No, Address1, Address2, City,
-                           Status)
-VALUES ('Org_01', 'Organization', 'organization@test.com', '0777123123', 'Address1', 'Address2', 'Colombo', 0);
-# Make Default Sponsor for Testing
-INSERT INTO Sponsors (SPONSOR_ID, Sponsor_Name, Email, ADDRESS1, ADDRESS2, CITY, STATUS)
-VALUES ('Spn_01', 'Sponsor', 'sponsor@test.com', 'Address1', 'Address2', 'Colombo', 0);
-# Make Default Hospital for Testing
-INSERT INTO Hospitals (Hospital_ID, Hospital_Name, Email, Address1, Address2, City, Contact_No,Nearest_Blood_Bank)
-VALUES ('Hos_01', 'Hospital', 'hospital@test.com', 'Address1', 'Address2', 'Colombo', '0111234567','BB_01');
-
-
-# Make Default Organization Member for Testing
-INSERT INTO Organization_Members(Organization_ID, Name, Contact_No, NIC, Position)
-VALUES ('Org_01', 'Member', '0771234567', '123456789V', 'Secretary');
-INSERT INTO Organization_Members(Organization_ID, Name, Contact_No, NIC, Position)
-VALUES ('Org_01', 'Member2', '0772345671', '234567891V', 'President');
-INSERT INTO Organization_Members(Organization_ID, Name, Contact_No, NIC, Position)
-VALUES ('Org_01', 'Member3', '0773456712', '345678912V', 'Treasurer');
-
+DROP TABLE IF EXISTS `Hospital_Notifications`;
+CREATE TABLE IF NOT EXISTS `Hospital_Notifications` (
+    Notification_ID VARCHAR(20) NOT NULL PRIMARY KEY,
+    Hospital_ID VARCHAR(20) NOT NULL,
+    Notification_Title VARCHAR(100) NOT NULL,
+    Notification_Message TEXT NOT NULL,
+    Notification_Date DATE NOT NULL,
+    Notification_State INT NOT NULL,
+    Notification_Type INT NOT NULL,
+    Target_ID VARCHAR(20) NULL DEFAULT NULL,
+    Valid_Until DATE NULL DEFAULT NULL
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DELIMITER $$
 DROP TRIGGER IF EXISTS `Campaign_Audit_Create`$$
@@ -1033,14 +971,3 @@ UPDATE campaign_statistics SET No_Of_Aborted_Donations = Campaign_Statistics.No_
 END IF;
 END $$
 DELIMITER ;
-
-
-
-
-# Create Event Scheduler
-# CREATE EVENT IF NOT EXISTS `BloodBank_Donation_Queue` ON SCHEDULE EVERY 1 DAY STARTS CURRENT_TIMESTAMP
-#     DO
-#         UPDATE donor_blood_check SET Donor_Status = 3 WHERE Donor_Status = 2 AND DATEDIFF(CURRENT_DATE, Blood_Check_Date) > 3;
-
-
-

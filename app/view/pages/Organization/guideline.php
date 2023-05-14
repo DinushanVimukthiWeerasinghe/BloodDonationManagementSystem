@@ -19,11 +19,11 @@ echo $navbar;
 echo $background;
 FlashMessage::RenderFlashMessages();
 ?>
-
 <div id="detail-pane" class="text-xl detail-pane">
     <div id="card-pane" class="card-pane">
+        <img src="/public/images/doublearrow.png" style="height: 80px;margin-right: 85vw;position: fixed;cursor: pointer;margin-top: 20px;" onclick="history.back()"/><br>
         <div class="d-flex flex-column justify-content-center align-items-center text-white">
-            <div class="text-center text-3xl bg-white text-dark p-1 border-radius-10 font-bold">Who Can Create Campaigns?</div>
+            <div class="text-center text-3xl bg-white text-dark p-1 border-radius-10 font-bold mt-2">Who Can Create Campaigns?</div>
             <div class="p-3 mx-4 bg-white text-dark m-1 border-radius-10">
                 All of the Registered Organizations have facility for create campaigns.<span class="text-danger">Please be note that you can create only one Campaign at a particular time.</span>
             </div>
