@@ -1,14 +1,14 @@
 function addNewHospitalNotification() {
 
-    let Banks = [];
+    let Hospitals = [];
     const XHR = new XMLHttpRequest();
-    XHR.open("GET", "/api/bbank/getall", true);
+    XHR.open("GET", "/admin/hospital/getAll", true);
     XHR.setRequestHeader("Content-Type", "application/json");
     XHR.send();
     XHR.onload = function () {
-        const bankList = JSON.parse(this.responseText);
-        console.log(Object.keys(bankList));
-        Banks = Object.keys(bankList);
+        const hospitalList = JSON.parse(this.responseText);
+        // console.log(Object.values(hospitalList));
+        Hospitals = Object.keys(hospitalList);
 
         OpenDialogBox({
             title: "Add New Hospital Notification",
@@ -23,6 +23,10 @@ function addNewHospitalNotification() {
                           <label for="expiration-date">Expiration Date:</label>
                           <input type="date" id="expiration-date" name="expiration-date" required><br>
   
+                          <label for="receiver">To</label>
+                          <select name="hospitalId" id="hospitalId">
+                            <option value="allHospitals">All Hospitals</option>
+                          </select>
                         </form>`,
             successBtnText: "Yes",
             successBtnAction: () => {
@@ -30,7 +34,18 @@ function addNewHospitalNotification() {
                 CloseDialogBox();
             },
             cancelBtnText: "No",
-        })
+        });
+
+        document.getElementById('expiration-date').min = getDate();
+
+
+        Hospitals.forEach((hospital)=>{
+            let option = document.createElement("option");
+            option.value = hospitalList[hospital].HospitalID;
+            option.innerText = hospitalList[hospital].HospitalName;
+            document.getElementById('hospitalId').appendChild(option);
+        });
+        // console.log(document.getElementById('hospitalNotificationForm'));
     }
 }
 
@@ -43,7 +58,7 @@ function addNewManagerNotification() {
     XHR.send();
     XHR.onload = function () {
         const managerList = JSON.parse(this.responseText);
-        console.log(managerList);
+        // console.log(managerList);
         Managers = Object.keys(managerList);
 
         OpenDialogBox({
@@ -71,6 +86,8 @@ function addNewManagerNotification() {
             },
             cancelBtnText: "No",
         });
+
+        document.getElementById('expiration-date').min = getDate();
 
         Managers.forEach((manager)=>{
             let option = document.createElement("option");
@@ -123,4 +140,23 @@ const ViewNotification = (type="Manager")=>{
                 addbtn.onclick = addNewManagerNotification;
             }
         })
+}
+
+// document.getElementById('expiration-date').min = getDate();
+
+function getDate() {
+
+    let d = new Date(),
+        month = '' + (d.getMonth() + 1),
+        day = '' + d.getDate(),
+        year = d.getFullYear();
+    if (month.length < 2) {
+        month = '0' + month;
+    }
+    if (day.length < 2) {
+        day = '0' + day;
+
+    }
+    return [year, month, day].join('-');
+
 }

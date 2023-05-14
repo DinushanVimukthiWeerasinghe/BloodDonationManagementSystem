@@ -239,6 +239,7 @@ class medicalOfficerController extends \Core\Controller
 
         $Campaign=MedicalOfficer::getAssignedCampaign($Date);
 
+
         if (!$Campaign){
             $this->setFlashMessage('error','No Campaign Assigned!');
             return $this->render('/MedicalOfficer/ManageCampaigns',['page'=>'campaigns']);

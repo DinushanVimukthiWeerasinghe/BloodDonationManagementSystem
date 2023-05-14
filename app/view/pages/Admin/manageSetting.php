@@ -33,10 +33,15 @@
                 <div class="title">Home Page Setting</div>
                 <button class="btn btn-success float-right" id="addBlog" onclick="AddNewBlog()">Add New Blog</button>
             </div>
-            <div class="d-flex align-items-center mt-2 gap-1 overflow-y-scroll flex-column">
+            <div class="d-flex align-items-center mt-2 gap-1 overflow-y-scroll flex-column overflow-y-overlay" style="max-height: 50vh">
                 <?php
-                /** @var \App\model\Blog\Blog[] $Blogs */
+                /** @var Blog[] $Blogs */
+
+                use App\model\Blog\Blog;
+                use App\model\Utils\Date;
+
                 if (!empty($Blogs)):
+                    $Blogs = array_merge(...array_fill(0, 3, $Blogs));
                     foreach ($Blogs as $blog):
                 ?>
                 <div class="d-flex text-center w-100 border-2 border-radius-10 p-1" id="blog1">
@@ -109,7 +114,7 @@
                     <tr>
                         <td> <?=$i++?></td>
                         <td> <?=$backup->getBackupName()?> </td>
-                        <td><?=$backup->getBackupDate()?> </td>
+                        <td><?= Date::GetProperDate($backup->getBackupDate())?> </td>
                         <td>
                             <button class="btn btn-success" onclick="DownloadBackup('<?=$backup->getBackupName()?>')">
                                 <i class="fa-solid fa-cloud-arrow-down"></i>

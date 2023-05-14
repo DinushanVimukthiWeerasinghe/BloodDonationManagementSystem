@@ -101,11 +101,17 @@ try {
     $app->router->post('/backup/database', [adminController::class, 'BackupDatabase']);
     $app->router->post('/backup/download', [adminController::class, 'DownloadBackup']);
 
-    $app->router->post('/admin/manageBanks/addManager', [authController::class, 'managerRegister']);
-    $app->router->get('/admin/manageBanks/addManager', [authController::class, 'managerRegister']);
-    $app->router->post('/admin/manageHospital/addHospital', [authController::class, 'hospitalRegister']);
+
+
+    $app->router->post('/admin/manageBanks/addManager', [adminController::class, 'managerRegister']);
+    $app->router->get('/admin/manageBanks/addManager', [adminController::class, 'managerRegister']);
+    $app->router->post('/admin/manageHospital/addHospital', [adminController::class, 'hospitalRegister']);
+    $app->router->get('/admin/manageHospital/addHospital', [adminController::class, 'hospitalRegister']);
+    $app->router->get('/admin/hospital/getAll', [adminController::class,'getAllHospitals']);
+    $app->router->post('/admin/hospital/getAll',[adminController::class, 'getAllHospitals']);
 
     $app->router->post('/admin/dashboard/manageAlerts/add/managerNotification', [adminController::class, 'addManagerNotification']);
+    $app->router->post('/admin/dashboard/manageAlerts/add/hospitalNotification', [adminController::class,'addHospitalsNotification']);
 
     $app->router->post('/user/resetPassword', [adminController::class, 'ResetPassword']);
     $app->router->post('/user/removeUser', [adminController::class, 'RemoveUser']);
@@ -319,7 +325,7 @@ $app->router->get('/mofficer/campaigns/overview', [medicalOfficerController::cla
     $app->router->get('/api/bbank/getall', [apiController::class, 'getBloodBanks']);
     $app->router->get('/api/managers/getall', [apiController::class, 'getManagers']);
     $app->router->get('/api/bloodGroups/getall', [apiController::class, 'getBloodGroups']);
-    $app->router->get('/api/campaign/checkattendance', [apiController::class, 'checkAttendance']);
+    $app->router->get('/api/campaign/checkattendance', [donorController::class, 'checkAttendance']);
 
 //Hospital login
     $app->router->get('/hospital/login', [hospitalController::class, 'login']);

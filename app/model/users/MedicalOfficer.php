@@ -438,6 +438,7 @@ class MedicalOfficer extends Person
                 }
             }
         }
+
         if (count($AssignedCampaigns) > 0) {
             $AssignedCampaigns = array_filter($AssignedCampaigns, function ($AssignedCampaign)  {
                 return $AssignedCampaign->getStatus() == Campaign::CAMPAIGN_STATUS_APPROVED || $AssignedCampaign->getStatus() == Campaign::CAMPAIGN_STATUS_REPORTED;
@@ -447,8 +448,10 @@ class MedicalOfficer extends Person
                 usort($AssignedCampaigns, function ($a, $b) {
                     return strtotime($a->getCampaignDate()) - strtotime($b->getCampaignDate());
                 });
+
                 return $AssignedCampaigns;
             }else{
+
                 $out=array_filter($AssignedCampaigns, function ($AssignedCampaign) use ($Date) {
                     return $AssignedCampaign->getCampaignDate() == $Date;
                 });
