@@ -612,7 +612,7 @@ class authController extends Controller
 //                $errors['error'] = 'Password and Confirm Password not match';
             else if ($password == $confirmPassword){
                 /* @var PasswordReset $Reset*/
-                $Reset = PasswordReset::findOne(['Token'=>$token],false);
+                $Reset = PasswordReset::findOne(['Token'=>$token,'Status'=>PasswordReset::STATUS_ACTIVE],false);
                 if (!$Reset){
                     Application::Redirect('/login');
                 }
@@ -624,9 +624,11 @@ class authController extends Controller
                     Application::$app->session->setFlash('error','Password Already Reset! Please Login');
                     Application::Redirect('/login');
                 }
+
                 $user = Login::findOne(['UID'=>$Reset->getUID()],false);
                 $hash = password_hash($password,PASSWORD_DEFAULT);
                 $user->setPassword($hash);
+                $user->update($user->getID(),[],['Password']);
                 $Reset->setResetPasswordAt(date('Y-m-d H:i:s'));
                 $Reset->setStatus(PasswordReset::STATUS_RESET);
                 $Reset->update($Reset->getUID(),[],['Reset_At','Status']);
