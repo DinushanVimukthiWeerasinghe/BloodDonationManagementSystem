@@ -170,7 +170,9 @@ class donorController extends Controller
                         $donor->setContactNo($newContactNo);
                         $donor->validate(true);
                         if ($donor->getErrors()){
-                            return json_encode(['status' => false, 'message' => $donor->getFirstError()]);
+                            $arr = $donor->getErrors();
+                            $FirstError = array_shift($arr);
+                            return json_encode(['status' => false, 'message' => $FirstError[0]]);
                         }else{
                             $donor->update($DonorID,[],['Contact_No']);
                             return json_encode(['status' => true, 'message' => 'Contact No Changed Successfully']);

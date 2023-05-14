@@ -170,7 +170,9 @@
 
     // console.log(cards);
 
-    loadPieChartDonors(<?php echo $donorsCount ?>, <?php echo $availableDonors ?>);
+    //loadPieChartDonors(<?php //echo $donorsCount ?>//, <?php //echo $availableDonors ?>//);
+    //TODO : REMOVE THIS
+    loadPieChartDonors(507, 350);
 
 
 
@@ -183,9 +185,9 @@
     XHR.setRequestHeader("Content-Type", "application/json");
     XHR.send();
     XHR.onload = function () {
-        // console.log("high");
-        const bloodGroups = JSON.parse(this.responseText);
-        // console.log(bloodGroups.toArray());
+        // const bloodGroups = JSON.parse(this.responseText);
+        //TODO : REMOVE THIS
+        const bloodGroups = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
         loadPieChart(bloodGroups);
         // Managers = Object.keys(managerList);
        }
@@ -219,11 +221,14 @@
     }
 
     function loadPieChart(bloodGroups) {
-            // let yValues = [55, 49, 44, 24, 15, 45, 45, 44];
-            let yValues = Object.values(bloodGroups);
+            //TODO:Remove this
+            let yValues = [55, 49, 44, 24, 15, 45, 45, 44,54];
+            let xValues = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
+            // let yValues = Object.values(bloodGroups);
+            // let xValues = Object.keys(bloodGroups);
             // console.log(bloodGroups.toArray());
             // let xValues = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
-            let xValues = Object.keys(bloodGroups);
+
             let barColors = [
                 "rgba(255, 0, 0, 1)",       // Red
                 "rgba(220, 20, 60, 1)",     // Crimson
