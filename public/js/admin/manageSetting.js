@@ -74,6 +74,7 @@ const EditBlog = (blogId)=>{
     const BlogImage = document.getElementById(`blogImage_${blogId}`).src;
     OpenDialogBox({
         title:'Edit Blog',
+        titleClass: 'bg-dark text-white text-center',
         content:` <div class="form-group w-100">
                     <label for="blogTitle" class="w-40">Blog Title</label>
                     <input type="text" class="w-60 form-control" id="blogTitle" placeholder="Enter Blog Title" value="`+Title+`">
@@ -128,6 +129,7 @@ const EditBlog = (blogId)=>{
 const DeleteBlog = (blogId)=>{
     OpenDialogBox({
         title:'Delete Blog',
+        titleClass: 'bg-dark text-white text-center',
         content:'Are You Sure You Want To Delete This Blog',
         successBtnText:'Delete Blog',
         successBtnAction:()=>{
@@ -172,6 +174,7 @@ const BackupDatabase = ()=>{
                         type:'success'
                     });
                     CloseDialogBox();
+                    RenderPage('manageSetting');
                 }else{
                     ShowToast({
                         message:data.message || 'Something Went Wrong',
