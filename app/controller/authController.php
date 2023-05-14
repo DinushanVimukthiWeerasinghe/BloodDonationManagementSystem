@@ -53,6 +53,7 @@ class authController extends Controller
             }
             $OTP = RegisterOTP::findOne(['Email'=>$Email,'OTP'=>$OTP],false);
             if ($OTP){
+                header('Content-Type: application/json');
                 return json_encode(['status'=>true,'message'=>'OTP Verified']);
             }else{
                 return json_encode(['status'=>false,'message'=>'Invalid OTP']);
