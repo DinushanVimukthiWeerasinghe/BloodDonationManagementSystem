@@ -40,16 +40,16 @@
                 <?php
                 $no=1;
                 foreach ($BloodBanks as $BloodBank) {
-                $id=$BloodBank->getBloodBankID();
-                $name = $BloodBank->getBankName();
-                $address = $BloodBank->getAddress1() . ', ' . $BloodBank->getAddress2();
-                $city = $BloodBank->getCity();
-                $telephone = $BloodBank->getTelephoneNo();
-                $numberOfDoctors = $BloodBank->getNoOfDoctors();
-                $numberOfNurses = $BloodBank->getNoOfNurses();
-                $numberOfBeds = $BloodBank->getNoOfBeds();
-                $numberOfStorages = $BloodBank->getNoOfStorages();
-                $type = $BloodBank->getType();
+                    $id=$BloodBank->getBloodBankID();
+                    $name = $BloodBank->getBankName();
+                    $address = $BloodBank->getAddress1() . ', ' . $BloodBank->getAddress2();
+                    $city = $BloodBank->getCity();
+                    $telephone = $BloodBank->getTelephoneNo();
+                    $numberOfDoctors = $BloodBank->getNoOfDoctors();
+                    $numberOfNurses = $BloodBank->getNoOfNurses();
+                    $numberOfBeds = $BloodBank->getNoOfBeds();
+                    $numberOfStorages = $BloodBank->getNoOfStorages();
+                    $type = $BloodBank->getType();
                 ?>
                     <tr class="bg-white-0-7 " id="<?php echo $id ?>">
 

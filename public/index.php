@@ -94,6 +94,7 @@ try {
     $app->router->get('/admin/dashboard/manageSetting', [adminController::class, 'manageSetting']);
     $app->router->get('/admin/dashboard/manageTransactions', [adminController::class, 'manageTransactions']);
     $app->router->get('/admin/dashboard/manageBanks', [adminController::class, 'manageBanks']);
+    $app->router->post('/admin/dashboard/manageBanks/find', [adminController::class, 'FindBank']);
     $app->router->post('/admin/dashboard/manageBanks/edit', [adminController::class, 'editBank']);
     $app->router->post('/admin/dashboard/manageBanks/delete', [adminController::class, 'deleteBank']);
     $app->router->post('/admin/dashboard/manageBanks/add', [adminController::class, 'addNewBank']);
