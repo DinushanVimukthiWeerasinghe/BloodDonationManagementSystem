@@ -151,6 +151,8 @@
     function editBnkData(tr){
 //        document.getElementsByName(tr);
     let data = document.getElementById(tr).valueOf().innerText.split('\t');
+    let bankID = document.getElementById(tr).id;
+    // console.log(bankID);
     // console.log(data);
     // for (let i in data){
     //      console.log(data[i]);
@@ -160,7 +162,7 @@
     id: 'editBankPop',
     title: 'Edit Data',
     content: `<form id="editBankForm" action="/admin/dashboard/manageBanks/edit" method="post">
-                            <input type="hidden" name="BloodBank_ID" value="${data[0]}">
+                            <input type="hidden" name="BloodBank_ID" value="${bankID}">
                             <label for="bank_name">Bank Name</label>
                             <input type="text" id="BankName" name="BankName" value="${data[1]}">
                             <label for="address">Address</label>

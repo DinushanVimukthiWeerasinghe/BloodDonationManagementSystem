@@ -405,6 +405,9 @@ $app->router->post('/donor/profile/loginPrompt', [donorController::class, 'login
     $app->router->get('/donor/verify', [donorController::class, 'nearby']);
 $app->router->post('/donor/profile/loginPrompt', [donorController::class, 'loginPrompt']);
 
+    $app->router->post('/donor/notification', [donorController::class, 'ManageNotification']);
+
+
     $app->router->get('/donor/campaign/markAttendance', [donorController::class, 'markAttendance']);
     $app->router->get('/donor/campaign/removeAttendance',[donorController::class, 'removeAttendance']);
 

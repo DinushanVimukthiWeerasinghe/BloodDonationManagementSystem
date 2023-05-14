@@ -84,9 +84,9 @@ class donationCard
                                     Date : `+ args['date'] +`
                                     </div>
                                 </div>
-                                <div id="attendanceMsg">Will You Attend this Campaign</div>`,
+                                <div id="attendanceMsg">Do You want to recieve notifications about this campaign</div>`,
                                 showCancelButton: true,
-                                successBtnText : 'I will attend',
+                                successBtnText : 'Yes',
                                 successBtnAction : () =>{
                                     // console.log(args['campaignID']);
                                     // console.log(args['userID']);
@@ -126,8 +126,8 @@ class donationCard
             
             if(attendance === true){
                 // console.log('Attendance');
-                attendanceMsg.innerText = 'You have already marked Your Attendance';
-                successBtn.innerText = 'Change of Mind';
+                attendanceMsg.innerText = 'You are recieving notifications about this campaign';
+                successBtn.innerText = 'Stop';
                 // console.log(successBtn)
             }
         }

@@ -10,6 +10,8 @@ use App\model\Campaigns\Campaign;
 use App\model\database\dbModel;
 use App\model\Donations\AcceptedDonations;
 use App\model\Donations\Donation;
+use App\model\Notification\DonorNotification;
+//use App\model\Notification\ManagerNotification;
 use App\model\Report\Report;
 use App\model\Requests\AttendanceAcceptedRequest;
 //use App\model\Report\Report;
@@ -321,5 +323,34 @@ class donorController extends Controller
         if ($attendance){$flag = true;}
         return json_encode($flag);
     }
+
+    public function ManageNotification(Request $request,Response $response): bool|string
+    {
+        if ($request->isPost()){
+            $donor = Donor::findOne(['Donor_ID'=>Application::$app->getUser()->getId()]);
+//            $personalNotifications = DonorNotification::RetrieveAll(false,[],true,['Target_ID'=>$donor->getDonorID()],['Notification_Date'=>'ASC']);
+//            $groupNotifications = DonorNotification::RetrieveAll(false,[],true,['Target_Group' => $donor->getBloodGroup()],['Notification_Date'=>'ASC']);
+//            $globalNotifications = DonorNotification::RetrieveAll(false,[],true,['Notification_Type' => DonorNotification::INFORM_ALL_DONOR]);
+//            $Notifications = $personalNotifications + $groupNotifications + $globalNotifications;
+
+            $Notifications = DonorNotification::Search([
+                'Target_ID'=>$donor->getDonorID(),
+                'Target_Group' => $donor->getBloodGroup(),
+                'Notification_Type' => DonorNotification::INFORM_ALL_DONOR
+            ]);
+
+            if ($Notifications){
+                $Notifications = array_map(function ($object) {
+                    return $object->toArray();
+                }, $Notifications);
+            }
+            return json_encode([
+                'status'=>true,
+                'notifications'=>$Notifications
+            ]);
+        }
+    }
+
+
 
 }
