@@ -313,7 +313,7 @@ $app->router->post('/mofficer/campaigns/verifyOrganization', [medicalOfficerCont
 $app->router->post('/mofficer/campaigns/ReportCampaign', [medicalOfficerController::class, 'ReportCampaign']);
 $app->router->post('/mofficer/campaigns/UndoReportCampaign', [medicalOfficerController::class, 'UndoReportCampaign']);
 $app->router->get('/mofficer/campaigns/overview', [medicalOfficerController::class, 'CampaignOverview']);
-$app->router->post('/mofficer/mngDonors/find', [medicalOfficerController::class, 'FindDonorJSON']);
+$app->router->post('/mofficer/mngDonors/find', [medicalOfficerController::class, 'FindDonor']);
 
 //$app->router->get('/mofficer/campaigns', [medicalOfficerController::class, 'VerifyDonor']);
     $app->router->post('/medicalofficer/get-donor', [medicalOfficerController::class, 'FindDonor']);
@@ -373,6 +373,8 @@ $app->router->get('/donor/register', [authController::class, 'DonorRegister']);
 $app->router->post('/donor/register', [authController::class, 'DonorRegister']);
 $app->router->post('/donor/sendEmailChangeOTP', [donorController::class, 'ChangeEmailOTP']);
 $app->router->post('/donor/changeEmail', [donorController::class, 'ChangeEmail']);
+$app->router->post('/donor/changeContactNo', [donorController::class, 'ChangeContactNo']);
+$app->router->post('/donor/notification', [donorController::class, 'DonorNotification']);
 
 //$app->router->get('/donor/register',[donorController::class, 'register']);
 //$app->router->post('/donor/register', [donorController::class, 'register']);
@@ -404,6 +406,7 @@ $app->router->post('/donor/profile/loginPrompt', [donorController::class, 'login
     $app->router->get('/donor/history', [donorController::class, 'history']);
     $app->router->get('/donor/nearby', [donorController::class, 'nearby']);
     $app->router->get('/donor/verify', [donorController::class, 'nearby']);
+    $app->router->post('/donor/changePassword', [donorController::class, 'ChangePassword']);
 $app->router->post('/donor/profile/loginPrompt', [donorController::class, 'loginPrompt']);
 
     $app->router->get('/donor/campaign/markAttendance', [donorController::class, 'markAttendance']);

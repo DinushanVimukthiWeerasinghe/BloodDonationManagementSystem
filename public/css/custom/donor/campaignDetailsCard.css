@@ -13,7 +13,7 @@
     padding: 2em;
     font-family: 'Open Sans', sans-serif;
     gap: 1rem;
-    overflow: auto;
+    overflow-y: overlay;
 }
 
 .data-card {

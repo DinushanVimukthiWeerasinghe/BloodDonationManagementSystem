@@ -10,6 +10,7 @@ use App\model\Campaigns\Campaign;
 use App\model\database\dbModel;
 use App\model\Donations\AcceptedDonations;
 use App\model\Donations\Donation;
+use App\model\Notification\DonorNotification;
 use App\model\Report\Report;
 use App\model\Requests\AttendanceAcceptedRequest;
 //use App\model\Report\Report;
@@ -116,18 +117,70 @@ class donorController extends Controller
             /** @var OTPCode $OTPCode */
             $OTPCode = OTPCode::findOne(['UserID'=>Application::$app->getUser()->getID(),'Type'=>OTPCode::TYPE_EMAIL_CHANGE,'Status'=>OTPCode::STATUS_PENDING],false);
             /** @var string $OTP */
-            $OTP = $request->getBody()['OTP'];
-            if ($OTPCode->getCode()===$OTP){
-                $Email = $OTPCode->getTarget();
-                $OTPCode->setAttempts($OTPCode->getAttempts()+1);
-                $OTPCode->setStatus(OTPCode::STATUS_VERIFIED);
-                $OTPCode->update($OTPCode->getUserID(),[],['Status','Updated_At'],['Type'=>OTPCode::TYPE_EMAIL_CHANGE]);
-                /** @var Donor $donor */
-                $donor = Donor::findOne(['Donor_ID'=>Application::$app->getUser()->getID()]);
-                $donor->update($donor->getDonorID(),[],['Email'=>$Email]);
-                return json_encode(['status'=>true,'message'=>'Email Changed Successfully']);
+            if ($OTPCode) {
+                $OTP = $request->getBody()['OTP'];
+                if ($OTPCode->getCode() === $OTP) {
+                    $Email = $OTPCode->getTarget();
+                    $OTPCode->setAttempts($OTPCode->getAttempts() + 1);
+                    $OTPCode->setStatus(OTPCode::STATUS_VERIFIED);
+                    $OTPCode->update($OTPCode->getUserID(), [], ['Status', 'Updated_At'], ['Type' => OTPCode::TYPE_EMAIL_CHANGE]);
+                    /** @var Donor $donor */
+                    $donor = Donor::findOne(['Donor_ID' => Application::$app->getUser()->getID()]);
+                    $donor->setEmail($Email);
+                    $donor->update($donor->getID(), [], ['Email']);
+                    return json_encode(['status' => true, 'message' => 'Email Changed Successfully']);
+                }
+            }else{
+                return json_encode(['status' => false, 'message' => 'OTP Not Found']);
             }
         }
+    }
+    public function DonorNotification(Request $request,Response $response): bool|string
+    {
+        if ($request->isPost()){
+            $Notifications=DonorNotification::RetrieveAll(false,[],true,['Target_ID'=>Application::$app->getUser()->getId()],['Notification_Date'=>'ASC']);
+            if ($Notifications){
+                $Notifications = array_map(function ($object) {
+                    return $object->toArray();
+                }, $Notifications);
+            }
+            return json_encode([
+                'status'=>true,
+                'notifications'=>$Notifications
+            ]);
+        }
+    }
+
+    public function ChangeContactNo(Request $request , Response $response)
+    {
+        if ($request->isPost()){
+            $DonorID = Application::$app->getUser()->getID();
+            /** @var Donor $donor */
+            $donor = Donor::findOne(['Donor_ID' => $DonorID]);
+            if ($donor){
+                $newContactNo = $request->getBody()['ContactNo'];
+                if ($donor->getContactNo() === $newContactNo){
+                    return json_encode(['status' => false, 'message' => 'New Contact No is same as Old Contact No']);
+                }else{
+                    // Check if Contact No is already registered
+                    $chkdonor = Donor::findOne(['Contact_No' => $newContactNo]);
+                    if ($chkdonor){
+                        return json_encode(['status' => false, 'message' => 'Contact No is already registered']);
+                    }else{
+                        $donor->setContactNo($newContactNo);
+                        $donor->validate(true);
+                        if ($donor->getErrors()){
+                            return json_encode(['status' => false, 'message' => $donor->getFirstError()]);
+                        }else{
+                            $donor->update($DonorID,[],['Contact_No']);
+                            return json_encode(['status' => true, 'message' => 'Contact No Changed Successfully']);
+                        }
+
+                    }
+                }
+            }
+        }
+
     }
 
     public function usrCheck(Response $response)
@@ -248,7 +301,7 @@ class donorController extends Controller
         //echo $data;
         // $data = Campaign::RetrieveAll();
         // return $this->render('Donor/nearbyCampaigns',["data"=> $data]);
-        return $this->render('Donor/nearbyCampaigns',["data"=> $data,'User'=>$donor]);
+        return $this->render('Donor/nearbyCampaigns',["data"=> $data,'User'=>$donor,'BrandTitle'=>'Nearby Campaigns']);
     }
 
     public function editDetails(Request $request,Response $response){
@@ -310,6 +363,126 @@ class donorController extends Controller
         return json_encode(false);
 
     }
+
+    public function ChangePassword(Request $request,Response $response)
+    {
+        if ($request->isPost()){
+            $CurrentPassword = $request->getBody()['CurrentPassword'];
+            $NewPassword = $request->getBody()['NewPassword'];
+            $ConfirmPassword = $request->getBody()['ConfirmPassword'];
+            if (empty($CurrentPassword) || empty($NewPassword) || empty($ConfirmPassword)){
+                if (empty($CurrentPassword)){
+                    return json_encode([
+                        'status'=>false,
+                        'message'=>'Current Password is required!',
+                        'field'=>'CurrentPassword'
+                    ]);
+                }
+                if (empty($NewPassword)){
+                    return json_encode([
+                        'status'=>false,
+                        'message'=>'New Password is required!',
+                        'field'=>'NewPassword'
+                    ]);
+                }
+                if (empty($ConfirmPassword)){
+                    return json_encode([
+                        'status'=>false,
+                        'message'=>'Confirm Password is required!',
+                        'field'=>'ConfirmPassword'
+                    ]);
+                }
+            }
+            if (strlen($NewPassword)<8){
+                return json_encode([
+                    'status'=>false,
+                    'message'=>'Password must be at least 8 characters long!',
+                    'field'=>'NewPassword'
+                ]);
+            }
+            if (preg_match('/[A-Z]/', $NewPassword)===0){
+                return json_encode([
+                    'status'=>false,
+                    'message'=>'Password must contain at least one uppercase letter!'
+                ]);
+            }
+
+            if (preg_match('/[a-z]/', $NewPassword)===0){
+                return json_encode([
+                    'status'=>false,
+                    'message'=>'Password must contain at least one lowercase letter!'
+                ]);
+            }
+
+            if (preg_match('/[0-9]/', $NewPassword)===0){
+                return json_encode([
+                    'status'=>false,
+                    'message'=>'Password must contain at least one number!'
+                ]);
+            }
+
+            if (preg_match('/[^a-zA-Z\d]/', $NewPassword)===0){
+                return json_encode([
+                    'status'=>false,
+                    'message'=>'Password must contain at least one special character!'
+                ]);
+            }
+
+            if (preg_match('/\s/', $NewPassword)===1){
+                return json_encode([
+                    'status'=>false,
+                    'message'=>'Password must not contain any whitespace!'
+                ]);
+            }
+
+            if ($ConfirmPassword!==$NewPassword){
+                return json_encode([
+                    'status'=>false,
+                    'message'=>'New Password and Confirm Password does not match!',
+                    'field'=>'ConfirmPassword'
+                ]);
+            }
+
+            if ($CurrentPassword===$NewPassword){
+                return json_encode([
+                    'status'=>false,
+                    'message'=>'New Password and Current Password cannot be same!',
+                    'field'=>'NewPassword'
+                ]);
+            }
+
+
+            $User = User::findOne(['UID'=>Application::$app->getUser()->getId()]);
+            if (password_verify($CurrentPassword,$User->getPassword())){
+                if ($NewPassword===$ConfirmPassword){
+                    $User->setPassword(password_hash($NewPassword,PASSWORD_DEFAULT));
+                    if ($User->update($User->getID(),[],['Password'])){
+                        return json_encode([
+                            'status'=>true,
+                            'message'=>'Password Changed Successfully!'
+                        ]);
+                    }else{
+                        return json_encode([
+                            'status'=>false,
+                            'message'=>'Password Not Changed!'
+                        ]);
+                    }
+                }else{
+                    return json_encode([
+                        'status'=>false,
+                        'message'=>'New Password and Confirm Password does not match!'
+                    ]);
+                }
+            }else{
+                return json_encode([
+                    'status'=>false,
+                    'message'=>'Current Password is incorrect!'
+                ]);
+            }
+        }
+
+    }
+
 
     public function checkAttendance(Request $request, Response $response){
         $data = $request->getBody();
