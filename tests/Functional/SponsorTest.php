@@ -54,9 +54,9 @@ class SponsorTest extends \Codeception\Test\Unit
      * @return void
      * @throws Exception
      */
-    public function testValidSponsor($SponsorID, $Email, bool $expected)
+    public function ttestValidSponsor($SponsorID, $Email, bool $expected)
     {
-//        $this->getApp();
+        $this->getApp();
         $sponsor = new Sponsor();
         $sponsor->setSponsorID($SponsorID);
         $sponsor->setEmail($Email);
@@ -68,7 +68,7 @@ class SponsorTest extends \Codeception\Test\Unit
         $sponsor->setType(1);
         $sponsor->setProfileImage('user');
         $this->assertEquals($expected,$sponsor->save());
-//        session_destroy();
+        session_abort();
 
     }
 

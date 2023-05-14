@@ -56,7 +56,7 @@ class OrganizationNotificationTest extends \Codeception\Test\Unit
      */
     public function testValidDonorID($NotificationID, $TargetID, bool $expected)
     {
-//        $this->getApp();
+        $this->getApp();
         $Organization_notification = new OrganizationNotification();
         $Organization_notification->setNotificationID($NotificationID);
         $Organization_notification->setNotificationTitle('Test Notification');
@@ -67,7 +67,7 @@ class OrganizationNotificationTest extends \Codeception\Test\Unit
         $Organization_notification->setNotificationDate(date('Y-m-d'));
         $Organization_notification->setNotificationType(OrganizationNotification::TYPE_CAMPAIGN);
         $this->assertEquals($expected,$Organization_notification->save());
-//        session_destroy();
+        session_destroy();
 
     }
 

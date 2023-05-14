@@ -10,7 +10,6 @@ class Session
     public function __construct()
     {
         session_start();
-//        print_r($_SESSION[self::SESSION_OBJECT]);
         if (isset($_SESSION[self::SESSION_OBJECT])) {
             $this->sessionObject = $_SESSION[self::SESSION_OBJECT];
         }

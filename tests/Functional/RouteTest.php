@@ -30,12 +30,7 @@ class RouteTest extends \Codeception\Test\Unit
         require_once __DIR__ . '/../../vendor/autoload.php';
         $dotenv = Dotenv::createImmutable(dirname(__DIR__).'/../');
         $dotenv->load();
-
-
-
         require_once __DIR__ . '/../../public/config.php';
-
-
         $config=[
             'db'=>[
                 'dsn'=>DB_DSN,
@@ -59,12 +54,14 @@ class RouteTest extends \Codeception\Test\Unit
     }
 
     // tests
+
     /**
      * @dataProvider getRoutes
+     * @throws Exception
      */
     public function testRoutes($url,$method,$type)
     {
-        $I = new FunctionalTester($this->getScenario());
+        session_abort();
         $app = $this->getApp();
         if ($type === 'get'){
             $app->router->get($url,$method);
@@ -72,7 +69,7 @@ class RouteTest extends \Codeception\Test\Unit
             $app->router->post($url,$method);
         }
         $this->assertEquals($method, $app->router->getRoutes()[$type][$url]);
-        session_destroy();
+
     }
 
     public function testInvalidRoutes()

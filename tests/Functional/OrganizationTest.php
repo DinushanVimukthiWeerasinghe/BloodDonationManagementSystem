@@ -2,9 +2,11 @@
 
 namespace Functional;
 
+use App\model\Authentication\Login;
 use App\model\Notification\SponsorNotification;
 use App\model\users\Organization;
 use App\model\users\Sponsor;
+use App\model\users\User;
 use Core\Application;
 use Dotenv\Dotenv;
 use PHPMailer\PHPMailer\Exception;
@@ -57,7 +59,9 @@ class OrganizationTest extends \Codeception\Test\Unit
      */
     public function testValidOrganization( $OrganizationID, $Email, bool $expected)
     {
-//        $this->getApp();
+        $this->getApp();
+
+
         $organization = new Organization();
         $organization->setOrganizationID('Org_000');
         $organization->setOrganizationName('Sahana Society');
@@ -70,7 +74,7 @@ class OrganizationTest extends \Codeception\Test\Unit
         $organization->setStatus(Organization::ORGANIZATION_NOT_VERIFIED);
         $organization->setEmail('org120@test.com');
         $this->assertEquals($expected,$organization->save());
-//        session_destroy();
+        session_abort();
 
     }
 

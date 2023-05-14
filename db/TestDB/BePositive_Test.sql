@@ -152,7 +152,7 @@ CREATE TABLE IF NOT EXISTS Organizations
     Organization_Email VARCHAR(100) UNIQUE,
     Contact_No         VARCHAR(100) NOT NULL,
     City               VARCHAR(100) NOT NULL,
-    Status             VARCHAR(50)  NOT NULL,
+    Status             INT  NOT NULL DEFAULT 1 CHECK ( Status IN (1, 2, 3)),
     Verified_By        VARCHAR(20)  NULL,
     Verified_At        TIMESTAMP    NULL,
     Profile_Image      VARCHAR(100) NOT NULL DEFAULT '/public/upload/organization.png',
