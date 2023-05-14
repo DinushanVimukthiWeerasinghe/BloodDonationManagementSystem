@@ -56,6 +56,7 @@ class SponsorshipNotificationTest extends \Codeception\Test\Unit
      */
     public function testValidSponsorNotification($NotificationID, $TargetID, bool $expected)
     {
+        session_abort();
         $this->getApp();
         $Sponsor_notification = new SponsorNotification();
         $Sponsor_notification->setNotificationID($NotificationID);
@@ -66,7 +67,7 @@ class SponsorshipNotificationTest extends \Codeception\Test\Unit
         $Sponsor_notification->setNotificationDate(date('Y-m-d'));
         $Sponsor_notification->setNotificationType(SponsorNotification::STATE_PENDING);
         $this->assertEquals($expected,$Sponsor_notification->save());
-        session_destroy();
+        session_abort();
 
     }
 

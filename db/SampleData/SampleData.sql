@@ -61,14 +61,14 @@ VALUES ('Dnr_01', 'Viharsha', 'Jayathilaka', 'No 17/A', 'Mathugama', 'Kaluthara'
 # Make Default Organization for Testing
 INSERT INTO Organizations (Organization_ID, Organization_Name, Organization_Email, Contact_No, Address1, Address2, City,
                            Status)
-VALUES ('Org_01', 'Sinha Society', 'orgnization@bepositive.local', '0784578888', 'No 17', 'Sinha Road', 'Colombo 05', 0);
+VALUES ('Org_01', 'Sinha Society', 'orgnization@bepositive.local', '0784578888', 'No 17', 'Sinha Road', 'Colombo 05', 1);
 # Make Default Organization Member for Testing
-INSERT INTO Organization_Members(Organization_ID, Name, Contact_No, NIC, Position)
-VALUES ('Org_01', 'Dinushan Vimukthi', '0771234567', '200017800595', 'Secretary');
-INSERT INTO Organization_Members(Organization_ID, Name, Contact_No, NIC, Position)
-VALUES ('Org_01', 'Isuru Heshan', '0772345671', '200056777896', 'President');
-INSERT INTO Organization_Members(Organization_ID, Name, Contact_No, NIC, Position)
-VALUES ('Org_01', 'Janith Heshara', '0773456712', '199978436578', 'Treasurer');
+INSERT INTO Organization_Members(Organization_ID, Name, Contact_No, NIC, Position, Email)
+VALUES ('Org_01', 'Dinushan Vimukthi', '0771234567', '200017800595', 'Secretary','dinushan@sinhasociety.local');
+INSERT INTO Organization_Members(Organization_ID, Name, Contact_No, NIC, Position,Email)
+VALUES ('Org_01', 'Isuru Heshan', '0772345671', '200056777896', 'President','isuru@sinhasociety.local');
+INSERT INTO Organization_Members(Organization_ID, Name, Contact_No, NIC, Position,Email)
+VALUES ('Org_01', 'Janith Heshara', '0773456712', '199978436578', 'Treasurer','janith@sinhasociety.local');
 
 
 # Make Default Sponsor for Testing

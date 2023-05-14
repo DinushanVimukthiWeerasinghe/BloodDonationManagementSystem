@@ -54,7 +54,8 @@ class donorNotificationTest extends \Codeception\Test\Unit
      */
     public function testValidDonorID($DonorID, bool $expected)
     {
-//        $app = $this->getApp();
+        session_abort();
+        $app = $this->getApp();
         $Donor_notification = new DonorNotification();
         $Donor_notification->setNotificationID('NOT_001');
         $Donor_notification->setTargetID($DonorID);
@@ -71,7 +72,7 @@ class donorNotificationTest extends \Codeception\Test\Unit
     public function ValidDonorIDProvider()
     {
         return [
-            ['Dnr1',true],
+            ['Dnr_01',true],
         ];
     }
 

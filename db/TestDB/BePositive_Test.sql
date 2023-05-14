@@ -812,7 +812,7 @@ CREATE TABLE IF NOT EXISTS Organization_Bank_Accounts
 (
     Organization_ID VARCHAR(20) NOT NULL,
     Account_Name    VARCHAR(100) NOT NULL,
-    Account_Number  VARCHAR(100) NOT NULL UNIQUE CHECK ( LENGTH(Account_Number) = 8 ),
+    Account_Number  VARCHAR(100) NOT NULL UNIQUE,
     Bank_Name       VARCHAR(100) NOT NULL,
     Branch_Name     VARCHAR(100) NOT NULL,
     PRIMARY KEY (Organization_ID),

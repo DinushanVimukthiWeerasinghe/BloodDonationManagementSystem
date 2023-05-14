@@ -279,7 +279,6 @@ abstract class dbModel extends Model
             $primaryKey = static::PrimaryKey();
             $statement = self::prepare("DELETE FROM $tableName WHERE $primaryKey = :$primaryKey");
             $statement->bindValue(":$primaryKey", $this->{$primaryKey});
-            var_dump($statement);
             $statement->execute();
             return $statement->rowCount();
         }

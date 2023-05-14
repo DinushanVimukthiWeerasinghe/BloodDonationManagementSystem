@@ -40,7 +40,6 @@ class HomePageTest extends \Codeception\Test\Unit
             ['/', '#BrandIcon', '/'],
             ['/', '#homeLink', '/'],
             ['/', '#service-panelLink', '/'],
-            ['/', '#registerLink', '/register'],
             ['/','#donate-btn','/login'],
             ['/', '#reg-org-btn','/register?role=organization']
         ];

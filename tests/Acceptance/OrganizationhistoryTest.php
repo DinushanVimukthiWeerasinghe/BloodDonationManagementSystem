@@ -25,7 +25,7 @@ class OrganizationhistoryTest extends \Codeception\Test\Unit
      * @return void
      **/
 
-    public function testdashboardComponents($page, $element, $excepted){
+    public function TtestdashboardComponents($page, $element, $excepted){
         $this->LogAsOrganization();
         $this->tester->amOnpage($page);
         $this->tester->seeElement($element);

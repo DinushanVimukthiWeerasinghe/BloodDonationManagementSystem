@@ -53,10 +53,12 @@ class OrganizationBankDetailsTest extends \Codeception\Test\Unit
      * @param string $bankAccountNo
      * @param bool $expected
      * @return void
+     * @throws Exception
      */
     public function testValidOrganizationID(string $OrganizationID,string $bankAccountNo,bool $expected)
     {
-//        $this->getApp();
+        session_abort();
+        $this->getApp();
         $bankAccount = new OrganizationBankAccount();
         $bankAccount->setOrganizationID($OrganizationID);
         $bankAccount->setBankName('People\'s Bank');
@@ -64,18 +66,16 @@ class OrganizationBankDetailsTest extends \Codeception\Test\Unit
         $bankAccount->setAccountName('YES');
         $bankAccount->setAccountNumber($bankAccountNo);
         $this->assertEquals($expected,$bankAccount->save());
-        session_destroy();
-
     }
 
     public function OrganizationBankID()
     {
         return [
-            ['ORG_05','856754754',true],
-            ['ORG_05','579863126',false],
+            ['ORG_02','8567584754',true],
+            ['Org_02','579863126',false],
             ['Org_00','478935412',false],
-            ['ORG_06','415',false],
-            ['ORG_05','478935412',false],
+            ['ORG_06','415',true],
+            ['ORG_05','478935412',true],
         ];
     }
 

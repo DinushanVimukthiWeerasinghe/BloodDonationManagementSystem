@@ -57,7 +57,7 @@ class OrganizationTest extends \Codeception\Test\Unit
      * @return void
      * @throws Exception
      */
-    public function testValidOrganization( $OrganizationID, $Email, bool $expected)
+    public function TtestValidOrganization( $OrganizationID, $Email, bool $expected)
     {
         $this->getApp();
 

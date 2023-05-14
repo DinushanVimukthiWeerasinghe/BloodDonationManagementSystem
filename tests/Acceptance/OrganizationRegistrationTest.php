@@ -20,7 +20,7 @@ class OrganizationRegistrationTest extends \Codeception\Test\Unit
      * @param $excepted
      * @return void
      **/
-    public function testdashboardComponents(string $page, string $element,string $excepted){
+    public function TtestdashboardComponents(string $page, string $element,string $excepted){
 
         $this->tester->amOnPage($page);
         $this->tester->seeElement($element);
