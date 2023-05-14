@@ -8,13 +8,19 @@ use App\model\Authentication\OTPCode;
 use App\model\Authentication\PasswordReset;
 use App\model\Email\RegisterOTP;
 use App\model\OrganizationMembers\Organization_Members;
+use App\model\users\Donor;
+use App\model\users\Hospital;
+use App\model\users\Manager;
 use App\model\users\Organization;
 use App\model\users\User;
+use App\model\Utils\Security;
 use Core\Application;
 use Core\Controller;
+use Core\File;
 use Core\Request;
 use Core\Response;
 use PHPMailer\PHPMailer\Exception;
+use PhpParser\Node\Expr\New_;
 
 class authController extends Controller
 {
@@ -145,7 +151,7 @@ class authController extends Controller
     {
         if ($request->isPost()){
             $OrganizationID = $request->getBody()['OrganizationID'];
-            $OrganizationID=openssl_decrypt($OrganizationID,$_ENV['ENCRYPTION_METHOD'],$_ENV['ENCRYPTION_KEY']);
+            $OrganizationID=openssl_decrypt($OrganizationID,ENCRYPTION_METHOD,ENCRYPTION_KEY,0,ENCRYPTION_IV);
 //            exit();
             if ($OrganizationID===false){
                 $this->setFlashMessage('error','Invalid Data');
@@ -222,17 +228,22 @@ class authController extends Controller
             }else{
                 return json_encode(['status'=>false,'message'=>'Invalid Data','errors'=>$Organization->getErrors()]);
             }
-        }else{
-            $OrganizationID = $request->getBody()['uid'];
-            $OrganizationID=openssl_decrypt($OrganizationID,$_ENV['ENCRYPTION_METHOD'],$_ENV['ENCRYPTION_KEY']);
+        }
+        else{
 
-            if ($OrganizationID===false){
+            $OrganizationID = $request->getBody()['uid'];
+            $OrganizationID=openssl_decrypt($OrganizationID,ENCRYPTION_METHOD,ENCRYPTION_KEY,0,ENCRYPTION_IV);
+
+
+            if (!$OrganizationID){
                 $this->setFlashMessage('error','Invalid Data');
                 Application::Redirect('/register');
                 exit();
             }
 
+
             $User = User::findOne(['UID'=>$OrganizationID]);
+
             if (!$User){
                 Application::Redirect('/register');
             }else{
@@ -242,11 +253,11 @@ class authController extends Controller
                     $this->setFlashMessage('error','Organization Already Registered');
                     Application::Redirect('/login');
                 }
+
                 if ($User->getRole() != User::ORGANIZATION){
                     $this->setFlashMessage('error','Invalid User Role');
                     Application::Redirect('/login');
                 }
-
 
                 if ($User->getAccountStatus() !== User::ACCOUNT_NOT_VERIFIED){
                     var_dump($Organization);
@@ -257,8 +268,86 @@ class authController extends Controller
             }
             return $this->render('Authentication/Registration/OrganizationRegistration',[
                 'uid'=>$OrganizationID,
+                'email'=>$User->getEmail(),
             ]);
         }
+
+    }
+
+    public function DonorRegister(Request $request,Response $response):string
+    {
+        if ($request->isPost()){
+            $UID = $request->getBody()['uid'];
+            $UID=Security::Decrypt($UID);
+            /** @var User $User */
+            $User = User::findOne(['UID'=>$UID]);
+            $Donor = new Donor();
+            $Donor->setDonorID($User->getID());
+            $Donor->loadData($request->getBody());
+            /** @var File $Image */
+            $Image = $request->getBody()['ProfileImage'];
+            if ($Image->getFileName()!==""){
+                $Image->setPath(Donor::DEFAULT_PROFILE_IMAGE_LOCATION);
+                $Image->setFileName(uniqid("Dnr_").'.'.$Image->getExtension());
+                $Donor->setProfileImage($Image->getFileName());
+            }
+            $Donor->generateGenderByNIC();
+            $Donor->setStatus(0);
+            $Donor->setCreatedAt(date('Y-m-d H:i:s'));
+            if ($Donor->validate()){
+                if ($Image->getFileName()!==""){
+                    $Image->saveFile();
+                }
+                $User->setAccountStatus(User::ACTIVE);
+                $Donor->save();
+                $User->update($User->getID(),[],['Account_Status']);
+                $this->setFlashMessage('success','User Registered Successfully');
+                Application::Redirect('/login');
+            }else{
+                var_dump($Donor->getErrors());
+                exit();
+                $this->setFlashMessage('error','Invalid Data');
+                Application::Redirect('/register');
+            }
+        }
+        else{
+            $UID = $request->getBody()['uid'];
+            $UID=Security::Decrypt($UID);
+            if ($UID===false){
+                $this->setFlashMessage('error','Invalid Data');
+                Application::Redirect('/register');
+                exit();
+            }
+            $User = User::findOne(['UID'=>$UID]);
+            if (!$User) {
+                Application::Redirect('/register');
+                exit();
+            }
+            if ($User->getRole() != User::DONOR){
+                $this->setFlashMessage('error','Invalid User Role');
+                Application::Redirect('/login');
+                exit();
+            }
+            if ($User->getAccountStatus() !== User::ACCOUNT_NOT_VERIFIED){
+                $this->setFlashMessage('error','User Already Registered');
+                Application::Redirect('/login');
+                exit();
+            }
+            $Donor = Donor::findOne(['Donor_ID'=>$User->getID()]);
+            if ($Donor){
+                $this->setFlashMessage('error','Donor Already Registered');
+                Application::Redirect('/login');
+                exit();
+            }
+            $this->layout = 'auth';
+            return $this->render('Authentication/Registration/DonorRegistration',[
+                'uid'=>Security::Encrypt($UID),
+                'email'=>$User->getEmail(),
+            ]);
+        }
+
+
+
 
     }
 
@@ -270,6 +359,7 @@ class authController extends Controller
 
             if (trim($Role) == '' || !$user->IsValidRole($Role)) {
                 $this->setFlashMessage('error', 'Please Select Role');
+                return json_encode(['status'=>false,'message'=>'Please Select Role']);
             }
             else {
                 $user->setRole(match ($Role) {
@@ -280,26 +370,27 @@ class authController extends Controller
                 $user->generateUID();
                 $Password=trim($request->getBody()['Password']);
                 $ConfirmPassword=trim($request->getBody()['ConfirmPassword']);
-                // Password must be 8 characters long
-                if (strlen($Password) < 8) {
-                    $this->setFlashMessage('error', 'Password must be 8 characters long');
-                    return json_encode(['status'=>false,'message'=>'Password must be 8 characters long']);
+                // For Development Purpose
+                if (MODE!==DEVELOPMENT) {
+                    // Password must be 8 characters long
+                    if (strlen($Password) < 8) {
+                        $this->setFlashMessage('error', 'Password must be 8 characters long');
+                        return json_encode(['status' => false, 'message' => 'Password must be 8 characters long']);
+                    } // Password must contain at least one uppercase letter
+                    else if (!preg_match('/[A-Z]/', $Password)) {
+                        $this->setFlashMessage('error', 'Password must contain at least one uppercase letter');
+                        return json_encode(['status' => false, 'message' => 'Password must contain at least one uppercase letter']);
+                    } // Password must contain at least one number
+                    else if (!preg_match('/\d/', $Password)) {
+                        $this->setFlashMessage('error', 'Password must contain at least one number');
+                        return json_encode(['status' => false, 'message' => 'Password must contain at least one number']);
+                    } // Password must contain at least one special character
+                    else if (!preg_match('/[^a-zA-Z\d]/', $Password)) {
+                        $this->setFlashMessage('error', 'Password must contain at least one special character');
+                        return json_encode(['status' => false, 'message' => 'Password must contain at least one special character']);
+                    }
                 }
-                // Password must contain at least one uppercase letter
-                else if (!preg_match('/[A-Z]/', $Password)) {
-                    $this->setFlashMessage('error', 'Password must contain at least one uppercase letter');
-                    return json_encode(['status'=>false,'message'=>'Password must contain at least one uppercase letter']);
-                }
-                // Password must contain at least one number
-                else if (!preg_match('/\d/', $Password)) {
-                    $this->setFlashMessage('error', 'Password must contain at least one number');
-                    return json_encode(['status'=>false,'message'=>'Password must contain at least one number']);
-                }
-                // Password must contain at least one special character
-                else if (!preg_match('/[^a-zA-Z\d]/', $Password)) {
-                    $this->setFlashMessage('error', 'Password must contain at least one special character');
-                    return json_encode(['status'=>false,'message'=>'Password must contain at least one special character']);
-                }
+
                 else if ($Password != $ConfirmPassword){
                     $this->setFlashMessage('error', 'Password and Confirm Password Not Match');
                     return json_encode(['status'=>false,'message'=>'Password and Confirm Password Not Match']);
@@ -312,14 +403,14 @@ class authController extends Controller
                     if ($user->validate()) {
                         $user->save();
                         $UserID = $user->getID();
-                        $EncryptedUserID = openssl_encrypt($UserID,$_ENV['ENCRYPTION_METHOD'],$_ENV['ENCRYPTION_KEY']);
+                        $EncryptedUserID = openssl_encrypt($UserID,ENCRYPTION_METHOD,ENCRYPTION_KEY,0,ENCRYPTION_IV);
                         $this->setFlashMessage('success', 'Please Complete Your Registration');
                         if ($user->getRole() == User::ORGANIZATION)
-                            return json_encode(['status'=>true,'message'=>'User Registered Successfully','redirect'=>'/organization/register?uid='.$EncryptedUserID]);
+                            return json_encode(['status'=>true,'message'=>'User Registered Successfully','redirect'=>'/organization/register?uid='.urlencode($EncryptedUserID)]);
                         else if ($user->getRole() == User::SPONSOR)
-                            return json_encode(['status'=>true,'message'=>'User Registered Successfully','redirect'=>'/sponsor/register?uid='.$EncryptedUserID]);
+                            return json_encode(['status'=>true,'message'=>'User Registered Successfully','redirect'=>'/sponsor/register?uid='.urlencode($EncryptedUserID)]);
                         else
-                            return json_encode(['status'=>true,'message'=>'User Registered Successfully','redirect'=>'/donor/register?uid='.$EncryptedUserID]);
+                            return json_encode(['status'=>true,'message'=>'User Registered Successfully','redirect'=>'/donor/register?uid='.urlencode($EncryptedUserID)]);
 
                     }else{
                         $this->setFlashMessage('error', 'User Registration Failed');
@@ -348,15 +439,18 @@ class authController extends Controller
     }
 
     /**
-     * @throws Exception
      */
     public function SendRegistrationOTP(Request $request, Response $response)
     {
         if ($request->isPost()){
             $Email = $request->getBody()['Email'];
             $ApplicationEmail = Application::$app->email;
+            $User = User::findOne(['Email'=>$Email]);
+            if ($User){
+                return json_encode(['status'=>false,'message'=>'Email Already Registered']);
+            }
             /** @var RegisterOTP $RegisterOTP */
-
+            $RegisterOTP = RegisterOTP::findOne(['Email'=>$Email]);
             if(!$RegisterOTP){
                 $RegisterOTP = new RegisterOTP();
             }
@@ -518,7 +612,7 @@ class authController extends Controller
 //                $errors['error'] = 'Password and Confirm Password not match';
             else if ($password == $confirmPassword){
                 /* @var PasswordReset $Reset*/
-                $Reset = PasswordReset::findOne(['Token'=>$token],false);
+                $Reset = PasswordReset::findOne(['Token'=>$token,'Status'=>PasswordReset::STATUS_ACTIVE],false);
                 if (!$Reset){
                     Application::Redirect('/login');
                 }
@@ -530,9 +624,11 @@ class authController extends Controller
                     Application::$app->session->setFlash('error','Password Already Reset! Please Login');
                     Application::Redirect('/login');
                 }
+
                 $user = Login::findOne(['UID'=>$Reset->getUID()],false);
                 $hash = password_hash($password,PASSWORD_DEFAULT);
                 $user->setPassword($hash);
+                $user->update($user->getID(),[],['Password']);
                 $Reset->setResetPasswordAt(date('Y-m-d H:i:s'));
                 $Reset->setStatus(PasswordReset::STATUS_RESET);
                 $Reset->update($Reset->getUID(),[],['Reset_At','Status']);
@@ -608,6 +704,11 @@ class authController extends Controller
         }
 
     }
+
+
+
+
+
 
     public function logout()
     {

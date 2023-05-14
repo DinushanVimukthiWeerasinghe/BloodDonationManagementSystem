@@ -2,6 +2,8 @@
 
 namespace App\model\sponsor;
 
+use App\model\Requests\SponsorshipRequest;
+use App\model\users\Sponsor;
 use App\model\Utils\Security;
 
 class CampaignsSponsor extends \App\model\database\dbModel
@@ -17,13 +19,24 @@ class CampaignsSponsor extends \App\model\database\dbModel
     protected string $Sponsored_At='';
     protected int $Status = 1;
     protected string $Session_ID = '';
-    protected string $Campaign_ID= '';
+
 
     /**
-     * @return int
+     * @param bool $Readable
+     * @return int|string
      */
-    public function getStatus(): int
+    public function getStatus(bool $Readable = false): int | string
     {
+        if ($Readable){
+            switch ($this->Status){
+                case self::PAYMENT_STATUS_PENDING:
+                    return 'Pending';
+                case self::PAYMENT_STATUS_PAID:
+                    return 'Paid';
+                case self::PAYMENT_STATUS_FAILED:
+                    return 'Failed';
+            }
+        }
         return $this->Status;
     }
 
@@ -48,21 +61,6 @@ class CampaignsSponsor extends \App\model\database\dbModel
         return Security::VerifyHash($sessionID,$this->Session_ID);
     }
 
-    /**
-     * @return string
-     */
-    public function getCampaignID(): string
-    {
-        return $this->Campaign_ID;
-    }
-
-    /**
-     * @param string $Campaign_ID
-     */
-    public function setCampaignID(string $Campaign_ID): void
-    {
-        $this->Campaign_ID = $Campaign_ID;
-    }
 
     /**
      * @param string $Session_ID
@@ -124,7 +122,6 @@ class CampaignsSponsor extends \App\model\database\dbModel
         // TODO: Implement attributes() method.
         return [
             'Sponsor_ID',
-            'Campaign_ID',
             'Sponsorship_ID',
             'Description',
             'Sponsored_Amount',
@@ -192,12 +189,25 @@ class CampaignsSponsor extends \App\model\database\dbModel
         return $this->Sponsorship_ID;
     }
 
+    public function getSponsorshipRequestAcceptName()
+    {
+        $SponsorshipRequest= SponsorshipRequest::findOne(['Sponsorship_ID'=>$this->Sponsorship_ID]);
+        return $SponsorshipRequest->getAcceptName();
+    }
+
     /**
      * @param string $Sponsorship_ID
      */
     public function setSponsorshipID(string $Sponsorship_ID): void
     {
         $this->Sponsorship_ID = $Sponsorship_ID;
+    }
+
+    public function getCampaign()
+    {
+        /** @var SponsorshipRequest $SponsorshipRequest */
+        $SponsorshipRequest = SponsorshipRequest::findOne(['Sponsorship_ID'=>$this->Sponsorship_ID]);
+        return $SponsorshipRequest->getCampaign();
     }
 
     /**
@@ -214,6 +224,22 @@ class CampaignsSponsor extends \App\model\database\dbModel
     public function setDescription(string $Description): void
     {
         $this->Description = $Description;
+    }
+
+    public function getSponsor() : Sponsor | bool
+    {
+        return Sponsor::findOne(['Sponsor_ID'=>$this->Sponsor_ID]);
+    }
+
+    public function getManagerBloodBankName()
+    {
+        $SR = $this->getSponsorshipRequest();
+        return $SR->getManagedBloodBank()->getBankName();
+    }
+
+    public function getSponsorshipRequest() : SponsorshipRequest | bool
+    {
+        return SponsorshipRequest::findOne(['Sponsorship_ID'=>$this->Sponsorship_ID]);
     }
 
 

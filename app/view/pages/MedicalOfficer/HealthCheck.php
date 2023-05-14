@@ -1,6 +1,7 @@
 <?php
 /* @var Donor $Donor */
 
+use App\model\Donor\DonorHealthCheckUp;
 use App\model\MedicalTeam\TeamMembers;
 use App\model\users\Donor;
 
@@ -9,18 +10,19 @@ use App\model\users\Donor;
 <div class="d-flex w-100 h-100 m-1 bg-white border-radius-10 align-items-center flex-column">
     <div class="d-flex text-xl font-bold bg-dark my-1 py-1 w-95 text-white text-center justify-content-center align-items-center">Health Checkup</div>
     <div class="d-flex w-100 overflow-y-scroll mb-2">
-        <form action="" method="post" class="d-flex justify-content-between w-100">
+        <form id="DonorHealthCheckForm" action="" method="post" class="d-flex justify-content-between w-100">
             <input type="hidden" name="Task" value=<?=TeamMembers::TASK_HEALTH_CHECK?>>
+            <input type="hidden" name="Recommendation" value=<?= DonorHealthCheckUp::Doctor_Not_Recommend?>>
             <input type="hidden" name="Donor_ID" value="<?=$Donor->getDonorID()?>">
-            <div id="PreviousDonation" class="w-70 d-flex flex-column px-2 gap-1 ">
+            <div id="PreviousDonation" class="w-70 d-flex flex-column px-2 py-1 gap-1 ">
                 <div class="form-group w-100">
                     <div class="form-group border-2 border-radius-10 border-dark px-2 py-0-5" style="gap: 0">
-                        <label for="IsDonatedPreviously" class="w-70">Are you in Good Health?</label>
+                        <label for="IsInGoodHealth" class="w-70">Are you in Good Health?</label>
                         <div class="d-flex w-30 gap-1 justify-content-end justify-content-end">
-                            <input type="radio" name="GoodHealth" checked id="IsDonatedPreviouslyY" value=1 class="form-radio" required>
-                            <label for="IsDonatedPreviouslyY" class="">Yes</label>
-                            <input  type="radio" name="GoodHealth" id="IsDonatedPreviouslyN" value=2 class="form-radio" required>
-                            <label for="IsDonatedPreviouslyN" class="">No</label>
+                            <input type="radio" name="GoodHealth" checked id="IsInGoodHealthY" value=1 class="form-radio" required>
+                            <label for="IsInGoodHealthY" class="">Yes</label>
+                            <input  type="radio" name="GoodHealth" id="IsInGoodHealthN" value=2 class="form-radio" required>
+                            <label for="IsInGoodHealthN" class="">No</label>
                         </div>
                     </div>
                 </div>
@@ -119,7 +121,6 @@ use App\model\users\Donor;
                             <label for="PregnantN" class="">No</label>
                         </div>
                     </div>
-
                     <div class="d-flex w-100 border-2 border-dark px-2 py-0-5 border-radius-10">
                         <label for="Prisoned" class="w-70">Have You Prisoned?</label>
                         <div class="d-flex w-30 gap-1 justify-content-end">
@@ -196,8 +197,8 @@ use App\model\users\Donor;
                         </div>
                     </div>
                 </div>
-                <div class="d-flex">
-                    <input type="submit" class="btn btn-success" value="Submit">
+                <div class="d-flex w-100 flex-center mb-5">
+                    <button type="button" class="btn btn-lg btn-success mb-3" onclick="CheckHealth()"> Check and Proceed </button>
                 </div>
             </div>
             <div id="DonorDetails" class="w-30 d-flex flex-column mt-2 justify-content-start align-items-center px-2 gap-1">
@@ -224,5 +225,67 @@ use App\model\users\Donor;
     </div>
 </div>
 
-    </div>
-</div>
+
+<!-- TODO :Recommendation-->
+
+<script>
+    const CheckHealth = ()=>{
+        let proceed = true;
+        const GoodHealth = document.getElementsByName("GoodHealth")[0].checked;
+        const Diseases = document.getElementsByName("Disease[]");
+        let NoDiseaseDetected = true;
+        Diseases.forEach((Disease)=>{
+            if(Disease.checked){
+                DiseaseDetected = false;
+            }
+        });
+        if (!GoodHealth || !NoDiseaseDetected){
+            proceed = false;
+        }
+        if (proceed){
+            const PartnerHIV = document.getElementsByName("PartnerAids")[0].checked;
+            const Vaccinated = document.getElementsByName("Vaccinated")[0].checked;
+            const Tattooed = document.getElementsByName("Tattooed")[0].checked;
+            const Pierced = document.getElementsByName("Pierced")[0].checked;
+            const Pregnant = document.getElementsByName("Pregnant")[0].checked;
+            const Prisoned = document.getElementsByName("Prisoned")[0].checked;
+            const Went_Abroad = document.getElementsByName("Went_Abroad")[0].checked;
+            const Donated_To_Partner = document.getElementsByName("Donated_To_Partner")[0].checked;
+            const Malaria_Infected = document.getElementsByName("Malaria_Infected")[0].checked;
+            const Dengue_Infected = document.getElementsByName("Dengue_Infected")[0].checked;
+            const CFever_Infected = document.getElementsByName("CFever_Infected")[0].checked;
+            const Teeth_Removed = document.getElementsByName("Teeth_Removed")[0].checked;
+            const Antibiotics_And_Aspirins = document.getElementsByName("Antibiotics_And_Aspirins")[0].checked;
+            if (PartnerHIV || Vaccinated || Tattooed || Pierced || Pregnant || Prisoned || Went_Abroad || Donated_To_Partner || Malaria_Infected || Dengue_Infected || CFever_Infected || Teeth_Removed || Antibiotics_And_Aspirins){
+                proceed = false;
+            }
+        }
+        if (proceed){
+            OpenDialogBox({
+                id:"DonationConfirmation",
+                title:"Donation Health Check Confirmation",
+                titleClass:"text-white bg-dark px-2 py-0-5",
+                content: `
+                    Are you sure this donor is eligible for donation?
+                `,
+                successBtnText:"Yes",
+                cancelBtnText:"Cancel",
+                secondaryBtnText:"No",
+                secondaryBtnColor:["btn-outline-primary"],
+                successBtnAction:()=>{
+                    document.getElementsByName("Recommendation")[0].value = 2;
+                    document.getElementById("DonorHealthCheckForm").submit();
+                },
+                secondaryBtnAction:()=>{
+                    document.getElementsByName("Recommendation")[0].value = 1;
+                    document.getElementById("DonorHealthCheckForm").submit();
+                }
+            })
+        }else{
+            document.getElementById("DonorHealthCheckForm").submit();
+        }
+
+
+        console.log(GoodHealth,DiseaseDetected);
+    }
+</script>

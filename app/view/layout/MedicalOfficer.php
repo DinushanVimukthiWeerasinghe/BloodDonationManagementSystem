@@ -4,8 +4,9 @@ use App\view\components\ResponsiveComponent\Alert\FlashMessage;
 use App\view\components\ResponsiveComponent\NavbarComponent\AuthNavbar;
 use Core\Application;
 
+$PageTitle = $BrandTitle ?? "Medical Officer Dashboard";
 $User = Application::$app->getUser();
-$navbar = new AuthNavbar('Medical Officer Dashboard', '/mofficer', '/public/images/icons/user.png', true, false);
+$navbar = new AuthNavbar($PageTitle, '/mofficer', '/public/images/icons/user.png', true, false);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -53,6 +54,17 @@ $navbar = new AuthNavbar('Medical Officer Dashboard', '/mofficer', '/public/imag
     <div id="SideBarLinks" class="d-flex w-100 flex-column justify-content-center align-items-center gap-1">
 
         <?php
+        if (isset($page) && $page==="overview"){
+            echo '<div class="d-flex p-1 w-100 align-items-center text-xl cursor bg-primary border-radius-10 text-white font-bold" onclick="Redirect(\'/mofficer/campaigns/overview\')">
+            <i class="fa-solid fa-power-off"></i>
+            <span style="margin-left: 1.2rem">Overview</span>
+            </div>';
+        }else{
+            echo '<div class="d-flex gap-1 p-1 w-100 align-items-center text-xl cursor" onclick="Redirect(\'/mofficer/campaigns/overview\')">
+            <i class="fa-solid fa-power-off"></i>
+            <span style="margin-left: 1.2rem">Overview</span>
+            </div>';
+        }
         if (isset($page) && $page==="dashboard"){
             echo '<div class="d-flex p-1 w-100 align-items-center text-xl cursor bg-primary border-radius-10 text-white font-bold" onclick="Redirect(\'/medicalofficer/dashboard\')">
             <img src="/public/icons/dashboard.svg" class="mr-1 invert-100" width="24px" alt="" data-tooltip="Dashboard"
@@ -113,7 +125,7 @@ $navbar = new AuthNavbar('Medical Officer Dashboard', '/mofficer', '/public/imag
 </div>
 
 <div class="absolute d-flex justify-content-center"
-     style="top: 8vh;height: 92vh;width: calc(100vw - 200px);max-width: calc(100vw - 200px);left: 200px;background: #f2f2f2"
+     style="top: 8vh;height: 92vh;width: calc(100vw - 200px);max-width: calc(100vw - 200px);left: 200px;background: aliceblue"
      id="Content">
     {{content}}
 </div>
@@ -147,7 +159,7 @@ $navbar = new AuthNavbar('Medical Officer Dashboard', '/mofficer', '/public/imag
                             content: `
                             <div class="d-flex flex-column gap-1">
                                    <div id="notification" class="d-flex flex-column gap-1">
-                                        <div class="d-flex flex-column gap-1 overflow-y-scroll max-h-80vh">
+                                        <div class="d-flex flex-column gap-1 overflow-y-overlay max-h-80vh">
                                             ${data.notifications.map(notification => `
                                                         <div class="d-flex flex-column gap-1 border-2 px-2 py-0-5">
                                                             <div class="d-flex justify-content-between border-bottom-2 py-0-5">

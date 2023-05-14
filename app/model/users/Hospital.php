@@ -6,6 +6,7 @@ class Hospital extends Person
 {
     protected string $Hospital_ID='';
     protected string $Hospital_Name='';
+    protected string $Nearest_Blood_Bank='';
 
     /**
      * @return string
@@ -14,6 +15,24 @@ class Hospital extends Person
     {
         return $this->Hospital_ID;
     }
+
+    /**
+     * @return string
+     */
+    public function getNearestBloodBank(): string
+    {
+        return $this->Nearest_Blood_Bank;
+    }
+
+    /**
+     * @param string $Nearest_Blood_Bank
+     */
+    public function setNearestBloodBank(string $Nearest_Blood_Bank): void
+    {
+        $this->Nearest_Blood_Bank = $Nearest_Blood_Bank;
+    }
+
+    
 
 
 
@@ -59,9 +78,10 @@ class Hospital extends Person
             'Address2'=>'Address 2',
             'Email'=>'Email',
             'City'=>'City',
+            'Nearest_Blood_Bank'=>'Nearest Blood Bank',
             'Contact_No'=>'Contact No',
-            'Type'=>'Type',
-            'Profile_Image'=>'Profile Image'
+//            'Type'=>'Type',
+//            'Profile_Image'=>'Profile Image'
         ];
     }
 
@@ -72,11 +92,12 @@ class Hospital extends Person
             'Hospital_Name'=>[self::RULE_REQUIRED],
             'Address1'=>[self::RULE_REQUIRED],
             'Address2'=>[self::RULE_REQUIRED],
-            'Email'=>[self::RULE_REQUIRED],
+            'Email'=>[self::RULE_REQUIRED, self::RULE_EMAIL],
             'City'=>[self::RULE_REQUIRED],
-            'Contact_No'=>[self::RULE_REQUIRED],
-            'Type'=>[self::RULE_REQUIRED],
-            'Profile_Image'=>[self::RULE_REQUIRED]
+            'Contact_No'=>[self::RULE_REQUIRED, self::RULE_MOBILE_NO],
+            'Nearest_Blood_Bank'=>[self::RULE_REQUIRED]
+//            'Type'=>[self::RULE_REQUIRED],
+//            'Profile_Image'=>[self::RULE_REQUIRED]
         ];
     }
 
@@ -105,8 +126,9 @@ class Hospital extends Person
             'Email',
             'City',
             'Contact_No',
-            'Type',
-            'Profile_Image'
+            'Nearest_Blood_Bank'
+//            'Type',
+//            'Profile_Image'
         ];
     }
 

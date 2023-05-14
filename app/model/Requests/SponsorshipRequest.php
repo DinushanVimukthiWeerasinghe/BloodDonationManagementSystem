@@ -5,6 +5,7 @@ namespace App\model\Requests;
 use App\model\BloodBankBranch\BloodBank;
 use App\model\Campaigns\Campaign;
 //use App\model\sponsor\SponsorshipPackages;
+use App\model\sponsor\AnonymousSponsor;
 use App\model\sponsor\CampaignsSponsor;
 use App\model\users\Manager;
 use App\model\users\Organization;
@@ -28,7 +29,7 @@ class SponsorshipRequest extends \App\model\database\dbModel
     protected int $Sponsorship_Status=1;
     protected string $Description='';
     protected string $Report='';
-    protected ?string $Transferred=null;
+    protected ?int $Transferred=null;
     protected ?string $Transferred_At=null;
     protected ?string $Managed_By=null;
     protected ?string $Managed_At=null;
@@ -57,12 +58,23 @@ class SponsorshipRequest extends \App\model\database\dbModel
         $this->Managed_By = $Managed_By;
     }
 
+    public function getManagedBloodBank() : BloodBank
+    {
+        return BloodBank::findOne(['BloodBank_ID'=>Manager::findOne(['Manager_ID'=>$this->Managed_By])->getBloodBankID()]);
+
+    }
+
     /**
      * @return string|null
      */
     public function getManagedAt(): ?string
     {
         return $this->Managed_At;
+    }
+
+    public function getAcceptName()
+    {
+        return Manager::findOne(['Manager_ID'=>$this->Managed_By])->getFullName();
     }
 
     /**
@@ -98,6 +110,22 @@ class SponsorshipRequest extends \App\model\database\dbModel
 
     public function getToBeSponsoredAmount(bool $Readable=false): float|int|string
     {
+        $CampaignSponsors = CampaignsSponsor::RetrieveAll(false,[],true,['Sponsorship_ID'=>$this->Sponsorship_ID,'Status'=>CampaignsSponsor::PAYMENT_STATUS_PAID]);
+        $AnonymousSponsors = AnonymousSponsor::RetrieveAll(false,[],true,['Request_ID'=>$this->Sponsorship_ID,'Status'=>AnonymousSponsor::PAYMENT_STATUS_PAID]);
+        $SponsoredAmount = 0;
+        if (count($CampaignSponsors) == 0 && count($AnonymousSponsors) == 0)
+            return $this->Sponsorship_Amount;
+        if (count($CampaignSponsors) > 0)
+            $SponsoredAmount = array_sum(array_map(function ($CampaignSponsor){
+                /** @var $CampaignSponsor CampaignsSponsor */
+                return $CampaignSponsor->getSponsoredAmount();
+            },$CampaignSponsors));
+        if (count($AnonymousSponsors) > 0)
+            $SponsoredAmount += array_sum(array_map(function ($AnonymousSponsor){
+                /** @var $AnonymousSponsor AnonymousSponsor */
+                return $AnonymousSponsor->getAmount();
+            },$AnonymousSponsors));
+        return $this->Sponsorship_Amount - $SponsoredAmount;
         $CampaignSponsors = CampaignsSponsor::RetrieveAll(false,[],true,['Sponsorship_ID'=>$this->Sponsorship_ID,'Status'=>self::TRANSFERRING_COMPLETED]);
         if (count($CampaignSponsors) == 0)
             return $Readable ? number_format(intval($this->Sponsorship_Amount),0,'.',",") : $this->Sponsorship_Amount;
@@ -113,11 +141,11 @@ class SponsorshipRequest extends \App\model\database\dbModel
 //    }
 
     /**
-     * @return string|null
+     * @return int|null
      */
-    public function getTransferred(): ?string
+    public function getTransferred(): ?int
     {
-        return $this->Transferred;
+        return $this->Transferred ?? "Not Transferred";
     }
 
     /**
@@ -133,7 +161,7 @@ class SponsorshipRequest extends \App\model\database\dbModel
      */
     public function getTransferredAt(): ?string
     {
-        return $this->Transferred_At;
+        return $this->Transferred_At ?? "N/A";
     }
 
     /**
@@ -181,8 +209,10 @@ class SponsorshipRequest extends \App\model\database\dbModel
     /**
      * @return string
      */
-    public function getSponsorshipAmount(): string
+    public function getSponsorshipAmount(bool $Readable=false): string
     {
+        if ($Readable)
+            return "LKR ".number_format($this->Sponsorship_Amount,2);
         return $this->Sponsorship_Amount;
     }
 
@@ -213,8 +243,10 @@ class SponsorshipRequest extends \App\model\database\dbModel
     /**
      * @return string
      */
-    public function getSponsorshipStatus(): string
+    public function getSponsorshipStatus(bool $Readable=false): string
     {
+        if($Readable)
+            return $this->getReadableSponsorshipStatus();
         return $this->Sponsorship_Status;
     }
 
@@ -282,6 +314,7 @@ class SponsorshipRequest extends \App\model\database\dbModel
         }else{
             $this->Sponsorship_Status = self::STATUS_APPROVED;
         }
+
         $CampaignSponsor = new CampaignsSponsor();
         $CampaignSponsor->setSponsorshipID($this->Sponsorship_ID);
         $CampaignSponsor->setSponsorID($SponsorID);
@@ -290,6 +323,7 @@ class SponsorshipRequest extends \App\model\database\dbModel
         $CampaignSponsor->setDescription($Description);
         $CampaignSponsor->setStatus(CampaignsSponsor::PAYMENT_STATUS_PENDING);
         $CampaignSponsor->setSessionID($SessionID);
+
 
 
         if ($CampaignSponsor->validate()){
@@ -403,5 +437,32 @@ class SponsorshipRequest extends \App\model\database\dbModel
         else
             return $this->Sponsorship_Amount;
 
+    }
+
+    public function getSponsorCampaign(): bool|array
+    {
+        return CampaignsSponsor::RetrieveAll(false,[],true,['Sponsorship_ID'=>$this->Sponsorship_ID,'Status'=>CampaignsSponsor::PAYMENT_STATUS_PAID]);
+    }
+
+    public function getTotalSponsoredAmount(bool $Readable=false): float|int | string
+    {
+        /** @var $Sponsor CampaignsSponsor*/
+        $Total = 0;
+        $CampaignSponsor = CampaignsSponsor::RetrieveAll(false,[],true,['Sponsorship_ID'=>$this->Sponsorship_ID,'Status'=>CampaignsSponsor::PAYMENT_STATUS_PAID]);
+        if ($CampaignSponsor) {
+            foreach ($CampaignSponsor as $Sponsor)
+                $Total += $Sponsor->getSponsoredAmount();
+            if ($Readable)
+                return "LKR ".number_format($Total,2);
+            return $Total;
+        }
+        else {
+            return 0;
+        }
+    }
+
+    public function getCampaign()
+    {
+        return Campaign::findOne(['Campaign_ID'=>$this->Campaign_ID]);
     }
 }

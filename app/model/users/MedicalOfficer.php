@@ -4,10 +4,15 @@ namespace App\model\users;
 
 use App\model\BloodBankBranch\BloodBank;
 use App\model\Campaigns\Campaign;
+use App\model\Email\BaseEmail;
+use App\model\Email\Email;
 use App\model\MedicalTeam\MedicalTeam;
 use App\model\MedicalTeam\TeamMembers;
+use App\model\Notification\MedicalOfficerNotification;
+use App\model\Utils\Notification;
 use Core\Application;
 use PDO;
+use PHPMailer\PHPMailer\Exception;
 
 class MedicalOfficer extends Person
 {
@@ -81,7 +86,7 @@ class MedicalOfficer extends Person
         }
     }
 
-    public static function GetAllCampaign(string $OfficerID)
+    public static function GetAllCampaign(string $OfficerID, $Status = Campaign::CAMPAIGN_STATUS_FINISHED)
     {
         $AllTeamAsMember = TeamMembers::RetrieveAll(false,[],true,['Member_ID'=>$OfficerID]);
         if (!empty($AllTeamAsMember)){
@@ -94,9 +99,11 @@ class MedicalOfficer extends Person
                 foreach ($AllTeams as $Team) {
                     $AllCampaigns[] = Campaign::findOne(['Campaign_ID' => $Team->getCampaignID()], false);
                 }
-                $AllCampaigns = array_filter($AllCampaigns, function ($Campaign) {
-                    return $Campaign->getStatus() == Campaign::CAMPAIGN_STATUS_FINISHED;
-                });
+                if ($Status != Campaign::CAMPAIGN_STATUS_ALL) {
+                    $AllCampaigns = array_filter($AllCampaigns, function ($Campaign) use ($Status) {
+                        return $Campaign->getStatus() == $Status;
+                    });
+                }
                 return $AllCampaigns;
             }else{
                 return null;
@@ -344,7 +351,62 @@ class MedicalOfficer extends Person
 
     }
 
+    public function getAllCampaigns(): ?array
+    {
+        /** @var TeamMembers[] $Teams */
+        /** @var TeamMembers $Team */
+        $Teams = TeamMembers::RetrieveAll(false,[],true,['Member_ID' => $this->Officer_ID]);
+        if ($Teams) {
+            $Campaigns = [];
+            foreach ($Teams as $Team) {
+                $Campaigns[] = $Team->getCampaign();
+            }
+            return $Campaigns;
+        }else{
+            return null;
+        }
+    }
 
+    /**
+     * @throws Exception
+     */
+    public function sendAccountCreatedEmail()
+    {
+        /** @var BaseEmail $Email */
+        $email = Application::$app->email;
+        if (MODE===DEVELOPMENT){
+            $email->setTo('stdinushan@gmail.com');
+        }else{
+            $email->setTo($this->getEmail());
+        }
+        $email->setFrom('bdms@gmail.com');
+        $email->setSubject('User Account Created !');
+        $email->AddImage(Application::$ROOT_DIR.'/public/images/logo.png','logo-img','Logo');
+        ob_start();
+        include_once Application::$ROOT_DIR."/app/view/Email/UserAccountCreation.php";
+        $body=ob_get_clean();
+        $body=str_replace('{{Link}}',HOST.'/login',$body);
+        $body=str_replace('{{UserName}}',$this->getFullName(),$body);
+        $email->setBody($body);
+        $email->send();
+    }
+
+    public static function CreateNotification(string $TargetID,string $Title,string $Message): bool
+    {
+        $MedicalOfficerNotification = new MedicalOfficerNotification();
+        $MedicalOfficerNotification->setNotificationID(uniqid('MON'));
+        $MedicalOfficerNotification->setTargetID($TargetID);
+        $MedicalOfficerNotification->setNotificationTitle($Title);
+        $MedicalOfficerNotification->setNotificationType(MedicalOfficerNotification::OTHER);
+        $MedicalOfficerNotification->setNotificationStatus(MedicalOfficerNotification::STATUS_UNREAD);
+        $MedicalOfficerNotification->setNotificationDate(date('Y-m-d'));
+        $MedicalOfficerNotification->setNotificationMessage($Message);
+        if ($MedicalOfficerNotification->validate() && $MedicalOfficerNotification->save()) {
+            return true;
+        }else{
+            return false;
+        }
+    }
 
     private function saveRealtion(string $table1,string $table2){
         return $table1.'_'.$table2;
@@ -376,17 +438,20 @@ class MedicalOfficer extends Person
                 }
             }
         }
+
         if (count($AssignedCampaigns) > 0) {
             $AssignedCampaigns = array_filter($AssignedCampaigns, function ($AssignedCampaign)  {
-                return $AssignedCampaign->getStatus() == Campaign::APPROVED;
+                return $AssignedCampaign->getStatus() == Campaign::CAMPAIGN_STATUS_APPROVED || $AssignedCampaign->getStatus() == Campaign::CAMPAIGN_STATUS_REPORTED;
             });
             if (trim($Date) == '') {
                 // Sort the array by date
                 usort($AssignedCampaigns, function ($a, $b) {
                     return strtotime($a->getCampaignDate()) - strtotime($b->getCampaignDate());
                 });
+
                 return $AssignedCampaigns;
             }else{
+
                 $out=array_filter($AssignedCampaigns, function ($AssignedCampaign) use ($Date) {
                     return $AssignedCampaign->getCampaignDate() == $Date;
                 });
@@ -428,7 +493,7 @@ class MedicalOfficer extends Person
             'Officer_ID' => [self::RULE_REQUIRED, self::RULE_UNIQUE],
             'First_Name' => [self::RULE_REQUIRED],
             'Last_Name' => [self::RULE_REQUIRED],
-            'NIC' => [self::RULE_REQUIRED, self::RULE_UNIQUE, self::RULE_MIN => 10, self::RULE_MAX => 12],
+            'NIC' => [self::RULE_REQUIRED,self::RULE_UNIQUE,[self::RULE_MIN,self::RULE_MIN=>10],[self::RULE_MAX,self::RULE_MAX=>12]],
             'Joined_At' => [self::RULE_REQUIRED, self::RULE_TODAY_OR_OLDER_DATE],
             'Status' => [self::RULE_REQUIRED],
             'Position' => [self::RULE_REQUIRED],
@@ -438,7 +503,6 @@ class MedicalOfficer extends Person
             'City' => [self::RULE_REQUIRED],
             'Profile_Image' => [self::RULE_REQUIRED],
             'Contact_No' => [self::RULE_REQUIRED, self::RULE_MOBILE_NO],
-//            'Gender' => [self::RULE_REQUIRED],
             'Nationality' => [self::RULE_REQUIRED],
             'Registration_Number'=>[self::RULE_REQUIRED,self::RULE_UNIQUE],
             'Registration_Date'=>[self::RULE_REQUIRED,self::RULE_TODAY_OR_OLDER_DATE],

@@ -3,13 +3,63 @@
 namespace App\model\users;
 
 use App\model\Authentication\OrganizationBankAccount;
+use App\model\Organization\ReportOrganization;
 use App\model\Utils\Security;
 
 class Organization extends Person
 {
+    const ORGANIZATION_NOT_VERIFIED = 1;
+    const ORGANIZATION_VERIFIED = 2;
+    const ORGANIZATION_REJECTED = 3;
     protected string $Organization_ID='';
     protected string $Organization_Name='';
     protected string $Organization_Email='';
+    protected ?string $Verified_By=null;
+    protected ?string $Verified_At=null;
+
+    public static function CreateEmptyOrganization($Email)
+    {
+        $Organization=new Organization();
+        $Organization->setOrganizationName('No Name');
+        $Organization->setOrganizationEmail($Email);
+        $Organization->setAddress1('Address Line 1');
+        $Organization->setAddress2('Address Line 2');
+        $Organization->setCity('City');
+        $Organization->setContactNo('Contact No');
+        $Organization->setStatus(Organization::ORGANIZATION_NOT_VERIFIED);
+        $Organization->setProfileImage(Organization::getDefaultProfilePicture());
+        return $Organization;
+    }
+
+    public function getVerificationStatus(bool $Readable=false): int | string
+    {
+        if ($Readable){
+            return match (intval($this->Status)) {
+                self::ORGANIZATION_NOT_VERIFIED => 'Not Verified',
+                self::ORGANIZATION_VERIFIED => 'Verified',
+                self::ORGANIZATION_REJECTED => 'Rejected',
+                default => 'Unknown',
+            };
+        }
+        return intval($this->Status);
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getRemarks(): ?string
+    {
+        return $this->Remarks;
+    }
+
+    /**
+     * @param string|null $Remarks
+     */
+    public function setRemarks(?string $Remarks): void
+    {
+        $this->Remarks = $Remarks;
+    }
+
 
     public function getID(): string
     {
@@ -82,7 +132,7 @@ class Organization extends Person
      */
     public function getType(): string
     {
-        return $this->Type;
+        return $this->Type ?? 'Social_Welfare';
     }
 
     /**
@@ -106,7 +156,7 @@ class Organization extends Person
     {
         /** @var OrganizationBankAccount $BankAccount */
         $BankAccount=OrganizationBankAccount::findOne(['Organization_ID'=>$this->Organization_ID]);
-        return Security::Decrypt($BankAccount->getAccountNumber());
+        return $BankAccount->getAccountNumber();
     }
 
     public function getBankAccountName(): bool|string
@@ -140,6 +190,53 @@ class Organization extends Person
         return $BankAccount;
     }
 
+    /**
+     * @return string
+     */
+    public function getVerifiedBy(): string
+    {
+        return $this->Verified_By;
+    }
+
+    /**
+     * @param string $Verified_By
+     */
+    public function setVerifiedBy(string $Verified_By): void
+    {
+        $this->Verified_By = $Verified_By;
+    }
+
+
+
+    /**
+     * @param string $Verified_At
+     */
+    public function setVerifiedAt(string $Verified_At): void
+    {
+        $this->Verified_At = $Verified_At;
+    }
+
+    public function getVerifierName()
+    {
+        if ($this->Verified_By){
+            $User=MedicalOfficer::findOne(['Officer_ID'=>$this->Verified_By]);
+            if ($User){
+                return $User->getFullName();
+            }
+            return 'Unknown';
+        }
+    }
+
+    public function getVerifiedAt(): string
+    {
+        if ($this->Verified_At){
+            return date('Y-F-d',strtotime($this->Verified_At));
+        }
+        return 'Unknown';
+    }
+
+
+
 
 
 
@@ -154,7 +251,10 @@ class Organization extends Person
             'City'=>'City',
             'Contact_No'=>'Contact No',
             'Type'=>'Type',
-            'Profile_Image'=>'Profile Image'
+            'Profile_Image'=>'Profile Image',
+            'Status'=>'Status',
+            'Verified_By'=>'Verified By',
+            'Verified_At'=>'Verified At',
         ];
     }
 
@@ -198,7 +298,9 @@ class Organization extends Person
             'City',
             'Contact_No',
             'Profile_Image',
-            'Status'
+            'Status',
+            'Verified_By',
+            'Verified_At',
 
         ];
     }
@@ -216,5 +318,38 @@ class Organization extends Person
     public static function generateID($param = ""): string
     {
         return uniqid("ORG_");
+    }
+
+    public function IsReported() : bool
+    {
+        if (intval($this->getStatus())===self::ORGANIZATION_REJECTED){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    public function IsVerified(): bool
+    {
+        if (intval($this->getStatus())===self::ORGANIZATION_VERIFIED){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    public function getReporterName()
+    {
+        /** @var ReportOrganization $Reporter */
+        $Reporter = ReportOrganization::findOne(['Organization_ID'=>$this->getOrganizationID()]);
+        return $Reporter->getReporter()->getFullName();
+
+    }
+
+    public function getReporterAt()
+    {
+        /** @var ReportOrganization $Reporter */
+        $Reporter = ReportOrganization::findOne(['Organization_ID'=>$this->getOrganizationID()]);
+        return date("Y F d ",strtotime($Reporter->getReportedAt()));
     }
 }

@@ -10,7 +10,7 @@
 /* @var string $Contact_No */
 /* @var string $City */
 
-/* @var string $bloodGroup */
+/* @var string $BloodGroup */
 /* @var string $weight */
 /* @var string $remark */
 
@@ -27,7 +27,7 @@ $NIC;
 $Contact_No;
 $City ;
 
-$bloodGroup = "B+";
+//$BloodGroup;
 $weight = "100";
 $remark = "Goodbye";
 
@@ -95,7 +95,7 @@ echo $navbar;
     </div>
     <div class="d-flex gap-1 justify-content-evenly">
         <div class="bg-white d-flex flex-column gap-1 p-3 border-radius-10">
-            <p> Blood Type: <?php echo $bloodGroup ?></p>
+            <p> Blood Type: <?php echo $BloodGroup ?></p>
             <p>Weight(Kg): <?php echo $weight ?> </p>
             <p>Chronic Diseases: <?php echo $remark ?></p>
         </div>

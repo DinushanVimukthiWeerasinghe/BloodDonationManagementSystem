@@ -13,6 +13,7 @@ use App\model\users\Organization;
 use App\model\users\Person;
 use App\model\users\Sponsor;
 use App\model\users\User;
+use App\model\Utils\Security;
 use Exception;
 
 class Application
@@ -158,10 +159,8 @@ class Application
     {
         $Role=$user->getRole();
         $ID = $user->getID();
-        $AuthCode = new OTPCode();
-//        print_r($user);
-//        exit();
-//        Role == 'Manager
+        $Email = $user->getEmail();
+
         if ($user->IsUserVerified()) {
             if ($Role === User::MANAGER) {
                 $this->user = Manager::findOne(['Manager_ID' => $ID]);
@@ -178,6 +177,7 @@ class Application
             } else if ($Role === User::HOSPITAL) {
                 $this->user = Hospital::findOne(['Hospital_ID' => $ID]);
             } else if ($Role === User::ORGANIZATION) {
+
                 $this->user = Organization::findOne(['Organization_ID' => $ID]);
             } else if ($Role === User::SPONSOR) {
                 $this->user = Sponsor::findOne(['Sponsor_ID' => $ID]);
@@ -189,18 +189,29 @@ class Application
             }
             $primaryKey = $user->primaryKey();
 
-            $primaryValue = $user->getID();
-            $this->session->set('user', ['UID' => $primaryValue, 'UserClass' => get_class($this->user)], 60);
-            $this->session->setFlash('success', 'Welcome Back ' . $user->getEmail());
-            $login = new LoggingHistory();
-            $login->setSessionID($this->session->get('user')->getSessionID());
-            $login->setUserID($primaryValue);
-            $login->setSessionEnd(date('Y-m-d H:i:s'));
-            $login->setSessionStart(date('Y-m-d H:i:s'));
-            if (!$login->save(['Session_End']))
-            {
-                return false;
+
+        }else{
+            if ($Role === User::ORGANIZATION){
+                $this->session->setFlash('success', 'Please Complete Your Registration! Before Login !');
+                Application::Redirect('/organization/register?uid='.urlencode(Security::Encrypt($ID)));
+                exit();
+            }elseif ($Role===User::DONOR){
+                $this->session->setFlash('success', 'Please Complete Your Registration! Before Login !');
+                Application::Redirect('/donor/register?uid='.urlencode(Security::Encrypt($ID)));
+                exit();
             }
+        }
+        $primaryValue = $user->getID();
+        $this->session->set('user', ['UID' => $primaryValue, 'UserClass' => get_class($this->user)], 60);
+        $this->session->setFlash('success', 'Welcome Back ' . $user->getEmail());
+        $login = new LoggingHistory();
+        $login->setSessionID($this->session->get('user')->getSessionID());
+        $login->setUserID($primaryValue);
+        $login->setSessionEnd(date('Y-m-d H:i:s'));
+        $login->setSessionStart(date('Y-m-d H:i:s'));
+        if (!$login->save(['Session_End']))
+        {
+            return false;
         }
         return true;
     }

@@ -2,7 +2,9 @@
 
 namespace App\model\Donations;
 
+use App\model\Campaigns\Campaign;
 use App\model\database\dbModel;
+use App\model\users\Donor;
 
 class Donation extends dbModel
 {
@@ -70,6 +72,24 @@ class Donation extends dbModel
     }
 
     /**
+     * @return float
+     */
+    public function getVolume(): float
+    {
+        return $this->Volume;
+    }
+
+    /**
+     * @param float $Volume
+     */
+    public function setVolume(float $Volume): void
+    {
+        $this->Volume = $Volume;
+    }
+
+
+
+    /**
      * @return string
      */
     public function getCampaignID(): string
@@ -109,6 +129,11 @@ class Donation extends dbModel
         return $this->End_At;
     }
 
+    public function getDonatedAt()
+    {
+        return $this->Start_At;
+    }
+
     /**
      * @param string $End_At
      */
@@ -118,10 +143,25 @@ class Donation extends dbModel
     }
 
     /**
-     * @return int
+     * @param bool $Readable
+     * @return int|string
      */
-    public function getStatus(): int
+    public function getStatus($Readable=false): int | string
     {
+        if ($Readable) {
+            switch ($this->Status) {
+                case self::STATUS_BLOOD_DONATION_PENDING:
+                    return 'Pending';
+                case self::STATUS_BLOOD_RETRIEVING:
+                    return 'Retrieving';
+                case self::STATUS_BLOOD_RETRIEVED:
+                    return 'Retrieved';
+                case self::STATUS_BLOOD_STORED:
+                    return 'Stored';
+                case self::STATUS_BLOOD_DONATION_ABORTED:
+                    return 'Aborted';
+            }
+        }
         return $this->Status;
     }
 
@@ -144,7 +184,7 @@ class Donation extends dbModel
             'Start_At' => 'Start At',
             'End_At' => 'End At',
             'Status' => 'Status',
-            'Officer_ID' => 'Officer ID'
+            'Officer_ID' => 'Officer ID',
         ];
     }
 
@@ -156,7 +196,7 @@ class Donation extends dbModel
             'Campaign_ID' => [self::RULE_REQUIRED],
             'Start_At' => [self::RULE_REQUIRED],
             'Status' => [self::RULE_REQUIRED],
-            'Officer_ID' => [self::RULE_REQUIRED]
+            'Officer_ID' => [self::RULE_REQUIRED],
         ];
     }
 
@@ -184,7 +224,36 @@ class Donation extends dbModel
             'Start_At',
             'End_At',
             'Status',
-            'Officer_ID'
+            'Officer_ID',
         ];
+    }
+
+    public function getBloodVolume()
+    {
+        /** @var $ApprovedDonation AcceptedDonations*/
+        if ($this->Status == self::STATUS_BLOOD_STORED) {
+            $ApprovedDonation = AcceptedDonations::findOne(['Donation_ID' => $this->Donation_ID]);
+            if ($ApprovedDonation) {
+                return $ApprovedDonation->getVolume();
+            }
+        }
+        return 0;
+    }
+
+    public function getCampaignName()
+    {
+        return Campaign::findOne(['Campaign_ID' => $this->Campaign_ID])->getCampaignName();
+    }
+
+    public function getBloodGroup()
+    {
+        /** @var $Donor Donor*/
+        if ($this->Status == self::STATUS_BLOOD_STORED) {
+            $Donor = Donor::findOne(['Donor_ID' => $this->Donor_ID]);
+            if ($Donor) {
+                return $Donor->getBloodGroup();
+            }
+        }
+        return 0;
     }
 }

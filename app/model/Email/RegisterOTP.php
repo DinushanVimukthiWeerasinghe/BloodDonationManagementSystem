@@ -114,8 +114,10 @@ class RegisterOTP extends \App\model\database\dbModel
         $this->No_Of_Attempts=0;
         $EmailClient = Application::$app->email;
         $EmailClient->setFrom('bdmsgroupcs46@gmail.com');
-//        $EmailClient->setTo($this->Email);
-        $EmailClient->setTo('stdinushan@gmail.com');
+        if (MODE===DEVELOPMENT)
+            $EmailClient->setTo(DEV_EMAIL);
+        else
+            $EmailClient->setTo($this->Email);
         $EmailClient->setBody($this->getBody());
         $EmailClient->setSubject('OTP');
 //        exit();

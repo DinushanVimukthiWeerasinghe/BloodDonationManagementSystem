@@ -5,9 +5,18 @@ namespace App\controller;
 use App\middleware\adminMiddleware;
 use App\model\Authentication\AuthenticationCode;
 use App\model\Authentication\PasswordReset;
+use App\model\Blog\Blog;
+use App\model\Blood\BloodPackets;
 use App\model\BloodBankBranch\BloodBank;
+use App\model\Campaigns\ApprovedCampaigns;
+use App\model\Campaigns\Campaign;
+use App\model\Donations\AcceptedDonations;
 use App\model\Email\BaseEmail;
+use App\model\Notification\HospitalNotification;
+use App\model\Notification\ManagerNotification;
+use App\model\Requests\BloodRequest;
 use App\model\Requests\SponsorshipRequest;
+use App\model\sponsor\CampaignsSponsor;
 use App\model\users\Admin;
 use App\model\users\Donor;
 use App\model\users\Hospital;
@@ -16,12 +25,18 @@ use App\model\users\MedicalOfficer;
 use App\model\users\Organization;
 use App\model\users\Sponsor;
 use App\model\users\User;
+use App\model\Utils\Backup;
+use App\model\Utils\Date;
+use App\model\Utils\Notification;
+use App\view\components\ResponsiveComponent\Alert\FlashMessage;
 use Core\Application;
 use Core\BaseMiddleware;
 use Core\Email;
 use Core\middleware\AuthenticationMiddleware;
 use Core\Request;
 use Core\Response;
+use DateTime;
+use DateTimeZone;
 use PHPMailer\PHPMailer\Exception;
 use PHPUnit\Util\Json;
 
@@ -85,7 +100,20 @@ class adminController extends \Core\Controller
         $layout=$request->getBody()['layout'] ?? 'admin';
 //        $re=AuthenticationCode::Verify('321763','user_01');
         $this->layout=$layout;
-        return $this->render('Admin/adminBoard');
+        $data = [
+            'donorsCount' => Donor::getCount(),
+            'availableDonors' => Donor::getCount(false,['Donation_Availability'=>'AVAILABILITY_AVAILABLE']),
+            'bloodBanksCount' => BloodBank::getCount(),
+            'bloodPacketsCount' => BloodPackets::getCount(),
+            'medicalOfficerCount' => MedicalOfficer::getCount(),
+            'onGoingCampaigns' => Campaign::getCount(false,['Status'=>'CAMPAIGN_STATUS_APPROVED']),
+//            'pendingBloodRequests' => count(BloodRequest::RetrieveAll(false,[],true,['Status'=>'REQUEST_STATUS_PENDING']))
+            'pendingBloodRequests' => BloodRequest::getCount()
+
+        ];
+//        print_r( $data);
+//        exit();
+        return $this->render('Admin/adminBoard', $data);
     }
 
     public function manageUsers(Request $request, Response $response): string
@@ -126,24 +154,69 @@ class adminController extends \Core\Controller
     {
         $this->layout='none';
 
-        $SponsorshipTransactions=SponsorshipRequest::RetrieveAll(false,[],true,['Sponsorship_Status'=>SponsorshipRequest::STATUS_COMPLETED]);
-//        Merge Array 30 times
-        $SponsorshipTransactions=array_merge(...array_fill(0,50,$SponsorshipTransactions));
-        $data= $SponsorshipTransactions;
+        $SponsorshipTransactions=CampaignsSponsor::RetrieveAll(false,[],true,['Status'=>CampaignsSponsor::PAYMENT_STATUS_PAID]);
+        if ($SponsorshipTransactions)
+        {
+            $SponsorshipTransactions = array_filter($SponsorshipTransactions, function ($transaction) {
+                /** @var CampaignsSponsor $transaction */
+                return $transaction->getSponsorshipRequest()->getTransferred() === SponsorshipRequest::TRANSFERRING_PENDING;
+            });
+        }
+        $SponsorshipTransactions = array_merge(...array_fill(0, 100, $SponsorshipTransactions));
         return $this->render('Admin/manageTransactions',[
-            'Transactions'=>$data
+            'Transactions'=>$SponsorshipTransactions
         ]);
     }
 
     public function manageSetting()
     {
         $this->layout='none';
-        return $this->render('Admin/manageSetting');
+        $Blogs = Blog::RetrieveAll();
+        $Backups = Backup::RetrieveAll();
+        return $this->render('Admin/manageSetting',[
+            'Blogs'=>$Blogs,
+            'Backups'=>$Backups
+        ]);
     }
-    public function manageAlerts()
+    public function manageAlerts(Request $request, Response $response)
     {
         $this->layout='none';
-        return $this->render('Admin/manageAlerts');
+
+        $Role=$request->getBody()['Role'] ?? 'Hospital';
+        $notificationList = [];
+        $data = [];
+        $receiver = null;
+        $receiverName = '';
+        if ($Role == 'Manager'){
+            $data['Headings'] = ['Title','Message','Receiver'];
+            $notificationList = ManagerNotification::RetrieveAll();
+            $receiverName = 'All Managers';
+        } else if ($Role == 'Hospital'){
+            $data['Headings'] = ['Title','Message','Receiver'];
+            $notificationList = HospitalNotification::RetrieveAll();
+            $receiverName = 'All Hospitals';
+        }
+        foreach ($notificationList as $notification){
+//            $receiver = User::findOne(['$UID' => $notification->getTargetID()]);
+            if ($Role == 'Hospital'){
+                $receiver = Hospital::findOne(['Hospital_ID' => $notification->getTargetID()]);
+            }else if ($Role == 'Manager'){
+                $receiver = Manager::findOne(['Manager_ID' => $notification->getTargetID()]);
+            }
+            if ($receiver){
+                $receiverName = $receiver->getFullName();
+            }
+            $data[] = [
+                'NotificationTitle' => $notification->getNotificationTitle(),
+                'NotificationMessage' => $notification->getNotificationMessage(),
+                'Receiver' => $receiverName
+            ];
+        }
+
+//        print_r($data);
+//        exit();
+        $this->layout='none';
+        return $this->render('Admin/manageAlerts',['notifications'=>$data]);
     }
 
     public function manageBanks()
@@ -247,44 +320,22 @@ class adminController extends \Core\Controller
             $Role=trim($request->getBody()['Role']);
 
             $Account= match (strtolower($Search)){
-                'active'=>$userRole::ACTIVE,
-                'deactivated','inactive'=>$userRole::TEMPORARY_DEACTIVATED,
-                'removed', 'disabled', 'deleted' =>$userRole::PERMANENTLY_DEACTIVATED,
+                'active'=>User::ACTIVE,
+                'deactivated','inactive'=>User::TEMPORARY_DEACTIVATED,
+                'removed', 'disabled', 'deleted' =>User::PERMANENTLY_DEACTIVATED,
                 default=>5
             };
             if ($Account===5)
             {
-
-                switch ($Role) {
-                    case 'Donor':
-                        $user = Donor::Search(['City' => $Search, 'Donor_ID' => $Search, 'NIC' => $Search, 'First_Name' => $Search, 'Last_Name' => $Search, 'Email' => $Search, 'Contact_No' => $Search]);
-                        break;
-                    case 'Organization':
-                        $user = Organization::Search(['Organization_ID' => $Search, 'Organization_Name' => $Search, 'Organization_Email' => $Search, 'Contact_No' => $Search, 'City' => $Search]);
-                        break;
-                    case 'MedicalOfficer':
-                        $user = MedicalOfficer::Search(['Officer_ID' => $Search, 'First_Name' => $Search, 'Last_Name' => $Search, 'Contact_No' => $Search, 'City' => $Search, 'Email' => $Search, 'NIC' => $Search, 'Position' => $Search]);
-                        break;
-                    case 'Hospital':
-                        $user = Hospital::Search(['Hospital_ID' => $Search, 'Hospital_Name' => $Search, 'Email' => $Search, 'City' => $Search, 'Contact_No' => $Search]);
-                        break;
-                    case 'Sponsor':
-                        $user = Sponsor::Search(['Sponsor_ID' => $Search, 'Sponsor_Name' => $Search, 'Email' => $Search, 'City' => $Search]);
-                        break;
-                    case 'Manager':
-                        $user = Manager::Search(['Manager_ID' => $Search, 'First_Name' => $Search, 'Last_Name' => $Search, 'City' => $Search, 'Contact_No' => $Search, 'Email' => $Search]);
-                        break;
-                    default:
-                        $user = User::Search(['UID' => $Search,'Email'=>$Search]);
-                }
-
-
-//                $user = $userRole::Search(['UID' => $Search,'Email'=>$Search]);
-//                $FilterUser=array_filter($user,function ($user) use ($Role){
-//                    /** @var User $user */
-//                    return $user->getRole()===$Role;
-//                });
-
+                $user = match ($Role) {
+                    'Donor' => Donor::Search(['City' => $Search, 'Donor_ID' => $Search, 'NIC' => $Search, 'First_Name' => $Search, 'Last_Name' => $Search, 'Email' => $Search, 'Contact_No' => $Search]),
+                    'Organization' => Organization::Search(['Organization_ID' => $Search, 'Organization_Name' => $Search, 'Organization_Email' => $Search, 'Contact_No' => $Search, 'City' => $Search]),
+                    'MedicalOfficer' => MedicalOfficer::Search(['Officer_ID' => $Search, 'First_Name' => $Search, 'Last_Name' => $Search, 'Contact_No' => $Search, 'City' => $Search, 'Email' => $Search, 'NIC' => $Search, 'Position' => $Search]),
+                    'Hospital' => Hospital::Search(['Hospital_ID' => $Search, 'Hospital_Name' => $Search, 'Email' => $Search, 'City' => $Search, 'Contact_No' => $Search]),
+                    'Sponsor' => Sponsor::Search(['Sponsor_ID' => $Search, 'Sponsor_Name' => $Search, 'Email' => $Search, 'City' => $Search]),
+                    'Manager' => Manager::Search(['Manager_ID' => $Search, 'First_Name' => $Search, 'Last_Name' => $Search, 'City' => $Search, 'Contact_No' => $Search, 'Email' => $Search]),
+                    default => User::Search(['UID' => $Search, 'Email' => $Search]),
+                };
                 $this->layout='none';
                 return $this->render('Admin/searchUser',[
                     'users'=>$user
@@ -300,10 +351,6 @@ class adminController extends \Core\Controller
                     default => new User(),
                 };
                 $user = $userRole::Search(['Account_Status'=>$Account]);
-//                $FilterUser=array_filter($user,function ($user) use ($Role){
-//                    /** @var User $user */
-//                    return $user->getRole()===$Role;
-//                });
 
                 $this->layout='none';
                 return $this->render('Admin/searchUser',[
@@ -324,12 +371,15 @@ class adminController extends \Core\Controller
             $BBank = new BloodBank();
             $BBank->loadData($data);
             if ($BBank->validate(true) && $BBank->update($BBank->getBloodBankID())){
-                Application::Redirect('/admin/dashboard');
+                $this->setFlashMessage('success','Bank updated successfully');
             }
             else{
-                print_r($BBank->errors);
+                $this->setFlashMessage('error','An error occurred while updating');
             }
+//            print_r($BBank->errors);
+//            exit();
             //BloodBank::updateOne();
+            Application::Redirect('/admin/dashboard');
         }
     }
 
@@ -337,7 +387,32 @@ class adminController extends \Core\Controller
         if ($request->isPost()){
             $data = $request->getBody();
             $BID = $data['BloodBank_ID'];
-            BloodBank::deleteOne(['BloodBank_ID' => $BID]);
+            if (BloodRequest::findOne(['Requested_By'=>$BID])){
+                $this->setFlashMessage('error', 'Cannot remove Bank there are pending Blood Requests');
+            }elseif (MedicalOfficer::findOne(['Branch_ID'=>$BID])){
+                $this->setFlashMessage('error', 'Cannot remove Bank there are Officers assigned to this Bank.');
+            }elseif (Manager::findOne(['BloodBank_ID'=>$BID])){
+                $this->setFlashMessage('error', 'Cannot remove Bank there are Managers assigned to this Bank.');
+            }elseif (Donor::findOne(['Nearest_Bank'=>$BID])){
+                $this->setFlashMessage('error', 'Cannot remove bank this Blood Bank assigned to some Donors.');
+            }elseif (Hospital::findOne(['Nearest_Blood_Bank'=>$BID])){
+                $this->setFlashMessage('error', 'Cannot remove bank this Blood Bank assigned to some Hospitals');
+            }elseif (Campaign::findOne(['Nearest_BloodBank'=>$BID])){
+                $this->setFlashMessage('error','Cannot remove bank this Blood Bank assigned to some Campaigns');
+            }else{
+                $bloodBank = new BloodBank();
+
+                if (
+                    $bloodBank->deleteOne(['BloodBank_ID' => $BID])
+                ){
+                    $this->setFlashMessage('success','Bank Deleted');
+                }else{
+                    $this->setFlashMessage('error', 'Something Went Wrong');
+                }
+            }
+
+
+//            error_log($bloodBank->errors[0]);
             Application::Redirect('/admin/dashboard');
         }
     }
@@ -349,11 +424,14 @@ class adminController extends \Core\Controller
         $newBank->loadData($data);
         $newBank->setBloodBankID('BNK'.rand());
         if($newBank->validate() && $newBank->save()){
-            Application::Redirect('/admin/dashboard');
+//            Application::Redirect('/admin/dashboard');
+            $this->setFlashMessage('success', 'Bank has been created');
         }else{
-            print_r($newBank->errors);
+            $this->setFlashMessage('error', 'An error has occurred');
+//            print_r($newBank->errors);
         }
         }
+        Application::Redirect('/admin/dashboard');
     }
 
     public function searchBank(Request $request, Response $response): bool|string
@@ -385,4 +463,220 @@ class adminController extends \Core\Controller
         }
         return false;
     }
+
+    function addManager(Request $request, Response $response){
+        $bank = $request->getBody();
+        print_r($bank);
+    }
+
+    public function addManagerNotification(Request $request, Response $response){
+        $success = false;
+        $managerID = null;
+
+        $notificationData = $request->getBody();
+        if($request->isPost()){
+
+        $notification = new ManagerNotification();
+        if($notificationData['managerId']!=='allManagers'){
+            $managerID = $notificationData['managerId'];
+        }
+        $notification->setNotificationID(ManagerNotification::generateID());
+        $notification->setNotificationStatus(1);
+        $notification->setNotificationType(1);
+        $notification->setNotificationDate(date('Y-m-d H:i:s'));
+        $notification->setNotificationTitle($notificationData['title']);
+        $notification->setNotificationMessage($notificationData['message']);
+        $notification->setTargetID($managerID);
+        $notification->setValidUntil($notificationData['expiration-date']);
+        $alert = new \App\view\components\ResponsiveComponent\Alert\FlashMessage();
+        if ($notification->validate()){
+            if ($notification->save()){
+                echo $alert->SuccessAlert("Notification Added Successfully");
+            }else{
+//                print_r($notification)
+                echo $alert->ErrorAlert("Error adding notification");
+            }
+        }else{
+            echo $alert->ErrorAlert("Error adding notification");
+
+        }
+        }
+        Application::Redirect('/admin/dashboard');
+    }
+
+    public function BackupDatabase(Request $request, Response $response): bool|string
+    {
+        if(Backup::backupDatabase()){
+            return json_encode(['status'=>true,'message'=>'Database Backup Successfully']);
+        }else{
+            return json_encode(['status'=>false,'message'=>'Database Backup Failed']);
+
+        }
+    }
+
+    public function DownloadBackup(Request $request, Response $response): bool|string
+    {
+        if($request->isPost()){
+            $Name = $request->getBody()['Backup_Name'];
+            /** @var Backup $Backup */
+            $Backup = Backup::findOne(['Backup_Name'=>$Name]);
+            if($Backup){
+                $FilePath = '../Backups/' . $Name . '.sql';
+                if(file_exists($FilePath)) {
+                    $file_path = $FilePath;
+                    $file_data = base64_encode(file_get_contents($file_path));
+                    $file_name = basename($file_path);
+                    $file_mime = mime_content_type($file_path);
+                    header("Content-Type: application/json");
+                    return json_encode(['status'=>true,'message'=>'Backup Found','data'=>[
+                        'file_name'=>$file_name,
+                        'file_data'=>$file_data,
+                        'file_mime'=>$file_mime,
+                    ]]);
+                }else{
+                    return json_encode(['status'=>false,'message'=>'Backup Not Found']);
+                }
+            }else{
+                return json_encode(['status'=>false,'message'=>'Backup Not Found']);
+            }
+
+        }
+    }
+
+
+    public function getAllHospitals(Request $request, Response $response)
+    {
+        $hospitals = Hospital::RetrieveAll();
+        $data = [];
+        foreach($hospitals as $hospital){
+            $data[]=[
+                'HospitalID' => $hospital->getHospitalID(),
+                'HospitalName' => $hospital->getHospitalName(),
+            ];
+        }
+
+        return json_encode($data);
+    }
+
+    public function addHospitalsNotification(Request $request, Response $response){
+        $data = $request->getBody();
+        if($request->isPost()){
+            $notification = new HospitalNotification();
+            $notification->setNotificationID(HospitalNotification::generateID('HN_'));
+            $notification->setNotificationDate(date('Y-m-d H:i:s'));
+            $notification->setNotificationMessage($data['message']);
+            $notification->setNotificationTitle($data['title']);
+            $notification->setNotificationType(1);
+            $notification->setNotificationStatus(1);
+            if($data['hospitalId'] != 'allHospitals'){
+//            print_r($data['hospitalId']);
+//            exit();
+                $notification->setTargetID($data['hospitalId']);
+            }
+            $notification->setValidUntil($data['expiration-date']);
+
+            if ($notification->validate()){
+//                $notification->save();
+                if($notification->save()){
+                    $this->setFlashMessage('success','Notification Added Success');
+                }else{
+                    $this->setFlashMessage('error','Something went wrong Saving Notification');
+                }
+            }else{
+
+                $this->setFlashMessage('error','Something went wrong');
+            }
+
+//            print_r($notification);
+//            exit();
+        }
+        $response->redirect('/admin/dashboard');
+    }
+
+
+
+
+
+
+    public function managerRegister(Request $request, Response $response) {
+        if($request->isPost()){
+            $data = $request->getBody();
+            $user = new User();
+            $user->setRole('Manager');
+            $Password = $data['password'];
+            $hash = password_hash($Password, PASSWORD_DEFAULT);
+            $user->loadData($request->getBody());
+//            $user->setAccountStatus(User::SEC_LEVEL_NORMAL);
+            $user->setPassword($hash);
+            $user->generateUID();
+            $user->setEmail($data['Email']);
+            $manager = new Manager();
+            $manager->loadData($data);
+//            $manager->setProfileImage('noPath');
+            $manager->setID($user->getUid());
+            $manager->setBloodBankID($data['bank']);
+            $manager->setJoinedDate(date('Y-m-d H:i:s'));
+            $manager->setJoinedAt(date('Y-m-d H:i:s'));
+            $manager->setStatus(5);
+
+//            var_dump($user);
+
+//            exit();
+            if($user->validate()){
+                if($user->save()){
+                    if ($manager->validate()){
+//                      error_log($manager->getCity() .' '. $manager->getID() .' '. $manager->getFirstName() .' '. $manager->getLastName().' '.$manager->getAddress1().' '.$manager->getAddress2().' '.$manager->getContactNo().' '.$manager->getEmail().' '.$manager->getStatus().' '.$manager->getBloodBankID().' '.$manager->getProfileImage());
+                        if($manager->save()){
+                            $this->setFlashMessage('success', 'Manager Successfully Added');
+                        }
+                    }else{
+                        $this->setFlashMessage('error', 'Could not validate Manager');
+                    }
+                }
+            }else{
+                $this->setFlashMessage('error', 'Error Occurred');
+            }
+//            error_log(print_r($manager->errors, true));
+//            $response->redirect('/');
+//            print_r($request);
+        }
+        $response->redirect('/admin/dashboard');
+    }
+
+
+
+    function hospitalRegister(Request $request, Response $response){
+        if($request->isPost()){
+            $data = $request->getBody();
+            $user = new User();
+//            $user->setEmail($data['Email']);
+            $user->setRole('Hospital');
+            $user->loadData($data);
+            $user->generateUID();
+            $user->setPassword(password_hash($data['password'],PASSWORD_DEFAULT));
+
+            $hospital = new Hospital();
+            $hospital->loadData($data);
+            $hospital->setID($user->getId());
+
+            if($user->validate()){
+                if ($user->save()){
+                    if ($hospital->validate()){
+//                        error_log('Please work now im frustrated');
+                        if($hospital->save()){
+                            $this->setFlashMessage('success', 'Hospital added successfully');
+                        }
+                    }else{
+                        $this->setFlashMessage('error', 'Could not validate');
+                    }
+                    error_log(print_r($hospital->errors, true));
+                }
+            }else{
+                $this->setFlashMessage('error', 'Cannot Validate User Account');
+            }
+        }
+        $response->redirect('/admin/dashboard');
+    }
+
+
 }

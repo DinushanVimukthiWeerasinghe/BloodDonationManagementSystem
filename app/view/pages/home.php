@@ -1,7 +1,10 @@
 
 <div class="dark-bg"></div>
 <?php
+/** @var $Blogs Blog[]*/
 
+use App\model\Blog\Blog;
+use App\view\components\ResponsiveComponent\Alert\FlashMessage;
 use App\view\components\ResponsiveComponent\NavbarComponent\AuthNavbar;
 use App\view\components\ResponsiveComponent\NavbarComponent\Navbar;
 
@@ -9,11 +12,17 @@ $navbar= new Navbar([
     'Home'=>'/home',
     'Services'=>'#service-panel',
     'Contact'=>'#contact-us-panel',
-    'Register'=>'/register'
+    'Login'=>'/login'
 ],'#','/public/images/icons/user.png','');
 echo $navbar;
-echo AuthNavbar::getNavbarJS();
+//echo AuthNavbar::getNavbarJS();
+FlashMessage::RenderFlashMessages();
 ?>
+
+<style>
+    
+</style>
+
 
 <div id="home">
     <section id="welcome-panel" class="panel">
@@ -86,146 +95,102 @@ echo AuthNavbar::getNavbarJS();
             </div>
         </div>
     </section>
-    <section id="donation-report" class="panel">
-        <div class="sub-panel d-flex-row">
-            <div class="intro" id="intro">
-                <div id="caption">
-                    <div class="tagline">Blood Donation Statistics</div>
+    <?php
+    $i=5;
+    if (!empty($Blogs)):
+        foreach ($Blogs as $blog):
+    ?>
+            <section id="blog-<?=$blog->getBlogID()?>" class="panel">
+                <div class="sub-panel d-flex-row">
+                    <div class="intro" style="flex-direction: <?= $i%2===1 ? 'row-reverse':'row' ?>">
+                        <div class="desc-image">
+                            <img src="<?=$blog->getBlogImage()?>" width="600px" alt="">
+                        </div>
+                        <div id="caption">
+                            <div class="tagline"><?=$blog->getBlogTitle()?></div>
+                            <span class="desc">
+                        <?=$blog->getBlogContent()?>
+                    </span>
+                        </div>
+                    </div>
                 </div>
-                <div class="chart-panel">
-                        <canvas id="myChart"></canvas>
-                        <canvas id="myCharts"></canvas>
-                </div>
-
-                <script src="/public/scripts/chartjs/chartjs.js"></script>
-
-                <script>
-                    const xValues = ["Colombo", "Gampaha", "Galle", "Kandy", "Other"];
-                    const yValues = [550, 490, 440, 240, 150];
-                    const barColors = [
-                        "#b91d47",
-                        "#00aba9",
-                        "#2b5797",
-                        "#e8c3b9",
-                        "#1e7145"
-                    ];
-
-
-                    new Chart("myChart", {
-                        type: "pie",
-                        data: {
-                            labels: xValues,
-                            datasets: [{
-                                backgroundColor: barColors,
-                                data: yValues,
-                            }],
-                        },
-                        options: {
-                            plugins: {
-                                title: {
-                                    display: true,
-                                    text: 'Blood Donation By District',
-                                    padding: {
-                                        top: 10,
-                                        bottom: 30
-                                    },
-                                    font: {
-                                        size: 20
-                                    },
-                                    position: 'bottom'
-                                }
-                            }
-                        }
-                    });
-
-                    const xfValues = [2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021];
-
-                    new Chart("myCharts", {
-                        type: "line",
-                        data: {
-                            labels: xfValues,
-                            datasets: [{
-                                data: [1200,1400,1800,2000,2800,2900,3200,2800,4500,6000],
-                                borderColor: "red",
-                                fill: false,
-                                label: "Blood Requirement"
-                            }, {
-                                data: [400,550,750,1000,1200,1600,2000,2600,2400,4800],
-                                borderColor: "green",
-                                fill: false,
-                                label: "Blood Availability"
-                            }]
-                        },
-                        options: {
-                            legend: {display: false},
-                            plugins: {
-                                title: {
-                                    display: true,
-                                    text: 'Blood Requirement & Availability',
-                                    padding: {
-                                        top: 10,
-                                        bottom: 30
-                                    },
-                                    font: {
-                                        size: 20
-                                    },
-                                    position: 'bottom'
-                                }
-                            }
-                        }
-                    });
-                </script>
-<!--                <div class="desc-image">-->
-<!--                    <img src="/public/images/blood-cells.jpg" width="600px" alt="">-->
-<!--                </div>-->
-            </div>
-        </div>
-    </section>
+            </section>
+    <?php
+            $i++;
+        endforeach;
+    endif;
+    ?>
 
     <section id="service-panel" class="panel">
         <div class="sub-panel d-flex-row">
             <div class="d-flex flex-column align-items-center w-100 justify-content-center gap-1">
-                    <div class="text-xl font-bold p-3 bg-white border-radius-10">Our Major Services</div>
-                    <div class="d-flex flex-wrap align-items-center justify-content-center text-dark">
-                        <div class="card">
-                            <div class="card-header flex-column">
-                                <img src="/public/images/realtime.png" alt="" width="200px">
-                                <div class="text-xl">Donor Management</div>
+                    <div class="text-xl font-bold p-1 bg-white border-radius-10">OUR SERVICES</div>
+                    <div class="d-flex flex-wrap align-items-center gap-1 justify-content-center text-dark">
+                        <div class="d-flex justify-content-around w-70">
+                            <div class="card relative flex-center" style="background: url('/public/images/BloodDonorManagement.jpg');background-size: cover;height: 330px;background-clip: content-box">
+                                <div class="absolute font-extraBold text-xl w-95 h-95 d-flex align-items-center justify-content-end text-white flex-column border-radius-10" style="background: rgba(0,0,0,0.3)">
+                                    <div class="text-4xl ">Donor</div>
+                                    <div class="text-3xl mb-2">Management</div>
+                                </div>
+                            </div>
+                            <div class="card relative flex-center" style="background: url('/public/images/BloodDonorManagement.jpg');background-size: cover;height: 330px;background-clip: content-box">
+                                <div class="absolute font-extraBold text-xl w-95 h-95 d-flex align-items-center justify-content-end text-white flex-column border-radius-10" style="background: rgba(0,0,0,0.3)">
+                                    <div class="text-4xl ">Donor</div>
+                                    <div class="text-3xl mb-2">Management</div>
+                                </div>
+                            </div>
+                            <div class="card relative flex-center" style="background: url('/public/images/BloodDonorManagement.jpg');background-size: cover;height: 330px;background-clip: content-box">
+                            <div class="absolute font-extraBold text-xl w-95 h-95 d-flex align-items-center justify-content-end text-white flex-column border-radius-10" style="background: rgba(0,0,0,0.3)">
+                                <div class="text-4xl ">Donor</div>
+                                <div class="text-3xl mb-2">Management</div>
                             </div>
                         </div>
-                        <div class="card">
-                            <div class="card-header flex-column">
-                                    <img src="/public/images/24hour.png" alt="" width="200px">
-                                <div class="text-xl">Blood transfusion management</div>
+                        </div>
+                        <div class="d-flex justify-content-around w-70">
+                            <div class="card relative flex-center" style="background: url('/public/images/BloodDonorManagement.jpg');background-size: cover;height: 330px;background-clip: content-box">
+                                <div class="absolute font-extraBold text-xl w-95 h-95 d-flex align-items-center justify-content-end text-white flex-column border-radius-10" style="background: rgba(0,0,0,0.3)">
+                                    <div class="text-4xl ">Donor</div>
+                                    <div class="text-3xl mb-2">Management</div>
+                                </div>
+                            </div>
+                            <div class="card relative flex-center" style="background: url('/public/images/BloodDonorManagement.jpg');background-size: cover;height: 330px;background-clip: content-box">
+                                <div class="absolute font-extraBold text-xl w-95 h-95 d-flex align-items-center justify-content-end text-white flex-column border-radius-10" style="background: rgba(0,0,0,0.3)">
+                                    <div class="text-4xl ">Donor</div>
+                                    <div class="text-3xl mb-2">Management</div>
+                                </div>
+                            </div>
+                            <div class="card relative flex-center" style="background: url('/public/images/BloodDonorManagement.jpg');background-size: cover;height: 330px;background-clip: content-box">
+                            <div class="absolute font-extraBold text-xl w-95 h-95 d-flex align-items-center justify-content-end text-white flex-column border-radius-10" style="background: rgba(0,0,0,0.3)">
+                                <div class="text-4xl ">Donor</div>
+                                <div class="text-3xl mb-2">Management</div>
                             </div>
                         </div>
-                        <div class="card">
-                            <div class="card-header flex-column">
-                                    <img src="/public/images/24hour.png" alt="" width="200px">
-                                <div class="text-xl">Reporting and analytics</div>
-                            </div>
-                        </div>
-                        <div class="card">
-                            <div class="card-header flex-column">
-                                    <img src="/public/images/24hour.png" alt="" width="200px">
-                                <div class="text-xl">Mobile and web access</div>
-                            </div>
-                        </div>
-                        <div class="card">
-                            <div class="card-header flex-column">
-                                    <img src="/public/images/24hour.png" alt="" width="200px">
-                                <div class="text-xl">Communication and notification</div>
-                            </div>
-                        </div>
-                        <div class="card">
-                            <div class="card-header flex-column">
-                                    <img src="/public/images/24hour.png" alt="" width="200px">
-                                <div class="text-xl">Compliance and regulatory support</div>
-                            </div>
                         </div>
 
                     </div>
                 </div>
+        </div>
+    </section>
+    <section id="sponsor-panel" class="panel">
+        <div class="sub-panel d-flex-row" style="flex-direction: column !important;justify-content: flex-start">
+            <div class="d-flex  relative flex-column align-items-center w-100 justify-content-start gap-1">
+                <div class="font-bold text-xl bg-white px-2 py-0-5 border-radius-10 ">
+                    Help us to help others
+                </div>
+                <div class="d-flex">
+                    <div class="absolute left-0 cursor bg-dark border-radius-50" id="prev-nav" style="top: 40%;z-index: 9;" onclick="PreviousCampaign()">
+                        <i class="fa-solid text-white fa-circle-left" style="font-size: 5rem;z-index: 9;left: -100px;"></i>
+                    </div>
+                    <div class="d-flex gap-0-5 justify-content-center" id="campaigns-container">
+
+                    </div>
+
+                    <div class="absolute right-0 cursor bg-dark border-radius-50" id="next-nav" style="top: 40%;z-index: 9;" onclick="NextCampaign()">
+                        <i class="fa-solid text-white fa-circle-right" style="font-size: 5rem;z-index: 9;right: -100px;"></i>
+                    </div>
+
+                </div>
+            </div>
         </div>
     </section>
     <section id="contact-us-panel" class="panel">
@@ -251,6 +216,217 @@ echo AuthNavbar::getNavbarJS();
             </div>
         </div>
     </section>
-
 </div>
+
+<script>
+    const Campaigns = <?=json_encode($campaigns)?>;
+    let index = 0;
+    let count = 4;
+    const Card = (Campaign,i)=>{
+        console.log(Campaign);
+        const {name, location, amount,id} = Campaign;
+        return `
+            <div class="card d-flex gap-0-5" style="height: 65vh;justify-content: normal">
+                <div class="" style="height: 40vh;">
+                    <div id="map-${i}" class="border-radius-10" style="height: 100%; width: 100%;"></div>
+                </div>
+                        <div class="card-header">
+                            <div class="text-xl font-bold">
+                                ${name}
+                            </div>
+                        </div>
+                        <div class="card-body d-flex flex-column gap-1">
+                            <div class="d-flex text-xl text-center">
+                                    Sri Piyarathana Maha Vidyalaya, Padukka
+                            </div>
+                            <div class="text-center font-bold text-2xl">
+                                    LKR 100,000
+                            </div>
+                            <div class="d-flex justify-content-center">
+                                <button class="btn btn-primary" onclick="Donate('${id}')">Donate</button>
+                            </div>
+                   </div>
+            </div>
+        `
+    }
+
+    const Donate = (campaignID)=>{
+        const FullAmount = 100000;
+        OpenDialogBox({
+            id: "donate-dialog",
+            title: "Donate",
+            titleClass:"bg-dark text-white text-center py-1 px-2",
+            content:`
+                <div class="d-flex w-100 flex-column gap-1 flex-center text-center">
+                    <div class="text-xl font-bold">
+                        Do you want to donate full amount?
+                    </div>
+                    <div class="d-flex flex-center gap-1">
+                        <input type="radio" onclick="Visible(${FullAmount})" id="full-amount" checked name="Amount" class="form-control p-1" value="1" placeholder="Yes">
+                        <label for="full-amount">
+                            Yes
+                        </label>
+                        <input type="radio" id="custom-amount" onclick="Visible(${FullAmount})" class="form-control" name="Amount" value="2" placeholder="No">
+                        <label for="custom-amount">
+                            No
+                        </label>
+                    </div>
+                    <div class="d-flex flex-center gap-1">
+                        <label for="full-amount">
+                            Email
+                        </label>
+                        <input type="email" class="form-control" id="Email" placeholder="Enter your Email">
+                    </div>
+                    <div class="d-flex flex-center gap-1 mt-1">
+                        <label for="full-amount">
+                            Amount
+                        </label>
+                        <input type="number" disabled class="form-control" id="CustomAmount" placeholder="${FullAmount}">
+                    </div>
+                </div>
+            `,
+            successBtnText: "Sponsor",
+            successBtnAction: ()=>{
+                const Amount = document.getElementsByName("Amount");
+                const Email = document.getElementById("Email");
+                const CustomAmount = document.getElementById("CustomAmount");
+                let amount = 0;
+                if(Amount[0].checked){
+                    amount = parseInt(FullAmount);
+                }else{
+                    amount = parseInt(CustomAmount.value);
+                }
+                if(amount > 0) {
+                    const id = campaignID;
+                    const url = "/donate"
+                    const formData = new FormData();
+                    formData.append("CampaignID", id);
+                    formData.append("amount", amount.toString());
+                    formData.append("email", Email.value);
+
+
+                    fetch(url,{
+                        method: "POST",
+                        body: formData
+                    }).then(res=>res.json())
+                        .then(data=>{
+                            if (data.status){
+                                ShowToast({
+                                    title: "Success",
+                                    message: "Donation Successful",
+                                    type: "success"
+                                });
+                                setTimeout(()=>{
+                                    window.location.href = data.redirect;
+                                },1000);
+                            }else{
+                                ShowToast({
+                                    title: "Error",
+                                    message: data.message,
+                                    type: "error"
+                                });
+                            }
+                        })
+                }
+
+            }
+        })
+    }
+
+    const Visible = (fullAmount) =>{
+        const Amount = document.getElementsByName("Amount");
+        const CustomAmount = document.getElementById("CustomAmount");
+        if(Amount[0].checked){
+            CustomAmount.placeholder = `${fullAmount}`;
+            CustomAmount.disabled = true;
+        }else{
+            CustomAmount.placeholder = "Enter Amount";
+            CustomAmount.disabled = false;
+        }
+    }
+    const RenderMap = (Campaign,i)=>{
+        const {latitude, longitude} = Campaign;
+        let map = new google.maps.Map(document.getElementById(`map-${i}`), {
+            center: { lat: parseFloat(latitude
+                ), lng: parseFloat(longitude) },
+            zoom: 8,
+        });
+        console.log(map)
+        let marker = new google.maps.Marker({
+            position: { lat: parseFloat(latitude
+                ), lng: parseFloat(longitude) },
+            map: map,
+        });
+    }
+
+    const NextCampaign = ()=> {
+        if (Object.keys(Campaigns).length <= count) return;
+        const CampaignsContainer = document.getElementById("campaigns-container");
+        index += count;
+        if (index > Object.keys(Campaigns).length - count) index = Object.keys(Campaigns).length - count;
+        CampaignsContainer.innerHTML = "";
+        for (let i = index; i < index + count; i++) {
+            CampaignsContainer.innerHTML += Card(Campaigns[i],i);
+        }
+        for (let i = index; i < index + count; i++) {
+            RenderMap(Campaigns[i],i);
+        }
+    }
+    const PreviousCampaign = ()=>
+    {
+        if (Object.keys(Campaigns).length <= count) return;
+        const CampaignsContainer = document.getElementById("campaigns-container");
+        index -= count;
+        if (index < 0) index = 0;
+        CampaignsContainer.innerHTML = "";
+        for (let i = index; i < index + count; i++) {
+            CampaignsContainer.innerHTML += Card(Campaigns[i],i);
+        }
+        for (let i = index; i < index + count; i++) {
+            RenderMap(Campaigns[i],i);
+        }
+    }
+    const LoadCampaigns = ()=>{
+        const CampaignsContainer = document.getElementById("campaigns-container");
+        const NoOfCampaigns = Object.keys(Campaigns).length;
+        if (NoOfCampaigns === 0){
+            CampaignsContainer.innerHTML = `
+                <div class="card d-flex gap-0-5" style="height: 50vh;justify-content: normal">
+                <div class="border-radius-10" style="height: 40vh; background: url('/public/images/Blood-Donation-Campaign.jpg');background-size: cover;background-position-x: 90%">
+                </div>
+                        <div class="card-header">
+                            <div class="text-xl font-bold">
+                                No Campaigns Available
+                            </div>
+                        </div>
+
+                   </div>
+            </div>
+            `
+            const NextBtn = document.getElementById("next-nav");
+            const PreviousBtn = document.getElementById("prev-nav");
+            NextBtn.disabled = true;
+            PreviousBtn.disabled = true;
+            NextBtn.addEventListener("click",()=>{});
+            PreviousBtn.addEventListener("click",()=>{});
+            NextBtn.classList.add("none");
+            PreviousBtn.classList.add("none");
+        }else {
+            for (let i = index; i < index + count; i++) {
+                CampaignsContainer.innerHTML += Card(Campaigns[i], i);
+            }
+            for (let i = index; i < index + count; i++) {
+                RenderMap(Campaigns[i], i);
+            }
+        }
+    }
+    window.addEventListener("load", ()=>{
+        LoadCampaigns();
+    })
+
+
+
+
+</script>
+
 

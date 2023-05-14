@@ -27,7 +27,7 @@ $User = Application::$app->getUser();
 
     <!--    <link rel="stylesheet" href="/public/css/components/navbar/navbar.css">-->
     <link rel="stylesheet" href="/public/css/framework/utils.css">
-<!--    <link rel="stylesheet" href="/public/css/components/cardPane/index.css">-->
+    <!--    <link rel="stylesheet" href="/public/css/components/cardPane/index.css">-->
     <script src="/public/scripts/index.js"></script>
 </head>
 <body>
@@ -136,16 +136,16 @@ $User = Application::$app->getUser();
 
                                     <div>Bank Details</div>
                                     <?php
-                                        if ($User->getBankAccount()):
-                                    ?>
+            if ($User->getBankAccount()):
+            ?>
                                     <div class="d-flex flex-center cursor" onclick="UpdateBankDetails()"><img src="/public/icons/edit.png" class="invert-100" width=20></div>
                                     <?php
-                                        endif;
-                                    ?>
+            endif;
+            ?>
                                 </div>
                                     <?php
-                                        if ($User->getBankAccount()):
-                                    ?>
+            if ($User->getBankAccount()):
+            ?>
                                     <div class="d-flex w-100 align-items-center justify-content-evenly gap-1">
                                          <div class="d-flex w-50 justify-content-center">
                                             <div class="d-flex font-bold">Bank Name : </div>
@@ -159,7 +159,7 @@ $User = Application::$app->getUser();
                                     <div class="d-flex w-100 align-items-center justify-content-evenly gap-1">
                                          <div class="d-flex w-50 justify-content-center">
                                             <div class="d-flex font-bold">Account Number : </div>
-                                            <div class="d-flex "> <?= $User->getBankAccountNo() ?></div>
+                                            <div class="d-flex "> <?= \App\model\Utils\Security::Decrypt($User->getBankAccountNo()) ?></div>
                                         </div>
                                          <div class="d-flex w-50 justify-content-center">
                                             <div class="d-flex font-bold">Account Holder : </div>
@@ -168,13 +168,13 @@ $User = Application::$app->getUser();
                                     </div>
 
                                     <?php
-                                        else:
-                                    ?>
+            else:
+            ?>
                                     <div class="d-flex">No Bank Details Found</div>
                                     <div class="d-flex"><button class="btn btn-outline-success" onclick="AddBankDetails()">Add Bank Details</button></div>
                                     <?php
-                                        endif;
-                                    ?>
+            endif;
+            ?>
                             </div>
                        </div>
                 </div>
@@ -191,18 +191,18 @@ $User = Application::$app->getUser();
     //    let BranchName ="";
     //    let AccountNo ="";
     //    let AccountName ="";
-<!--        --><?php
-//            if ($User->getBankAccount()):
-//        ?>
-//        if (edit){
-//            BankName = "value='<?php //= $User->getBankName() ?>//'";
-//            BranchName = "value='<?php //= $User->getBranchName() ?>//'";
-//            AccountNo = "value='<?php //= $User->getBankAccountNo() ?>//'";
-//            AccountName = "value='<?php //= $User->getBankAccountName() ?>//'";
-//        }
-//        <?php
-//            endif;
-//        ?>
+    <!--        --><?php
+    //            if ($User->getBankAccount()):
+    //        ?>
+    //        if (edit){
+    //            BankName = "value='<?php //= $User->getBankName() ?>//'";
+    //            BranchName = "value='<?php //= $User->getBranchName() ?>//'";
+    //            AccountNo = "value='<?php //= $User->getBankAccountNo() ?>//'";
+    //            AccountName = "value='<?php //= $User->getBankAccountName() ?>//'";
+    //        }
+    //        <?php
+    //            endif;
+    //        ?>
     //    OpenDialogBox({
     //        id: 'addBankDetails',
     //        title: (edit ? 'Edit' : 'Add') + ' Bank Details',
@@ -282,12 +282,12 @@ $User = Application::$app->getUser();
     //}
     const AddBankDetails = ()=>{
 
-            OpenDialogBox({
-                id: 'addBankDetails',
-                title: 'Add Bank Details',
-                titleClass: 'bg-dark text-white py-0-5 px-1 text-center',
-                popupOrder: 2,
-                content: `
+        OpenDialogBox({
+            id: 'addBankDetails',
+            title: 'Add Bank Details',
+            titleClass: 'bg-dark text-white py-0-5 px-1 text-center',
+            popupOrder: 2,
+            content: `
                     <div class="d-flex flex-column gap-1 w-100">
                          <div id="addBankDetails" class="d-flex flex-column w-100">
                                 <div class="d-flex flex-column flex-center gap-1 max-h-80vh w-100">
@@ -311,76 +311,76 @@ $User = Application::$app->getUser();
                            </div>
                     </div>
                 `,
-                showSuccessButton: true,
-                successBtnText: 'Add Bank Details' ,
-                successBtnAction: () => {
-                    const bankName = document.getElementById('bankName').value.trim();
-                    const branchName = document.getElementById('branchName').value.trim();
-                    const bankAccountNo = document.getElementById('bankAccountNo').value.trim();
-                    const bankAccountName = document.getElementById('bankAccountName').value.trim();
+            showSuccessButton: true,
+            successBtnText: 'Add Bank Details' ,
+            successBtnAction: () => {
+                const bankName = document.getElementById('bankName').value.trim();
+                const branchName = document.getElementById('branchName').value.trim();
+                const bankAccountNo = document.getElementById('bankAccountNo').value.trim();
+                const bankAccountName = document.getElementById('bankAccountName').value.trim();
 
                 //     Validate Form
-                    if (bankName === '' || branchName === '' || bankAccountNo === '' || bankAccountName === ''){
-                        ShowToast({
-                            title: 'Error',
-                            message: 'Please Fill All The Fields',
-                            type: 'error'
-                        })
-                        return;
-                    }
-                    if(isNaN(bankAccountNo)){
-                        ShowToast({
-                            type : 'error',
-                            message : 'Bank Account Number must contains Numbers Only.',
-                        });
-                        return;
-                    }
-                    if(bankAccountNo.length < 8){
-                        ShowToast({
-                           message : 'Bank Account Number must contains at least 8 characters',
-                           type : 'error',
-                        });
-                        return;
-                    }
-                    const url = '/organization/addBankDetails';
-                    const formData = new FormData();
-                    formData.append('bankName',bankName);
-                    formData.append('branchName',branchName);
-                    formData.append('bankAccountNo',bankAccountNo);
-                    formData.append('bankAccountName',bankAccountName);
-                    fetch(url, {
-                        method: 'POST',
-                        body: formData
-                    }).then(response => response.json())
-                        .then(data => {
-                            if (data.status){
-                                ShowToast({
-                                    title: 'Success',
-                                    message: 'Bank Details Added Successfully',
-                                    type: 'success'
-                                });
-                                CloseDialogBox('addBankDetails');
-                                CloseDialogBox('profile');
-                                window.location.reload();
-                            }else{
-                                ShowToast({
-                                    title: 'Error',
-                                    message: data.message,
-                                    type: 'error'
-                                });
-                            }
-                        })
+                if (bankName === '' || branchName === '' || bankAccountNo === '' || bankAccountName === ''){
+                    ShowToast({
+                        title: 'Error',
+                        message: 'Please Fill All The Fields',
+                        type: 'error'
+                    })
+                    return;
                 }
-            })
-        }
+                if(isNaN(bankAccountNo)){
+                    ShowToast({
+                        type : 'error',
+                        message : 'Bank Account Number must contains Numbers Only.',
+                    });
+                    return;
+                }
+                if(bankAccountNo.length < 8){
+                    ShowToast({
+                        message : 'Bank Account Number must contains at least 8 characters',
+                        type : 'error',
+                    });
+                    return;
+                }
+                const url = '/organization/addBankDetails';
+                const formData = new FormData();
+                formData.append('bankName',bankName);
+                formData.append('branchName',branchName);
+                formData.append('bankAccountNo',bankAccountNo);
+                formData.append('bankAccountName',bankAccountName);
+                fetch(url, {
+                    method: 'POST',
+                    body: formData
+                }).then(response => response.json())
+                    .then(data => {
+                        if (data.status){
+                            ShowToast({
+                                title: 'Success',
+                                message: 'Bank Details Added Successfully',
+                                type: 'success'
+                            });
+                            CloseDialogBox('addBankDetails');
+                            CloseDialogBox('profile');
+                            window.location.reload();
+                        }else{
+                            ShowToast({
+                                title: 'Error',
+                                message: data.message,
+                                type: 'error'
+                            });
+                        }
+                    })
+            }
+        })
+    }
     const UpdateBankDetails = ()=>{
         <?php
         if ($User->getBankAccount()):
         ?>
-            BankName = "value='<?= $User->getBankName() ?>'";
-            BranchName = "value='<?= $User->getBranchName() ?>'";
-            AccountNo = "value='<?= $User->getBankAccountNo() ?>'";
-            AccountName = "value='<?= $User->getBankAccountName() ?>'";
+        BankName = "value='<?= $User->getBankName() ?>'";
+        BranchName = "value='<?= $User->getBranchName() ?>'";
+        AccountNo = "value='<?= \App\model\Utils\Security::Decrypt($User->getBankAccountNo()) ?>'";
+        AccountName = "value='<?= $User->getBankAccountName() ?>'";
 
         <?php
         endif;
@@ -577,3 +577,4 @@ $User = Application::$app->getUser();
     }
 </script>
 </html>
+

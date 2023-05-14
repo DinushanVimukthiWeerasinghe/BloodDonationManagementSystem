@@ -14,6 +14,10 @@ class HomePageTest extends \Codeception\Test\Unit
     {
     }
 
+    private function Logout(){
+        $this->tester->click(" a[href='/logout']");
+    }
+
     // tests
 
     /**

@@ -12,6 +12,11 @@ class Response
         header('Location: ' . $url);
     }
 
+    public function SendJson(bool $status, array $data): bool|string
+    {
+        header('Content-Type: application/json');
+        return json_encode(['status' => $status, 'data' => $data]);
+    }
     public function getContentType(string $path): string
     {
         $ext = pathinfo($path, PATHINFO_EXTENSION);
@@ -62,6 +67,20 @@ class Response
     public function setContent(bool|string $json_encode)
     {
         header('Content : ' . $json_encode);
+    }
+
+    public function download(string $FilePath)
+    {
+        $file_path = $FilePath;
+        $file_data = base64_encode(file_get_contents($file_path));
+        $file_name = basename($file_path);
+        $file_mime = mime_content_type($file_path);
+        header("Content-Type: $file_mime");
+        header("Content-Disposition: attachment; filename=$file_name");
+        header("Content-Transfer-Encoding: binary");
+        header("Content-Length: " . filesize($file_path));
+        readfile($file_path);
+        return true;
     }
 
 }

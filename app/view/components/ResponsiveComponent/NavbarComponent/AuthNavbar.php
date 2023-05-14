@@ -2,7 +2,9 @@
 
 namespace App\view\components\ResponsiveComponent\NavbarComponent;
 
+use App\model\users\Donor;
 use App\model\users\Manager;
+use App\model\users\Organization;
 use App\model\users\User;
 use Core\Application;
 use Core\SessionObject;
@@ -40,6 +42,10 @@ class AuthNavbar
     {
         $user=Application::$app->getUser();
         $profileName=$user->getFirstName().' '.$user->getLastName();
+        if ($user instanceof (Organization::class) )
+        {
+            $profileName=$user->getOrganizationName();
+        }
         $actions=Application::$app->request->getPath();
         $path=explode('/',$actions);
         $action=$path[2];
@@ -86,6 +92,7 @@ class AuthNavbar
                 $lnk.="
             <a href='{$item['link']}' class='logout'>
                 <img src='{$item['icon']}' alt='' width='30rem'>
+       
             </a>
             ";
             endif;
@@ -96,7 +103,7 @@ class AuthNavbar
            return <<<HTML
                 <div class="profile">
                         $lnk
-                        <a  class="logout" onclick="confirmation()"><img src="/public/icons/log-out.svg" alt="" width="30rem"> </a>
+                        <a onclick="confirmation()" class="logout"><img src="/public/icons/log-out.svg" alt="" width="30rem"> </a>
                         <button  href="$profileLnk" class="navProfile" onclick="getProfile()"><img class="profile-icon" id="NavProfileImage" src="$profilePicture" width="40rem" alt="profile"></button>
                         <div class="navProfileName"><span>{$profileName}</span></div>
                 </div>
@@ -107,6 +114,7 @@ class AuthNavbar
                             content : 'Are You Sure You Want To Log Out?',
                             successBtnText : 'Yes',
                             cancelBtnText : 'No',
+                            titleClass: 'bg-dark text-white text-center',
                             successBtnAction:()=>{
                                 window.location.href = "/logout"
                             }

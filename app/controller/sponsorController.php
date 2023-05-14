@@ -79,6 +79,7 @@ class sponsorController extends Controller
                 exit();
             }
 
+
             $SponsorshipRequest = SponsorshipRequest::findOne(['Sponsorship_ID' => $RequestID]);
             if (!$SponsorshipRequest){
                 $this->setFlashMessage('error','Invalid Request');
@@ -110,7 +111,7 @@ class sponsorController extends Controller
                 'quantity' => 1,
             ];
             $EncAmount = Security::Encrypt($Amount);
-            $EncAmount = urlencode($Amount);
+            $EncAmount = urlencode($EncAmount);
             $Description =Security::Encrypt($Description);
             $Description = urlencode($Description);
             /** @var $SponsorshipRequest SponsorshipRequest*/
@@ -131,9 +132,11 @@ class sponsorController extends Controller
             ]);
 
             $SessionID = $checkout_session->id;
+
             $SponsorshipRequest->sponsor($UserID,$Amount,$SessionID,$Description);
             return json_encode(['status'=>true,'redirect'=>$checkout_session->url]);
-        }else if ($request->isGet()){
+        }
+        else if ($request->isGet()){
             /** @var $SponsorshipRequest SponsorshipRequest*/
             $status = $request->getBody()['success'];
             if ($status==='true'){

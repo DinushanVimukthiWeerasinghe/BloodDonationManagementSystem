@@ -96,7 +96,7 @@ abstract class Email
         try {
             $this->mailer = new PHPMailer(true);
             $this->mailer->isSMTP();
-//            $this->mailer->SMTPDebug = 0;
+//            $this->mailer->SMTPDebug = 1;
             $this->mailer->Host = $config['host'];
             $this->mailer->Port = $config['port'];
             $this->mailer->ContentType = 'text/html';

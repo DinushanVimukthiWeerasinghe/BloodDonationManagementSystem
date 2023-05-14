@@ -59,4 +59,22 @@ use App\model\users\Donor;
         </div>
 </div>
 
+<script>
+    const AutoReload = ()=>{
+        const url ="/mofficer/take-donation";
+        fetch(url)
+            .then(response => response.text())
+            .then(data => {
+                console.log("Auto Reload");
+                const DomParser = new DOMParser();
+                const Doc = DomParser.parseFromString(data, 'text/html');
+                const table = Doc.querySelector("table tbody").innerHTML;
+                document.querySelectorAll("table tbody")[0].innerHTML=table;
+            })
+            .catch(error => {
+                console.log(error);
+            });
+    }
+    setInterval(AutoReload, 3000);
+</script>
 

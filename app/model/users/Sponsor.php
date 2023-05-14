@@ -2,6 +2,8 @@
 
 namespace App\model\users;
 
+use App\model\sponsor\CampaignsSponsor;
+
 class Sponsor extends Person
 {
     protected string $Sponsor_ID='';
@@ -147,5 +149,16 @@ class Sponsor extends Person
     public function setID(string $ID): void
     {
         $this->Sponsor_ID=$ID;
+    }
+
+    public function getTotalSponsored()
+    {
+        $CampaignSponsor = CampaignsSponsor::RetrieveAll(false,[],true,['Sponsor_ID'=>$this->Sponsor_ID,'Status'=>CampaignsSponsor::PAYMENT_STATUS_PAID]);
+        $total=0;
+        /** @var CampaignsSponsor $item */
+        foreach ($CampaignSponsor as $item){
+            $total+=$item->getSponsoredAmount();
+        }
+        return $total;
     }
 }

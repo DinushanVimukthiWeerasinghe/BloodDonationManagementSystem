@@ -98,7 +98,7 @@
 }
 .side-bar .side-bar-links .side-bar-link-active .nav-link-text{
     color: var(--white) !important;
-    font-size: var(--xl) !important;
+    font-size: 1em !important;
     font-weight: bold !important;
 }
 .side-bar .side-bar-links .side-bar-link{
@@ -227,6 +227,7 @@
 
 }
 @media screen and (max-width: 920px) {
+
     #sidePanel{
         width: 100px;
     }
@@ -297,4 +298,5 @@
         max-width: calc(100vw - 80px) !important;
         left: 80px !important;
     }
+
 }

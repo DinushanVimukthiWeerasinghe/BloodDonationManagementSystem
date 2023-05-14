@@ -6,12 +6,17 @@
 use App\view\components\ResponsiveComponent\ImageComponent\BackGroundImage;
 use App\view\components\ResponsiveComponent\NavbarComponent\DonorNavbar;
 
-$navbar = new DonorNavbar('Donation Guideline', '/donor/profile', '/public/images/icons/user.png', true,false );
-echo $navbar;
-$background = new BackGroundImage();
-
-echo $background;
+//$navbar = new DonorNavbar('Donation Guideline', '/donor/profile', '/public/images/icons/user.png', true,false );
+//echo $navbar;
+//$background = new BackGroundImage();
+//
+//echo $background;
 ?>
+<div class="absolute left-1 top-9">
+    <button class="p-1 cursor bg-dark text-white box-shadow-white border-radius-50 d-flex flex-center gap-1" style="font-size: 1.5rem;border: none" onclick="window.location.href='/donor/dashboard'">
+        <i class="fa-solid fa-circle-chevron-left"></i>
+    </button>
+</div>
 
 <div class="d-flex justify-content-center bg-white-0-5 border-radius-10 w-80 p-2 gap-1 flex-column align-items-center">
 

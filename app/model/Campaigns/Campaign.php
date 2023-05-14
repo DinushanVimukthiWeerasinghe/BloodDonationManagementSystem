@@ -4,16 +4,22 @@ namespace App\model\Campaigns;
 
 use App\model\database\dbModel;
 use App\model\MedicalTeam\MedicalTeam;
+use App\model\Requests\SponsorshipRequest;
+use App\model\users\MedicalOfficer;
 use App\model\users\Organization;
+use Core\Application;
 
 class Campaign extends dbModel
 {
-    public const PENDING = 1;
-    public const APPROVED = 2;
-    public const REJECTED = 3;
+    public const CAMPAIGN_STATUS_PENDING = 1;
+    public const CAMPAIGN_STATUS_APPROVED = 2;
+    public const CAMPAIGN_STATUS_REJECTED = 3;
+    public const CAMPAIGN_STATUS_FINISHED = 4;
+    public const CAMPAIGN_STATUS_REPORTED = 5;
     public const NOT_VERIFIED = 1;
     public const VERIFIED = 2;
-    const CAMPAIGN_STATUS_FINISHED = 4;
+    const CAMPAIGN_STATUS_ALL = 0;
+
     protected string $Campaign_ID='';
     protected string $Organization_ID='';
     protected ?string $Expected_Amount=null;
@@ -33,6 +39,15 @@ class Campaign extends dbModel
     protected ?string $Longitude=null;
     protected ?string $Latitude=null;
 
+    public static function getActiveCampaigns(): bool|array
+    {
+        $Campaigns = Campaign::RetrieveAll(false,[],true,['Status'=>self::CAMPAIGN_STATUS_APPROVED]);
+        if ($Campaigns){
+            return $Campaigns;
+        }
+        return [];
+    }
+
 
     /**
      * @return string
@@ -44,7 +59,7 @@ class Campaign extends dbModel
 
     public function IsApproved(): bool
     {
-        return $this->Status == self::APPROVED;
+        return $this->Status == self::CAMPAIGN_STATUS_APPROVED;
     }
 
     /**
@@ -152,6 +167,20 @@ class Campaign extends dbModel
         return $this->Campaign_Date;
     }
 
+    public function getSponsorshipRequest() : SponsorshipRequest|bool
+    {
+        return SponsorshipRequest::findOne(['Campaign_ID'=>$this->Campaign_ID]);
+    }
+
+    public function getOrganizationType(): string
+    {
+//        Randomly return the organization type "NGO" or "Social Club"
+        return match (rand(0,1)){
+            0 => 'NGO',
+            1 => 'Social Club'
+        };
+    }
+
     /**
      * @param string $Campaign_Date
      */
@@ -167,7 +196,7 @@ class Campaign extends dbModel
 
     public function IsRejected(): bool
     {
-        return $this->Status == self::REJECTED;
+        return $this->Status == self::CAMPAIGN_STATUS_REJECTED;
     }
 
     /**
@@ -210,13 +239,21 @@ class Campaign extends dbModel
         return $this->Status;
     }
 
+    public function IsRequestedSponsorship(): bool
+    {
+        $SponsorshipRequest = SponsorshipRequest::findOne(['Campaign_ID'=>$this->Campaign_ID]);
+        return $SponsorshipRequest != null;
+    }
+
 
     public function getCampaignStatus():string
     {
         return match ($this->Status){
-            self::PENDING =>'Pending',
-            self::APPROVED => 'Approved',
-            self::REJECTED => 'Rejected',
+            self::CAMPAIGN_STATUS_PENDING =>'Pending',
+            self::CAMPAIGN_STATUS_APPROVED => 'Approved',
+            self::CAMPAIGN_STATUS_REJECTED => 'Rejected',
+            self::CAMPAIGN_STATUS_FINISHED => 'Finished',
+            self::CAMPAIGN_STATUS_REPORTED => 'Reported',
             default => 'Unknown'
         };
     }
@@ -396,7 +433,7 @@ class Campaign extends dbModel
     public function rules(): array
     {
         return [
-            'Campaign_ID' => [self::RULE_REQUIRED],
+            'Campaign_ID' => [self::RULE_REQUIRED,self::RULE_UNIQUE],
             'Campaign_Name' => [self::RULE_REQUIRED],
             'Campaign_Description' => [self::RULE_REQUIRED],
             'Campaign_Date' => [self::RULE_REQUIRED],
@@ -464,5 +501,77 @@ class Campaign extends dbModel
     public function getNoOfDonors()
     {
         return '100';
+    }
+
+    public function getOrganization() : Organization
+    {
+        return Organization::findOne(['Organization_ID'=>$this->Organization_ID]);
+    }
+
+    public function IsReported(): bool
+    {
+        return $this->getStatus() === self::CAMPAIGN_STATUS_REPORTED;
+    }
+
+    public function getReportedBy() : MedicalOfficer | string
+    {
+        if ($this->IsReported()) {
+            /** @var ReportedCampaign $ReportedCampaign */
+            $ReportedCampaign = ReportedCampaign::findOne(['Campaign_ID' => $this->Campaign_ID]);
+            if ($ReportedCampaign)
+                return MedicalOfficer::findOne(['Officer_ID' => $ReportedCampaign->getReportedBy()]);
+            else
+                return 'Not Reported';
+        }
+        else{
+            return 'Not Reported';
+        }
+
+    }
+
+    public function getReportedDate(): string
+    {
+        if ($this->IsReported()) {
+            /** @var ReportedCampaign $ReportedCampaign */
+            $ReportedCampaign = ReportedCampaign::findOne(['Campaign_ID' => $this->Campaign_ID]);
+            if ($ReportedCampaign)
+                return date('d-F-Y',strtotime($ReportedCampaign->getReportedAt()));
+            else
+                return 'Not Reported';
+        }
+        else{
+            return 'Not Reported';
+        }
+    }
+
+    public function getReportedReason()
+    {
+        if ($this->IsReported()) {
+            /** @var ReportedCampaign $ReportedCampaign */
+            $ReportedCampaign = ReportedCampaign::findOne(['Campaign_ID' => $this->Campaign_ID]);
+            if ($ReportedCampaign)
+                return $ReportedCampaign->getReportReason(true);
+            else
+                return 'Not Reported';
+        }
+        else{
+            return 'Not Reported';
+        }
+    }
+
+    public function IsReportedByMe(): bool
+    {
+        if ($this->IsReported()) {
+            /** @var ReportedCampaign $ReportedCampaign */
+            $ReportedBy = $this->getReportedBy();
+            $UserID = Application::$app->getUser()->getID();
+            if ($ReportedBy instanceof MedicalOfficer)
+                return $ReportedBy->getID() === $UserID;
+            else
+                return false;
+        }
+        else{
+            return false;
+        }
     }
 }

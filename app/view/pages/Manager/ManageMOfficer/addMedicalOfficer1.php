@@ -85,13 +85,13 @@ echo BasicForm::CloseForm();
         if (input.files && input.files[0]) {
             const reader = new FileReader();
 
-            reader.onload = function (e) {
+            `reader.onload = function (e) {
                 const Image = document.getElementById('blah');
                 Image.src = e.target.result;
                 // $('#blah').attr('src', e.target.result);
             }
 
-            reader.readAsDataURL(input.files[0]);
+            reader.readAsDataURL(input.files[0]);`
         }
     }
 </script>

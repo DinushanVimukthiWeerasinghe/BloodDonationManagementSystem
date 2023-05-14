@@ -9,6 +9,7 @@ class BloodGroup extends dbModel
     protected string $BloodGroup_ID='';
     protected string $BloodGroup_Name='';
 
+
     /**
      * @return string
      */

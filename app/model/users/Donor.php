@@ -2,27 +2,38 @@
 
 namespace App\model\users;
 
+use App\model\Donations\Donation;
 use App\model\Donor\ReportedDonor;
 use App\model\Notification\DonorNotification;
 use Core\Request;
 use Core\Response;
+use DateTime;
 
 class Donor extends Person
 {
+
+    public const AVAILABILITY_AVAILABLE = 1;
+    public const AVAILABILITY_TEMPORARY_UNAVAILABLE = 2;
+    public const AVAILABILITY_PERMANENT_UNAVAILABLE = 3;
+
     public const REPORTED_DONOR=1;
     public const AVAILABLE = 1;
     public const UNAVAILABLE = 2;
+    const DEFAULT_NIC_FRONT = '/public/upload/NIC/NIC_Upload_Front.png';
+    const DEFAULT_NIC_BACK = '/public/upload/NIC/NIC_Upload_Back.png';
     const VERIFIED = 2;
     const PENDING = 1;
     const NOT_VERIFIED = 3;
     const ACTIVE = 1;
+    const DEFAULT_PROFILE_IMAGE_LOCATION = 'Profile/Donor';
     protected string $Donor_ID = '';
     protected string $Nearest_Bank = '';
-    protected int $Donation_Availability = 0;
-    protected int $Verified=0;
-    protected ?string $Verified_At='';
+    protected int $Donation_Availability = 1;
+    protected ?string $Donation_Availability_Date=null;
+    protected int $Verified=1;
+    protected ?string $Verified_At=null;
     protected ?string $Verified_By=Null;
-    protected ?string $Verification_Remarks='';
+    protected ?string $Verification_Remarks=null;
     protected ?string $BloodPacket_ID='';
     protected string $Created_At='';
     protected string $Updated_At='';
@@ -30,7 +41,7 @@ class Donor extends Person
     protected ?string $NIC_Back=null;
     protected ?string $BloodDonation_Book_1=null;
     protected ?string $BloodDonation_Book_2=null;
-    protected ?string $BloodGroup = null;
+    protected string $BloodGroup = "Unknown";
 
 
     public static function ReportedDonors($q=''): bool|array
@@ -60,6 +71,17 @@ class Donor extends Person
         return true;
     }
 
+    public function GetLatestSuccessfulDonation() : ?Donation
+    {
+        $Donations = Donation::RetrieveAll(false,[],true,['Donor_ID'=>$this->getDonorID(),'Status'=>Donation::STATUS_BLOOD_STORED],['End_At'=>'DESC']);
+        if(count($Donations)>0)
+        {
+            return $Donations[0];
+        }else{
+            return null;
+        }
+    }
+
     /**
      * @param string|null $BloodGroup
      */
@@ -67,6 +89,82 @@ class Donor extends Person
     {
         $this->BloodGroup = $BloodGroup;
     }
+
+    /**
+     * @throws \Exception
+     */
+    public function getAge(): ?int
+    {
+        return 18;
+        $nicNumber=$this->getNIC();
+        $nicNumber = preg_replace('/\D/', '', $nicNumber);
+
+        // Extract the year, month, and date from the NIC number
+        $year = substr($nicNumber, 0, 4);
+        $days = substr($nicNumber, 4, 3);
+        $days = ltrim($days, '0');
+        $days = (int)$days;
+        $days = $days - 1;
+        $month = 0;
+        $year = (int)$year;
+        while ($days > 0) {
+            $month++;
+            if ($days <= 31) {
+                break;
+            }
+            if ($days <= 59) {
+                if ($year % 4 == 0) {
+                    $days -= 29;
+                } else {
+                    $days -= 28;
+                }
+            } else if ($days <= 90) {
+                $days -= 31;
+            } else if ($days <= 120) {
+                $days -= 30;
+            } else if ($days <= 151) {
+                $days -= 31;
+            } else if ($days <= 181) {
+                $days -= 30;
+            } else if ($days <= 212) {
+                $days -= 31;
+            } else if ($days <= 243) {
+                $days -= 31;
+            } else if ($days <= 273) {
+                $days -= 30;
+            } else if ($days <= 304) {
+                $days -= 31;
+            } else if ($days <= 334) {
+                $days -= 30;
+            } else if ($days <= 365) {
+                $days -= 31;
+            }
+        }
+        $DateOfBirth = $year . '-' . $month . '-' . $days;
+        $DateOfBirth = new DateTime($DateOfBirth);
+        $today = new DateTime('today');
+        return $DateOfBirth->diff($today)->y;
+
+
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getDonationAvailabilityDate(): ?string
+    {
+        return $this->Donation_Availability_Date;
+    }
+
+    /**
+     * @param string|null $Donation_Availability_Date
+     */
+    public function setDonationAvailabilityDate(?string $Donation_Availability_Date): void
+    {
+        $this->Donation_Availability_Date = $Donation_Availability_Date;
+    }
+
+
 
     public function getID(): string
     {
@@ -118,10 +216,14 @@ class Donor extends Person
     }
 
     /**
-     * @return int
+     * @param bool $Readable
+     * @return int|string
      */
-    public function getDonationAvailability(): int
+    public function getDonationAvailability(bool $Readable=false): int | string
     {
+        if ($Readable):
+            return $this->Donation_Availability == 1? "Available":"Not Available";
+        endif;
         return $this->Donation_Availability;
     }
 
@@ -246,11 +348,11 @@ class Donor extends Person
     }
 
     /**
-     * @return string|null
+     * @return string|null| bool
      */
-    public function getNICFront(): ?string
+    public function getNICFront(): string | bool | null
     {
-        return $this->NIC_Front;
+        return $this->NIC_Front ?? false;
     }
 
     /**
@@ -332,7 +434,6 @@ class Donor extends Person
         return [
             'Donor_ID'=>[self::RULE_REQUIRED,self::RULE_UNIQUE],
             'Nearest_Bank'=>[self::RULE_REQUIRED],
-            'Donation_Availability'=>[self::RULE_REQUIRED],
             'Verified'=>[self::RULE_REQUIRED],
             'Verified_At'=>[self::RULE_TODAY_OR_OLDER_DATE]
         ];
@@ -380,7 +481,8 @@ class Donor extends Person
             'NIC_Back',
             'BloodDonation_Book_1',
             'BloodDonation_Book_2',
-            'BloodGroup'
+            'BloodGroup',
+            'Donation_Availability_Date'
         ];
     }
 
@@ -397,6 +499,62 @@ class Donor extends Person
     public function getVerificationStatus()
     {
         return $this->Verified ? "Verified" : "Not Verified";
+    }
+
+    public function generateGenderByNIC()
+    {
+        if (!empty($this->getNIC())){
+            $Token = substr($this->getNIC(),3,3);
+            $Token=intval($Token);
+
+            if ($Token<500){
+                $this->setGender("M");
+            }else{
+                $this->setGender("F");
+            }
+        }
+    }
+
+    public function getLastDonation()
+    {
+        $Donation = Donation::findOne(['Donor_ID'=>$this->getDonorID()]);
+        if ($Donation){
+            return $Donation->getDonationDate();
+        }else{
+            return "No Donation";
+        }
+    }
+
+    public function getSuccessRate()
+    {
+        /** @var Donation[] $Donations */
+        $Donations = Donation::RetrieveAll(false,[],true,['Donor_ID'=>$this->getDonorID()]);
+        $Success = 0;
+        $Total = 0;
+        foreach ($Donations as $Donation){
+            $Total++;
+            if ($Donation->getStatus()===Donation::STATUS_BLOOD_STORED){
+                $Success++;
+            }
+        }
+        if ($Total==0){
+            return 0;
+        }else{
+            return round(($Success/$Total)*100,2)."%";
+        }
+    }
+
+    public function getTotalSuccessfulDonations()
+    {
+        /** @var Donation[] $Donations */
+        $Donations = Donation::RetrieveAll(false,[],true,['Donor_ID'=>$this->getDonorID()]);
+        $Success = 0;
+        foreach ($Donations as $Donation){
+            if ($Donation->getStatus()===Donation::STATUS_BLOOD_STORED){
+                $Success++;
+            }
+        }
+        return $Success;
     }
 
 }

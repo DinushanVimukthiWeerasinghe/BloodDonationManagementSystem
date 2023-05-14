@@ -1,24 +1,19 @@
 <?php
-/** @var $Transaction SponsorshipRequest*/
-/** @var $Transactions array*/
+/** @var $Transactions CampaignsSponsor[]*/
 
 use App\model\Requests\SponsorshipRequest;
+use App\model\sponsor\CampaignsSponsor;
 
 ?>
 <div class="d-flex flex-column min-w-90 min-h-80  ">
-    <div class="d-flex w-100 justify-content-between my-1">
+    <div class="d-flex w-100 justify-content-center my-2">
         <div class="d-flex gap-1 flex-center">
             <label for="Search" class="text-dark text-xl font-bold">Search</label>
             <input class="form-control" name="Search" id="Search" onkeyup="SearchBank()">
         </div>
-        <div class="d-flex gap-1 flex-center">
-            <label for="Search" class="text-dark text-xl font-bold">Search</label>
-            <input class="form-control" name="Search" id="Search" onkeyup="SearchBank()">
-        </div>
-
     </div>
-    <div class="d-flex flex-column bg-white max-h-80 w-100">
-        <div class="d-flex max-h-100 overflow-y-scroll">
+    <div class="d-flex flex-column flex-center bg-white max-h-80 w-100 p-2 border-radius-10">
+        <div class="d-flex align-items-start justify-content-center py-2 max-h-100 overflow-y-overlay w-100" style="min-height: 80vh">
             <table class="table table-striped table-hover">
                 <thead class="bg-white">
                 <tr class="bg-white">
@@ -36,14 +31,15 @@ use App\model\Requests\SponsorshipRequest;
                 <tbody>
                 <?php
                 $i=1;
+                if (!empty($Transactions)):
                 foreach ($Transactions as $Transaction) :
-                    $CampaignName = $Transaction->getCampaignName();
-                    $SponsorName = $Transaction->getSponsorName();
+                    $CampaignName = $Transaction->getCampaign()->getCampaignName();
+                    $SponsorName = $Transaction->getSponsor()->getSponsorName();
                     $amount = $Transaction->getSponsoredAmount();
-                    $ManagerName = $Transaction->getManagerName();
+                    $ManagerName = $Transaction->getSponsorshipRequest()->getManagerName();
                     $BloodBankName = $Transaction->getManagerBloodBankName();
-                    $date = $Transaction->getSponsorshipDate();
-                    $Status = $Transaction->getSponsorStatus();
+                    $date = \App\model\Utils\Date::GetProperDate($Transaction->getSponsoredAt());
+                    $Status = $Transaction->getStatus(true);
                     ?>
                     <tr>
                         <td><?= $i++ ?></td>
@@ -54,14 +50,20 @@ use App\model\Requests\SponsorshipRequest;
                         <td><?php echo $Status ?></td>
                         <td><?php echo $ManagerName ?></td>
                         <td><?php echo $BloodBankName ?></td>
-                        <td>
-                            <button type="button" class="btn btn-outline-success border-radius-10" >
-                                <img src="/public/icons/edit.png" width="24px" alt="">
+                        <td class="d-flex flex-center">
+                            <button type="button" class="btn d-flex flex-center btn-outline-success border-radius-10" >
+                                <i class="fa-solid fa-money-bill-transfer"></i>
+                                <span class="ml-1">Transfer</span>
                             </button>
                         </td>
                     </tr>
 
                 <?php endforeach;
+                else:?>
+                    <tr>
+                        <td colspan="9"  class="text-center">No Data Found</td>
+                    </tr>
+                <?php endif;
                 ?>
                 </tbody>
             </table>

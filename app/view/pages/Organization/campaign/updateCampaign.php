@@ -7,6 +7,7 @@
 ///* @var MedicalOfficer $model */
 
 use App\model\users\Organization;
+use App\model\Utils\Security;
 use App\view\components\ResponsiveComponent\ImageComponent\BackGroundImage;
 use App\view\components\ResponsiveComponent\NavbarComponent\AuthNavbar;
 
@@ -91,7 +92,7 @@ echo $background;
 
 </style>
 <div class=" d-flex flex-column bg-white-0-7 border-radius-10 align-item-center justify-content-center w-50 p-1 h-100 cre">
-    <form id="form" action="updateCampaign?id=<?php echo $campaign->getCampaignID() ?>" method="post" class="d-flex flex-column p-3 text-xl w-100 gap-1">
+    <form id="form" action="/organization/campaign/updateCampaign?id=<?=urlencode(Security::Encrypt($campaign->getCampaignID()))?>" method="post" class="d-flex flex-column p-3 text-xl w-100 gap-1">
         <div class="bg-dark py-0-5 px-2 text-center text-white details"> Fill Campaign Details</div>
         <div class="d-flex text-center flex-column gap-0-5 w-100">
             <div class="form-group w-100 name">
@@ -126,7 +127,7 @@ echo $background;
     </form>
     <div class="d-flex align-items-center justify-content-center gap-2">
         <button class="btn btn-success w-25" id="button" value="Create" onclick="update()" type="submit"> Update </button>
-        <button class="btn btn-danger w-25" id="button" value="Cancel" onclick="history.back()"> Cancel </button>
+        <button class="btn btn-danger w-25" id="button" value="Cancel" onclick="cancellation()"> Cancel </button>
     </div>
 </div>
 
@@ -189,8 +190,9 @@ echo $background;
         }
         else {
             OpenDialogBox({
-                // id:'sendEmail',
+                id:'update',
                 title: 'Update Confirmation',
+                titleClass: 'text-white bg-dark text-center',
                 content: `Are You Sure You Want to Update Details?`,
                 successBtnText: 'Yes',
                 successBtnAction: () => {
@@ -344,16 +346,16 @@ echo $background;
         initMap();
 
     }
-    // const cancellation=(click)=>{
-    //     OpenDialogBox({
-    //         title: 'Cancel Confirmation',
-    //         content: 'Are You Sure You want to Go Back? Your Changes will not be saved.'
-    //         successBtnText: 'Yes',
-    //         successBtnAction: () =>{
-    //             // history.back();
-    //         },
-    //     });
-    // }
+    function cancellation(){
+        OpenDialogBox({
+            title: 'Cancel Confirmation',
+            content: 'Are You Sure You want to Go Back? Your Changes will not be saved.',
+            successBtnText: 'Yes',
+            successBtnAction: () =>{
+                 history.back();
+            },
+        });
+    }
 
 </script>
 
