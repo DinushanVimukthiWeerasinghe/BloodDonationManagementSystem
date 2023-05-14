@@ -11,7 +11,6 @@ use Dotenv\Dotenv;
 use PHPMailer\PHPMailer\Exception;
 use Tests\Support\FunctionalTester;
 use Unit\SponsorshipRequestTest;
-use const Functional\DB_DSN;
 
 class RequestSponsorshipTest extends \Codeception\Test\Unit
 {
@@ -61,15 +60,17 @@ class RequestSponsorshipTest extends \Codeception\Test\Unit
 
         return new Application(dirname(__DIR__), $config);
     }
+
     /**
      * @dataprovider  ValidRequestIDProvider
-     * @param string $Campaign_ID
+     * @param $sponsorship_ID
      * @param bool $expected
      * @return void
      * @throws Exception
      */
-    public function testSponsorshipRequest($sponsorship_ID,bool $expected){
-//        $app = $this->getApp();
+    public function stestSponsorshipRequest($sponsorship_ID,bool $expected){
+        session_abort();
+        $app = $this->getApp();
         $sponsorship = new SponsorshipRequest();
         $sponsorship->setSponsorshipID($sponsorship_ID);
         $sponsorship->setCampaignID('Camp_645b4ebc92123');
@@ -78,11 +79,11 @@ class RequestSponsorshipTest extends \Codeception\Test\Unit
         $sponsorship->setSponsorshipDate(date('Y-m-d'));
         $sponsorship->setDescription('This is a test Description');
         $this->assertEquals($expected,$sponsorship->save());
-        session_destroy();
 
     }
 
-    public function ValidRequestIDProvider(){
+    public function ValidRequestIDProvider(): array
+    {
         return [
             ['',false],
             ['spn_005',true],

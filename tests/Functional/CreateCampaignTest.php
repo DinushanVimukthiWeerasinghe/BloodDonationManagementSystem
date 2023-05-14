@@ -59,16 +59,18 @@ class CreateCampaignTest extends \Codeception\Test\Unit
 
         return new Application(dirname(__DIR__), $config);
     }
+
     /**
      * @dataprovider  ValidCampaignIDProvider
      * @param string $Campaign_ID
      * @param string $BloodBankID
-     * @param string $OrganuzationID
+     * @param $OrganizationID
      * @param bool $expected
      * @return void
      * @throws Exception
      */
     public function testCampaigns($Campaign_ID,$BloodBankID,$OrganizationID, bool $expected){
+        session_abort();
         $app = $this->getApp();
         $campaign = new Campaign();
         $campaign->setCampaignID($Campaign_ID);
@@ -86,7 +88,6 @@ class CreateCampaignTest extends \Codeception\Test\Unit
         $campaign->setLatitude(1.5555);
         $campaign->setLongitude(2.5555);
         $this->assertEquals($expected,$campaign->save());
-        session_abort();
     }
 
     public function ValidCampaignIDProvider(){

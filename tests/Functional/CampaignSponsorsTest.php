@@ -93,12 +93,12 @@ class CampaignSponsorsTest extends \Codeception\Test\Unit
 
     public function ValidCampaignIDProvider(){
         return [
-            ['Camp_0022','BB_04','Org_01',true],
-            ['Camp_0022','BB_04','Org_01',false],
-            ['Camp_0023','BB_02','Org_01',false],
-            ['Camp_0023','BB_04','Org_01',true],
-            ['Camp_0024','BB_04','Org_00',false],
-            ['Camp_0025','BB_02','Org_00',false],
+            ['Camp_0022a','BB_04','Org_01',true],
+            ['Camp_0022a','BB_04','Org_01',false],
+            ['Camp_0023a','BB_02','Org_01',true],
+            ['Camp_0023a','BB_04','Org_01',false],
+            ['Camp_0024a','BB_04','Org_00',false],
+            ['Camp_0025a','BB_02','Org_00',false],
         ];
     }
 

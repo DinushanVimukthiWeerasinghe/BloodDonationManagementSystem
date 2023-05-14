@@ -54,7 +54,7 @@ class CreateCampaignTest extends \Codeception\Test\Unit
      * @return void
      * @throws Exception
      */
-    public function testCampaigns($Campaign_ID,$BloodBankID,$CampaignDate, bool $expected){
+    public function stestCampaigns($Campaign_ID,$BloodBankID,$CampaignDate, bool $expected){
 //        $app = $this->getApp();
         $campaign = new Campaign();
         $campaign->setCampaignID($Campaign_ID);

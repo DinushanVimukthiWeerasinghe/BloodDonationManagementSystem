@@ -331,7 +331,7 @@ class Campaign extends dbModel
     }
 
     /**
-     * @return string
+     * @return MedicalTeam|string
      */
     public function getAssignedTeam(): MedicalTeam | string
     {
