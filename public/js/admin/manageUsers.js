@@ -304,6 +304,8 @@ const addNewHospital = () => {
             <input type="text" name="Address2" id="address2" placeholder="Address Line 1">
             <input type="text" name="City" id="city" placeholder="City">
             <input type="tel" name="Contact_No" id="contactNo" placeholder="Contact Number">
+            <select name="Nearest_Blood_Bank" id="nearest_blood_bank">
+            </select>
         </form>`,
         successBtnAction: () => {
             document.getElementById('addHospitalForm').submit();
@@ -312,7 +314,27 @@ const addNewHospital = () => {
         cancelBtnAction: () => {
             CloseDialogBox();
         }
-        })
+        });
+    let Banks = [];
+    const XHR = new XMLHttpRequest();
+    XHR.open("GET", "/api/bbank/getall", true);
+    XHR.setRequestHeader("Content-Type", "application/json");
+    XHR.send();
+    XHR.onload = function () {
+        const bankList = JSON.parse(this.responseText);
+        // console.log(Object.keys(bankList));
+        Banks = Object.keys(bankList);
+        Banks.forEach((bank)=>{
+            let option = document.createElement("option");
+            option.value = bankList[bank].id;
+            option.innerText = bank;
+            // document.getElementById('bank').appendChild(option);
+            document.getElementById("nearest_blood_bank").appendChild(option);
+        });
+
+
+
+    };
 }
 // const addNewManager = () => {
 //     OpenDialogBox({

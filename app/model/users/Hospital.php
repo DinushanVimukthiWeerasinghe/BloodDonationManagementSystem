@@ -92,9 +92,9 @@ class Hospital extends Person
             'Hospital_Name'=>[self::RULE_REQUIRED],
             'Address1'=>[self::RULE_REQUIRED],
             'Address2'=>[self::RULE_REQUIRED],
-            'Email'=>[self::RULE_REQUIRED],
+            'Email'=>[self::RULE_REQUIRED, self::RULE_EMAIL],
             'City'=>[self::RULE_REQUIRED],
-            'Contact_No'=>[self::RULE_REQUIRED],
+            'Contact_No'=>[self::RULE_REQUIRED, self::RULE_MOBILE_NO],
             'Nearest_Blood_Bank'=>[self::RULE_REQUIRED]
 //            'Type'=>[self::RULE_REQUIRED],
 //            'Profile_Image'=>[self::RULE_REQUIRED]

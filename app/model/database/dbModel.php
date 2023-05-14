@@ -158,7 +158,6 @@ abstract class dbModel extends Model
             if ($pagination) {
                 $sql .= " LIMIT $limit[0],$limit[1]";
             }
-//            var_dump($sql);
             $statement = self::prepare($sql);
             foreach ($conditions as $key => $value) {
                 if (!is_array($value)){

@@ -48,7 +48,8 @@ class donorController extends Controller
             'User'=>$donor,
             'firstName'=>$donor->getFirstName(),
             'lastName'=>$donor->getLastName(),
-            'state' => $donor->getDonationAvailability()
+            'state' => $donor->getDonationAvailability(),
+            'verificationStatus'=>$donor->getVerificationStatus()
         ];
       //  print_r($data);
       //  exit();
@@ -309,4 +310,16 @@ class donorController extends Controller
         return json_encode(false);
 
     }
+
+    public function checkAttendance(Request $request, Response $response){
+        $data = $request->getBody();
+        $flag = false;
+//        error_log($data['userID']);
+//        error_log($data['campaignID']);
+
+        $attendance = AttendanceAcceptedRequest::findOne(['Donor_ID'=>$data['userID'],'Campaign_ID'=>$data['campaignID']],false);
+        if ($attendance){$flag = true;}
+        return json_encode($flag);
+    }
+
 }
