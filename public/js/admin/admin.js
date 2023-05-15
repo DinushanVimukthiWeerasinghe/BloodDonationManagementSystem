@@ -49,13 +49,13 @@ const SearchBank = () => {
 
 
                 newTr.appendChild(document.createElement('td')).innerHTML = `
-                    <button type="button" class="btn btn-success" onclick="editBnkData('${bank['id']}')">
-                        <img src="/public/icons/edit.png" width="24px" alt="">
-                    </button>`;
+                    <button type="button" class="btn btn-outline-success border-radius-10" onclick="editBnkData('<?php echo $id; ?>')">
+                                <i class="fas fa-edit"></i>
+                                Edit
+                            </button>`;
             }
         })
 }
-
 function addNewBank() {
     OpenDialogBox({
             id: 'addBankPop',
@@ -190,132 +190,113 @@ function addNewBank() {
 
 function editBnkData(tr) {
 //        document.getElementsByName(tr);
-    let data = document.getElementById(tr).valueOf().innerText.split('\t');
-    // console.log(data);
-    // for (let i in data){
-    //      console.log(data[i]);
-    // }
-    //console.log(tr);        //console.log(id);
-    OpenDialogBox({
-            id: 'editBankPop',
-            title: 'Edit Data',
-            titleClass: 'text-white bg-dark px-2 py-1',
-            content: `
-                        <form id="addBankForm" class="d-flex flex-column gap-1" action="/admin/dashboard/manageBanks/add" method="post">
-                        <input type="hidden" name="BloodBank_ID" value="${data[0]}">
+    const url = '/admin/dashboard/manageBanks/find';
+    const formData = new FormData();
+    formData.append('BloodBank_ID', tr);
+    fetch(url, {
+        method: 'POST',
+        body: formData
+    }).then((response) => {
+        return response.json();
+    }).then((data) => {
+        if (data.status){
+            console.log(data)
+            OpenDialogBox({
+                    id: 'editBankPop',
+                    title: 'Edit Data',
+                    titleClass: 'text-white bg-dark px-2 py-1',
+                    content: `
+                        <form id="editBankForm" class="d-flex flex-column gap-1" action="/admin/dashboard/manageBanks/edit" method="post">
+                        <input type="hidden" name="BloodBank_ID" value="${data.data.BloodBank_ID}">
                         <div class="d-flex gap-1 flex-center">
                             <div class="d-flex flex-center gap-1 w-50">
                                 <label class="w-40" for="bank_name">Bank Name</label>
-                                <input type="text" class="w-60 form-control" id="BankName" name="BankName" placeholder="Bank Name">
+                                <input type="text" class="w-60 form-control" id="BankName" name="BankName" placeholder="Bank Name" value="${data.data.BankName}">
                             </div>
                             <div class="d-flex flex-center w-50 gap-1">
                                 <label class="w-40" for="Address1">Address</label>
-                                <input type="text" class="w-60 form-control" id="Address1" name="Address1" placeholder="Address Line 01">
+                                <input type="text" class="w-60 form-control" id="Address1" name="Address1" placeholder="Address Line 01" value="${data.data.Address1}">
                             </div>
                         </div>
                         <div class="d-flex gap-1 flex-center">
                             <div class="d-flex w-50 flex-center gap-1">
                                 <label class="w-40" for="Address2">Address 2</label>
-                                <input type="text" class="w-60 form-control" id="Address2" name="Address2" placeholder="Address Line 02">
+                                <input type="text" class="w-60 form-control" id="Address2" name="Address2" placeholder="Address Line 02" value="${data.data.Address2}">
                                 
                             </div>
                             <div class="d-flex w-50 flex-center gap-1">
                                 <label class="w-40" for="City">City </label>
-                                <input type="text" class="w-60 form-control" id="City" name="City" placeholder="City">
+                                <input type="text" class="w-60 form-control" id="City" name="City" placeholder="City" value="${data.data.City}">
                                 
                             </div>
                         </div>
                         <div class="d-flex gap-1 flex-center">
                             <div class="d-flex w-50 flex-center gap-1">
                                 <label class="w-40" for="Telephone_No">Telephone Number</label>
-                                <input type="text" class="w-60 form-control" id="Telephone_No" name="Telephone_No" placeholder="Telephone Number">
+                                <input type="text" class="w-60 form-control" id="Telephone_No" name="Telephone_No" placeholder="Telephone Number" value="${data.data.Telephone_No}">
                                 
                             </div>
                             <div class="d-flex w-50 gap-1 flex-center">
                                 <label class="w-40" for="numberOfDoctors">Number of Doctors</label>
-                                <input type="text" class="w-60 form-control" id="No_Of_Doctors" name="No_Of_Doctors" placeholder="Number Of Doctors" value="1">
+                                <input type="text" class="w-60 form-control" id="No_Of_Doctors" name="No_Of_Doctors" placeholder="Number Of Doctors" value="${data.data.No_Of_Doctors}">
                                 
                             </div>
                         </div>
                         <div class="d-flex gap-1 flex-center">
                             <div class="d-flex w-50 flex-center gap-1">
                                 <label class="w-40" for="numberOfNurses">Number Of Nurses</label>
-                                <input type="text" class="w-60 form-control" id="No_Of_Nurses" name="No_Of_Nurses" placeholder="Number Of Nurses" value="1">
+                                <input type="text" class="w-60 form-control" id="No_Of_Nurses" name="No_Of_Nurses" placeholder="Number Of Nurses" value="${data.data.No_Of_Nurses}">
                                 
                             </div>
                             <div class="d-flex w-50 flex-center gap-1">
                                 <label class="w-40" for="numberOfBeds">Number Of Beds</label>
-                                <input type="text" class="w-60 form-control" id="No_Of_Beds" name="No_Of_Beds" placeholder="Number Of Beds" value="1">
+                                <input type="text" class="w-60 form-control" id="No_Of_Beds" name="No_Of_Beds" placeholder="Number Of Beds" value="${data.data.No_Of_Beds}">
                                 
                             </div>
                         </div>
                         <div class="d-flex gap-1 flex-center">
                             <div class="d-flex w-50 flex-center gap-1">
                                 <label class="w-40" for="numberOfStorages">Number Of Storages</label>
-                                <input type="text" class="w-60 form-control" id="No_Of_Storages" name="No_Of_Storages" placeholder="Number Of Storages" value="1">
-                              
+                                <input type="text" class="w-60 form-control" id="No_Of_Storages" name="No_Of_Storages" placeholder="Number Of Storages" value="${data.data.No_Of_Storages}">
+                      
                             </div>
                             <div class="d-flex w-50 flex-center w-60 gap-1">
                                 <label class="w-40" for="type">Type</label>
     <!--                            <input type="t class="w-60 form-control" ext" name="Type" placeholder="Type (0/1)">-->
                                 <select id="type" name="Type" class="form-select w-60">
-                                    <option value="1">Branch</option>
-                                    <option value="2">Main</option>
+                                    ${data.data.Type === 1 ? `<option value="1" selected>Branch</option><option value="2">Main</option>` : `<option value="1">Branch<option value="2" selected>Main</option>`}
                                 </select>
                             </div>
                         </div>
-                        </form>
-                        <form id="editBankForm" action="/admin/dashboard/manageBanks/edit" method="post">
-                            <input type="hidden" name="BloodBank_ID" value="${data[0]}">
-                            <label for="bank_name">Bank Name</label>
-                            <input type="text" id="BankName" name="BankName" value="${data[1]}">
-                            <label for="address">Address</label>
-                            <input type="text" id="Address1" name="Address1" value="${data[2].split(', ')[0]}">
-                            <input type="text" id="Address2" name="Address2" value="${data[2].split(', ')[1]}">
-                            <label for="city">City</label>
-                            <input type="text" id="City" name="City" value="${data[3]}">
-                            <label for="telephone">Telephone</label>
-                            <input type="text" id="Telephone_No"  name="Telephone_No" value="${data[4]}">
-                            <label for="numberOfDoctors">Number of Doctors</label>
-                            <input type="text" id="No_Of_Doctors" name="No_Of_Doctors" value="${data[5]}">
-                            <label for="numberOfNurses">Number Of Nurses</label>
-                            <input type="text" id="No_Of_Nurses" name="No_Of_Nurses" value="${data[6]}">
-                            <label for="numberOfBeds">Number Of Beds</label>
-                            <input type="text" id="No_Of_Beds" name="No_Of_Beds" value="${data[7]}">
-                            <label for="numberOfStorages">Number Of Storages</label>
-                            <input type="text" id="No_Of_Storages" name="No_Of_Storages" value="${data[8]}">
-                            <label for="type">Blood Bank Type</label>
-                            <input type="text" name="typeSave" value="${data[9]}" id="typeSaver" disabled hidden="hidden">
-                            <select id="typeSelector" name="Type">
-                                <option value="1">Branch</option>
-                                <option value="2">Main</option>
-                            </select>
                         </form>`,
-            //closeDialog,
-            successBtnText: 'Save Changes',
-            //cancelBtnText,
-            //closeDialogBtn,
-            successBtnAction: () => {
-                document.getElementById('editBankForm').submit();
-            },
-            secondaryBtnText: 'Remove Bank',
-            secondaryBtnAction: () => {
-                OpenDialogBox({
-                    id: 'removeBankConfirmation',
-                    title: 'Warning',
-                    content: 'Are you sure you want to remove this bank it is irreversible',
-                    popupOrder: 10,
+                    //closeDialog,
+                    successBtnText: 'Save Changes',
+                    //cancelBtnText,
+                    //closeDialogBtn,
                     successBtnAction: () => {
-                        document.getElementById('editBankForm').action = "/admin/dashboard/manageBanks/delete";
                         document.getElementById('editBankForm').submit();
-                    }
-                })
-            },
-            //cancelBtnAction,
-            //popupOrder,
-            //showCancelButton
+                    },
+                    secondaryBtnText: 'Remove Bank',
+                    secondaryBtnAction: () => {
+                        OpenDialogBox({
+                            id: 'removeBankConfirmation',
+                            title: 'Warning',
+                            content: 'Are you sure you want to remove this bank it is irreversible',
+                            popupOrder: 10,
+                            successBtnAction: () => {
+                                document.getElementById('editBankForm').action = "/admin/dashboard/manageBanks/delete";
+                                document.getElementById('editBankForm').submit();
+                            }
+                        })
+                    },
+                    //cancelBtnAction,
+                    //popupOrder,
+                    //showCancelButton
+                }
+            )
         }
-    )
+    });
+
 
 
     document.onkeyup = () => {

@@ -64,6 +64,20 @@ class adminController extends \Core\Controller
         return $this->render('Admin\register');
     }
 
+    public function FindBank(Request $request,Response $response)
+    {
+        if ($request->isPost()){
+            $BloodBank_ID=$request->getBody()['BloodBank_ID'];
+            $BloodBank=BloodBank::findOne(['BloodBank_ID'=>$BloodBank_ID]);
+            if ($BloodBank)
+            {
+                return json_encode(['status'=>true,'message'=>'Blood Bank Found','data'=>$BloodBank->toArray()]);
+            }
+            return json_encode(['status'=>false,'message'=>'Blood Bank Not Found']);
+        }
+
+    }
+
     public function ResetPassword(Request $request, Response $response): bool|string
     {
         $id=trim($request->getBody()['id']);
@@ -108,7 +122,8 @@ class adminController extends \Core\Controller
             'medicalOfficerCount' => MedicalOfficer::getCount(),
             'onGoingCampaigns' => Campaign::getCount(false,['Status'=>'CAMPAIGN_STATUS_APPROVED']),
 //            'pendingBloodRequests' => count(BloodRequest::RetrieveAll(false,[],true,['Status'=>'REQUEST_STATUS_PENDING']))
-            'pendingBloodRequests' => BloodRequest::getCount()
+            'pendingBloodRequests' => BloodRequest::getCount(),
+            'totalUsers' => User::getCount(),
 
         ];
 //        print_r( $data);

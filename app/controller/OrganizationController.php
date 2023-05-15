@@ -46,48 +46,52 @@ class OrganizationController extends Controller
 //        $this->registerMiddleware(new ManagerMiddleware());
     }
 
-    public function profile()
-    {
-        $user=Application::$app->getUser();
-        return $this->render('organization/profile',['user'=>$user]);
-    }
+//    public function profile()
+//    {
+//        $user=Application::$app->getUser();
+//        return $this->render('organization/profile',['user'=>$user]);
+//    }
 
 
 
-    public function register(Request $request,Response $response ): string
-    {
-        $organization=new Organization();
-        if ($request->isPost())
-        {
-            $user = new User();
-            $organization->loadData($request->getBody());
-            $organization->getFile()->saveFile();
-            $user->loadData($request->getBody());
-            $organization->loadData($request->getBody());
-            $id =mt_rand(1000,10000);
-            $organization->setID($id);
-            $user ->setID($id);
+//    public function register(Request $request,Response $response ): string
+//    {
+//        $organization=new Organization();
+//        if ($request->isPost())
+//        {
+//            $user = new User();
+//            $organization->loadData($request->getBody());
+//            $organization->getFile()->saveFile();
+//            $user->loadData($request->getBody());
+//            $organization->loadData($request->getBody());
+//            $id =mt_rand(1000,10000);
+//            $organization->setID($id);
+//            $user ->setID($id);
+//
+//            if($user->validate() && $user->save()) {
+//                if ($organization->validate() && $organization->save()) {
+//                    $response->redirect('/login');
+//                } else {
+//                    print_r($organization->errors);
+//                }
+//            }else{
+//                print_r($user->errors);
+//            }
+//        }
+//        return $this->render('organization\register', ['model' => $organization]);
+//    }
 
-            if($user->validate() && $user->save()) {
-                if ($organization->validate() && $organization->save()) {
-                    $response->redirect('/login');
-                } else {
-                    print_r($organization->errors);
-                }
-            }else{
-                print_r($user->errors);
-            }
-        }
-        return $this->render('organization\register', ['model' => $organization]);
-    }
 
+// Organization Dashboard Function
     public function dashboard(): string
     {
         /* @var Organization $organization*/
 
         $organization = Organization::findOne(['Organization_ID' => Application::$app->getUser()->getID()]);
         $ID=Application::$app->getUser()->getID();
+        //checking for the campaigns which are already in the Pending State or Approved State
         $AlreadyCreatedCampaigns=Campaign::RetrieveAll(false,[],true,['Organization_ID'=>$ID,'Status'=> Campaign::CAMPAIGN_STATUS_PENDING]);
+       //merge the two arrays called Campaigns which are already created and in the Pending and Approved State
         $AlreadyCreatedCampaigns=array_merge($AlreadyCreatedCampaigns,Campaign::RetrieveAll(false,[],true,['Organization_ID'=>$ID,'Status'=> Campaign::CAMPAIGN_STATUS_APPROVED]));
 
         $Exist=false;
@@ -97,6 +101,7 @@ class OrganizationController extends Controller
             foreach ($AlreadyCreatedCampaigns as $camp) {
                 if ($camp && $camp->getCampaignDate() >= date('Y-m-d')) {
                     $Exist = true;
+                    //pass $identity variale to the view page for identify the Ongoing Campaign ID for redirect from the Home Page to the CampDetails Page
                     $identity = $camp->getCampaignID();
                 }
             }
@@ -109,41 +114,11 @@ class OrganizationController extends Controller
         return $this->render('Organization/organizationBoard',[$params,'campaign_exist'=>$Exist,'id' => $ID,'identity' => $identity]);
     }
 
-//    public function manage()
-//    {
-//        /* @var Campaign $campaign */
-//        $ID=Application::$app->getUser()->getID();
-//        $AlreadyCreatedCampaign=Campaign::RetrieveAll(false,[],true,['Organization_ID'=>$ID,'Status'=> Campaign::PENDING]);
-//        $AlreadyCreatedCampaigns=Campaign::RetrieveAll(false,[],true,['Organization_ID'=>$ID,'Status'=> Campaign::APPROVED]);
-//
-//        $Exist=false;
-//        $identity = 0;
-////        $params = [];
-//        if($AlreadyCreatedCampaign){
-//            foreach ($AlreadyCreatedCampaign as $camp) {
-//                if ($camp && $camp->getCampaignDate() >= date('Y-m-d')) {
-//                    $Exist = true;
-//                    $identity = $camp->getCampaignID();
-//                }
-//            }
-//        }
-//        if($AlreadyCreatedCampaigns) {
-//            foreach ($AlreadyCreatedCampaigns as $camp) {
-//                if ($camp && $camp->getCampaignDate() >= date('Y-m-d')) {
-//                    $Exist = true;
-//                    $identity = $camp->getCampaignID();
-//                }
-//            }
-//        }
-//
-//        return $this->render('Organization/manageCampaign',[
-//            'campaign_exist'=>$Exist,'id' => $ID,'identity' => $identity
-//        ]);
-//    }
-
+    //Create campaign Function
     public function CreateCampaign(Request $request,Response $response): string
     {
         $ID = Application::$app->getUser()->getID();
+//        Filter the Campaigns which are not in the Rejected State
         $AlreadyCreatedCampaigns = Campaign::RetrieveAll(false, [], true, ['Organization_ID' => $ID, 'Status' => Campaign::CAMPAIGN_STATUS_PENDING]);
         if ($AlreadyCreatedCampaigns){
             $AlreadyCreatedCampaigns = array_merge($AlreadyCreatedCampaigns, Campaign::RetrieveAll(false, [], true, ['Organization_ID' => $ID, 'Status' => Campaign::CAMPAIGN_STATUS_APPROVED]));
@@ -191,23 +166,23 @@ class OrganizationController extends Controller
         return "";
     }
 
-    public function ViewCampaign(Request $request,Response $response)
-    {
-        print_r("ViewCampaign");
-    }
+//    public function ViewCampaign(Request $request,Response $response)
+//    {
+//        print_r("ViewCampaign");
+//    }
 
-    public function near()
-    {
-        /* @var Campaign $campaign */
-        $city = Application::$app->getUser()->getCity();
-        $result = Campaign::RetrieveAll(false, [],true,['Status' => Campaign::CAMPAIGN_STATUS_APPROVED]);
-        return $this->render('Organization/campaign/NearByCampaigns',['data'=>$result,'city'=>$city]);
-    }
-    public function report()
-    {
-
-        return $this->render('Organization/report');
-    }
+//    public function near()
+//    {
+//        /* @var Campaign $campaign */
+//        $city = Application::$app->getUser()->getCity();
+//        $result = Campaign::RetrieveAll(false, [],true,['Status' => Campaign::CAMPAIGN_STATUS_APPROVED]);
+//        return $this->render('Organization/campaign/NearByCampaigns',['data'=>$result,'city'=>$city]);
+//    }
+//    public function report()
+//    {
+//
+//        return $this->render('Organization/report');
+//    }
     public function history()
     {
         /* @var Campaign $campaign */
@@ -287,7 +262,8 @@ public function inform(Request $request, Response $response)
                     $donornotification->setNotificationMessage($informdonor->getMessage());
                     $donornotification->setNotificationDate(date('Y-m-d'));
                     $donornotification->setTargetID($donor->getDonorID());
-                    $donornotification->setNotificationState(1);
+                    $donornotification->setNotificationType(DonorNotification::URGENT_NOTIFICATION);
+                    $donornotification->setNotificationState(DonorNotification::NOTIFICATION_STATE_UNREAD);
                     $donornotification->save();
                 }
                 Application::Redirect('/organization/campDetails?id=' . urlencode(Security::Encrypt($id)));

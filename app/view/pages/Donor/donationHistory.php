@@ -23,8 +23,13 @@ echo $navbar;
     <h1>Donation History</h1>
 </div>
 <label class="card-view">Recent Donations</label>
+<div class="absolute left-1 top-9">
+    <button class="p-1 cursor bg-dark text-white box-shadow-white border-radius-50 d-flex flex-center gap-1" style="font-size: 1.5rem;border: none" onclick="window.location.href='/donor/dashboard'">
+        <i class="fa-solid fa-circle-chevron-left"></i>
+    </button>
+</div>
 
-<div class="sub-panel page-contain">
+<div class="sub-panel page-contain" style="align-items: baseline">
     <table class="overflow-x-auto" id="bankTable">
         <thead class="bg-white">
         <tr class="bg-white">
@@ -44,7 +49,11 @@ echo $navbar;
         //print_r( $data[0]);
 
         if (!$data){
-            echo "NO Data Available";
+            ?>
+            <tr>
+                <td colspan="5" class="text-center">No Donations Available</td>
+            </tr>
+        <?php
         }else{
         foreach($data as $donation)
         {

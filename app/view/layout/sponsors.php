@@ -58,7 +58,6 @@ $navbar = new AuthNavbar(strtoupper($User->getSponsorName()).' '.'SPONSOR BOARD'
                                             ${data.notifications.map(notification => `
                                                         <div class="d-flex flex-column gap-1 border-2 px-1 w-100 py-0-5">
                                                             <div class="d-flex justify-content-between w-100">
-                                                                <img src="/public/icons/${notification.Notification_Type === "1" ? "CampaignAssign.svg" : (notification.Notification_Type === "2" ? "TaskComplete.svg" : "TaskAssign.svg")}" alt="" width="24px">
                                                                 <div class="text-sm font-bold">${notification.Notification_Title}</div>
                                                                 <div class="text-sm">${notification.Notification_Date}</div>
                                                             </div>

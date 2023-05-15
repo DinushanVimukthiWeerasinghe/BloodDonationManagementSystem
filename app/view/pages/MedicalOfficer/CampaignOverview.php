@@ -188,7 +188,7 @@
                                 <td class="text-center"><?=$DonorQueueItem->getQueueState()?></td>
                                 <td class="text-center"><?=$DonorQueueItem->getDonor_Status()!==CampaignDonorQueue::STAGE_4 ? '<span class="bg-yellow-9 text-white px-1 border-radius-10 py-0-5 d-flex fle-center">Waiting' :'<span class="green-d-flex fle-center">Completed</span>'?></td>
                                 <td class="text-center">
-                                    <button class="btn btn-sm btn-outline-primary" onclick="ViewDonor('<?=$Donor->getDonorID()?>')">View</button>
+                                    <button class="btn btn-sm btn-outline-primary" onclick="ViewDonor('<?=$Donor->getNIC()?>')">View</button>
                                 </td>
                             </tr>
                         <?php
@@ -209,6 +209,60 @@
 </div>
 
 <script>
+    const ViewDonor = (nic)=>{
+        console.log(nic)
+        const url = "/mofficer/mngDonors/find"
+        const data = new FormData();
+        data.append('nic',nic);
+        data.append('format','json');
+        fetch(url,{
+            method:'POST',
+            body:data
+        }).then(response=>response.json()).then(data=>{
+            if (data.status){
+                const donor = data.donor;
+                OpenDialogBox({
+                    id:'viewDonor',
+                    title:'View Donor',
+                    titleClass:'text-white bg-dark',
+                    content: `
+                        <div class="d-flex flex-column">
+                            <div class="d-flex flex-column flex-center gap-1">
+                                <div class="d-flex flex-column gap-1 w-100">
+                                    <div class="font-bold bg-dark px-2 py-1 text-white">Personal Details</div>
+                                    <div class="d-flex justify-content-center gap-1">
+                                        <div class="d-flex flex-column gap-0-5 w-50">
+                                            <div class="d-flex gap-1">
+                                                <div class="font-bold">Full Name</div>
+                                                <div class="font-thin">${donor.name}</div>
+                                            </div>
+                                            <div class="d-flex gap-1">
+                                                <div class="font-bold">Age</div>
+                                                <div class="font-thin">${donor.age}</div>
+                                            </div>
+                                            <div class="d-flex gap-1">
+                                                <div class="font-bold">Address</div>
+                                                <div class="font-thin">${donor.address}</div>
+                                            </div>
+                                            <div class="d-flex gap-1">
+                                                <div class="font-bold">Contact No</div>
+                                                <div class="font-thin">${donor.contactNo}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `,
+                    showSuccessButton:false,
+                    cancelBtnText:'Close',
+                })
+            }
+        }).catch(error=>{
+            console.log(error);
+        })
+
+    }
     const LoadChart = ()=>{
         const ctx = document.getElementById('myChart').getContext('2d');
         const Tasks = ['Health Checkup','Blood Checkup','Blood Retrieval','Blood Stored'];
@@ -289,116 +343,6 @@
         });
     }
     LoadChart();
-    const ViewDonor = (id)=>{
-        console.log(id)
-        const url = "/mofficer/mngDonors/find"
-        const data = new FormData();
-        data.append('ID',id);
-        data.append('format','json');
-        fetch(url,{
-            method:'POST',
-            body:data
-        }).then(response=>response.json()).then(data=>{
-            console.log(data)
-            if (data.status){
-                const donor = data.data;
-                const Donations = donor.Donations;
-                let tbody = '';
-                if (Donations){
-                    Donations.forEach((donation)=>{
-                        tbody += `
-                        <tr>
-                            <td data-label="Donation Date">${donation.Date}</td>
-                            <td data-label="Donation Venue">${donation.Venue}</td>
-                            <td data-label="Donation Status">${donation.Status}</td>
-                            <td data-label="Donation PackageID">${donation.PackageID}</td>
-                        </tr>
-                        `
-                    })
-                }else{
-                    tbody = `
-                    <tr>
-                        <td colspan="4" class="text-center">No Donations Found</td>
-                    </tr>
-                    `
-                }
-                OpenDialogBox({
-                    id:'viewDonor',
-                    title:'View Donor',
-                    titleClass:'text-white bg-dark',
-                    content: `
-                        <div class="d-flex flex-column">
-                            <div class="d-flex flex-column flex-center gap-1">
-                                <div class="d-flex flex-column gap-1 w-100">
-                                    <div class="font-bold bg-dark px-2 py-1 text-white">Personal Details</div>
-                                    <div class="d-flex justify-content-center gap-1">
-                                        <div class="d-flex flex-column gap-0-5 w-50">
-                                            <div class="d-flex gap-1">
-                                                <div class="font-bold">Full Name</div>
-                                                <div class="font-thin">${donor.FullName}</div>
-                                            </div>
-                                            <div class="d-flex gap-1">
-                                                <div class="font-bold">Age</div>
-                                                <div class="font-thin">${donor.Age}</div>
-                                            </div>
-                                            <div class="d-flex gap-1">
-                                                <div class="font-bold">Address</div>
-                                                <div class="font-thin">${donor.Address}</div>
-                                            </div>
-                                            <div class="d-flex gap-1">
-                                                <div class="font-bold">Contact No</div>
-                                                <div class="font-thin">${donor.ContactNo}</div>
-                                            </div>
-                                        </div>
-                                        <div class="d-flex flex-column gap-0-5 w-50">
-                                            <div class="d-flex gap-1">
-                                                <div class="font-bold">Email</div>
-                                                <div class="font-thin">${donor.Email}</div>
-                                            </div>
-                                            <div class="d-flex gap-1">
-                                                <div class="font-bold">Nationality</div>
-                                                <div class="font-thin">${donor.Nationality}</div>
-                                            </div>
-                                            <div class="d-flex gap-1">
-                                                <div class="font-bold">NIC</div>
-                                                <div class="font-thin">${donor.NIC}</div>
-                                            </div>
-                                            <div class="d-flex align-items-center gap-1">
-                                                <div class="font-bold">Availability</div>
-                                                <div class="font-thin text-white border-radius-5 px-1 py-0-5 ${donor.Availability===1?'bg-success':'bg-danger'}">${donor.Availability ===1 ? 'Available ' :'Not Available'}</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="d-flex flex-column gap-1 w-100">
-                                    <div class="font-bold bg-dark px-2 py-1 text-white">Sponsor Details</div>
-                                    <div class="d-flex overflow-y-overlay" style="max-height: 50vh">
-                                        <table class="table">
-                                            <thead class="sticky top-0">
-                                                <tr>
-                                                    <th>Date</th>
-                                                    <th>Venue</th>
-                                                    <th>Donation Status</th>
-                                                    <th>Blood Packet ID</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                            ${tbody}
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    `,
-                    showSuccessButton:false,
-                    cancelBtnText:'Close',
-                })
-            }
-        }).catch(error=>{
-            console.log(error);
-        })
 
-    }
 
 </script>

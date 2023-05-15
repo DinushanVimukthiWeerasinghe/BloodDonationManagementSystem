@@ -23,7 +23,7 @@
                         <text x="18" y="20.35" class="percentage"><?php echo $bloodPacketsCount?></text>
                     </svg>
                 </div>
-                <div><span class="font-extraBold text-purple-8 text-xl">60</span> / <span>100</span></div>
+                <div><span class="font-extraBold text-purple-8 text-xl"><?php echo $bloodPacketsCount?></span></div>
 
             </div>
             <div class="w-90 bg-purple-8 border-radius-5 align-self-center"
@@ -46,7 +46,7 @@
               a 15.9155 15.9155 0 0 1 0 -31.831"
                         />
                         <path class="circle"
-                              stroke-dasharray="30, 100"
+                              stroke-dasharray="100, 100"
                               d="M18 2.0845
               a 15.9155 15.9155 0 0 1 0 31.831
               a 15.9155 15.9155 0 0 1 0 -31.831"
@@ -54,7 +54,7 @@
                         <text x="18" y="20.35" class="percentage"><?php echo $donorsCount?></text>
                     </svg>
                 </div>
-                <div><span class="font-extraBold text-dark text-xl">30</span> <span class="text-2xl">/</span> <span>100</span></div>
+                <div><span class="font-extraBold text-dark text-xl"><?php echo $donorsCount?></span></div>
             </div>
             <div class="w-100 bg-dark border-radius-5 align-self-center"
                  style="height: 8px;width: 85%;margin-bottom:2px">
@@ -72,7 +72,7 @@
               a 15.9155 15.9155 0 0 1 0 -31.831"
                         />
                         <path class="circle"
-                              stroke-dasharray="40, 100"
+                              stroke-dasharray="100, 100"
                               d="M18 2.0845
               a 15.9155 15.9155 0 0 1 0 31.831
               a 15.9155 15.9155 0 0 1 0 -31.831"
@@ -82,7 +82,7 @@
                         </text>
                     </svg>
                 </div>
-                <div><span class="font-extraBold text-success text-xl">60</span> / <span>100</span></div>
+                <div><span class="font-extraBold text-success text-xl"><?php echo $bloodBanksCount?></span></div>
             </div>
             <div class="w-100 bg-green-6 border-radius-5 align-self-center"
                  style="height: 8px;width: 85%;margin-bottom:2px">
@@ -101,7 +101,7 @@
               a 15.9155 15.9155 0 0 1 0 -31.831"
                         />
                         <path class="circle"
-                              stroke-dasharray="40, 100"
+                              stroke-dasharray="100, 100"
                               d="M18 2.0845
               a 15.9155 15.9155 0 0 1 0 31.831
               a 15.9155 15.9155 0 0 1 0 -31.831"
@@ -109,7 +109,7 @@
                         <text x="18" y="20.35" class="percentage"><?php echo $medicalOfficerCount?></text>
                     </svg>
                 </div>
-                <div><span class="font-extraBold text-primary text-xl">60</span> / <span>100</span></div>
+                <div><span class="font-extraBold text-primary text-xl"><?php echo $medicalOfficerCount?></span></div>
             </div>
             <div class="w-100 bg-primary border-radius-5 align-self-center"
                  style="height: 8px;width: 85%;margin-bottom:2px">
@@ -128,15 +128,15 @@
               a 15.9155 15.9155 0 0 1 0 -31.831"
                         />
                         <path class="circle"
-                              stroke-dasharray="40, 100"
+                              stroke-dasharray="100, 100"
                               d="M18 2.0845
               a 15.9155 15.9155 0 0 1 0 31.831
               a 15.9155 15.9155 0 0 1 0 -31.831"
                         />
-                        <text x="18" y="20.35" class="percentage">60%</text>
+                        <text x="18" y="20.35" class="percentage"><?php echo $onGoingCampaigns ?></text>
                     </svg>
                 </div>
-                <div><span class="font-extraBold text-yellow-8 text-xl">60</span> / <span>100</span></div>
+                <div><span class="font-extraBold text-yellow-8 text-xl"><?php echo $onGoingCampaigns ?></span></div>
             </div>
             <div class="w-100 bg-warning border-radius-5 align-self-center"
                  style="height: 8px;width: 85%;margin-bottom:2px">
@@ -158,7 +158,7 @@
         <ul class="list list-style-none">
             <li class="d-flex align-items-center justify-content-evenly">Ongoing Campaigns : <div class="text-2xl"> <?php echo $onGoingCampaigns ?> </div></li>
             <li class="d-flex align-items-center justify-content-evenly">Pending Blood Requests : <div class="text-2xl"> <?php echo $pendingBloodRequests  ?> </div></li>
-            <li class="d-flex align-items-center justify-content-evenly">Total Users : <div class="text-2xl">30</div></li>
+            <li class="d-flex align-items-center justify-content-evenly">Total Users : <div class="text-2xl"><?php echo $totalUsers ?></div></li>
         </ul>
     </div>
     </div>
@@ -170,7 +170,9 @@
 
     // console.log(cards);
 
-    loadPieChartDonors(<?php echo $donorsCount ?>, <?php echo $availableDonors ?>);
+    //loadPieChartDonors(<?php //echo $donorsCount ?>//, <?php //echo $availableDonors ?>//);
+    //TODO : REMOVE THIS
+    loadPieChartDonors(507, 350);
 
 
 
@@ -183,9 +185,9 @@
     XHR.setRequestHeader("Content-Type", "application/json");
     XHR.send();
     XHR.onload = function () {
-        // console.log("high");
-        const bloodGroups = JSON.parse(this.responseText);
-        // console.log(bloodGroups.toArray());
+        // const bloodGroups = JSON.parse(this.responseText);
+        //TODO : REMOVE THIS
+        const bloodGroups = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
         loadPieChart(bloodGroups);
         // Managers = Object.keys(managerList);
        }
@@ -219,11 +221,14 @@
     }
 
     function loadPieChart(bloodGroups) {
-            // let yValues = [55, 49, 44, 24, 15, 45, 45, 44];
-            let yValues = Object.values(bloodGroups);
+            //TODO:Remove this
+            let yValues = [55, 49, 44, 24, 15, 45, 45, 44,54];
+            let xValues = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
+            // let yValues = Object.values(bloodGroups);
+            // let xValues = Object.keys(bloodGroups);
             // console.log(bloodGroups.toArray());
             // let xValues = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
-            let xValues = Object.keys(bloodGroups);
+
             let barColors = [
                 "rgba(255, 0, 0, 1)",       // Red
                 "rgba(220, 20, 60, 1)",     // Crimson

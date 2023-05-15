@@ -53,6 +53,7 @@ class authController extends Controller
             }
             $OTP = RegisterOTP::findOne(['Email'=>$Email,'OTP'=>$OTP],false);
             if ($OTP){
+                header('Content-Type: application/json');
                 return json_encode(['status'=>true,'message'=>'OTP Verified']);
             }else{
                 return json_encode(['status'=>false,'message'=>'Invalid OTP']);
@@ -353,9 +354,11 @@ class authController extends Controller
 
     public function UserRegister(Request $request,Response $response)
     {
+
         $user = new User();
         if ($request->isPost()){
             $Role = $request->getBody()['Role'];
+
 
             if (trim($Role) == '' || !$user->IsValidRole($Role)) {
                 $this->setFlashMessage('error', 'Please Select Role');
@@ -371,6 +374,7 @@ class authController extends Controller
                 $Password=trim($request->getBody()['Password']);
                 $ConfirmPassword=trim($request->getBody()['ConfirmPassword']);
                 // For Development Purpose
+
                 if (MODE!==DEVELOPMENT) {
                     // Password must be 8 characters long
                     if (strlen($Password) < 8) {
@@ -389,9 +393,10 @@ class authController extends Controller
                         $this->setFlashMessage('error', 'Password must contain at least one special character');
                         return json_encode(['status' => false, 'message' => 'Password must contain at least one special character']);
                     }
-                }
 
-                else if ($Password != $ConfirmPassword){
+                }
+                if ($Password != $ConfirmPassword){
+
                     $this->setFlashMessage('error', 'Password and Confirm Password Not Match');
                     return json_encode(['status'=>false,'message'=>'Password and Confirm Password Not Match']);
                 }
@@ -400,10 +405,12 @@ class authController extends Controller
                     $user->loadData($request->getBody());
                     $user->setAccountStatus(User::ACCOUNT_NOT_VERIFIED);
                     $user->setPassword($hash);
+
                     if ($user->validate()) {
                         $user->save();
                         $UserID = $user->getID();
                         $EncryptedUserID = openssl_encrypt($UserID,ENCRYPTION_METHOD,ENCRYPTION_KEY,0,ENCRYPTION_IV);
+
                         $this->setFlashMessage('success', 'Please Complete Your Registration');
                         if ($user->getRole() == User::ORGANIZATION)
                             return json_encode(['status'=>true,'message'=>'User Registered Successfully','redirect'=>'/organization/register?uid='.urlencode($EncryptedUserID)]);

@@ -297,11 +297,14 @@ abstract class dbModel extends Model
                 if ($attribute == static::PrimaryKey()) {
                     continue;
                 }
+
                 if (in_array($attribute, $Include)) {
+
                     $demo .= $attribute . '="' . $this->{$attribute} . '", ';
                 }
-
             }
+
+
         }else {
             foreach ($attributes as $attribute) {
                 if ($attribute == static::PrimaryKey()) {
@@ -322,6 +325,8 @@ abstract class dbModel extends Model
             }
             $demo=substr($demo,0,-4);
         }
+
+
 
 
         $statement=self::prepare($demo);

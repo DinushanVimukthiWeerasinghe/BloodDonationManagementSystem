@@ -90,8 +90,12 @@ class Donor extends Person
         $this->BloodGroup = $BloodGroup;
     }
 
+    /**
+     * @throws \Exception
+     */
     public function getAge(): ?int
     {
+        return 18;
         $nicNumber=$this->getNIC();
         $nicNumber = preg_replace('/\D/', '', $nicNumber);
 
@@ -139,8 +143,7 @@ class Donor extends Person
         $DateOfBirth = $year . '-' . $month . '-' . $days;
         $DateOfBirth = new DateTime($DateOfBirth);
         $today = new DateTime('today');
-        $age = $DateOfBirth->diff($today)->y;
-        return $age;
+        return $DateOfBirth->diff($today)->y;
 
 
     }
@@ -492,9 +495,16 @@ class Donor extends Person
         return $this->BloodGroup ?? "Unknown";
     }
 
-    public function getVerificationStatus()
+    public function getVerificationStatus($bool=true)
     {
-        return $this->Verified ? "Verified" : "Not Verified";
+        if (!$bool)
+            return $this->Verified;
+        return match ($this->Verified){
+            1=>"Pending",
+            2=>"Verified",
+            3=>"Not Verified",
+            default=>"Unknown"
+        };
     }
 
     public function generateGenderByNIC()

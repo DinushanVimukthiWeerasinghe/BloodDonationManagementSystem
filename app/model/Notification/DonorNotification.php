@@ -7,6 +7,7 @@ class DonorNotification extends \App\model\database\dbModel
     public const INFORM_ALL_DONOR = 1;
     public const INFORM_GROUP_OF_DONOR = 2;
     public const NOTIFICATION_STATE_UNREAD = 1;
+    public const URGENT_NOTIFICATION = 2;
 
     protected string $Notification_ID='';
     protected int $Notification_Type=0;

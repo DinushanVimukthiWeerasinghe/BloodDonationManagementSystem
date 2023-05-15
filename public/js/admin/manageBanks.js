@@ -11,20 +11,33 @@ function AddNewManager() {
         // console.log(Banks);
         OpenDialogBox({
             title: "Add New Manager",
+            titleClass: "text-center bg-dark text-white",
             content: `
                 <div class="form-group">
-                    <form action="/admin/manageBanks/addManager" method="post" id="addNewManagerForm">
-                        <select class="" id="bank" name="bank">
-                            <option value="0">Select Blood Bank</option>
-                        </select>
-                        <input type="email" name="Email" id="email" placeholder="E-Mail for Blood Bank Manager" required>
+                    <form action="/admin/manageBanks/addManager" method="post" id="addNewManagerForm" class="d-flex flex-column gap-1">
+                        <div class="d-flex w-100 flex-row gap-1">
+                            <div class="d-flex w-50 flex-column gap-1">
+                                <select class="form-select" id="bank" name="bank">
+                                    <option value="0">Select Blood Bank</option>
+                                </select>
+                            </div>
+                            <div class="d-flex w-50 flex-column gap-1">
+                                <input type="email" name="Email" id="email" placeholder="E-Mail for Blood Bank Manager" required>
+                            </div>
+                        </div>
+                        <div class="d-flex flex-row gap-1">
                         <input type="password" name="password" id="password" placeholder="Password" required>
-                        <input type="text" name="First_Name" id="fName" placeholder="Identification Name For Manager" required>
-                        <input type="text" name="Last_Name" id="lName" placeholder="Identification Name For Manager" required>
+                        <input type="text" name="First_Name" id="fName" placeholder="Manager First Name" required>
+                        </div>
+                        <div class="d-flex flex-row gap-1">
+                        <input type="text" name="Last_Name" id="lName" placeholder="Manager Last Name" required>
                         <input type="text" name="Address1" id="address1" placeholder="Address Line 1" required>
+                        </div>
+                        <div class="d-flex flex-row gap-1">
                         <input type="text" name="Address2" id="address2" placeholder="Address Line 2" required>
                         <input type="text" name="City" id="city" placeholder="City" required>
-                        <input type="tel" name="Contact_No" id="contactNo" placeholder="Contact Number" required>
+                        <input type="tel" class="border-radius-10" name="Contact_No" id="contactNo" placeholder="Contact Number" required>
+                        </div>
                     </form>
                 </div>
                 `,

@@ -138,10 +138,8 @@ class Application
         $this->email = new BaseEmail($config['email']);
 //        Set Timezone to Asia/Colombo
         date_default_timezone_set('Asia/Colombo');
-//        $this->db->applyMigrations();
         if(isset($_SESSION['user']))
         {
-//            unset($_SESSION['user']);
             $UserClass=$_SESSION['user']->getSessionData()['UserClass'];
             $UserID=$_SESSION['user']->getSessionData()['UID'];
             $this->user = $UserClass::findOne([$UserClass::PrimaryKey()=>$UserID]);
