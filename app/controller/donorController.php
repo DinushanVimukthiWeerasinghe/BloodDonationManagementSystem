@@ -50,7 +50,7 @@ class donorController extends Controller
             'firstName'=>$donor->getFirstName(),
             'lastName'=>$donor->getLastName(),
             'state' => $donor->getDonationAvailability(),
-            'verificationStatus'=>$donor->getVerificationStatus()
+            'verificationStatus'=>$donor->getVerificationStatus(false)
         ];
       //  print_r($data);
       //  exit();

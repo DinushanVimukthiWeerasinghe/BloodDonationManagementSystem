@@ -264,7 +264,7 @@ function editBnkData(tr) {
                                 <label class="w-40" for="type">Type</label>
     <!--                            <input type="t class="w-60 form-control" ext" name="Type" placeholder="Type (0/1)">-->
                                 <select id="type" name="Type" class="form-select w-60">
-                                    ${data.data.Type === 2 ? `<option value="2" selected>Branch</option>` : `<option value="1">Main</option>`}
+                                    ${data.data.Type === 1 ? `<option value="1" selected>Branch</option><option value="2">Main</option>` : `<option value="1">Branch<option value="2" selected>Main</option>`}
                                 </select>
                             </div>
                         </div>

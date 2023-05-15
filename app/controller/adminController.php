@@ -122,7 +122,8 @@ class adminController extends \Core\Controller
             'medicalOfficerCount' => MedicalOfficer::getCount(),
             'onGoingCampaigns' => Campaign::getCount(false,['Status'=>'CAMPAIGN_STATUS_APPROVED']),
 //            'pendingBloodRequests' => count(BloodRequest::RetrieveAll(false,[],true,['Status'=>'REQUEST_STATUS_PENDING']))
-            'pendingBloodRequests' => BloodRequest::getCount()
+            'pendingBloodRequests' => BloodRequest::getCount(),
+            'totalUsers' => User::getCount(),
 
         ];
 //        print_r( $data);

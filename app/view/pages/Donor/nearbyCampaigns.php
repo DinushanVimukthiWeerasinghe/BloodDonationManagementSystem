@@ -127,7 +127,7 @@ use Core\Application;
                                     </div>
                                 </div>
                         `,
-                    successBtnText: attendance ? 'Remove Attendance' : 'Mark Attendance',
+                    successBtnText: attendance ? 'Not Interested' : 'Interested',
                     successBtnAction:()=>{
                         let attendanceMarkResult;
                         if (attendance){

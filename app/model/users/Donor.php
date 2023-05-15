@@ -496,9 +496,16 @@ class Donor extends Person
         return $this->BloodGroup ?? "Unknown";
     }
 
-    public function getVerificationStatus()
+    public function getVerificationStatus($bool=true)
     {
-        return $this->Verified ? "Verified" : "Not Verified";
+        if (!$bool)
+            return $this->Verified;
+        return match ($this->Verified){
+            1=>"Pending",
+            2=>"Verified",
+            3=>"Not Verified",
+            default=>"Unknown"
+        };
     }
 
     public function generateGenderByNIC()

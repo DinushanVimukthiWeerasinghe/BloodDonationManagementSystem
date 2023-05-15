@@ -38,10 +38,15 @@ $navbar = new DonorNavbar('Donor Board', '/donor/profile', '/public/images/icons
 //echo $notification->getNotification('Notification', 'Are you sure you want to', 'Notification', 'Are you sure', 'Are you sure', 'Are you sure', 'Are you sure', 'Are you sure');
 $alert = new FlashMessage();
 
-if ($state == 0){
-    echo $alert->ErrorAlert("You Cannot Donate Blood at this time Moment");
-}else{
-    echo $alert->SuccessAlert("You Can Donate Blood at this time Moment");
+
+if ($verificationStatus == \App\model\users\Donor::PENDING){
+    echo $alert->ErrorAlert("You are not verified yet please verify your account by visiting the nearest blood bank or blood donation campaign");
+}else if ($verificationStatus == \App\model\users\Donor::NOT_VERIFIED){
+    if ($state == 0){
+        echo $alert->ErrorAlert("You Cannot Donate Blood at this time Moment");
+    }else{
+        echo $alert->SuccessAlert("You Can Donate Blood at this time Moment");
+    }
 }
 
 ?>

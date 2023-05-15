@@ -295,17 +295,27 @@ const SearchUser = (role)=>{
 const addNewHospital = () => {
     OpenDialogBox({
         title: 'Add New Hospital',
+        titleClass: 'bg-dark text-white text-center',
         id: 'addNewHospital',
-        content: `<form method="post" action="/admin/manageHospital/addHospital" id="addHospitalForm">
+        content: `
+            <form method="post" action="/admin/manageHospital/addHospital" id="addHospitalForm" class="d-flex flex-column gap-1">
+            <div class="d-flex flex-center gap-1 w-100">
             <input type="email" name="Email" id="email" placeholder="E-Mail for Hospital">
             <input type="password" name="password" id="password" placeholder="Password">
+            </div>
+            <div class="d-flex flex-center gap-1 w-100">
             <input type="text" name="Hospital_Name" id="name" placeholder="Hospital Name">
             <input type="text" name="Address1" id="address1" placeholder="Address Line 1">
-            <input type="text" name="Address2" id="address2" placeholder="Address Line 1">
+            </div>
+            <div class="d-flex flex-center gap-1 w-100">
+            <input type="text" name="Address2" id="address2" placeholder="Address Line 2">
             <input type="text" name="City" id="city" placeholder="City">
-            <input type="tel" name="Contact_No" id="contactNo" placeholder="Contact Number">
-            <select name="Nearest_Blood_Bank" id="nearest_blood_bank">
+            </div>
+            <div class="d-flex flex-center gap-1 w-100">
+            <input type="tel" name="Contact_No" id="contactNo" class="form-control border-radius-10" placeholder="Contact Number">
+            <select class="form-select" name="Nearest_Blood_Bank" id="nearest_blood_bank">
             </select>
+            </div>
         </form>`,
         successBtnAction: () => {
             document.getElementById('addHospitalForm').submit();
