@@ -8,9 +8,89 @@ class HospitalBloodDonations extends dbModel
 {
     protected string $Donation_ID='';
     protected string $Donor_ID='';
-    protected string $Request_ID='';
+    protected ?string $Request_ID=null;
     protected string $Donation_At='';
-    protected float $volume=0.0;
+    protected float $Volume=0.0;
+
+    /**
+     * @return string
+     */
+    public function getDonationID(): string
+    {
+        return $this->Donation_ID;
+    }
+
+    /**
+     * @param string $Donation_ID
+     */
+    public function setDonationID(string $Donation_ID): void
+    {
+        $this->Donation_ID = $Donation_ID;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDonorID(): string
+    {
+        return $this->Donor_ID;
+    }
+
+    /**
+     * @param string $Donor_ID
+     */
+    public function setDonorID(string $Donor_ID): void
+    {
+        $this->Donor_ID = $Donor_ID;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRequestID(): string
+    {
+        return $this->Request_ID;
+    }
+
+    /**
+     * @param string $Request_ID
+     */
+    public function setRequestID(string $Request_ID): void
+    {
+        $this->Request_ID = $Request_ID;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDonationAt(): string
+    {
+        return $this->Donation_At;
+    }
+
+    /**
+     * @param string $Donation_At
+     */
+    public function setDonationAt(string $Donation_At): void
+    {
+        $this->Donation_At = $Donation_At;
+    }
+
+    /**
+     * @return float
+     */
+    public function getVolume(): float
+    {
+        return $this->Volume;
+    }
+
+    /**
+     * @param float $Volume
+     */
+    public function setVolume(float $Volume): void
+    {
+        $this->Volume = $Volume;
+    }
 
 
     public function labels(): array
@@ -21,7 +101,7 @@ class HospitalBloodDonations extends dbModel
             'Donor_ID'=>'Donor ID',
             'Request_ID'=>'Request ID',
             'Donation_At'=>'Donation At',
-            'volume'=>'Volume'
+            'Volume'=>'Volume'
         ];
     }
 
@@ -31,9 +111,8 @@ class HospitalBloodDonations extends dbModel
         return [
             'Donation_ID'=>[self::RULE_REQUIRED],
             'Donor_ID'=>[self::RULE_REQUIRED],
-            'Request_ID'=>[self::RULE_REQUIRED],
             'Donation_At'=>[self::RULE_REQUIRED],
-            'volume'=>[self::RULE_REQUIRED]
+            'Volume'=>[self::RULE_REQUIRED]
         ];
     }
 
@@ -63,7 +142,7 @@ class HospitalBloodDonations extends dbModel
             'Donor_ID',
             'Request_ID',
             'Donation_At',
-            'volume'
+            'Volume'
         ];
     }
 }

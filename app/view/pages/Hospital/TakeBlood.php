@@ -1,4 +1,32 @@
+<link rel="stylesheet"  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 <?php
+/* @var string $data */
+
+use App\model\BloodBankBranch\BloodBank;
+use App\model\Requests\BloodRequest;
+use App\model\users\Hospital;
+use App\view\components\ResponsiveComponent\Alert\FlashMessage;
+use App\view\components\ResponsiveComponent\CardGroup\CardGroup;
+use App\view\components\ResponsiveComponent\ImageComponent\BackGroundImage;
+use App\view\components\ResponsiveComponent\NavbarComponent\AuthNavbar;
+
+FlashMessage::RenderFlashMessages();
+$navbar = new AuthNavbar('Hospital Board', '/hospital', '/public/images/icons/user.png', true,false );
+echo $navbar;
+
+use App\view\components\WebComponent\Card\Card;
+
+echo card::ImportJS();
+
+/* @var Hospital $user */
+
+use App\view\components\WebComponent\Card\NavigationCard;
+
+$background = new BackGroundImage();
+
+echo $background;
+
+
 /* @var $Donor Donor*/
 /* @var $Donation Donation*/
 
@@ -165,7 +193,8 @@ endif;
     ?>
 
     const TimeCounter = ()=>{
-        const startTime= new Date('<?=$Donation->getStartAt()?>');
+        const startTime= new Date('<?=/** @var \App\model\Donations\HospitalBloodDonations $Donation */
+            $Donation->getDonationAt()?>');
         const CurrentTime = new Date();
         const time = document.querySelector("#timer");
         let seconds = 0;
@@ -219,7 +248,7 @@ endif;
                 </div>
         `,
             successBtnAction : ()=>{
-                const url = "/mofficer/CompleteDonation";
+                const url = "/hospital/CompleteDonation";
                 const formData = new FormData();
                 formData.append("DonorID", "<?=$Donor->getDonorID()?>");
                 formData.append("Donation_ID", "<?=$Donation->getDonationID()?>");
@@ -264,7 +293,7 @@ endif;
                                 duration: 3000
                             })
                             setTimeout(()=>{
-                                window.location.reload();
+                                window.location.href='/hospital/dashboard';
                             },3000)
                         } else {
                             ShowToast({
@@ -273,9 +302,7 @@ endif;
                                 duration: 3000
                             })
                         }
-                    }).catch((error) => {
-                    console.log(error)
-                })
+                    })
             }
         })
     }
@@ -333,7 +360,7 @@ endif;
         })
     }
     const StartBloodDonation = (id) =>{
-        const url = "/mofficer/startBloodDonation";
+        const url = "/hospital/startBloodDonation";
         const form = new FormData();
         form.append("DonorID",id);
         fetch(url,{
@@ -388,7 +415,7 @@ endif;
             successBtnAction : ()=>{
                 const AbortDonationReason = document.getElementById("AbortDonationReason");
                 const AbortDonationReasonOther = document.getElementById("AbortDonationReasonOther");
-                const url = "/mofficer/rejectBloodDonation";
+                const url = "/hospital/rejectBloodDonation";
                 const formData = new FormData();
                 formData.append("AbortDonationReason", AbortDonationReason.value);
                 if (AbortDonationReason.value === "4") {

@@ -10,6 +10,7 @@
  use App\model\Campaigns\CampaignDonorQueue;
  use App\model\Donations\AcceptedDonations;
  use App\model\Donations\Donation;
+ use App\model\Donations\HospitalBloodDonations;
  use App\model\Donations\RejectedDonations;
  use App\model\Donor\DonorHealthCheckUp;
  use App\model\Notification\HospitalNotification;
@@ -47,12 +48,133 @@
         return $this->render('Hospital/profile',['User'=>$user]);
     }
 
+     public function ChangePassword(Request $request,Response $response)
+     {
+         if ($request->isPost()){
+             $CurrentPassword = $request->getBody()['CurrentPassword'];
+             $NewPassword = $request->getBody()['NewPassword'];
+             $ConfirmPassword = $request->getBody()['ConfirmPassword'];
+             if (empty($CurrentPassword) || empty($NewPassword) || empty($ConfirmPassword)){
+                 if (empty($CurrentPassword)){
+                     return json_encode([
+                         'status'=>false,
+                         'message'=>'Current Password is required!',
+                         'field'=>'CurrentPassword'
+                     ]);
+                 }
+                 if (empty($NewPassword)){
+                     return json_encode([
+                         'status'=>false,
+                         'message'=>'New Password is required!',
+                         'field'=>'NewPassword'
+                     ]);
+                 }
+                 if (empty($ConfirmPassword)){
+                     return json_encode([
+                         'status'=>false,
+                         'message'=>'Confirm Password is required!',
+                         'field'=>'ConfirmPassword'
+                     ]);
+                 }
+             }
+             if (strlen($NewPassword)<8){
+                 return json_encode([
+                     'status'=>false,
+                     'message'=>'Password must be at least 8 characters long!',
+                     'field'=>'NewPassword'
+                 ]);
+             }
+             if (preg_match('/[A-Z]/', $NewPassword)===0){
+                 return json_encode([
+                     'status'=>false,
+                     'message'=>'Password must contain at least one uppercase letter!'
+                 ]);
+             }
+
+             if (preg_match('/[a-z]/', $NewPassword)===0){
+                 return json_encode([
+                     'status'=>false,
+                     'message'=>'Password must contain at least one lowercase letter!'
+                 ]);
+             }
+
+             if (preg_match('/[0-9]/', $NewPassword)===0){
+                 return json_encode([
+                     'status'=>false,
+                     'message'=>'Password must contain at least one number!'
+                 ]);
+             }
+
+             if (preg_match('/[^a-zA-Z\d]/', $NewPassword)===0){
+                 return json_encode([
+                     'status'=>false,
+                     'message'=>'Password must contain at least one special character!'
+                 ]);
+             }
+
+             if (preg_match('/\s/', $NewPassword)===1){
+                 return json_encode([
+                     'status'=>false,
+                     'message'=>'Password must not contain any whitespace!'
+                 ]);
+             }
+
+             if ($ConfirmPassword!==$NewPassword){
+                 return json_encode([
+                     'status'=>false,
+                     'message'=>'New Password and Confirm Password does not match!',
+                     'field'=>'ConfirmPassword'
+                 ]);
+             }
+
+             if ($CurrentPassword===$NewPassword){
+                 return json_encode([
+                     'status'=>false,
+                     'message'=>'New Password and Current Password cannot be same!',
+                     'field'=>'NewPassword'
+                 ]);
+             }
+
+
+             $User = User::findOne(['UID'=>Application::$app->getUser()->getId()]);
+             if (password_verify($CurrentPassword,$User->getPassword())){
+                 if ($NewPassword===$ConfirmPassword){
+                     $User->setPassword(password_hash($NewPassword,PASSWORD_DEFAULT));
+                     if ($User->update($User->getID(),[],['Password'])){
+                         return json_encode([
+                             'status'=>true,
+                             'message'=>'Password Changed Successfully!'
+                         ]);
+                     }else{
+                         return json_encode([
+                             'status'=>false,
+                             'message'=>'Password Not Changed!'
+                         ]);
+                     }
+                 }else{
+                     return json_encode([
+                         'status'=>false,
+                         'message'=>'New Password and Confirm Password does not match!'
+                     ]);
+                 }
+             }else{
+                 return json_encode([
+                     'status'=>false,
+                     'message'=>'Current Password is incorrect!'
+                 ]);
+             }
+         }
+
+     }
+
     public function dashboard():string
     {
      /* @var Hospital $hospital */
-//        $BloodBank = BloodBank::retrieveAll();
+        $BloodBank = BloodBank::retrieveAll();
+//        print_r($BloodBank);
+//        exit();
         $user=Application::$app->getUser();
-        return $this->render('Hospital/dashboard', ['User' => $user]);
+        return $this->render('Hospital/dashboard', ['User' => $user,'BloodBanks'=>$BloodBank]);
 //        $limit = 10;
 //        $page = Application::$app->request->getBody()['page'] ?? 1;
 //        $initial = ($page - 1) * $limit;
@@ -550,9 +672,17 @@
              $data = $request->getBody();
             $Id= $_GET['id'];
              $Donor = Donor::findOne(['Donor_ID' => $Id]);
+             $IsDonationStarted=HospitalBloodDonations::findOne(['Donor_ID'=>$Donor->getID()],false);
+             if ($IsDonationStarted){
+                 $model['Donation']=$IsDonationStarted;
+                 $model['BloodRetrievingStarted']=true;
+
+             }
+             $model['Donor']=$Donor;
+             $model['User']=$user;
 //             print_r($Donor);
 //                exit();
-             return $this->render('/Hospital/TakeBlood', ['Donor' => $Donor,'User'=>$user]);
+             return $this->render('/Hospital/TakeBlood', $model);
          }
 
 
@@ -595,24 +725,13 @@
      }
 
      public function StartDonation(Request $request,Response $response){
-         /* @var $DonorQueue CampaignDonorQueue*/
          if ($request->isPost()){
              $DonorID=$request->getBody()['DonorID'];
-             $DonorQueue=CampaignDonorQueue::findOne(['Donor_ID'=>$DonorID,'Donor_Status'=>CampaignDonorQueue::STAGE_3],false);
-             if (!$DonorQueue){
-                 return json_encode(['status'=>false,'message'=>'Donor not ready for donation!']);
-             }
-             $Donation=Donation::findOne(['Donor_ID'=>$DonorID,'Status'=>Donation::STATUS_BLOOD_RETRIEVING]);
-             if ($Donation){
-                 return json_encode(['status'=>false,'message'=>'Donation already started!']);
-             }
-             $Donation = new Donation();
-             $Donation->setDonationID(uniqid('Dnt_'));
-             $Donation->setDonorID($DonorID);
-             $Donation->setCampaignID($DonorQueue->getCampaignID());
-             $Donation->setStatus(Donation::STATUS_BLOOD_RETRIEVING);
-             $Donation->setStartAt(date('Y-m-d H:i:s'));
-             $Donation->setOfficerID(Application::$app->getUser()->getID());
+             $Donation=new HospitalBloodDonations();
+                $Donation->setDonorID($DonorID);
+                $Donation->setDonationAt(date('Y-m-d H:i:s'));
+                $Donation->setDonationID(uniqid('D'));
+                $Donation->setVolume(1);
              if ($Donation->validate() && $Donation->save()) {
                  return json_encode(['status' => true, 'message' => 'Donation Started!']);
              }else{
@@ -626,52 +745,13 @@
      {
          /** @var $DonorQueue CampaignDonorQueue*/
          /** @var $Donation Donation*/
+         $RejectedDonation = new RejectedDonations();
          if ($request->isPost()){
-             $Reason = $request->getBody()['AbortDonationReason'];
-             $DonorID = $request->getBody()['DonorID'];
-             $ReasonOther = $request->getBody()['AbortDonationReasonOther'] ?? null;
-             $DonorQueue=CampaignDonorQueue::findOne(['Donor_ID'=>$DonorID,'Donor_Status'=>CampaignDonorQueue::STAGE_3],false);
-             if (!$DonorQueue){
-                 return json_encode(['status'=>false,'message'=>'Donor not ready for donation!']);
-             }
-             $DonorQueue->setDonor_Status(CampaignDonorQueue::STAGE_5);
-             $Donation = Donation::findOne(['Donor_ID'=>$DonorID,'Campaign_ID'=>$DonorQueue->getCampaignID()],false);
-             if ($Donation){
-                 return json_encode(['status'=>false,'message'=>"Already Donation exist"]);
-             }
-             $Donation = new Donation();
-             $Donation->setDonationID(uniqid('Dnt_'));
-             $Donation->setDonorID($DonorID);
-             $Donation->setCampaignID($DonorQueue->getCampaignID());
-             $Donation->setStatus(Donation::STATUS_BLOOD_DONATION_ABORTED);
-             $Donation->setOfficerID(Application::$app->getUser()->getID());
-             $Donation->setStartAt(date('Y-m-d H:i:s'));
-             if (!$Donation->validate()){
-                 return json_encode(['status'=>false,'message'=>'Error Occured','errors'=>$Donation->getErrors()]);
-             }
-             if (!$Donation->save()){
-                 return json_encode(['status'=>false,'message'=>'Error Occured','errors'=>$Donation->getErrors()]);
-             }
-             $UserID = Application::$app->getUser()->getID();
-             $RejectedDonation = new RejectedDonations();
-             $RejectedDonation->setCampaignID($DonorQueue->getCampaignID());
-             $RejectedDonation->setDonationID($Donation->getDonationID());
-             $RejectedDonation->setReason($Reason);
-             $RejectedDonation->setRejectedAt(date("Y-m-d H:i:s"));
-             $RejectedDonation->setRejectedBy($UserID);
-             $RejectedDonation->setDonorID($DonorID);
-             $RejectedDonation->setType(RejectedDonations::TYPE_ABORT_DONATION);
-             if ($ReasonOther){
-                 $RejectedDonation->setOtherReason($ReasonOther);
-             }
-             if ($RejectedDonation->validate()){
-                 $RejectedDonation->save();
-                 $DonorQueue->update($DonorID,[],['Donor_Status'],['Campaign_ID'=>$DonorQueue->getCampaignID()]);
                  return json_encode(['status'=>true,'message'=>'Rejected the Donation']);
              }else{
                  return json_encode(['status'=>false,'message'=>'Error Occured','errors'=>$RejectedDonation->getErrors()]);
              }
-         }
+
      }
 
      public function CompleteDonation(Request $request,Response $response)
@@ -681,49 +761,19 @@
          if ($request->isPost()){
              $DonorID=$request->getBody()['DonorID'];
              $Volume=$request->getBody()['Volume'];
-             $DonorQueue=CampaignDonorQueue::findOne(['Donor_ID'=>$DonorID,'Donor_Status'=>CampaignDonorQueue::STAGE_3],false);
-             if (!$DonorQueue){
-                 return json_encode(['status'=>false,'message'=>'Donor not ready for donation!']);
-             }
-             $Donation=Donation::findOne(['Donor_ID'=>$DonorID,'Status'=>Donation::STATUS_BLOOD_RETRIEVING],false);
+
+             $Donation=HospitalBloodDonations::findOne(['Donor_ID'=>$DonorID],false);
              if (!$Donation){
                  return json_encode(['status'=>false,'message'=>'Donation not started!']);
              }
-             $DonorQueue->setDonor_Status(CampaignDonorQueue::STAGE_4);
-             $Donation->setStatus(Donation::STATUS_BLOOD_STORED);
-             $Donation->setEndAt(date('Y-m-d H:i:s'));
-             $BloodPacket = new BloodPackets();
-             $BloodPacket->loadData($request->getBody());
-             $BloodPacket->setStatus(BloodPackets::STATUS_STORED);
-             $BloodPacket->setPackedBy(Application::$app->getUser()->getID());
-             $BloodGroup=DonorBloodCheck::findOne(['Donor_ID'=>$DonorID],false)->getBloodGroup();
-             $BloodPacket->setBloodGroup($BloodGroup);
-             $BloodPacket->setStoredAt(date('Y-m-d H:i:s'));
-             if ($BloodPacket->validate() && $BloodPacket->save()){
-                 $Accepted_Donation=new AcceptedDonations();
-                 $Accepted_Donation->setDonationID($Donation->getDonationID());
-                 $Accepted_Donation->setDonatedAt($Donation->getStartAt());
-                 $Accepted_Donation->setInTime($Donation->getStartAt());
-                 $Accepted_Donation->setOutTime($Donation->getEndAt());
-                 $Accepted_Donation->setPacketID($BloodPacket->getPacketID());
-                 $Accepted_Donation->setDonorID($DonorID);
-                 $Accepted_Donation->setVolume($Volume);
-                 $Accepted_Donation->setRetrievedBy(Application::$app->getUser()->getID());
-                 $Accepted_Donation->setVerifiedBy(Application::$app->getUser()->getID());
-                 $Donation->update($Donation->getDonationID(),[],['Status','End_At']);
-                 $DonorQueue->update($DonorQueue->getDonorID(),[],['Donor_Status']);
-                 if ($Accepted_Donation->validate() && $Accepted_Donation->save()) {
-                     return json_encode(['status' => true, 'message' => 'Donation Completed!']);
-                 }else{
-
-                     $this->setFlashMessage('error', 'Donation Failed!');
-                     return json_encode(['status' => false, 'message' => 'Donation Failed!', 'error' => $Accepted_Donation->getErrors()]);
-                 }
+             $Donation= HospitalBloodDonations::findOne(['Donor_ID'=>$DonorID],false);
+             $Donation->delete();
+             return json_encode(['status' => true, 'message' => 'Donation Completed!']);
              }else{
                  $this->setFlashMessage('error', 'Donation Failed!');
                  return json_encode(['status' => false, 'message' => 'Donation Failed!s']);
              }
-         }
+
      }
 
  }
