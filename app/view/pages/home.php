@@ -54,10 +54,19 @@ FlashMessage::RenderFlashMessages();
                 </div>
                 <div id="caption">
                     <div class="tagline">Why Blood Donation Important ?</div>
-                    <div class="desc">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Error ex optio qui ratione ullam. Adipisci amet architecto aut culpa cum delectus dicta dolorem, enim impedit iste itaque placeat possimus quasi qui quidem quod quos rem tempora, unde veniam. Debitis molestias nisi vel? Asperiores, optio, quaerat!</div>
+                    <div class="desc text-left">
+                        <div class="text-center">
+                            Blood donation is an essential activity that plays a critical role in the healthcare system. It involves voluntarily donating blood, which is then used to save the lives of people who need it. Blood transfusions are necessary in many medical situations, such as during surgeries, for cancer treatments, and for patients with various blood disorders.
+                        </div>
+                        <div class="text-center">
+                            By donating blood, you are contributing to the supply of blood in hospitals and medical facilities. Blood cannot be manufactured artificially, and the demand for blood is always high. Blood banks rely on the generosity of donors to maintain a sufficient supply of blood for patients in need.
+                        </div>
+                        <div class="text-center">
+                            Blood donation also has health benefits for the donor. Regular blood donation helps reduce the amount of iron in the body, which can reduce the risk of heart disease and other health problems. It also helps in the production of new blood cells, which can improve overall health.
+                        </div>
+                    </div>
                     <div class="btn-container">
                         <a id="donate-btn" href="#blood-info-panel" class="btn btn-primary">Learn More </a>
-                        <a id="donate-btn" href="#donation-report" class="btn btn-primary">View Report </a>
                     </div>
 
                 </div>
@@ -183,11 +192,15 @@ FlashMessage::RenderFlashMessages();
                     <div class="cu-form">
                         <form action="" method="post">
                             <div class="content">
+                                <label for="name"></label>
+                                <input id="name" type="text" name="name" placeholder="Name">
+                                <label for="email"></label>
+                                <input id="email" type="email" name="email" placeholder="Email">
                                 <label for="subject"></label>
                                 <input id="subject" type="text" name="subject" placeholder="Subject">
                                 <label for="message"></label>
                                 <textarea id="message" name="message" placeholder="Message"></textarea>
-                                <button type="submit" class="btn btn-primary">Send</button>
+                                <button type="submit" class="btn w-30 btn-primary">Send</button>
                             </div>
                         </form>
                     </div>
@@ -214,15 +227,20 @@ FlashMessage::RenderFlashMessages();
                                 ${name}
                             </div>
                         </div>
-                        <div class="card-body d-flex flex-column gap-1">
-                            <div class="d-flex text-xl text-center">
-                                    Sri Piyarathana Maha Vidyalaya, Padukka
+                        <div class="card-body d-flex flex-center flex-column gap-1">
+                            <div class="d-flex flex-center gap-1 text-xl text-center">
+                                <div class="d-flex flex-center">
+                                    <i class="fa-solid fa-map-marker-alt"></i>
+                                </div>
+                                <div class="d-flex flex-center">
+                                    ${location}
+                                </div>
                             </div>
                             <div class="text-center font-bold text-2xl">
                                     LKR 100,000
                             </div>
                             <div class="d-flex justify-content-center">
-                                <button class="btn btn-primary" onclick="Donate('${id}')">Donate</button>
+                                <button class="btn btn-lg btn-primary" onclick="Donate('${id}')">Donate</button>
                             </div>
                    </div>
             </div>
@@ -266,47 +284,142 @@ FlashMessage::RenderFlashMessages();
             `,
             successBtnText: "Sponsor",
             successBtnAction: ()=>{
-                const Amount = document.getElementsByName("Amount");
                 const Email = document.getElementById("Email");
-                const CustomAmount = document.getElementById("CustomAmount");
-                let amount = 0;
-                if(Amount[0].checked){
-                    amount = parseInt(FullAmount);
-                }else{
-                    amount = parseInt(CustomAmount.value);
+                if (Email.value.trim() === ""){
+                    ShowToast({
+                        type: "error",
+                        message: "Please enter your email"
+                    })
+                    return;
                 }
-                if(amount > 0) {
-                    const id = campaignID;
-                    const url = "/donate"
-                    const formData = new FormData();
-                    formData.append("CampaignID", id);
-                    formData.append("amount", amount.toString());
-                    formData.append("email", Email.value);
+                OpenDialogBox({
+                    id:"register-dialog",
+                    title: "Register",
+                    popupOrder: 2,
+                    titleClass:"bg-dark text-white text-center py-1 px-2",
+                    content:`
+                        <div class="d-flex w-100 flex-center">
+                            Would you like to register as a Sponsor?
+                        </div>
+                    `,
+                    successBtnText: "Yes! ,Register",
+                    cancelBtnText: "Cancel",
+                    secondaryBtnText: "No! ,Just Donate",
+                    secondaryBtnAction:()=>{
+                        const Amount = document.getElementsByName("Amount");
+                        const Email = document.getElementById("Email");
+                        const CustomAmount = document.getElementById("CustomAmount");
+                        let amount = 0;
 
+                        if(Amount[0].checked){
+                            amount = parseInt(FullAmount);
+                        }else{
+                            amount = parseInt(CustomAmount.value);
+                        }
+                        if(amount > 0) {
+                            const id = campaignID;
+                            const url = "/donate"
+                            const formData = new FormData();
+                            formData.append("CampaignID", id);
+                            formData.append("amount", amount.toString());
+                            formData.append("email", Email.value);
+                            fetch(url,{
+                                method: "POST",
+                                body: formData
+                            }).then(res=>res.json())
+                                .then(data=>{
+                                    if (!data.status){
+                                        ShowToast({
+                                            title: "Error",
+                                            message: data.message,
+                                            type: "error"
+                                        });
+                                    }else{
+                                        ShowToast({
+                                            title: "Success",
+                                            message: data.message,
+                                            type: "success"
+                                        });
+                                        window.location.href=data.redirect
 
-                    fetch(url,{
-                        method: "POST",
-                        body: formData
-                    }).then(res=>res.json())
-                        .then(data=>{
-                            if (data.status){
-                                ShowToast({
-                                    title: "Success",
-                                    message: "Donation Successful",
-                                    type: "success"
-                                });
-                                setTimeout(()=>{
-                                    window.location.href = data.redirect;
-                                },1000);
-                            }else{
-                                ShowToast({
-                                    title: "Error",
-                                    message: data.message,
-                                    type: "error"
-                                });
+                                    }
+                                })
+                        }
+                    },
+                    successBtnAction:()=>{
+                        OpenDialogBox({
+                            id:"register-sponsor-dialog",
+                            title: "Register as a Sponsor",
+                            popupOrder: 3,
+                            titleClass:"bg-dark text-white text-center py-1 px-2",
+                            content:`
+                                <div class="d-flex w-100 flex-column gap-1 flex-center text-center">
+                                    <div class="d-flex flex-center gap-1">
+                                        <label for="full-amount">
+                                            Company Name or Your Name
+                                        </label>
+                                        <input type="text" class="form-control" id="Name" placeholder="Enter your Name">
+                                    </div>
+                                    <div class="d-flex flex-center gap-1">
+                                        <label for="full-amount">
+                                            Email
+                                        </label>
+                                        <input type="email" class="form-control" id="Email" placeholder="Enter your Email">
+                                    </div>
+                                    <div class="d-flex flex-center gap-1">
+                                        <label for="full-amount">
+                                            Password
+                                        </label>
+                                        <input type="password" class="form-control" id="Email" placeholder="Enter your Email">
+                                    </div>
+
+                                    <div class="d-flex flex-center gap-1">
+                                        <label for="full-amount">
+                                            Contact Number (Optional)
+                                        </label>
+                                        <input type="number" class="form-control" id="ContactNumber" placeholder="Enter your Contact Number">
+                                    </div>
+                                    <div class="d-flex flex-center gap-1">
+                                        <label for="full-amount">
+                                            Address (Optional)
+                                        </label>
+                                        <input type="text" class="form-control" id="Address" placeholder="Enter your Address">
+                                    </div>
+                                </div>
+                            `,
+                            successBtnText: "Register",
+                            successBtnAction: ()=>{
+                                const Name = document.getElementById("Name");
+                                const Email = document.getElementById("Email");
+                                const Password = document.getElementById("Password");
+                                const ContactNumber = document.getElementById("ContactNumber");
+                                const Address = document.getElementById("Address");
+                                const id = campaignID;
+                                const url = "/register-sponsor"
+                                const formData = new FormData();
+                                formData.append("CampaignID", id);
+                                formData.append("Name", Name.value);
+                                formData.append("Email", Email.value);
+                                formData.append("Password", Password.value);
+                                formData.append("ContactNumber", ContactNumber.value);
+                                formData.append("Address", Address.value);
+                                fetch(url,{
+                                    method: "POST",
+                                    body: formData
+                                }).then(res=>res.json())
+                                    .then(data=>{
+                                        if (!data.status){
+                                            ShowToast({
+                                                title: "Error",
+                                                message: data.message,
+                                                type: "error"
+                                            });
+                                        }
+                                    })
                             }
                         })
-                }
+                    }
+                })
 
             }
         })

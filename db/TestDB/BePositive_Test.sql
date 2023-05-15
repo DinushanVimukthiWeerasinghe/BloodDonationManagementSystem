@@ -921,7 +921,6 @@ CREATE TABLE IF NOT EXISTS `Anonymous_Sponsors` (
 DROP TABLE IF EXISTS `Hospital_Notifications`;
 CREATE TABLE IF NOT EXISTS `Hospital_Notifications` (
     Notification_ID VARCHAR(20) NOT NULL PRIMARY KEY,
-    Hospital_ID VARCHAR(20) NOT NULL,
     Notification_Title VARCHAR(100) NOT NULL,
     Notification_Message TEXT NOT NULL,
     Notification_Date DATE NOT NULL,
