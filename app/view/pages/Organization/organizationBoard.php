@@ -32,7 +32,7 @@ $background = new BackGroundImage();
 
 echo $background;
 FlashMessage::RenderFlashMessages();
-echo CardGroup::CardPane    l();
+echo CardGroup::CardPanel();
 echo $CampaignGuidelines;
 echo $NearByCampaigns;
 if (!$campaign_exist){
