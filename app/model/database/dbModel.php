@@ -329,7 +329,6 @@ abstract class dbModel extends Model
 
 
 
-
         $statement=self::prepare($demo);
 
         $statement->execute();

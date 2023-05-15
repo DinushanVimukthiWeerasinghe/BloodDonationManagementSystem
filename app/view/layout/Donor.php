@@ -438,6 +438,46 @@ echo $background;
             }
         })
     }
+    const ChangeProfileImage = ()=>{
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = 'image/*';
+        input.onchange = _ => {
+            // you can use this method to get file and perform respective operations
+            let files =   Array.from(input.files);
+            const url="/donor/changeProfile";
+            const formData = new FormData();
+            formData.append('profileImage',files[0]);
+            fetch(url, {
+                method: 'POST',
+                body: formData
+            }).then(response => response.json())
+                .then(data => {
+                    console.log(data)
+                    if (data.status){
+                        const profileImage = document.querySelector('#profileImage');
+                        const NavProfileImage = document.querySelector('#NavProfileImage');
+                        profileImage.src = data.filename;
+                        NavProfileImage.src = data.filename;
+                        ShowToast({
+                            title: 'Success',
+                            message: 'Profile Image Changed Successfully',
+                            type: 'success',
+                            duration: 3000
+                        });
+
+                    }else{
+                        ShowToast({
+                            title: 'Error',
+                            message: 'Profile Image Change Failed',
+                            type: 'error',
+                            duration: 3000
+                        });
+                    }
+                })
+        };
+        input.click();
+    }
 
 </script>
 <script src="/public/js/components/navbar/navbar.js"></script>

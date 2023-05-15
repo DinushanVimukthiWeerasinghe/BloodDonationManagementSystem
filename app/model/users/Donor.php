@@ -482,7 +482,8 @@ class Donor extends Person
             'BloodDonation_Book_1',
             'BloodDonation_Book_2',
             'BloodGroup',
-            'Donation_Availability_Date'
+            'Donation_Availability_Date',
+            'Profile_Image'
         ];
     }
 

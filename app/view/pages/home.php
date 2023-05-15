@@ -126,47 +126,26 @@ FlashMessage::RenderFlashMessages();
             <div class="d-flex flex-column align-items-center w-100 justify-content-center gap-1">
                     <div class="text-xl font-bold p-1 bg-white border-radius-10">OUR SERVICES</div>
                     <div class="d-flex flex-wrap align-items-center gap-1 justify-content-center text-dark">
-                        <div class="d-flex justify-content-around w-70">
-                            <div class="card relative flex-center" style="background: url('/public/images/BloodDonorManagement.jpg');background-size: cover;height: 330px;background-clip: content-box">
+                        <div class="d-flex justify-content-around gap-3 w-70">
+                            <div class="card relative flex-center" style="background: url('/public/images/BloodDonorManagement.jpg');background-size: cover;height: 500px;width:500px;background-clip: content-box">
                                 <div class="absolute font-extraBold text-xl w-95 h-95 d-flex align-items-center justify-content-end text-white flex-column border-radius-10" style="background: rgba(0,0,0,0.3)">
                                     <div class="text-4xl ">Donor</div>
                                     <div class="text-3xl mb-2">Management</div>
                                 </div>
                             </div>
-                            <div class="card relative flex-center" style="background: url('/public/images/BloodDonorManagement.jpg');background-size: cover;height: 330px;background-clip: content-box">
+                            <div class="card relative flex-center" style="background: url('/public/images/DonationManagement.jpg');background-size: cover;height: 500px;width:500px;background-clip: content-box">
                                 <div class="absolute font-extraBold text-xl w-95 h-95 d-flex align-items-center justify-content-end text-white flex-column border-radius-10" style="background: rgba(0,0,0,0.3)">
-                                    <div class="text-4xl ">Donor</div>
+                                    <div class="text-4xl ">Blood Donation</div>
                                     <div class="text-3xl mb-2">Management</div>
                                 </div>
                             </div>
-                            <div class="card relative flex-center" style="background: url('/public/images/BloodDonorManagement.jpg');background-size: cover;height: 330px;background-clip: content-box">
+                            <div class="card relative flex-center" style="background: url('/public/images/DonationCampaign.jpg') no-repeat;background-size: cover;height: 500px;width:500px;background-clip: content-box;background-position-x: 50%;">
                             <div class="absolute font-extraBold text-xl w-95 h-95 d-flex align-items-center justify-content-end text-white flex-column border-radius-10" style="background: rgba(0,0,0,0.3)">
-                                <div class="text-4xl ">Donor</div>
+                                <div class="text-4xl ">Blood Campaign</div>
                                 <div class="text-3xl mb-2">Management</div>
                             </div>
                         </div>
                         </div>
-                        <div class="d-flex justify-content-around w-70">
-                            <div class="card relative flex-center" style="background: url('/public/images/BloodDonorManagement.jpg');background-size: cover;height: 330px;background-clip: content-box">
-                                <div class="absolute font-extraBold text-xl w-95 h-95 d-flex align-items-center justify-content-end text-white flex-column border-radius-10" style="background: rgba(0,0,0,0.3)">
-                                    <div class="text-4xl ">Donor</div>
-                                    <div class="text-3xl mb-2">Management</div>
-                                </div>
-                            </div>
-                            <div class="card relative flex-center" style="background: url('/public/images/BloodDonorManagement.jpg');background-size: cover;height: 330px;background-clip: content-box">
-                                <div class="absolute font-extraBold text-xl w-95 h-95 d-flex align-items-center justify-content-end text-white flex-column border-radius-10" style="background: rgba(0,0,0,0.3)">
-                                    <div class="text-4xl ">Donor</div>
-                                    <div class="text-3xl mb-2">Management</div>
-                                </div>
-                            </div>
-                            <div class="card relative flex-center" style="background: url('/public/images/BloodDonorManagement.jpg');background-size: cover;height: 330px;background-clip: content-box">
-                            <div class="absolute font-extraBold text-xl w-95 h-95 d-flex align-items-center justify-content-end text-white flex-column border-radius-10" style="background: rgba(0,0,0,0.3)">
-                                <div class="text-4xl ">Donor</div>
-                                <div class="text-3xl mb-2">Management</div>
-                            </div>
-                        </div>
-                        </div>
-
                     </div>
                 </div>
         </div>

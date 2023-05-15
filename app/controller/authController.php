@@ -347,9 +347,6 @@ class authController extends Controller
             ]);
         }
 
-
-
-
     }
 
     public function UserRegister(Request $request,Response $response)

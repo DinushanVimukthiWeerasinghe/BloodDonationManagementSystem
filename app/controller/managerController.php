@@ -1985,6 +1985,12 @@ class managerController extends Controller
         /** @var $Manager Manager*/
         $UserID= Application::$app->getUser()->getId();
         $Manager = Manager::findOne(['Manager_ID'=>$UserID]);
+        if (!$Manager){
+            return json_encode([
+                'status'=>false,
+                'message'=>'Manager Not Found!'
+            ]);
+        }
         $ExistingFile = $Manager->getProfileImage();
         $File=$request->getBody()['profileImage'];
         if($File) {

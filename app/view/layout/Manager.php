@@ -351,7 +351,7 @@ $Sidelnk = function () {
         input.onchange = _ => {
             // you can use this method to get file and perform respective operations
             let files =   Array.from(input.files);
-            const url="/manager/changeProfile";
+            const url="/donor/changeProfile";
             const formData = new FormData();
             formData.append('profileImage',files[0]);
             fetch(url, {

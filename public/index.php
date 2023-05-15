@@ -370,6 +370,8 @@ $app->router->post('/donor/login', [donorController::class, 'login']);
 $app->router->get('/donor/signup', [donorController::class, 'signup']);
 $app->router->post('/donor/signup', [donorController::class, 'signup']);
 $app->router->get('/donor/profile', [donorController::class, 'profile']);
+$app->router->post('/donor/changeProfile', [donorController::class, 'ChangeProfileImage']);
+
 $app->router->get('/donor/register', [authController::class, 'DonorRegister']);
 $app->router->post('/donor/register', [authController::class, 'DonorRegister']);
 $app->router->post('/donor/sendEmailChangeOTP', [donorController::class, 'ChangeEmailOTP']);

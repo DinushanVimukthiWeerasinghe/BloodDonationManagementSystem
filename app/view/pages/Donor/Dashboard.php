@@ -24,14 +24,14 @@ $blood_Requests = '';
 
 
 $Image=new GeneralImage("/public/images/logo.png", "Home Image", "logo","250rem");
-
+$profileImage = $profileImage ?? '/public/images/icons/user.png';
 
 $c1 = new ClickableCard("Donation Guideline", $donation_Guideline,"Donation Guideline");
 $c2 = new ClickableCard("Donation History", $donation_History,"Donation History");
 $c3 = new ClickableCard("Nearby Donations", $nearby_Donations,"Nearby Donations");
 //$c4 = new \App\view\components\Card\ClickableCard("Blood Requests", $blood_Requests,"Blood Requests");
 
-$navbar = new DonorNavbar('Donor Board', '/donor/profile', '/public/images/icons/user.png', true,$firstName . ' ' . $lastName,false );
+$navbar = new DonorNavbar('Donor Board', '/donor/profile', $profileImage, true,$firstName . ' ' . $lastName,false );
 //echo $navbar;
 
 //$notification = new Notification;

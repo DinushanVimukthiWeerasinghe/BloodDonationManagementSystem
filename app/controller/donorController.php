@@ -15,11 +15,13 @@ use App\model\Report\Report;
 use App\model\Requests\AttendanceAcceptedRequest;
 //use App\model\Report\Report;
 use App\model\users\Donor;
+use App\model\users\Manager;
 use App\model\users\User;
 use Core\Application;
 use Core\BaseMiddleware;
 use Core\Controller;
 use Core\Email;
+use Core\File;
 use Core\middleware\AuthenticationMiddleware;
 use Core\Request;
 use Core\Response;
@@ -50,12 +52,50 @@ class donorController extends Controller
             'firstName'=>$donor->getFirstName(),
             'lastName'=>$donor->getLastName(),
             'state' => $donor->getDonationAvailability(),
-            'verificationStatus'=>$donor->getVerificationStatus(false)
+            'verificationStatus'=>$donor->getVerificationStatus(false),
+            'profileImage'=>$donor->getProfileImage(),
         ];
       //  print_r($data);
       //  exit();
         return $this->render('Donor/Dashboard', $data );
     }
+
+    public function ChangeProfileImage(Request $request,Response $response)
+    {
+        /** @var $File File*/
+        /** @var $Manager Donor*/
+        $UserID= Application::$app->getUser()->getId();
+        $Manager = Donor::findOne(['Donor_ID'=>$UserID]);
+        $ExistingFile = $Manager->getProfileImage();
+        $File=$request->getBody()['profileImage'];
+        if($File) {
+            $File->setPath('Profile/Donor');
+            $filename = $File->GenerateFileName('Dnr_');
+            $Manager->setProfileImage($filename);
+            if ($Manager->update($Manager->getID(), [], ['Profile_Image'])){
+                $File->saveFile();
+                File::DeleteFileByPath($ExistingFile);
+                return json_encode([
+                    'status' => true,
+                    'filename' => $filename,
+                    'data' => $File,
+                    'message' => 'File Selected!'
+                ]);
+            }else{
+                return json_encode([
+                    'status'=>false,
+                    'message'=>'File Not Selected!'
+                ]);
+            }
+        }else{
+            return json_encode([
+                'status'=>false,
+                'message'=>'No File Selected!'
+            ]);
+        }
+    }
+
+
 
     /**
      * @throws Exception
