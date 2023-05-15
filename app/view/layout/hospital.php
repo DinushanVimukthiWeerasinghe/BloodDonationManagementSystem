@@ -89,7 +89,7 @@
                                 <div class="d-flex w-100 justify-content-center">
                                     <img id="profileImage" src="<?= $User->getProfileImage()?>" alt="" width=300px height=300px class="border-1 border-radius-50 " style="object-fit:cover"/>
                                  </div>
-                                 
+
                                 <div class="bg-dark d-flex justify-content-center w-100 text-center text-white py-0-5 px-1 relative">
                                     <div class="d-flex flex-center py-0-5"> Profile Details</div>
                                 </div>
