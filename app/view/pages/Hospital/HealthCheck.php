@@ -14,7 +14,7 @@ echo card::ImportJS();
 
 use App\view\components\WebComponent\Card\NavigationCard;
 
-$background = new BackGroundImage();
+//$background = new BackGroundImage();
 
 //echo $background;
 
@@ -38,8 +38,8 @@ use App\model\users\Donor;
     </div>
     <div class="d-flex w-100 overflow-y-overlay mb-2" style="height: 80vh">
         <form id="DonorHealthCheckForm" action="" method="post" class="d-flex justify-content-start w-100">
-<!--            <input type="hidden" name="Task" value=<?php //= TeamMembers::TASK_HEALTH_CHECK ?><!-->
-<!--            <input type="hidden" name="Recommendation" value=<?php //= DonorHealthCheckUp::Doctor_Not_Recommend ?><!-->
+<!--            <input type="hidden" name="Task" value=--><?php //= TeamMembers::TASK_HEALTH_CHECK ?><!--<!-->
+            <input type="hidden" name="Recommendation" value=<?= DonorHealthCheckUp::Doctor_Not_Recommend ?>
             <input type="hidden" name="Donor_ID" value="<?= $data['Donor_ID'] ?>">
             <div id="PreviousDonation" class="w-70 d-flex flex-column px-2 gap-1 ">
                 <div class="form-group w-100">
@@ -293,20 +293,20 @@ use App\model\users\Donor;
 <!-- TODO :Recommendation-->
 
 <script>
-    const CheckHealth = () => {
+    const CheckHealth = ()=>{
         let proceed = true;
         const GoodHealth = document.getElementsByName("GoodHealth")[0].checked;
         const Diseases = document.getElementsByName("Disease[]");
         let NoDiseaseDetected = true;
-        Diseases.forEach((Disease) => {
-            if (Disease.checked) {
+        Diseases.forEach((Disease)=>{
+            if(Disease.checked){
                 NoDiseaseDetected = false;
             }
         });
-        if (!GoodHealth || !NoDiseaseDetected) {
+        if (!GoodHealth || !NoDiseaseDetected){
             proceed = false;
         }
-        if (proceed) {
+        if (proceed){
             const PartnerHIV = document.getElementsByName("PartnerAids")[0].checked;
             const Vaccinated = document.getElementsByName("Vaccinated")[0].checked;
             const Tattooed = document.getElementsByName("Tattooed")[0].checked;
@@ -320,36 +320,36 @@ use App\model\users\Donor;
             const CFever_Infected = document.getElementsByName("CFever_Infected")[0].checked;
             const Teeth_Removed = document.getElementsByName("Teeth_Removed")[0].checked;
             const Antibiotics_And_Aspirins = document.getElementsByName("Antibiotics_And_Aspirins")[0].checked;
-            if (PartnerHIV || Vaccinated || Tattooed || Pierced || Pregnant || Prisoned || Went_Abroad || Donated_To_Partner || Malaria_Infected || Dengue_Infected || CFever_Infected || Teeth_Removed || Antibiotics_And_Aspirins) {
+            if (PartnerHIV || Vaccinated || Tattooed || Pierced || Pregnant || Prisoned || Went_Abroad || Donated_To_Partner || Malaria_Infected || Dengue_Infected || CFever_Infected || Teeth_Removed || Antibiotics_And_Aspirins){
                 proceed = false;
             }
         }
-        if (proceed) {
+        if (proceed){
             OpenDialogBox({
-                id: "DonationConfirmation",
-                title: "Donation Health Check Confirmation",
-                titleClass: "text-white bg-dark px-2 py-0-5",
+                id:"DonationConfirmation",
+                title:"Donation Health Check Confirmation",
+                titleClass:"text-white bg-dark px-2 py-0-5",
                 content: `
                     Are you sure this donor is eligible for donation?
                 `,
-                successBtnText: "Yes",
-                cancelBtnText: "Cancel",
-                secondaryBtnText: "No",
-                secondaryBtnColor: ["btn-outline-primary"],
-                successBtnAction: () => {
+                successBtnText:"Yes",
+                cancelBtnText:"Cancel",
+                secondaryBtnText:"No",
+                secondaryBtnColor:["btn-outline-primary"],
+                successBtnAction:()=>{
                     document.getElementsByName("Recommendation")[0].value = 2;
                     document.getElementById("DonorHealthCheckForm").submit();
                 },
-                secondaryBtnAction: () => {
+                secondaryBtnAction:()=>{
                     document.getElementsByName("Recommendation")[0].value = 1;
                     document.getElementById("DonorHealthCheckForm").submit();
                 }
             })
-        } else {
+        }else{
             document.getElementById("DonorHealthCheckForm").submit();
         }
 
 
-        console.log(GoodHealth, NoDiseaseDetected);
+        console.log(GoodHealth,NoDiseaseDetected);
     }
 </script>

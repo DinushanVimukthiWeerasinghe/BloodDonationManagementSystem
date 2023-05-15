@@ -436,6 +436,15 @@ $app->router->post('/donor/profile/loginPrompt', [donorController::class, 'login
     $app->router->post('/hospital/uploadNICBack', [hospitalController::class, 'UploadDonorNICBack']);
     $app->router->post('/hospital/healthCheckup', [hospitalController::class, 'HealthCheckup']);
     $app->router->get('/hospital/healthCheckup', [hospitalController::class, 'HealthCheckup']);
+    $app->router->get('/hospital/bloodCheck', [hospitalController::class, 'BloodCheck']);
+    $app->router->post('/hospital/bloodCheck', [hospitalController::class, 'BloodCheck']);
+    $app->router->get('/hospital/take-donation', [hospitalController::class, 'TakeDonation']);
+    $app->router->post('/hospital/take-donation', [hospitalController::class, 'TakeDonation']);
+
+    $app->router->post('/hospital/startBloodDonation', [hospitalController::class, 'StartDonation']);
+    $app->router->post('/hospital/rejectBloodDonation', [hospitalController::class, 'RejectDonation']);
+    $app->router->post('/hospital/CompleteDonation', [hospitalController::class, 'CompleteDonation']);
+    $app->router->post('/hospital/AbortDonation', [hospitalController::class, 'AbortDonation']);
 
 
 //Blogs

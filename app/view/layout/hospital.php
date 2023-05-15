@@ -76,5 +76,50 @@
             )
 
     }
+
+    const getProfile = ()=>{
+        OpenDialogBox({
+            id: 'profile',
+            title: 'Hospital Profile',
+            titleClass: 'text-center text-white bg-dark px-2 py-1',
+            content: `
+                <div class="d-flex flex-column gap-1 w-100">
+                     <div id="profile" class="d-flex flex-column w-100">
+                            <div class="d-flex flex-column flex-center gap-1 max-h-80vh w-100">
+                                <div class="d-flex w-100 justify-content-center">
+                                    <img id="profileImage" src="<?= $User->getProfileImage()?>" alt="" width=300px height=300px class="border-1 border-radius-50 " style="object-fit:cover"/>
+                                 </div>
+                                 <button class="btn btn-success d-flex align-items-center font-bold" onclick="ChangeProfileImage()"><span><img src="/public/icons/camera.svg" alt="" width="24px" class="cursor invert-100" onclick="EditProfile()"></span> &nbsp;Change Profile Image</button>
+
+                                <div class="bg-dark d-flex justify-content-center w-100 text-center text-white py-0-5 px-1 relative">
+                                    <div class="d-flex flex-center py-0-5"> Profile Details</div>
+                                </div>
+                                    <div class="d-flex w-100 align-items-center justify-content-evenly gap-1">
+                                         <div class="d-flex w-50 justify-content-center">
+                                            <div class="d-flex font-bold"> First Name : </div>
+                                            <div class="d-flex "><?= $User->getFirstName() ?></div>
+                                        </div>
+                                         <div class="d-flex w-50 justify-content-center">
+                                            <div class="d-flex font-bold">Last Name : </div>
+                                            <div class="d-flex "><?= $User->getLastName() ?></div>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex w-100 align-items-center justify-content-evenly gap-1">
+                                         <div class="d-flex w-50 justify-content-center">
+                                            <div class="d-flex font-bold">Email : </div>
+                                            <div class="d-flex "><?= $User->getEmail() ?></i></div>
+                                        </div>
+                                         <div class="d-flex w-50 justify-content-center">
+                                            <div class="d-flex "><button class="btn btn-outline-danger" onclick="ChangePassword()">Change Password</button></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                       </div>
+                </div>
+            `,
+        })
+    }
+
 </script>
 </html>

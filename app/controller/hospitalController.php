@@ -3,8 +3,15 @@
 
  use App\middleware\hospitalMiddleware;
  use App\model\Authentication\Login;
+ use App\model\Blood\BloodGroup;
+ use App\model\Blood\BloodPackets;
+ use App\model\Blood\DonorBloodCheck;
  use App\model\BloodBankBranch\BloodBank;
  use App\model\Campaigns\CampaignDonorQueue;
+ use App\model\Donations\AcceptedDonations;
+ use App\model\Donations\Donation;
+ use App\model\Donations\RejectedDonations;
+ use App\model\Donor\DonorHealthCheckUp;
  use App\model\Notification\HospitalNotification;
  use App\model\Notification\ManagerNotification;
  use App\model\Requests\BloodRequest;
@@ -35,14 +42,17 @@
     }
     public function profile(){
         $user=Application::$app->getUser();
-        return $this->render('Hospital/profile',['user'=>$user]);
+//        print_r($user);
+//        exit();
+        return $this->render('Hospital/profile',['User'=>$user]);
     }
 
     public function dashboard():string
     {
      /* @var Hospital $hospital */
-        $BloodBank = BloodBank::retrieveAll();
-        return $this->render('Hospital/dashboard', ['BloodBanks' => $BloodBank]);
+//        $BloodBank = BloodBank::retrieveAll();
+        $user=Application::$app->getUser();
+        return $this->render('Hospital/dashboard', ['User' => $user]);
 //        $limit = 10;
 //        $page = Application::$app->request->getBody()['page'] ?? 1;
 //        $initial = ($page - 1) * $limit;
@@ -70,6 +80,7 @@
 //     return $this->render('Hospital/dashboard',['data'=>$reqData,'total_pages'=>$total_pages,'current_page'=>$page]);
     }
     public function showRequests(){
+        $user=Application::$app->getUser();
                 $limit = 10;
         $page = Application::$app->request->getBody()['page'] ?? 1;
         $initial = ($page - 1) * $limit;
@@ -95,7 +106,7 @@
             ];
         }
         //print_r($reqData);
-     return $this->render('Hospital/showRequests',['data'=>$reqData,'total_pages'=>$total_pages,'current_page'=>$page]);
+     return $this->render('Hospital/showRequests',['data'=>$reqData,'total_pages'=>$total_pages,'current_page'=>$page,'User'=>$user]);
     }
 
     public function notification(Request $request, Response $response): string
@@ -168,6 +179,7 @@
     }
     public function showDetails(Request $request, Response $response): string
     {
+        $user=Application::$app->getUser();
         $data = $request->getBody();
 //        print_r($data);
 //        exit();
@@ -191,11 +203,12 @@
             'Donor'=>$donorInfo,
         ];
 
-        return $this->render('Hospital/HospitalBloodDonation', ['data' => $reqData]);
+        return $this->render('Hospital/HospitalBloodDonation', ['data' => $reqData,'User'=>$user]);
     }
 
     public function bloodRequestHistory(Request $request, Response $response): string
     {
+        $user=Application::$app->getUser();
         $limit = 10;
         $page1 = Application::$app->request->getBody()['page'] ?? 1;
         $initial1 = ($page1 - 1) * $limit;
@@ -224,7 +237,7 @@
             ];
         }
         //print_r($reqData);
-        return $this->render('Hospital/bloodRequestHistory',['data'=>$reqData,'total_pages'=>$total_pages1,'current_page'=>$page1]);
+        return $this->render('Hospital/bloodRequestHistory',['data'=>$reqData,'total_pages'=>$total_pages1,'current_page'=>$page1,'User'=>$user]);
     }
 
     public function editRequest(Request $request, Response $response):string
@@ -374,37 +387,343 @@
 
      public function HealthCheckup(Request $request, Response $response): string
      {
+         $user=Application::$app->getUser();
+         if ($request->isGet())
+         {
+             $data = $request->getBody();
 
-         $data = $request->getBody();
-         $Id= $_GET['Id'];
-
+             $Id= $_GET['Id'];
+             $donorInfo = Donor::findOne(['Donor_ID' => $Id]);
 //         print_r($data);
 //         exit();
 //         $donorInfo = Donor::findOne(['NIC' => $data['NIC']]);
 
-         $donorInfo = Donor::findOne(['Donor_ID' => $Id]);
 //        print_r($donorInfo);
 //        exit();
-         $reqData=[
-             'Donor_ID'=>$donorInfo->getDonorID(),
-             'First_Name'=>$donorInfo->getFirstName(),
-             'Last_Name'=>$donorInfo->getLastName(),
-             'NIC'=>$donorInfo->getNIC(),
-             'Email'=>$donorInfo->getEmail(),
-             'Contact_No'=>$donorInfo->getContactNo(),
-             'City'=>$donorInfo->getCity(),
-             'Blood_Group'=>$donorInfo->getBloodGroup(),
-             'Donation_Availability'=>$donorInfo->getDonationAvailability(),
-             'Verified'=>$donorInfo->getVerified(),
-             'NIC_Front'=>$donorInfo->getNICFront(),
-             'NIC_Back'=>$donorInfo->getNICBack(),
-             'Profile_Image'=>$donorInfo->getProfileImage(),
-             'Donor'=>$donorInfo,
-         ];
+             $reqData=[
+                 'Donor_ID'=>$donorInfo->getDonorID(),
+                 'First_Name'=>$donorInfo->getFirstName(),
+                 'Last_Name'=>$donorInfo->getLastName(),
+                 'NIC'=>$donorInfo->getNIC(),
+                 'Email'=>$donorInfo->getEmail(),
+                 'Contact_No'=>$donorInfo->getContactNo(),
+                 'City'=>$donorInfo->getCity(),
+                 'Blood_Group'=>$donorInfo->getBloodGroup(),
+                 'Donation_Availability'=>$donorInfo->getDonationAvailability(),
+                 'Verified'=>$donorInfo->getVerified(),
+                 'NIC_Front'=>$donorInfo->getNICFront(),
+                 'NIC_Back'=>$donorInfo->getNICBack(),
+                 'Profile_Image'=>$donorInfo->getProfileImage(),
+                 'Donor'=>$donorInfo,
+             ];
 
 //         $model['Donor']=$Donor;
 //         return $this->render('/Hospital/HealthCheck', $model);
-         return $this->render('/Hospital/HealthCheck', ['data' => $reqData]);
+             return $this->render('/Hospital/HealthCheck', ['data' => $reqData,'User'=>$user]);
+         }
+         else if($request->isPost())
+         {
+//                $data = $request->getBody();
+             $Id= $_GET['Id'];
+             error_log($Id);
+//             var_dump($Id);
+//             $donorInfo = Donor::findOne(['Donor_ID' => $Id]);
+//             print_r($Id);
+//             exit();
+//             $Recommendation = $data['Recommendation'];
+//             $GoodHealth = $data['GoodHealth'];
+//             $PartnerAids = $data['PartnerAids'];
+//             $Vaccinated = $data['Vaccinated'];
+//             $Tattooed = $data['Tattooed'];
+//             $Pierced = $data['Pierced'];
+//             $Pregnant = $data['Pregnant'];
+//             $Prisoned = $data['Prisoned'];
+//             $Went_Abroad = $data['Went_Abroad'];
+//             $Donated_To_Partner = $data['Donated_To_Partner'];
+//             $Malaria_Infected = $data['Malaria_Infected'];
+//             $Dengue_Infected = $data['Dengue_Infected'];
+//             $CFever_Infected = $data['CFever_Infected'];
+//             $Teeth_Removed = $data['Teeth_Removed'];
+//             $Antibiotics_And_Aspirins = $data['Antibiotics_And_Aspirins'];
 
+             $DonorCheckHealth=new DonorHealthCheckUp();
+             $DonorCheckHealth->setDonorID($Id);
+             $DonorCheckHealth->loadData($request->getBody());
+             $Diseases=$request->getBody()['Disease'] ?? null;
+             if ($Diseases){
+                 $DonorCheckHealth->setDiseases(implode(" ",$Diseases));
+             }else{
+                 $DonorCheckHealth->setDiseases("None");
+             }
+             /* @var $DonorQueue CampaignDonorQueue */
+             $DonorQueue=CampaignDonorQueue::findOne(['Donor_ID' => $Id]);
+             if ($DonorQueue){
+                 $CampaignID=$DonorQueue->getCampaignID();
+                 $DonorCheckHealth->setCampaignID($CampaignID);
+                 $UserID = Application::$app->getUser()->getID();
+                 $DonorCheckHealth->setRecommendBy($UserID);
+                 //TODO : CHECK IF THE DONOR IS ELIGIBLE TO DONATE
+                 $DonorCheckHealth->IsEligible();
+                 if ($DonorCheckHealth->validate() && $DonorCheckHealth->save()){
+                     $DonorQueue->setDonor_Status(CampaignDonorQueue::STAGE_2);
+                     $DonorQueue->update($DonorCheckHealth->getDonorID(),[],['Donor_Status']);
+
+                     $this->setFlashMessage(key: 'success',message: 'Donor Health Check Up Completed!');
+                     if ($DonorCheckHealth->getEligible()===DonorHealthCheckUp::NOT_ELIGIBLE){
+                         $this->setFlashMessage(key: 'error',message: "Donor Cannot Donate the Blood");
+                     }
+                     Application::Redirect('/hospital/bloodCheck?Id='.$Id);
+                 }else{
+                     $this->setFlashMessage('error','Donor Health Check Up Failed!');
+                     Application::Redirect('/hospital/bloodCheck?Id='.$Id);
+                 }
+         }
+
+
+
+        }
      }
-}
+
+     public function BloodCheck(Request $request, Response $response): string
+     {
+         $user=Application::$app->getUser();
+//         print_r($request->getBody());
+//         exit();
+//         $data = $request->getBody();
+//            $Id= $_GET['Id'];
+//         $Donor = Donor::findOne(['Donor_ID' => $Id]);
+////            print_r($Id);
+////            exit();
+//         if ($request->isGet()) {
+//             return $this->render('/Hospital/BloodCheck',['Donor'=>$Donor]);
+//         }
+         if ($request->isPost()) {
+             $UserID = Application::$app->getUser()->getID();
+             $DonorBloodCheck = new DonorBloodCheck();
+             $DonorBloodCheck->loadData($request->getBody());
+             $BloodPressure = $request->getBody()['Blood_Pressure'] ?? 0;
+             if ($BloodPressure) {
+                 $UpperBloodPressure = (float)explode("/", $BloodPressure)[0];
+                 $LowerBloodPressure = (float)explode("/", $BloodPressure)[1];
+                 $DonorBloodCheck->setBloodPressureUpper($UpperBloodPressure);
+                 $DonorBloodCheck->setBloodPressureLower($LowerBloodPressure);
+             }
+             $DonorBloodCheck->setCheckedAt(date('Y-m-d H:i:s'));
+             $DonorBloodCheck->setCheckedBy($UserID);
+             $DonorQueue = CampaignDonorQueue::findOne(['Donor_ID' => $DonorBloodCheck->getDonorID()]);
+             $CampaignID = $DonorQueue->getCampaignID();
+             $DonorBloodCheck->setCampaignID($CampaignID);
+             $Diseases = $request->getBody()['Disease'] ?? null;
+             if ($Diseases) {
+                 $DonorBloodCheck->setInfectionDiseases(implode(" ", $Diseases));
+             } else {
+                 $DonorBloodCheck->setInfectionDiseases("None");
+             }
+             if ($DonorBloodCheck->validate() && $DonorBloodCheck->save()) {
+                 $DonorQueue->setDonor_Status(CampaignDonorQueue::STAGE_3);
+                 $DonorQueue->update($DonorBloodCheck->getDonorID(), [], ['Donor_Status']);
+                 $this->setFlashMessage('success', 'Donor Blood Check Up Completed!');
+                 Application::Redirect('/hospital/bloodCheck?Id='.$DonorBloodCheck->getDonorID());
+             } else {
+                 $Errors = $DonorBloodCheck->getErrors();
+                 $FirstError = array_shift($Errors);
+                 $this->setFlashMessage('error', 'err');
+
+                 $Donor = $DonorQueue->getDonor();
+                 $model['Donor'] = $Donor;
+                 $model['BloodCheck'] = $DonorBloodCheck;
+                 $BloodType = BloodGroup::RetrieveAll();
+                 $model['BloodType'] = $BloodType;
+                 return $this->render('/Hospital/BloodCheck', $model);
+             }
+         }else{
+                $Id= $_GET['Id'];
+                $BloodType = BloodGroup::RetrieveAll();
+             $Donor = Donor::findOne(['Donor_ID' => $Id]);
+             return $this->render('/Hospital/BloodCheck',['Donor'=>$Donor,'BloodType'=>$BloodType,'User'=>$user]);
+         }
+     }
+
+         public function TakeDonation(Request $request, Response $response): string
+         {
+             $user=Application::$app->getUser();
+             $data = $request->getBody();
+            $Id= $_GET['id'];
+             $Donor = Donor::findOne(['Donor_ID' => $Id]);
+//             print_r($Donor);
+//                exit();
+             return $this->render('/Hospital/TakeBlood', ['Donor' => $Donor,'User'=>$user]);
+         }
+
+
+     public function AbortDonation(Request $request,Response $response){
+         /** @var $DonorQueue CampaignDonorQueue*/
+         /** @var $Donation Donation*/
+         if ($request->isPost()){
+             $Reason = $request->getBody()['AbortDonationReason'];
+             $DonorID = $request->getBody()['DonorID'];
+             $ReasonOther = $request->getBody()['AbortDonationReasonOther'] ?? null;
+             $DonorQueue=CampaignDonorQueue::findOne(['Donor_ID'=>$DonorID,'Donor_Status'=>CampaignDonorQueue::STAGE_3],false);
+             if (!$DonorQueue){
+                 return json_encode(['status'=>false,'message'=>'Donor not ready for donation!']);
+             }
+             $DonorQueue->setDonor_Status(CampaignDonorQueue::STAGE_5);
+             $Donation = Donation::findOne(['Donor_ID'=>$DonorID,'Campaign_ID'=>$DonorQueue->getCampaignID()],false);
+             if (!$Donation){
+                 return json_encode(['status'=>false,'message'=>"No Donation"]);
+             }
+             $UserID = Application::$app->getUser()->getID();
+             $RejectedDonation = new RejectedDonations();
+             $RejectedDonation->setCampaignID($DonorQueue->getCampaignID());
+             $RejectedDonation->setDonationID($Donation->getDonationID());
+             $RejectedDonation->setReason($Reason);
+             $RejectedDonation->setRejectedAt(date("Y-m-d H:i:s"));
+             $RejectedDonation->setRejectedBy($UserID);
+             $RejectedDonation->setDonorID($DonorID);
+             $RejectedDonation->setType(RejectedDonations::TYPE_ABORT_BLOOD_RETRIEVING);
+             if ($ReasonOther){
+                 $RejectedDonation->setOtherReason($ReasonOther);
+             }
+             if ($RejectedDonation->validate()){
+                 $RejectedDonation->save();
+                 $DonorQueue->update($DonorID,[],['Donor_Status'],['Campaign_ID'=>$DonorQueue->getCampaignID()]);
+                 return json_encode(['status'=>true,'message'=>'Aborted the Donation']);
+             }else{
+                 return json_encode(['status'=>false,'message'=>'Error Occured','errors'=>$RejectedDonation->getErrors()]);
+             }
+         }
+     }
+
+     public function StartDonation(Request $request,Response $response){
+         /* @var $DonorQueue CampaignDonorQueue*/
+         if ($request->isPost()){
+             $DonorID=$request->getBody()['DonorID'];
+             $DonorQueue=CampaignDonorQueue::findOne(['Donor_ID'=>$DonorID,'Donor_Status'=>CampaignDonorQueue::STAGE_3],false);
+             if (!$DonorQueue){
+                 return json_encode(['status'=>false,'message'=>'Donor not ready for donation!']);
+             }
+             $Donation=Donation::findOne(['Donor_ID'=>$DonorID,'Status'=>Donation::STATUS_BLOOD_RETRIEVING]);
+             if ($Donation){
+                 return json_encode(['status'=>false,'message'=>'Donation already started!']);
+             }
+             $Donation = new Donation();
+             $Donation->setDonationID(uniqid('Dnt_'));
+             $Donation->setDonorID($DonorID);
+             $Donation->setCampaignID($DonorQueue->getCampaignID());
+             $Donation->setStatus(Donation::STATUS_BLOOD_RETRIEVING);
+             $Donation->setStartAt(date('Y-m-d H:i:s'));
+             $Donation->setOfficerID(Application::$app->getUser()->getID());
+             if ($Donation->validate() && $Donation->save()) {
+                 return json_encode(['status' => true, 'message' => 'Donation Started!']);
+             }else{
+                 $this->setFlashMessage('error', 'Donation Failed!');
+                 return json_encode(['status' => false, 'message' => 'Donation Failed!', 'errors' => $Donation->getErrors()]);
+             }
+         }
+     }
+
+     public function RejectDonation(Request $request,Response $response)
+     {
+         /** @var $DonorQueue CampaignDonorQueue*/
+         /** @var $Donation Donation*/
+         if ($request->isPost()){
+             $Reason = $request->getBody()['AbortDonationReason'];
+             $DonorID = $request->getBody()['DonorID'];
+             $ReasonOther = $request->getBody()['AbortDonationReasonOther'] ?? null;
+             $DonorQueue=CampaignDonorQueue::findOne(['Donor_ID'=>$DonorID,'Donor_Status'=>CampaignDonorQueue::STAGE_3],false);
+             if (!$DonorQueue){
+                 return json_encode(['status'=>false,'message'=>'Donor not ready for donation!']);
+             }
+             $DonorQueue->setDonor_Status(CampaignDonorQueue::STAGE_5);
+             $Donation = Donation::findOne(['Donor_ID'=>$DonorID,'Campaign_ID'=>$DonorQueue->getCampaignID()],false);
+             if ($Donation){
+                 return json_encode(['status'=>false,'message'=>"Already Donation exist"]);
+             }
+             $Donation = new Donation();
+             $Donation->setDonationID(uniqid('Dnt_'));
+             $Donation->setDonorID($DonorID);
+             $Donation->setCampaignID($DonorQueue->getCampaignID());
+             $Donation->setStatus(Donation::STATUS_BLOOD_DONATION_ABORTED);
+             $Donation->setOfficerID(Application::$app->getUser()->getID());
+             $Donation->setStartAt(date('Y-m-d H:i:s'));
+             if (!$Donation->validate()){
+                 return json_encode(['status'=>false,'message'=>'Error Occured','errors'=>$Donation->getErrors()]);
+             }
+             if (!$Donation->save()){
+                 return json_encode(['status'=>false,'message'=>'Error Occured','errors'=>$Donation->getErrors()]);
+             }
+             $UserID = Application::$app->getUser()->getID();
+             $RejectedDonation = new RejectedDonations();
+             $RejectedDonation->setCampaignID($DonorQueue->getCampaignID());
+             $RejectedDonation->setDonationID($Donation->getDonationID());
+             $RejectedDonation->setReason($Reason);
+             $RejectedDonation->setRejectedAt(date("Y-m-d H:i:s"));
+             $RejectedDonation->setRejectedBy($UserID);
+             $RejectedDonation->setDonorID($DonorID);
+             $RejectedDonation->setType(RejectedDonations::TYPE_ABORT_DONATION);
+             if ($ReasonOther){
+                 $RejectedDonation->setOtherReason($ReasonOther);
+             }
+             if ($RejectedDonation->validate()){
+                 $RejectedDonation->save();
+                 $DonorQueue->update($DonorID,[],['Donor_Status'],['Campaign_ID'=>$DonorQueue->getCampaignID()]);
+                 return json_encode(['status'=>true,'message'=>'Rejected the Donation']);
+             }else{
+                 return json_encode(['status'=>false,'message'=>'Error Occured','errors'=>$RejectedDonation->getErrors()]);
+             }
+         }
+     }
+
+     public function CompleteDonation(Request $request,Response $response)
+     {
+         /* @var $DonorQueue CampaignDonorQueue*/
+         /* @var $Donation Donation*/
+         if ($request->isPost()){
+             $DonorID=$request->getBody()['DonorID'];
+             $Volume=$request->getBody()['Volume'];
+             $DonorQueue=CampaignDonorQueue::findOne(['Donor_ID'=>$DonorID,'Donor_Status'=>CampaignDonorQueue::STAGE_3],false);
+             if (!$DonorQueue){
+                 return json_encode(['status'=>false,'message'=>'Donor not ready for donation!']);
+             }
+             $Donation=Donation::findOne(['Donor_ID'=>$DonorID,'Status'=>Donation::STATUS_BLOOD_RETRIEVING],false);
+             if (!$Donation){
+                 return json_encode(['status'=>false,'message'=>'Donation not started!']);
+             }
+             $DonorQueue->setDonor_Status(CampaignDonorQueue::STAGE_4);
+             $Donation->setStatus(Donation::STATUS_BLOOD_STORED);
+             $Donation->setEndAt(date('Y-m-d H:i:s'));
+             $BloodPacket = new BloodPackets();
+             $BloodPacket->loadData($request->getBody());
+             $BloodPacket->setStatus(BloodPackets::STATUS_STORED);
+             $BloodPacket->setPackedBy(Application::$app->getUser()->getID());
+             $BloodGroup=DonorBloodCheck::findOne(['Donor_ID'=>$DonorID],false)->getBloodGroup();
+             $BloodPacket->setBloodGroup($BloodGroup);
+             $BloodPacket->setStoredAt(date('Y-m-d H:i:s'));
+             if ($BloodPacket->validate() && $BloodPacket->save()){
+                 $Accepted_Donation=new AcceptedDonations();
+                 $Accepted_Donation->setDonationID($Donation->getDonationID());
+                 $Accepted_Donation->setDonatedAt($Donation->getStartAt());
+                 $Accepted_Donation->setInTime($Donation->getStartAt());
+                 $Accepted_Donation->setOutTime($Donation->getEndAt());
+                 $Accepted_Donation->setPacketID($BloodPacket->getPacketID());
+                 $Accepted_Donation->setDonorID($DonorID);
+                 $Accepted_Donation->setVolume($Volume);
+                 $Accepted_Donation->setRetrievedBy(Application::$app->getUser()->getID());
+                 $Accepted_Donation->setVerifiedBy(Application::$app->getUser()->getID());
+                 $Donation->update($Donation->getDonationID(),[],['Status','End_At']);
+                 $DonorQueue->update($DonorQueue->getDonorID(),[],['Donor_Status']);
+                 if ($Accepted_Donation->validate() && $Accepted_Donation->save()) {
+                     return json_encode(['status' => true, 'message' => 'Donation Completed!']);
+                 }else{
+
+                     $this->setFlashMessage('error', 'Donation Failed!');
+                     return json_encode(['status' => false, 'message' => 'Donation Failed!', 'error' => $Accepted_Donation->getErrors()]);
+                 }
+             }else{
+                 $this->setFlashMessage('error', 'Donation Failed!');
+                 return json_encode(['status' => false, 'message' => 'Donation Failed!s']);
+             }
+         }
+     }
+
+ }

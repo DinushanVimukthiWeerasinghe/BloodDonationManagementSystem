@@ -124,7 +124,6 @@ echo cardgroup::CloseCardPanel();
                 <div class="results" id="SearchResult">
                 </div>
             `,
-            successBtnText: 'Search'
         })
     }
 
