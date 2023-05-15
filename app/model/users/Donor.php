@@ -434,8 +434,7 @@ class Donor extends Person
         return [
             'Donor_ID'=>[self::RULE_REQUIRED,self::RULE_UNIQUE],
             'Nearest_Bank'=>[self::RULE_REQUIRED],
-            'Verified'=>[self::RULE_REQUIRED],
-            'Verified_At'=>[self::RULE_TODAY_OR_OLDER_DATE]
+//            'Verified'=>[self::RULE_REQUIRED],
         ];
     }
 

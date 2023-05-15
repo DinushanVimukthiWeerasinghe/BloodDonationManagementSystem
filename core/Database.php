@@ -11,6 +11,7 @@ class Database
         $dsn=$config['dsn'] ?? '';
         $user=$config['user'] ?? '';
         $password=$config['password'] ?? '';
+
         $this->pdo = new PDO($dsn,$user,$password);
 //        $this->pdo = new \PDO('mysql:host=localhost;dbname=mvc_db', 'root', '');
         $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);

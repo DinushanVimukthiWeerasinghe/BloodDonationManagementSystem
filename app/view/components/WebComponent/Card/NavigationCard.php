@@ -25,8 +25,9 @@ class NavigationCard
 
     public function __toString(): string
     {
+        $click = $this->NavigationURL==="#"?'':'onclick="Redirect(\''.$this->NavigationURL.'\')"';
         return <<<HTML
-            <div class="card nav-card bg-white text-dark" id="$this->id" onclick="Redirect('$this->NavigationURL')">
+            <div class="card nav-card bg-white text-dark" id="$this->id" $click>
                     <div class="card-header">
                         <div class="card-header-img">
                             <img src="$this->ImageURL" alt="Donor" width="100px">

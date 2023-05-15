@@ -16,6 +16,7 @@ class BloodRequest extends dbModel
     protected string $BloodGroup;
     protected string $Requested_By;
     protected string $Requested_At;
+    protected string $Request_From;
     protected ?string $FullFilled_By = null;
     protected ?string $Remarks = null;
     protected int $Status=1;
@@ -24,25 +25,23 @@ class BloodRequest extends dbModel
     protected int $Action = 0;
     protected float $Volume = 0.0;
 
-    protected int $Quantity;
-
-    protected string $Remark;
-
     /**
      * @return string
      */
-    public function getRemark(): string
+    public function getRequestedFrom(): string
     {
-        return $this->Remark;
+        return $this->Request_From;
     }
 
     /**
-     * @param string $Remark
+     * @param string $Request_From
      */
-    public function setRemark(string $Remark): void
+    public function setRequestedFrom(string $Request_From): void
     {
-        $this->Remark = $Remark;
+        $this->Request_From = $Request_From;
     }
+
+
 
 
 
@@ -238,13 +237,18 @@ class BloodRequest extends dbModel
      */
     public function getStatus(): string
     {
-        return $this->Status;
+        return match ($this->Status) {
+            self::REQUEST_STATUS_PENDING => 'Pending',
+            self::REQUEST_STATUS_FULFILLED => 'Fulfilled',
+            self::REQUEST_STATUS_APPROVED => 'Approved',
+        };
     }
 
     public function getRequestStatus()
     {
         return match ($this->Status) {
             self::REQUEST_STATUS_PENDING => 'Pending',
+            self::REQUEST_STATUS_APPROVED => 'Approved',
             self::REQUEST_STATUS_FULFILLED => 'Fulfilled',
         };
     }
@@ -256,14 +260,7 @@ class BloodRequest extends dbModel
     {
         $this->Status = $Status;
     }
-    public function getQuantity(): int
-    {
-        return $this->Quantity;
-    }
-    public function setQuantity(int $Quantity): void
-    {
-        $this->Quantity = $Quantity;
-    }
+
 
 
 
@@ -281,7 +278,11 @@ class BloodRequest extends dbModel
             'Remark' => 'Remarks',
             'Type' => 'Type',
             'Volume' => 'Volume',
-            'Action' => 'Action'
+            'Action' => 'Action',
+            'RequestedBy' => 'Requested By',
+            'RequestedAt' => 'Requested At',
+            'RequestStatus' => 'Request Status',
+            'Request_From' => 'Requested From',
         ];
     }
 
@@ -290,12 +291,12 @@ class BloodRequest extends dbModel
         return [
             'Request_ID' => [self::RULE_REQUIRED],
             'BloodGroup' => [self::RULE_REQUIRED],
-            'RequestedBy' => [self::RULE_REQUIRED],
+            'Requested_By' => [self::RULE_REQUIRED],
             'Requested_At' => [self::RULE_REQUIRED],
             'Status' => [self::RULE_REQUIRED],
             'Type' => [self::RULE_REQUIRED],
-            'Quantity' => [self::RULE_REQUIRED],
-            'Remark' => [self::RULE_REQUIRED]
+            'Remarks' => [self::RULE_REQUIRED],
+            'Volume' => [self::RULE_REQUIRED],
 
         ];
     }
@@ -324,10 +325,10 @@ class BloodRequest extends dbModel
             'Requested_At',
             'Status',
             'Type',
-            'Quantity',
-            'Remark',
+            'Remarks',
             'Volume',
-            'Action'
+            'Action',
+            'Request_From',
         ];
     }
 
@@ -343,6 +344,41 @@ class BloodRequest extends dbModel
      }else{
          return $newKey;
      }
+    }
+
+    public static function NavigationFooter(int $total_pages,int $current_page)
+    {
+        $pages="";
+        $next=$current_page+1;
+        $prev=$current_page-1;
+        if ($next > $total_pages)
+        {
+            $next=$total_pages;
+        }
+        if ($prev < 1)
+        {
+            $prev=1;
+        }
+        for($i=1;$i<=$total_pages;$i++)
+        {
+            if ($i == $current_page){
+                $pages.= "<a href='?page=$i'  class='nav-number bg-primary text-white px-1 py-0-5 border-radius-10 active' style='margin: 1vw'>$i</a>";
+                continue;
+            }
+            $pages.= "<a href='?page=$i'  class='nav-number bg-white px-1 py-0-5 border-radius-10'>$i</a>";
+        }
+        return <<<HTML
+            <div class="notifications-footer mt-1">
+                <div class="navigations d-flex gap-1">
+                    <a href="?page=$prev" class="previous nav-btn"><img src="/public/images/icons/previous.png" alt=""></a>
+                    <div class="nav-numbers text-white gap-2">
+                        $pages
+                    </div>
+                    <a href="?page=$next" class="next nav-btn"> <img src="/public/images/icons/next.png" alt=""> </a>
+                </div>
+            </div>
+        HTML;
+
     }
 
 }

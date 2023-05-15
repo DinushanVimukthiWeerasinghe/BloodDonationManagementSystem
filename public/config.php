@@ -21,6 +21,7 @@ else {
     define("DB_DSN", $_ENV['DB_PROD_DSN']);
 }
 
+
 //Define Encryption Key and Algorithm
 define("ENCRYPTION_KEY", $_ENV['ENCRYPTION_KEY']);
 define("ENCRYPTION_METHOD", $_ENV['ENCRYPTION_METHOD']);

@@ -222,7 +222,7 @@ class Application
 //            Set Status Code to 500
 //            http_response_code(404);
 //            self::Redirect('/');
-            var_dump($e->getMessage());
+            echo($e->getMessage());
         }
     }
 
