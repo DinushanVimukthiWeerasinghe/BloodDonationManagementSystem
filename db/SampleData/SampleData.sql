@@ -41,7 +41,7 @@ INSERT INTO BloodBanks (BloodBank_ID, BankName, Address1, Address2, City, Teleph
     ('BB_01', 'Kuliyapitiya Hospital Blood Bank', 'No 17', 'Wariyapola Road', 'Kuliyapitiya', '0110000000',48,25,58,145);
 
 # Admin Profile
-INSERT INTO admins (Admin_ID, UserName, Email) VALUES ('Adm_01', 'Be Positive Admin', 'admin@bepositive.local');
+INSERT INTO Admins (Admin_ID, UserName, Email) VALUES ('Adm_01', 'Be Positive Admin', 'admin@bepositive.local');
 
 # Manager Profile
 INSERT INTO Managers (Manager_ID, First_Name, Last_Name, Address1, Address2, City, Contact_No, Email, BloodBank_ID)
@@ -244,7 +244,7 @@ VALUES
 
 
 # Create Organizations Table
-INSERT INTO organizations(ORGANIZATION_ID, ORGANIZATION_NAME, ADDRESS1, ADDRESS2, ORGANIZATION_EMAIL, CONTACT_NO, CITY, STATUS, VERIFIED_BY, VERIFIED_AT)
+INSERT INTO Organizations(ORGANIZATION_ID, ORGANIZATION_NAME, ADDRESS1, ADDRESS2, ORGANIZATION_EMAIL, CONTACT_NO, CITY, STATUS, VERIFIED_BY, VERIFIED_AT)
 VALUES
     ('ORG_02', 'Save the Animals', '19, Visaka Road', 'Colombo 04,', 'savetheanimals@bepositive.local', '0112690911', 'Colombo 05', 'Active', 'Mof_01', '2020-10-10 10:10:10'),
     ('ORG_03', 'Greenpeace', '186/1',' Dr. Colvin R. De Silva Mawatha, Colombo 02,', 'greenpeace@bepositive.local', '0112690911', 'Colombo 05', 'Active', 'Mof_01', '2020-10-10 10:10:10'),
@@ -489,7 +489,7 @@ VALUES
 ('Cmp_60', 'Blood Donation Drive for HIV Patients', 'Org_38', 'Donate blood to help HIV patients in need!', '2023-12-05', 'Negombo Road', 'Gampaha', 1, 7.0873, 79.9937, 'BB_01', 800),
 ('Cmp_61', 'Blood Donation Drive for Mental Health Awareness', 'Org_39', 'Donate blood to raise awareness for mental health!', '2023-12-10', 'Colombo Road', 'Colombo', 1, 6.9167, 79.8473, 'BB_01', 1000);
 # Add 5ample Data to the Donor TABLE
-INSERT INTO users(UID, Email, Password) VALUES
+INSERT INTO Users(UID, Email, Password) VALUES
 ('Dnr_02', 'john@bepositive.local','$2y$10$yjcyB1lr8V/nVciydOYedu0Rnedd9JHZ3d6PqPMqM4yNJoPmltlZS'),
 ('Dnr_03', 'peter@bepositive.local', '$2y$10$yjcyB1lr8V/nVciydOYedu0Rnedd9JHZ3d6PqPMqM4yNJoPmltlZS'),
 ('Dnr_04', 'mary@bepositive.local', '$2y$10$yjcyB1lr8V/nVciydOYedu0Rnedd9JHZ3d6PqPMqM4yNJoPmltlZS'),

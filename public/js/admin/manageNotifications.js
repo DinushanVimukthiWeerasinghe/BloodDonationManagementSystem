@@ -25,7 +25,7 @@ function addNewHospitalNotification() {
   
                           <label for="receiver">To</label>
                           <select name="hospitalId" id="hospitalId">
-                            <option value="allHospitals">All Hospitals</option>
+                            <option value="allHospitals" selected>All Hospitals</option>
                           </select>
                         </form>`,
             successBtnText: "Yes",
@@ -76,7 +76,7 @@ function addNewManagerNotification() {
                           
                           <label for="receiver">To</label>
                           <select name="managerId" id="managerId">
-                            <option value="allManagers">All Managers</option>
+                            <option value="allManagers" selected>All Managers</option>
                           </select>
   
                         </form>`,
