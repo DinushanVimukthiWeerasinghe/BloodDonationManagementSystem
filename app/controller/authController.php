@@ -275,16 +275,21 @@ class authController extends Controller
 
     }
 
-    public function DonorRegister(Request $request,Response $response):string
+    public function DonorRegister(Request $request,Response $response)
     {
+
         if ($request->isPost()){
+
+
             $UID = $request->getBody()['uid'];
             $UID=Security::Decrypt($UID);
             /** @var User $User */
             $User = User::findOne(['UID'=>$UID]);
             $Donor = new Donor();
+            $Donor->setEmail($User->getEmail());
             $Donor->setDonorID($User->getID());
             $Donor->loadData($request->getBody());
+
             /** @var File $Image */
             $Image = $request->getBody()['ProfileImage'];
             if ($Image->getFileName()!==""){
@@ -292,15 +297,19 @@ class authController extends Controller
                 $Image->setFileName(uniqid("Dnr_").'.'.$Image->getExtension());
                 $Donor->setProfileImage($Image->getFileName());
             }
+
             $Donor->generateGenderByNIC();
             $Donor->setStatus(0);
             $Donor->setCreatedAt(date('Y-m-d H:i:s'));
+            $Donor->setUpdatedAt(date('Y-m-d'));
             if ($Donor->validate()){
                 if ($Image->getFileName()!==""){
                     $Image->saveFile();
                 }
+
                 $User->setAccountStatus(User::ACTIVE);
                 $Donor->save();
+
                 $User->update($User->getID(),[],['Account_Status']);
                 $this->setFlashMessage('success','User Registered Successfully');
                 Application::Redirect('/login');
@@ -314,6 +323,7 @@ class authController extends Controller
         else{
             $UID = $request->getBody()['uid'];
             $UID=Security::Decrypt($UID);
+
             if ($UID===false){
                 $this->setFlashMessage('error','Invalid Data');
                 Application::Redirect('/register');
@@ -340,6 +350,7 @@ class authController extends Controller
                 Application::Redirect('/login');
                 exit();
             }
+
             $this->layout = 'auth';
             return $this->render('Authentication/Registration/DonorRegistration',[
                 'uid'=>Security::Encrypt($UID),

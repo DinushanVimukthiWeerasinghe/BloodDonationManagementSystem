@@ -256,6 +256,7 @@ abstract class dbModel extends Model
             return true;
 
         }catch (PDOException $e){
+            throw new \RuntimeException($e->getMessage());
             return false;
         }
 

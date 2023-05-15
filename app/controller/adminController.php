@@ -205,17 +205,17 @@ class adminController extends \Core\Controller
         if ($Role == 'Manager'){
             $data['Headings'] = ['Title','Message','Receiver'];
             $notificationList = ManagerNotification::RetrieveAll();
-            $receiverName = 'All Managers';
         } else if ($Role == 'Hospital'){
             $data['Headings'] = ['Title','Message','Receiver'];
             $notificationList = HospitalNotification::RetrieveAll();
-            $receiverName = 'All Hospitals';
         }
         foreach ($notificationList as $notification){
 //            $receiver = User::findOne(['$UID' => $notification->getTargetID()]);
             if ($Role == 'Hospital'){
+                $receiverName = 'All Hospitals';
                 $receiver = Hospital::findOne(['Hospital_ID' => $notification->getTargetID()]);
             }else if ($Role == 'Manager'){
+                $receiverName = 'All Managers';
                 $receiver = Manager::findOne(['Manager_ID' => $notification->getTargetID()]);
             }
             if ($receiver){
@@ -575,6 +575,7 @@ class adminController extends \Core\Controller
 
     public function addHospitalsNotification(Request $request, Response $response){
         $data = $request->getBody();
+//        print_r($data);
         if($request->isPost()){
             $notification = new HospitalNotification();
             $notification->setNotificationID(HospitalNotification::generateID('HN_'));

@@ -28,7 +28,7 @@ class Donor extends Person
     const DEFAULT_PROFILE_IMAGE_LOCATION = 'Profile/Donor';
     protected string $Donor_ID = '';
     protected string $Nearest_Bank = '';
-    protected int $Donation_Availability = 1;
+    protected int $Donation_Availability = 2;
     protected ?string $Donation_Availability_Date=null;
     protected int $Verified=1;
     protected ?string $Verified_At=null;
