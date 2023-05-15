@@ -445,6 +445,7 @@ $app->router->post('/donor/profile/loginPrompt', [donorController::class, 'login
     $app->router->post('/hospital/rejectBloodDonation', [hospitalController::class, 'RejectDonation']);
     $app->router->post('/hospital/CompleteDonation', [hospitalController::class, 'CompleteDonation']);
     $app->router->post('/hospital/AbortDonation', [hospitalController::class, 'AbortDonation']);
+    $app->router->post('/hospital/changePassword', [hospitalController::class, 'ChangePassword']);
 
 
 //Blogs
