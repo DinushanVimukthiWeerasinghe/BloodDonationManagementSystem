@@ -92,6 +92,10 @@ echo cardgroup::CloseCardPanel();
                     <label for="remarks">Remarks</label>
                     <textarea class="form-control" id="remarks" rows="3" name="Remarks" required></textarea>
                 </div>
+                <div class="form-group">
+                    <label for="name">Added By</label>
+                    <textarea class="form-control" id="name" rows="3" name="Name" required></textarea>
+                </div>
             </form>
             `,
             successBtnText: 'Add',

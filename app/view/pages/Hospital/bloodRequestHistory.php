@@ -31,7 +31,7 @@ $background = new BackGroundImage();
 
 echo $background;
 
-$table = new \App\view\components\Table\DetailTable(['Request ID', 'Blood Group', 'Requested At', 'Type', 'Status','Quantity (In Pints)','Remarks'], $data);
+$table = new \App\view\components\Table\DetailTable(['Request ID', 'Blood Group', 'Requested At', 'Type', 'Status','Quantity (In Pints)','Remarks','Added By'], $data);
 echo $table->render("table");
 /** @var int $total_pages */
 /** @var int $current_page */

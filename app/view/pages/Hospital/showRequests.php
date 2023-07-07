@@ -31,7 +31,7 @@ $background = new BackGroundImage();
 
 echo $background;
 
-$table = new \App\view\components\Table\DetailTable(['Request ID','Blood Group', 'Requested At', 'Type', 'Status','Quantity (In Pints)','Remarks','Action'], $data );
+$table = new \App\view\components\Table\DetailTable(['Request ID','Blood Group', 'Requested At', 'Type', 'Status','Quantity (In Pints)','Remarks','Added By','Action'], $data );
 echo $table->render("table");
 
 /** @var int $total_pages */
@@ -77,6 +77,10 @@ if ($data != null){
                     <div class="form-group">
                         <label for="remarks">Remarks</label>
                         <textarea class="form-control" id="remarks" rows="3" name="Remarks" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="Name">Added By</label>
+                        <textarea class="form-control" id="name" rows="3" name="Name" required></textarea>
                     </div>
                 </form>
                 `,

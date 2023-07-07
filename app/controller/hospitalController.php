@@ -209,6 +209,8 @@
         $total_rows= BloodRequest::getCount(false, ['Status'=>BloodRequest::REQUEST_STATUS_PENDING]);
         $total_pages = ceil($total_rows / $limit);
         $requests=BloodRequest::RetrieveAll(true,[$initial,$limit],true,['Requested_By'=>Application::$app->getUser()->getID(),'Status'=>BloodRequest::REQUEST_STATUS_PENDING]);
+//        print_r($requests);
+//        exit();
 //        print_r($total_pages);
 //        print_r($total_rows);
 //     exit();
@@ -224,6 +226,7 @@
                 'Status'=>$request->getStatus(),
                 'Volume'=>$request->getVolume(),
                 'Remarks'=>$request->getRemarks(),
+                'Name'=>$request->getName(),
 
             ];
         }
@@ -231,10 +234,10 @@
      return $this->render('Hospital/showRequests',['data'=>$reqData,'total_pages'=>$total_pages,'current_page'=>$page,'User'=>$user]);
     }
 
-    public function notification(Request $request, Response $response): string
+    public function notification(Request $request, Response $response)
     {
         if ($request->isPost()){
-            $Notifications=HospitalNotification::RetrieveAll(false,[],true,['Target_ID'=>Application::$app->getUser()->getId()],['Notification_Date'=>'ASC']);
+            $Notifications=HospitalNotification::RetrieveAll(false,[],true,['Target_ID'=>Application::$app->getUser()->getId(),'Target_ID'=>null],['Notification_Date'=>'ASC']);
             if ($Notifications){
                 $Notifications = array_map(function ($object) {
                     return $object->toArray();
@@ -269,6 +272,7 @@
             $newRequestedBy =  Application::$app->getUser()->getID();
             $newStatus = 1;
             $newRequestID = $BloodRequest->getNewPrimaryKey($BloodRequest->getType());
+            $newName = $data['Name'];
             $BloodRequest->setRequestID($newRequestID);
             $BloodRequest->setBloodGroup($newBloodGroup);
             $BloodRequest->setType($newType);
@@ -278,6 +282,7 @@
             $BloodRequest->setRequestedBy($newRequestedBy);
             $BloodRequest->setStatus($newStatus);
             $BloodRequest->setRequestedFrom($newRequestFrom);
+            $BloodRequest->setName($newName);
 //            $BloodRequest->save();
             if($BloodRequest->getVolume()<1){
                 $this->setFlashMessage('error','Please Enter Valid Quantity');
@@ -355,6 +360,7 @@
                 'Status'=>$request->getStatus(),
                 'Volume'=>$request->getVolume(),
                 'Remarks'=>$request->getRemarks(),
+                'Name'=>$request->getName(),
 
             ];
         }
@@ -373,8 +379,9 @@
         $request = BloodRequest::findOne(['Request_ID'=>$requestID]);
         $request->setRemarks($data['Remarks']);
         $request->setVolume($data['Volume']);
+        $request->setName($data['Name']);
         if ($request->validate()){
-            $request->update($request->getRequestID(),[],['Remarks','Volume']);
+            $request->update($request->getRequestID(),[],['Remarks','Volume','Name']);
 //            $request->save();
             $this->setFlashMessage('success','Request Updated Successfully');
         }
@@ -507,14 +514,13 @@
          }
      }
 
-     public function HealthCheckup(Request $request, Response $response): string
+     public function HealthCheckup(Request $request, Response $response)
      {
-         $user=Application::$app->getUser();
-         if ($request->isGet())
-         {
+         $user = Application::$app->getUser();
+         if ($request->isGet()) {
              $data = $request->getBody();
 
-             $Id= $_GET['Id'];
+             $Id = $_GET['Id'];
              $donorInfo = Donor::findOne(['Donor_ID' => $Id]);
 //         print_r($data);
 //         exit();
@@ -522,88 +528,34 @@
 
 //        print_r($donorInfo);
 //        exit();
-             $reqData=[
-                 'Donor_ID'=>$donorInfo->getDonorID(),
-                 'First_Name'=>$donorInfo->getFirstName(),
-                 'Last_Name'=>$donorInfo->getLastName(),
-                 'NIC'=>$donorInfo->getNIC(),
-                 'Email'=>$donorInfo->getEmail(),
-                 'Contact_No'=>$donorInfo->getContactNo(),
-                 'City'=>$donorInfo->getCity(),
-                 'Blood_Group'=>$donorInfo->getBloodGroup(),
-                 'Donation_Availability'=>$donorInfo->getDonationAvailability(),
-                 'Verified'=>$donorInfo->getVerified(),
-                 'NIC_Front'=>$donorInfo->getNICFront(),
-                 'NIC_Back'=>$donorInfo->getNICBack(),
-                 'Profile_Image'=>$donorInfo->getProfileImage(),
-                 'Donor'=>$donorInfo,
+             $reqData = [
+                 'Donor_ID' => $donorInfo->getDonorID(),
+                 'First_Name' => $donorInfo->getFirstName(),
+                 'Last_Name' => $donorInfo->getLastName(),
+                 'NIC' => $donorInfo->getNIC(),
+                 'Email' => $donorInfo->getEmail(),
+                 'Contact_No' => $donorInfo->getContactNo(),
+                 'City' => $donorInfo->getCity(),
+                 'Blood_Group' => $donorInfo->getBloodGroup(),
+                 'Donation_Availability' => $donorInfo->getDonationAvailability(),
+                 'Verified' => $donorInfo->getVerified(),
+                 'NIC_Front' => $donorInfo->getNICFront(),
+                 'NIC_Back' => $donorInfo->getNICBack(),
+                 'Profile_Image' => $donorInfo->getProfileImage(),
+                 'Donor' => $donorInfo,
              ];
 
 //         $model['Donor']=$Donor;
 //         return $this->render('/Hospital/HealthCheck', $model);
-             return $this->render('/Hospital/HealthCheck', ['data' => $reqData,'User'=>$user]);
-         }
-         else if($request->isPost())
-         {
+             return $this->render('/Hospital/HealthCheck', ['data' => $reqData, 'User' => $user]);
+         } else if ($request->isPost()) {
 //                $data = $request->getBody();
-             $Id= $_GET['Id'];
-             error_log($Id);
-//             var_dump($Id);
-//             $donorInfo = Donor::findOne(['Donor_ID' => $Id]);
-//             print_r($Id);
-//             exit();
-//             $Recommendation = $data['Recommendation'];
-//             $GoodHealth = $data['GoodHealth'];
-//             $PartnerAids = $data['PartnerAids'];
-//             $Vaccinated = $data['Vaccinated'];
-//             $Tattooed = $data['Tattooed'];
-//             $Pierced = $data['Pierced'];
-//             $Pregnant = $data['Pregnant'];
-//             $Prisoned = $data['Prisoned'];
-//             $Went_Abroad = $data['Went_Abroad'];
-//             $Donated_To_Partner = $data['Donated_To_Partner'];
-//             $Malaria_Infected = $data['Malaria_Infected'];
-//             $Dengue_Infected = $data['Dengue_Infected'];
-//             $CFever_Infected = $data['CFever_Infected'];
-//             $Teeth_Removed = $data['Teeth_Removed'];
-//             $Antibiotics_And_Aspirins = $data['Antibiotics_And_Aspirins'];
+             $Id = $_GET['Id'];
+             Application::Redirect('/hospital/bloodCheck?Id=' . $Id);
 
-             $DonorCheckHealth=new DonorHealthCheckUp();
-             $DonorCheckHealth->setDonorID($Id);
-             $DonorCheckHealth->loadData($request->getBody());
-             $Diseases=$request->getBody()['Disease'] ?? null;
-             if ($Diseases){
-                 $DonorCheckHealth->setDiseases(implode(" ",$Diseases));
-             }else{
-                 $DonorCheckHealth->setDiseases("None");
-             }
-             /* @var $DonorQueue CampaignDonorQueue */
-             $DonorQueue=CampaignDonorQueue::findOne(['Donor_ID' => $Id]);
-             if ($DonorQueue){
-                 $CampaignID=$DonorQueue->getCampaignID();
-                 $DonorCheckHealth->setCampaignID($CampaignID);
-                 $UserID = Application::$app->getUser()->getID();
-                 $DonorCheckHealth->setRecommendBy($UserID);
-                 //TODO : CHECK IF THE DONOR IS ELIGIBLE TO DONATE
-                 $DonorCheckHealth->IsEligible();
-                 if ($DonorCheckHealth->validate() && $DonorCheckHealth->save()){
-                     $DonorQueue->setDonor_Status(CampaignDonorQueue::STAGE_2);
-                     $DonorQueue->update($DonorCheckHealth->getDonorID(),[],['Donor_Status']);
 
-                     $this->setFlashMessage(key: 'success',message: 'Donor Health Check Up Completed!');
-                     if ($DonorCheckHealth->getEligible()===DonorHealthCheckUp::NOT_ELIGIBLE){
-                         $this->setFlashMessage(key: 'error',message: "Donor Cannot Donate the Blood");
-                     }
-                     Application::Redirect('/hospital/bloodCheck?Id='.$Id);
-                 }else{
-                     $this->setFlashMessage('error','Donor Health Check Up Failed!');
-                     Application::Redirect('/hospital/bloodCheck?Id='.$Id);
-                 }
+
          }
-
-
-
-        }
      }
 
      public function BloodCheck(Request $request, Response $response): string

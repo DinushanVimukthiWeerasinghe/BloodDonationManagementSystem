@@ -17,6 +17,7 @@ class BloodRequest extends dbModel
     protected string $Requested_By;
     protected string $Requested_At;
     protected string $Request_From;
+    protected string $Name;
     protected ?string $FullFilled_By = null;
     protected ?string $Remarks = null;
     protected int $Status=1;
@@ -40,6 +41,7 @@ class BloodRequest extends dbModel
     {
         $this->Request_From = $Request_From;
     }
+
 
 
 
@@ -79,6 +81,22 @@ class BloodRequest extends dbModel
     public function setRemarks(?string $Remarks): void
     {
         $this->Remarks = $Remarks;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName() : string
+    {
+        return $this->Name;
+    }
+
+    /**
+     * @param string $Name
+     */
+    public function setName(string $Name) : void
+    {
+        $this->Name = $Name;
     }
 
 
@@ -240,15 +258,13 @@ class BloodRequest extends dbModel
         return match ($this->Status) {
             self::REQUEST_STATUS_PENDING => 'Pending',
             self::REQUEST_STATUS_FULFILLED => 'Fulfilled',
-            self::REQUEST_STATUS_APPROVED => 'Approved',
         };
     }
 
-    public function getRequestStatus()
+    public function getRequestStatus(): string
     {
         return match ($this->Status) {
             self::REQUEST_STATUS_PENDING => 'Pending',
-            self::REQUEST_STATUS_APPROVED => 'Approved',
             self::REQUEST_STATUS_FULFILLED => 'Fulfilled',
         };
     }
@@ -283,6 +299,7 @@ class BloodRequest extends dbModel
             'RequestedAt' => 'Requested At',
             'RequestStatus' => 'Request Status',
             'Request_From' => 'Requested From',
+            'Name'=> 'Name',
         ];
     }
 
@@ -297,6 +314,7 @@ class BloodRequest extends dbModel
             'Type' => [self::RULE_REQUIRED],
             'Remarks' => [self::RULE_REQUIRED],
             'Volume' => [self::RULE_REQUIRED],
+            'Name' => [self::RULE_REQUIRED],
 
         ];
     }
@@ -329,6 +347,7 @@ class BloodRequest extends dbModel
             'Volume',
             'Action',
             'Request_From',
+            'Name',
         ];
     }
 
