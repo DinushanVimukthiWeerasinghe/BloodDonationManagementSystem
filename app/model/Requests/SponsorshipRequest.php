@@ -135,7 +135,7 @@ class SponsorshipRequest extends \App\model\database\dbModel
     /**
      * @return int|null
      */
-    public function getTransferred(): ?int
+    public function getTransferred(): int | string | null
     {
         return $this->Transferred ?? "Not Transferred";
     }

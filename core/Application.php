@@ -159,6 +159,7 @@ class Application
         $ID = $user->getID();
         $Email = $user->getEmail();
 
+
         if ($user->IsUserVerified()) {
             if ($Role === User::MANAGER) {
                 $this->user = Manager::findOne(['Manager_ID' => $ID]);
@@ -185,6 +186,7 @@ class Application
             if ($this->user === null) {
                 return false;
             }
+
             $primaryKey = $user->primaryKey();
 
 

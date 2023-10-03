@@ -129,7 +129,9 @@ class authController extends Controller
             if ($login->validate()) {
                 $user = $login->login();
                 if (!$user) {
-                    $this->setFlashMessage('error', 'Invalid Credentials');
+                    $error =$login->getErrors();
+                    $firstError = array_shift($error);
+                    $this->setFlashMessage('error', $firstError[0]);
                     Application::Redirect('/login');
                     exit();
                 }
@@ -516,41 +518,43 @@ class authController extends Controller
                     'field'=>'NewPassword'
                 ]);
             }
+            if (MODE!==DEVELOPMENT) {
 
-//            if (preg_match('/[A-Z]/', $NewPassword)===0){
-//                return json_encode([
-//                    'status'=>false,
-//                    'message'=>'Password must contain at least one uppercase letter!'
-//                ]);
-//            }
-//
-//            if (preg_match('/[a-z]/', $NewPassword)===0){
-//                return json_encode([
-//                    'status'=>false,
-//                    'message'=>'Password must contain at least one lowercase letter!'
-//                ]);
-//            }
-//
-//            if (preg_match('/[0-9]/', $NewPassword)===0){
-//                return json_encode([
-//                    'status'=>false,
-//                    'message'=>'Password must contain at least one number!'
-//                ]);
-//            }
-//
-//            if (preg_match('/[^a-zA-Z\d]/', $NewPassword)===0){
-//                return json_encode([
-//                    'status'=>false,
-//                    'message'=>'Password must contain at least one special character!'
-//                ]);
-//            }
-//
-//            if (preg_match('/\s/', $NewPassword)===1){
-//                return json_encode([
-//                    'status'=>false,
-//                    'message'=>'Password must not contain any whitespace!'
-//                ]);
-//            }
+                if (preg_match('/[A-Z]/', $NewPassword) === 0) {
+                    return json_encode([
+                        'status' => false,
+                        'message' => 'Password must contain at least one uppercase letter!'
+                    ]);
+                }
+
+                if (preg_match('/[a-z]/', $NewPassword) === 0) {
+                    return json_encode([
+                        'status' => false,
+                        'message' => 'Password must contain at least one lowercase letter!'
+                    ]);
+                }
+
+                if (preg_match('/[0-9]/', $NewPassword) === 0) {
+                    return json_encode([
+                        'status' => false,
+                        'message' => 'Password must contain at least one number!'
+                    ]);
+                }
+
+                if (preg_match('/[^a-zA-Z\d]/', $NewPassword) === 0) {
+                    return json_encode([
+                        'status' => false,
+                        'message' => 'Password must contain at least one special character!'
+                    ]);
+                }
+
+                if (preg_match('/\s/', $NewPassword) === 1) {
+                    return json_encode([
+                        'status' => false,
+                        'message' => 'Password must not contain any whitespace!'
+                    ]);
+                }
+            }
 
             if ($ConfirmPassword!==$NewPassword){
                 return json_encode([

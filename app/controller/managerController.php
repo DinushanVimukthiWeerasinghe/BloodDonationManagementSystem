@@ -140,13 +140,13 @@ class managerController extends Controller
                 }
             }
         }
-        $Data['Donations']['Percentage']=round(floatval(($Data['Donations']['Successful']/1)*100),1);
+        $Data['Donations']['Percentage']=round(floatval(($Data['Donations']['Successful']/1)*1),1);
 //        $Data['Donations']['Percentage']=round(floatval(($Data['Donations']['Successful']/$Data['Donations']['Total'])*100),1);
 //        $Data['Campaigns']['Percentage']=round(floatval(($Data['Campaigns']['Successful']/$Data['Campaigns']['Total'])*100),1);
-        $Data['Campaigns']['Percentage']=round(floatval(($Data['Campaigns']['Successful']/1)*100),1);
-        $Data['Sponsorships']['Percentage']=round(floatval(($Data['Sponsorships']['Received']/1)*100),1);
+        $Data['Campaigns']['Percentage']=round(floatval(($Data['Campaigns']['Successful']/1)*1),1);
+        $Data['Sponsorships']['Percentage']=round(floatval(($Data['Sponsorships']['Received']/1)*0.01),1);
 //        $Data['Sponsorships']['Percentage']=round(floatval(($Data['Sponsorships']['Received']/$Data['Sponsorships']['Total'])*100),1);
-        $Data['Requests']['Percentage']=round(floatval(($Data['Requests']['Supplied']/1)*100),1);
+        $Data['Requests']['Percentage']=round(floatval(($Data['Requests']['Supplied']/1)*2),1);
 //        $Data['Requests']['Percentage']=round(floatval(($Data['Requests']['Supplied']/$Data['Requests']['Total'])*100),1);
 
         $now = date('Y-m-d');
@@ -353,6 +353,10 @@ class managerController extends Controller
         if ($request->isPost()){
             $Request_ID=$request->getBody()['Request_ID'];
             $Remarks=$request->getBody()['Remarks'];
+            $Volume=$request->getBody()['Volume'];
+            $VolumeType=$request->getBody()['VolumeType'];
+            $VolumeType = (int)$VolumeType;
+
             $BloodBankID=Application::$app->getUser()->getBloodBankID();
             $BloodBank=BloodBank::findOne(['BloodBank_ID'=>$BloodBankID]);
             /* @var $BloodBank BloodBank*/
@@ -360,10 +364,12 @@ class managerController extends Controller
             /* @var $Request BloodRequest*/
             $Request = BloodRequest::findOne(['Request_ID' => $Request_ID]);
             if($Request){
+                $Request->setFullfilledVolume($Request->getFullfilledVolume() + floatval($Volume));
+                $Request->setFulfilledType($VolumeType);
                 $Request->setAction(BloodRequest::REQUEST_STATUS_FULFILLED);
                 $Request->setRemarks($Remarks);
                 $Request->setFullFilledBy($BloodBankName);
-                $Request->update($Request_ID,[],['Action','Remarks','FullFilledBy']);
+                $Request->update($Request_ID,[],['Action','Remarks','FullFilledBy','Fullfilled_Volume','Fulfilled_Type']);
                 return json_encode(['status'=>true,'message'=>'Request Fulfilled Successfully !']);
             }
         }
@@ -1186,6 +1192,7 @@ class managerController extends Controller
         $initial = ($page - 1) * $limit;
         $id=Application::$app->getUser()->getID();
         $total_rows = MedicalOfficer::getCount();
+        $full=false;
         $total_pages = ceil ($total_rows / $limit);
         if ($total_pages<$page){
             $page=1;
@@ -1203,15 +1210,22 @@ class managerController extends Controller
             $total_pages = ceil ($total_rows / $limit);
             $requests=BloodRequest::RetrieveAll(true,[$initial,$limit],true,['Action'=>BloodRequest::REQUEST_STATUS_PENDING]);
         }else if ($RequestStatus===2) {
+            $full=true;
             $requests = BloodRequest::RetrieveAll(true, [$initial, $limit], true, ['Action' => BloodRequest::REQUEST_STATUS_FULFILLED]);
         }else if ($RequestStatus===3) {
             $requests = BloodRequest::RetrieveAll(true, [$initial, $limit], true, ['Action' => BloodRequest::REQUEST_STATUS_SENT_TO_DONOR]);
         }else{
             $requests=BloodRequest::RetrieveAll(true,[$initial,$limit],true,['Action'=>BloodRequest::REQUEST_STATUS_PENDING]);
         }
+        usort($requests,function ($a,$b){
+            /** @var BloodRequest $a */
+            /** @var BloodRequest $b */
+            return $a->getRequestedAt()<$b->getRequestedAt();
+        });
         return $this->render('Manager/ManageRequests',[
             'page'=>'mngRequest',
             'data'=>$requests,
+            'full'=>$full,
             'total_pages'=>intval($total_pages),
             'current_page'=>intval($page),
             'rpp'=>$limit,
@@ -1223,7 +1237,8 @@ class managerController extends Controller
             $Request_ID=$request->getBody()['id'];
             if ($Request_ID):
                 $BloodRequest=BloodRequest::findOne(['Request_ID'=>$Request_ID]);
-            if ($BloodRequest){
+                /** @var BloodRequest $BloodRequest */
+                if ($BloodRequest){
 //                TODO ADD data to the array
                 $data=[
                     'success'=>true,
@@ -1236,6 +1251,9 @@ class managerController extends Controller
                         'Type'=>$BloodRequest->getType(),
                         'Volume'=>$BloodRequest->getVolume(),
                         'Action'=>$BloodRequest->getAction(),
+                        'Remarks'=>$BloodRequest->getRemarks(),
+                        'Fullfilled_Volume'=>$BloodRequest->getFullfilledVolume(),
+                        'Fulfilled_Type'=>$BloodRequest->getFulfilledType(true),
                     ]
                 ];
                 return json_encode($data);

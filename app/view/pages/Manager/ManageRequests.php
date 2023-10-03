@@ -48,11 +48,19 @@ $getParams = function ($params) {
     </div>
     <div class="d-flex w-100 overflow-y-scroll" style="margin-left: 50px">
         <table class="w-100 ">
-            <thead class="sticky top-0">
+            <thead class="sticky top-0" id="thead">
             <tr>
                 <th scope="col">No</th>
                 <th scope="col">Request By</th>
                 <th scope="col">Current Status</th>
+                <?php
+                if ($full):
+                ?>
+                <th scope="col">Full Filled Type</th>
+                <th scope="col">Full Filled Volume</th>
+                <?php
+                endif;
+                ?>
                 <th scope="col">Date</th>
                 <th scope="col">Type</th>
                 <th scope="col">Blood Group</th>
@@ -72,6 +80,8 @@ $getParams = function ($params) {
             <tr>
                 <td data-label=" No "><?= $i++;?></td>
                 <td data-label=" Requested By "><?php echo $value->getRequestedBy()?></td>
+
+
                 <?php
                 if ($value->getAction()===BloodRequest::REQUEST_STATUS_PENDING):
                 ?>
@@ -84,6 +94,14 @@ $getParams = function ($params) {
                 elseif ($value->getAction()===BloodRequest::REQUEST_STATUS_SENT_TO_DONOR):
                 ?>
                 <td data-label="Current Status" class="text-danger font-bold"><?php echo $value->getActionText()?></td>
+                <?php
+                endif;
+                ?>
+                <?php
+                if ($full):
+                ?>
+                    <td data-label=" Fulfilled Type "><?php echo $value->getFulfilledType(true)?></td>
+                    <td data-label=" Fulfilled Volume "><?php echo $value->getFullfilledVolume()?></td>
                 <?php
                 endif;
                 ?>
@@ -249,6 +267,8 @@ $getParams = function ($params) {
                                     <div class="px-1">:</div>
                                     <div>${data.data.Remarks ?? "No Remarks"}</div>
                                 </div>
+
+
                             </div>
                         </div>
                         `,
@@ -359,6 +379,16 @@ $getParams = function ($params) {
                                     <div class="px-1">:</div>
                                     <div>${data.data.Remarks ?? "No Remarks"}</div>
                                 </div>
+                                <div class="d-flex">
+                                    <div  class="font-bold">Full Filled Type</div>
+                                    <div class="px-1">:</div>
+                                    <div>${data.data.Fulfilled_Type ?? "No Remarks"}</div>
+                                </div>
+                                <div class="d-flex">
+                                    <div  class="font-bold">Full Filled Volume</div>
+                                    <div class="px-1">:</div>
+                                    <div>${data.data.Fullfilled_Volume ?? "No Remarks"}</div>
+                                </div>
                             </div>
                         </div>
                         <div class="d-flex px-2 my-2 justify-content-center align-items-center py-0-5 bg-dark-0-7 text-white">
@@ -389,9 +419,23 @@ $getParams = function ($params) {
                         title: 'Supply Blood Request',
                         titleClass: 'text-center bg-dark py-1 text-white font-bold px-2',
                         content: `
-                        <div class="d-flex justify-content-around align-items-center gap-1">
+                        <div class="d-flex flex-column justify-content-around align-items-center gap-1">
                             <div class="d-flex">
                                 <img src="/public/images/icons/BloodType/${data.data.BloodGroup}.png" width="80px" alt="">
+                            </div>
+                            <div class="d-flex gap-1 flex-column w-100">
+                                <div class="d-flex flex-center w-90 gap-1">
+                                    <label for="VolumeType" class="w-40">Volume Type </label>
+                                    <select name="" id="VolumeType" class="w-60 form-select" onchange="ChangeVolume('${data.data.Volume}')">
+                                        <option value="1" selected>Full Volume</option>
+                                        <option value="2">Half Volume</option>
+                                        <option value="3">Other</option>
+                                    </select>
+                                </div>
+                                <div class="d-flex flex-center w-90 gap-1">
+                                    <label for="Volume" class="w-40">Volume </label>
+                                    <input type="number" id="Volume" class="form-control w-60 border-radius-10 border-2" value="${data.data.Volume}" readonly min="0" max="500">
+                                </div>
                             </div>
                             <div class="d-flex flex-column gap-1 justify-content-center align-items-center">
                                 <div class="d-flex w-100 align-items-center">
@@ -410,6 +454,8 @@ $getParams = function ($params) {
                             const formData = new FormData();
                             formData.append('Request_ID', id);
                             formData.append('Remarks', document.getElementById('SupplyRemarks').value);
+                            formData.append('Volume', document.getElementById('Volume').value);
+                            formData.append('VolumeType', document.getElementById('VolumeType').value);
                             fetch(url, {
                                 method: 'POST',
                                 body: formData
@@ -434,6 +480,23 @@ $getParams = function ($params) {
                 }
                 })
     }
+
+    const ChangeVolume = (ovolume)=>{
+        const VolumeType = document.getElementById('VolumeType');
+        const Volume = document.getElementById('Volume');
+        const Value = parseFloat(ovolume);
+
+        if(VolumeType.value === '1'){
+            Volume.value = Value;
+            Volume.setAttribute('readonly',true);
+        }else if(VolumeType.value === '2'){
+            Volume.value = (Value/2).toFixed(2);
+            Volume.setAttribute('readonly',true);
+        }else{
+            Volume.value = Value;
+            Volume.removeAttribute('readonly');
+        }
+    }
     const FilterStatus = ()=>{
         const FilterByStatus = document.getElementById('FilterByStatus');
         const status = FilterByStatus.value;
@@ -446,10 +509,13 @@ $getParams = function ($params) {
             .then(response => response.text())
             .then(data => {
                 const content = document.getElementById('content');
+                const tableHeader = document.getElementById('thead');
                 const DParser = new DOMParser();
                 const DHTML = DParser.parseFromString(data, 'text/html');
+                const thead = DHTML.getElementById('thead');
                 const table = DHTML.getElementById('content');
                 content.innerHTML = table.innerHTML;
+                tableHeader.innerHTML = thead.innerHTML;
                 setTimeout(()=>{
                     loader.classList.add('none');
                 },1000)

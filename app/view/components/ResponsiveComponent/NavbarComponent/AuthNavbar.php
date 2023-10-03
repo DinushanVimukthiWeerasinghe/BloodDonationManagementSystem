@@ -45,6 +45,8 @@ class AuthNavbar
         if ($user instanceof (Organization::class) )
         {
             $profileName=$user->getOrganizationName();
+        }else if ($user instanceof (Sponsor::class) ) {
+            $profileName = $user->getSponsorName();
         }
         $actions=Application::$app->request->getPath();
         $path=explode('/',$actions);
@@ -105,7 +107,7 @@ class AuthNavbar
                         $lnk
                         <a onclick="confirmation()" class="logout"><img src="/public/icons/log-out.svg" alt="" width="30rem"> </a>
                         <button  href="$profileLnk" class="navProfile" onclick="getProfile()"><img class="profile-icon" id="NavProfileImage" src="$profilePicture" width="40rem" alt="profile"></button>
-                        <div class="navProfileName"><span>{$profileName}</span></div>
+                        <div class="navProfileName mx-1"><span>{$profileName}</span></div>
                 </div>
                 <script>
                     const confirmation = () => {

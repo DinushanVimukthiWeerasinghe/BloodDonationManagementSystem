@@ -171,18 +171,18 @@ class OrganizationController extends Controller
 //        print_r("ViewCampaign");
 //    }
 
-//    public function near()
-//    {
-//        /* @var Campaign $campaign */
-//        $city = Application::$app->getUser()->getCity();
-//        $result = Campaign::RetrieveAll(false, [],true,['Status' => Campaign::CAMPAIGN_STATUS_APPROVED]);
-//        return $this->render('Organization/campaign/NearByCampaigns',['data'=>$result,'city'=>$city]);
-//    }
-//    public function report()
-//    {
-//
-//        return $this->render('Organization/report');
-//    }
+    public function near()
+    {
+        /* @var Campaign $campaign */
+        $city = Application::$app->getUser()->getCity();
+        $result = Campaign::RetrieveAll(false, [],true,['Status' => Campaign::CAMPAIGN_STATUS_APPROVED]);
+        return $this->render('Organization/campaign/NearByCampaigns',['data'=>$result,'city'=>$city]);
+    }
+    public function report()
+    {
+
+        return $this->render('Organization/report');
+    }
     public function history()
     {
         /* @var Campaign $campaign */

@@ -12,7 +12,7 @@ use App\view\components\ResponsiveComponent\CardGroup\CardGroup;
 use App\view\components\ResponsiveComponent\ImageComponent\BackGroundImage;
 use App\view\components\ResponsiveComponent\NavbarComponent\AuthNavbar;
 
-$navbar = new AuthNavbar(strtoupper($sponsor_Name).' '.'SPONSOR BOARD', '/sponsors', 'bell.png', true,false );
+$navbar = new AuthNavbar(strtoupper($sponsor_Name).' '.'SPONSOR BOARD', '/sponsors', 'bell.png', false,false );
 echo $navbar;
 
 use App\view\components\WebComponent\Card\Card;

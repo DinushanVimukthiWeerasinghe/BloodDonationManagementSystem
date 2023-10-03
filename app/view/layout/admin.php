@@ -104,7 +104,7 @@
             <div class="border-2 border-radius-50 border-2 border-dark" style="background: url('/public/images/user/user1.jpg');object-fit:fill;height: 60px;width: 60px;background-size: cover">
             </div>
             <div class="d-flex text-md mr-1">
-                <div class="text-dark font-bold">Admin</div>
+                <div class="text-dark font-bold">Administrator</div>
             </div>
         </div>
     </div>

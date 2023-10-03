@@ -5,7 +5,6 @@ use Core\Application;
 use App\view\components\ResponsiveComponent\NavbarComponent\AuthNavbar;
 /* @var $User Sponsor*/
 $User = Application::$app->getUser();
-$navbar = new AuthNavbar(strtoupper($User->getSponsorName()).' '.'SPONSOR BOARD', '/public/images/icons/user.png', true,false );
 ?>
 <!DOCTYPE html>
 <html lang="en">

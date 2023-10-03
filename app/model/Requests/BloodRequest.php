@@ -7,6 +7,9 @@ use App\model\users\Hospital;
 
 class BloodRequest extends dbModel
 {
+    public const FULFILLED_TYPE_FULL = 1;
+    public const FULFILLED_TYPE_HALF = 2;
+    public const FULFILLED_TYPE_OTHER = 3;
     public const NORMAL_REQUEST = 1;
     public const CRITICAL_REQUEST = 2;
     public const REQUEST_STATUS_PENDING = 1;
@@ -24,6 +27,49 @@ class BloodRequest extends dbModel
     protected int $Type=1;
     protected int $Action = 0;
     protected float $Volume = 0.0;
+    protected ?int $Fulfilled_Type = null;
+    protected ?float $Fullfilled_Volume = null;
+
+    /**
+     * @return string
+     */
+    public function getRequestFrom(): string
+    {
+        return $this->Request_From;
+    }
+
+    /**
+     * @param string $Request_From
+     */
+    public function setRequestFrom(string $Request_From): void
+    {
+        $this->Request_From = $Request_From;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getFulfilledType($read=false): int | string
+    {
+        if ($read)
+            return match ($this->Fulfilled_Type) {
+                self::FULFILLED_TYPE_FULL => 'Full',
+                self::FULFILLED_TYPE_HALF => 'Half',
+                self::FULFILLED_TYPE_OTHER => 'Other',
+                default => 'Unknown',
+            };
+        return $this->Fulfilled_Type ?? 0;
+    }
+
+    /**
+     * @param int $Fulfilled_Type
+     */
+    public function setFulfilledType(int $Fulfilled_Type): void
+    {
+        $this->Fulfilled_Type = $Fulfilled_Type;
+    }
+
+
 
     /**
      * @return string
@@ -42,12 +88,8 @@ class BloodRequest extends dbModel
     }
 
 
-
-
-
-
     /**
-     * @return int
+     * @return string
      */
     public function getType(): string
     {
@@ -316,6 +358,23 @@ class BloodRequest extends dbModel
         return 'Request_ID';
     }
 
+    /**
+     * @return float|null
+     */
+    public function getFullfilledVolume(): ?float
+    {
+        return $this->Fullfilled_Volume ?? 0;
+    }
+
+    /**
+     * @param float|null $Fullfilled_Volume
+     */
+    public function setFullfilledVolume(?float $Fullfilled_Volume): void
+    {
+        $this->Fullfilled_Volume = $Fullfilled_Volume;
+    }
+
+
     public function attributes(): array
     {
         return [
@@ -329,6 +388,9 @@ class BloodRequest extends dbModel
             'Volume',
             'Action',
             'Request_From',
+            'FullFilled_By',
+            'Fulfilled_Type',
+            'Fullfilled_Volume'
         ];
     }
 
